@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Twitter gadget" 
+                author_email="jad.naoum@epfl.ch" 
+                author="Jad Naoum" 
+                description="Widget that retrieves Twitter tweets."
+                width="350"
+                height="500"
+                thumbnail="http://graaasp.epfl.ch/gadget/prod/iframe/thumbnail.png"
+                screenshot="http://graaasp.epfl.ch/gadget/prod/iframe/screenshot.png">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+    
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+
+<style type="text/css">
+  
+  ul{
+    width: 56ex;
+    max-height: 52ex;
+    overflow: auto;
+    list-style-type: none;
+    padding-left: 0px;
+    margin-left: 0px;
+    background-color: #E6F9FF;
+    border-radius: 2px;
+    padding-top: 2ex;
+    margin-top: 0px;
+  }
+  
+  .text{
+    color: black;
+    font-size: 14px;
+    padding-bottom: 6px;
+    margin-left: 60px;
+  }
+    
+  .entry{
+    width: 50ex;
+    background-color: white;
+    border-style: solid;
+    border: #BEBEBE;
+    border-radius: 7px;
+    margin-left: 2ex;
+    margin-bottom: 2ex;
+  }
+  
+  .from{
+    color: #1E90FF;
+    font-weight: bold;
+    font-size: 14px;
+    text-decoration: none;
+    margin-left: 4px;
+  }
+  
+  a:hover{
+    text-decoration: underline;
+  }
+  
+  input{
+    margin-right: 7px;
+    width: 163px;
+  }
+  
+  .date{
+    color: gray;
+    font-size: 11px;
+    margin-left: 60px;
+  }
+  
+  .extra{
+    color: #8EC8FF;
+  }
+  
+  a{
+    color: #1E90FF;
+    text-decoration: none;
+  }
+  
+  button{
+    cursor: pointer;
+    background: #8EC8FF;
+    border-radius: 10px;
+  }
+  
+  #select, #text, #tweet_number, button{
+    position: relative;
+    top: -124%;
+    left: 4.7%;
+  }
+  
+  .menu{
+    background-color: #0086B2;
+    width: 55.7ex;
+    border-radius: 2px;
+    padding-top: 3px;
+    padding-left: 0px;
+    margin-left: 0px;
+    border: solid;
+    padding-bottom: 3px;
+    margin-bottom: 0px;
+    border-width: 1px;
+  }
+  
+  #more, #less{
+    width: 26px;
+    left: 13px;
+  }
+  
+  .more{
+    margin-left: 5px;
+    margin-top: 3px;
+    position: relative;
+    left: 24%;
+  }
+  
+  img{
+    float: left;
+    margin-right: 1ex;
+  }
+  
+  .less_button{
+    position: relative;
+    left: -164px;
+    width: 26px;
+    top: 1px;
+  }
+  
+  select{
+    margin-right: 5px;
+  }
+  
+</style>
+<!-- <div class = 'everything'> -->
+<div id = 'menu' class = 'menu'>
+  <button id = 'more' type = 'button' onclick = 'more()'>+</button>
+  <!-- <button id = 'less' type = 'button' onclick = 'less()'>-</button> -->
+  <select id = 'tweet_number'>
+    <option value = '5'>5</option>
+    <option value = '10' selected = 'selected'>10</option>
+    <option value = '15'>15</option>
+    <option value = '20'>20</option>
+    <option value = '30'>30</option>
+    <option value = '40'>40</option>
+    <option value = '50'>50</option>
+    <option value = '100'>100</option>
+  </select>
+  <select  id = 'select'>
+    <option value = '#'>#</option>
+    <option value = '@'>@</option>
+    <option value = 'f'>from</option>
+    <option value = 't'>to</option>
+  </select>
+  <input id = 'text' type = 'text' class = 'input'></input>
+  <button id = 'button' type = 'button' onclick = getTweets()>Get Tweets!</button>
+</div>
+<ul id = 'tweets'>
+</ul>
+<!-- </div> -->
+
+
+<script type="text/javascript">
+  var app = {context: "", viewerName: "", data: [], root_url: "http://iamac115.epfl.ch/"};
+  var count = 0;
+  $('input').bind('keypress', function(e) {
+          if(e.keyCode==13){
+            getTweets();
+          }
+  });
+  
+  
+  
+  function checkInput(){
+    var ok = true;
+    $('.input').each(function(){
+      var _this = $(this);
+      
+      if($.trim(_this.val()) == "")
+        ok = false;
+    });
+    return ok;
+  }
+  
+  function buildURL(){
+    var url = "http://search.twitter.com/search.json?page=1&rpp="+$("#tweet_number").val()+"&q=";
+    $('.input').each(function(){
+      var _this = $(this);
+      
+      if(_this.prev().val() == '#')
+        url = url + "%23";
+      else if(_this.prev().val() == '@')
+        url = url + "%40";
+      else if(_this.prev().val() == 'from')
+        url = url + "from%3A";
+      else
+        url = url + "to%3A";
+      
+        url = url + _this.val() + "%7C";
+        
+    });
+    
+    url = url + "&callback=?";
+    return url;
+  }
+  
+  function more(sel, txt){
+    if(sel == null && txt == null){
+      if(count < 4){
+        count++;
+        $("#menu").append("<select class = 'more'><option value = '#'>#</option><option value = '@'>@</option><option value = 'from'>from</option><option value = 'to'>to</option></select><input class = 'more input' type = 'text'></input><button class = 'less_button' type = 'button' onclick = 'lessButton(this)'>-</button><br />");
+      }
+      else
+        alert("You cannot go over 5 entries");
+    }
+    else{
+      count++;
+      if(sel == '#')
+        var def = "<option value = '#' selected = 'selected'>#</option><option value = '@'>@</option><option value = 'from'>from</option><option value = 'to'>to</option>";
+      else if (sel == '@')
+        var def = "<option value = '#'>#</option><option value = '@' selected = 'selected'>@</option><option value = 'from'>from</option><option value = 'to'>to</option>";
+      else if (sel == 'f')
+        var def = "<option value = '#'>#</option><option value = '@'>@</option><option value = 'from' selected = 'selected'>from</option><option value = 'to'>to</option>";
+      else
+        var def = "<option value = '#'>#</option><option value = '@'>@</option><option value = 'from'>from</option><option value = 'to' selected = 'selected'>to</option>";
+    
+      $("#menu").append("<select class = 'more' selected='"+sel+"'>" +def+ "</select><input id = 'text"+count+"' class = 'more input' type = 'text' value = "+txt+"></input><button class = 'less_button' type = 'button' onclick = 'lessButton(this)'>-</button><br />");
+    }
+  }
+  
+  function lessButton(child){
+    $(child).next().remove();
+    $(child).prev().remove();
+    $(child).prev().remove();
+    $(child).remove();
+    count--;
+  }
+  
+  function getTweets(){
+    if(checkInput()){
+      var url = buildURL();
+        
+      $.ajax({  
+        url : url,  
+        dataType : "json",  
+        timeout:15000,  
+  
+        success : function(data) {
+          insertTweets(data);
+        },  
+  
+        error : function(error) {
+          if(error.statusText == 'parsererror')
+            alert("The hashtag you entered is invalid");
+          else
+            alert("The rate limit has been reached");
+        },  
+  
+      });
+    }
+    else
+      alert("One of your entry boxes is empty. Please type in an input or remove the entry box");
+    
+    app.data = [];  
+    $('.input').each(function(){
+      var _this = $(this);
+      
+      if(_this.prev().val() == '#')
+        app.data.push("#"+_this.val());
+      else if(_this.prev().val() == '@')
+        app.data.push("@"+_this.val());
+      else if(_this.prev().val() == 'from')
+        app.data.push("f"+_this.val());
+      else
+        app.data.push("t"+_this.val());
+    }); 
+     
+    osapi.appdata.update({userId: app.context, 
+    data: {"entries": JSON.stringify(app.data)}}).execute(function() {});
+    
+  }
+  
+  function insertTweets(data){
+    $("#tweets").empty();
+    
+    for(i=0; i<data.results.length; i++){
+      var from = data.results[i].from_user;
+      var date = data.results[i].created_at;
+      var text = data.results[i].text;
+      
+      $("#tweets").append("<div class = 'entry'><li><img src = 'http://api.twitter.com/1/users/profile_image/"+from+"'></li><li><a class = 'from' href = http://twitter.com/" +from+ "'>" +from+ "</a></li><li class = 'text'>" +checkText(text)+ "</li><li class = 'date'>" +getDateDifference(date)+ "</li></div>");
+    }
+    
+    if($("#tweets").is(':empty'))
+      $("#tweets").append('No tweets were found or tweets are too old');
+  }
+  
+  function getDateDifference(date){
+    var ONE_DAY = 1000*60*60*24;
+    var ONE_HOUR = 1000*60*60;
+    var ONE_MINUTE = 1000*60;
+    
+    var now = new Date();
+    var nowMil = now.getTime();
+    
+    var myDate = new Date(date);
+    var dateMil = myDate.getTime();
+    
+    var difference = nowMil - dateMil;
+    if(difference < ONE_DAY){
+      var hours = Math.floor(difference/ONE_HOUR);
+      var minutes = difference % ONE_HOUR;
+      minutes = Math.round(minutes/ONE_MINUTE);
+      if(hours > 1)
+        return hours + " hours " + minutes + " min ago";
+      else if(hours < 1){
+        if(minutes == 0)
+          return "< 1 min ago";
+        else
+          return minutes + " min ago";
+      }
+      else if(hours == 1)
+        return hours + " hour " + minutes + " min ago";
+    }
+    else{
+      //the substring is to get the month from the date string given by twitter
+      return date.substring(8,11) + " " + myDate.getDate();
+    }    
+  }
+  
+  //changes the text to insert all hyperlinks where needed
+  function checkText(text){
+    var patt1 = /(@[a-zA-Z0-9_]+)/gi;
+    var patt2 = /(#[a-zA-Z0-9_]+)/gi;
+    var patt3 = /(http[a-zA-Z0-9%?:\.\ \/\ ]+)/gi;
+    var match1 = text.match(patt1);
+    var match2 = text.match(patt2);
+    var match3 = text.match(patt3);
+        
+    if(match1 != null){
+      for(n=0; n<match1.length; n++){
+        var replace1 = "<font class = 'extra'>@</font><a target='_blank' href = 'http://twitter.com/" +match1[n].substring(1,match1[n].length)+ "'>" + match1[n].substring(1,match1[n].length) + "</a>";
+        text = text.replace(match1[n], replace1);
+      }
+    }
+    
+    if(match2 != null){
+      for(j=0; j<match2.length; j++){
+        var replace2 = "<font class = 'extra'>#</font><a target='_blank' href = 'http://twitter.com/#!/search?q=%23" +match2[j].substring(1,match2[j].length)+ "'>" + match2[j].substring(1,match2[j].length) + "</a>";
+        text = text.replace(match2[j], replace2);
+      }
+    }
+    
+    if(match3 != null){
+      for(k=0; k<match3.length; k++){
+        var replace3 = "<a target='_blank' href = '" +match3[k]+ "'>" +match3[k]+ "</a>";
+        text = text.replace(match3[k], replace3);
+      }
+    }
+
+    return text;
+  }
+  
+  var initialize = function() {
+    // batch: get viewer and context for gadget
+    var batch = osapi.newBatch();
+    batch.add('viewer', osapi.people.getViewer());
+    batch.add('context', osapi.context.get());
+    batch.execute(function(data){
+      app.viewer = data.viewer;
+      app.viewerName = app.viewer.displayName;
+  
+      var contextId = data.context.contextId
+      var contextType = data.context.contextType
+      var prefix = (contextType === "@space") ? "s_" : "";
+      app.context = prefix + contextId;
+  
+      osapi.appdata.get({userId: app.context}).execute(function(data){
+        data = data[app.context];
+        if (data) 
+          app.data = JSON.parse(data["entries"]);
+          
+          if(app.data[0] != null && app.data[0].length > 1){
+            $("#select").val(app.data[0].charAt(0));
+            $("#text").val(app.data[0].substring(1,app.data[0].length));
+          }
+          
+          for(i=1; i<app.data.length; i++){
+            if(app.data[i] != null && app.data[i].length > 1)
+              more(app.data[i].charAt(0), app.data[i].substring(1,app.data[i].length));
+          }
+      });
+    });
+  }  
+  
+  setTimeout(initialize,500);
+</script>
+
+  ]]></Content>
+</Module>
