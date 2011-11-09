@@ -31,6 +31,7 @@ that data is being processed
 <![CDATA[
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/rating/jquery.rating.pack.js"></script>
 
 
 <style type="text/css">
