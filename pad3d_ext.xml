@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Pad 3D" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="This is a functional skin gadget. It takes data from a space and displays it in 3D. This gadget is a frozen version (for demonstration purpose). Data is not taken from a real space. For complete version see this gadget - http://graaasp.epfl.ch/gadget/pad3d.xml (it will run only in spaces-enabled container)."
+                width="500"
+                height="500">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content view="preview" type="url" href="http://graaasp.epfl.ch/gadget/previews/pad3d.png"/>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+  .gadgets-gadget{width: 100%;}
+  #container{width:500px;height:500px}
+</style>
+  
+<div id="container">
+<canvas id="pad" style="border: none;" width="500" height="500"></canvas>
+</div>
+
+<!-- <script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script> -->
+<!-- <script type="text/javascript" src="http://graaasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+
+<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/webgl-utils.js"></script>
+
+<script id="shader-fs" type="x-shader/x-fragment">
+    #ifdef GL_ES
+    precision highp float;
+    #endif
+
+    varying vec2 vTextureCoord;
+    varying vec3 vLightWeighting;
+
+    uniform sampler2D uSampler;
+
+    void main(void) {
+      vec4 textureColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+      gl_FragColor = vec4(textureColor.rgb * vLightWeighting, textureColor.a);
+    }
+</script>
+
+<script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec3 aVertexNormal;
+    attribute vec2 aTextureCoord;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    uniform mat3 uNMatrix;
+
+    uniform vec3 uAmbientColor;
+
+    uniform vec3 uLightingDirection;
+    uniform vec3 uDirectionalColor;
+
+    uniform bool uUseLighting;
+
+    varying vec2 vTextureCoord;
+    varying vec3 vLightWeighting;
+
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vTextureCoord = aTextureCoord;
+        
+        if (!uUseLighting) {
+            vLightWeighting = vec3(1.0, 1.0, 1.0);
+        } else {
+            vec3 transformedNormal = uNMatrix * aVertexNormal;
+            float directionalLightWeighting = max(dot(transformedNormal, uLightingDirection), 0.0);
+            vLightWeighting = uAmbientColor + uDirectionalColor * directionalLightWeighting;
+        }
+        
+    }
+</script>
+
+
+<script type="text/javascript">
+
+    var gl;
+
+    function initGL(canvas) {
+        try {
+            gl = canvas.getContext("experimental-webgl");
+            gl.viewportWidth = canvas.width;
+            gl.viewportHeight = canvas.height;
+        } catch (e) {
+        }
+        if (!gl) {
+            alert("Could not initialise WebGL, sorry :-(");
+        }
+    }
+
+
+    function getShader(gl, id) {
+        var shaderScript = document.getElementById(id);
+        if (!shaderScript) {
+            return null;
+        }
+
+        var str = "";
+        var k = shaderScript.firstChild;
+        while (k) {
+            if (k.nodeType == 3) {
+                str += k.textContent;
+            }
+            k = k.nextSibling;
+        }
+
+        var shader;
+        if (shaderScript.type == "x-shader/x-fragment") {
+            shader = gl.createShader(gl.FRAGMENT_SHADER);
+        } else if (shaderScript.type == "x-shader/x-vertex") {
+            shader = gl.createShader(gl.VERTEX_SHADER);
+        } else {
+            return null;
+        }
+
+        gl.shaderSource(shader, str);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            return null;
+        }
+
+        return shader;
+    }
+
+
+    var shaderProgram;
+
+    function initShaders() {
+        var fragmentShader = getShader(gl, "shader-fs");
+        var vertexShader = getShader(gl, "shader-vs");
+
+        shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+            alert("Could not initialise shaders");
+        }
+
+        gl.useProgram(shaderProgram);
+
+        shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+        gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+        shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+        gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+
+        shaderProgram.textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
+        gl.enableVertexAttribArray(shaderProgram.textureCoordAttribute);
+
+        shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
+        shaderProgram.samplerUniform = gl.getUniformLocation(shaderProgram, "uSampler");
+        shaderProgram.useLightingUniform = gl.getUniformLocation(shaderProgram, "uUseLighting");
+        shaderProgram.ambientColorUniform = gl.getUniformLocation(shaderProgram, "uAmbientColor");
+        shaderProgram.lightingDirectionUniform = gl.getUniformLocation(shaderProgram, "uLightingDirection");
+        shaderProgram.directionalColorUniform = gl.getUniformLocation(shaderProgram, "uDirectionalColor");
+    }
+
+
+    function handleLoadedTexture(texture) {
+    
+      var image = texture.image;
+      var canvas = document.createElement("canvas");
+      canvas.width = image.width;
+      canvas.height = image.height;
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "rgb(255,255,255)";
+      ctx.fillRect(0, 0, image.width, image.height);
+      ctx.drawImage(image,
+                    0, 0, image.width, image.height,
+                    0, 0, canvas.width, canvas.height);
+      image = canvas;
+      
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        gl.bindTexture(gl.TEXTURE_2D, null);
+        
+    }
+
+
+    var crateTextures = [];
+    var textureImages = [];
+
+    function initTexture() {
+
+        for (var i=0; i < data.length; i++) {
+          textureImages.push(new Image());
+          
+        
+          crateTextures.push(gl.createTexture());
+          crateTextures[i].image = textureImages[i];
+          
+          // crateTextures.push(texture);
+          textureImages[i].onload = function (num) {
+            return function(){
+              handleLoadedTexture(crateTextures[num])              
+            }
+          }(i);
+          textureImages[i].src = data[i];
+        }
+                
+    }
+
+
+    var mvMatrix = mat4.create();
+    var mvMatrixStack = [];
+    var pMatrix = mat4.create();
+
+    function mvPushMatrix() {
+        var copy = mat4.create();
+        mat4.set(mvMatrix, copy);
+        mvMatrixStack.push(copy);
+    }
+
+    function mvPopMatrix() {
+        if (mvMatrixStack.length == 0) {
+            throw "Invalid popMatrix!";
+        }
+        mvMatrix = mvMatrixStack.pop();
+    }
+
+
+    function setMatrixUniforms() {
+        gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+        
+        var normalMatrix = mat3.create();
+        mat4.toInverseMat3(mvMatrix, normalMatrix);
+        mat3.transpose(normalMatrix);
+        gl.uniformMatrix3fv(shaderProgram.nMatrixUniform, false, normalMatrix);
+        
+    }
+
+
+    function degToRad(degrees) {
+        return degrees * Math.PI / 180;
+    }
+
+
+    var xRot = 0;
+    var yRot = 0;
+
+
+    var cubeVertexPositionBuffer;
+    var cubeVertexNormalBuffer;
+    var cubeVertexTextureCoordBuffer;
+    var cubeVertexIndexBuffer;
+    function initBuffers() {
+        cubeVertexPositionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+        vertices = [
+            // Front face
+            -1.0, -1.0,  1.0,
+             1.0, -1.0,  1.0,
+             1.0,  1.0,  1.0,
+            -1.0,  1.0,  1.0,
+
+            // Back face
+            -1.0, -1.0, -1.0,
+            -1.0,  1.0, -1.0,
+             1.0,  1.0, -1.0,
+             1.0, -1.0, -1.0,
+
+            // Top face
+            -1.0,  1.0, -1.0,
+            -1.0,  1.0,  1.0,
+             1.0,  1.0,  1.0,
+             1.0,  1.0, -1.0,
+
+            // Bottom face
+            -1.0, -1.0, -1.0,
+             1.0, -1.0, -1.0,
+             1.0, -1.0,  1.0,
+            -1.0, -1.0,  1.0,
+
+            // Right face
+             1.0, -1.0, -1.0,
+             1.0,  1.0, -1.0,
+             1.0,  1.0,  1.0,
+             1.0, -1.0,  1.0,
+
+            // Left face
+            -1.0, -1.0, -1.0,
+            -1.0, -1.0,  1.0,
+            -1.0,  1.0,  1.0,
+            -1.0,  1.0, -1.0,
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+        cubeVertexPositionBuffer.itemSize = 3;
+        cubeVertexPositionBuffer.numItems = 24;
+        
+        cubeVertexNormalBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
+        var vertexNormals = [
+            // Front face
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+             0.0,  0.0,  1.0,
+
+            // Back face
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+             0.0,  0.0, -1.0,
+
+            // Top face
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+             0.0,  1.0,  0.0,
+
+            // Bottom face
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+             0.0, -1.0,  0.0,
+
+            // Right face
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+             1.0,  0.0,  0.0,
+
+            // Left face
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0,
+            -1.0,  0.0,  0.0
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+        cubeVertexNormalBuffer.itemSize = 3;
+        cubeVertexNormalBuffer.numItems = 24;
+
+        cubeVertexTextureCoordBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
+        var textureCoords = [
+            // Front face
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+
+            // Back face
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            0.0, 0.0,
+
+            // Top face
+            0.0, 1.0,
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+
+            // Bottom face
+            1.0, 1.0,
+            0.0, 1.0,
+            0.0, 0.0,
+            1.0, 0.0,
+
+            // Right face
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+            0.0, 0.0,
+
+            // Left face
+            0.0, 0.0,
+            1.0, 0.0,
+            1.0, 1.0,
+            0.0, 1.0,
+        ];
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
+        cubeVertexTextureCoordBuffer.itemSize = 2;
+        cubeVertexTextureCoordBuffer.numItems = 24;
+
+        cubeVertexIndexBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+        var cubeVertexIndices = [
+            0, 1, 2,      0, 2, 3,    // Front face
+            4, 5, 6,      4, 6, 7,    // Back face
+            8, 9, 10,     8, 10, 11,  // Top face
+            12, 13, 14,   12, 14, 15, // Bottom face
+            16, 17, 18,   16, 18, 19, // Right face
+            20, 21, 22,   20, 22, 23  // Left face
+        ]
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
+        cubeVertexIndexBuffer.itemSize = 1;
+        cubeVertexIndexBuffer.numItems = 36;
+    }
+
+    var i= 0;
+
+    function drawCube(i){
+      mvPushMatrix();
+      
+      var x = i % 4;
+      var y = (i - x) / 4;
+      
+      mat4.translate(mvMatrix, [x*3.0, -y*3.0, 0.0]);
+
+      mat4.rotate(mvMatrix, degToRad(xRot), [1, 0, 0]);
+      mat4.rotate(mvMatrix, degToRad(yRot), [0, 1, 0]);
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexPositionBuffer);
+      gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cubeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+      
+      gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexNormalBuffer);
+      gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cubeVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+      
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, cubeVertexTextureCoordBuffer);
+      gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, cubeVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+
+      gl.activeTexture(gl.TEXTURE0);
+      // gl.bindTexture(gl.TEXTURE_2D, texture2);
+      gl.bindTexture(gl.TEXTURE_2D, crateTextures[i]);
+      gl.uniform1i(shaderProgram.samplerUniform, 0);
+      
+       
+
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVertexIndexBuffer);
+      setMatrixUniforms();
+      gl.drawElements(gl.TRIANGLES, cubeVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+      
+      mvPopMatrix();
+    }
+
+    function drawScene() {      
+        gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+        mat4.identity(mvMatrix);
+        
+        var lighting = true;
+         gl.uniform1i(shaderProgram.useLightingUniform, lighting);
+         if (lighting) {
+             gl.uniform3f(
+                 shaderProgram.ambientColorUniform,
+                 0.2,0.2,0.2
+             );
+
+             var lightingDirection = [-0.25, -0.25, -1.0];
+             var adjustedLD = vec3.create();
+             vec3.normalize(lightingDirection, adjustedLD);
+             vec3.scale(adjustedLD, -1);
+             gl.uniform3fv(shaderProgram.lightingDirectionUniform, adjustedLD);
+
+             gl.uniform3f(
+                 shaderProgram.directionalColorUniform,
+                 0.8,0.8,0.8
+             );
+         }
+        
+        
+        mat4.translate(mvMatrix, [-5.0, 5.0, -18.0]);
+        
+        
+        for (var i=0; i < crateTextures.length; i++) {
+          drawCube(i)
+        };        
+    }
+
+
+    var lastTime = 0;
+
+    function animate() {
+        var timeNow = new Date().getTime();
+        if (lastTime != 0) {
+            var elapsed = timeNow - lastTime;
+
+            xRot += (30 * elapsed) / 1000.0;
+            yRot += (30 * elapsed) / 1000.0;
+        }
+        lastTime = timeNow;
+    }
+
+
+    function tick() {
+        requestAnimFrame(tick);
+        drawScene();
+        animate();
+    }
+
+
+    var data;
+    function webGLStart(d) {
+        data = d;
+      
+        var canvas = document.getElementById("pad");
+        initGL(canvas);
+        initShaders();
+        initBuffers();
+        initTexture();
+
+        gl.clearColor(0.87, 0.87, 0.87, 1.0);
+        //gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.enable(gl.DEPTH_TEST);
+
+        tick();
+    }
+
+</script>
+
+<script type="text/javascript">
+var isOwner = false;
+
+// gets the data and calls build for container
+var initialize = function() {
+  //var d = getData(); webGLStart(d);
+  var array = [
+  {"updated":"2011-05-17T21:11:29.000Z","profileUrl":"http://graaasp.epfl.ch/#item=user_3","filterCapability":{},"networkPresence":{"value":"XA","displayValue":"Extended Away"},"aboutMe":"\u003cp\u003eI am interested in widgets!\u003c/p\u003e\n\u003cp\u003eApache Shindig rocks!\u003c/p\u003e\n\u003cp\u003etest\u003c/p\u003e","id":"3","objectId":3,"thumbnailUrl":"http://graaasp.epfl.ch/user/picture/3/thumb/photo_evgeny.jpg","displayName":"Evgeny Bogdanov"},{"updated":"2011-05-01T15:20:04.000Z","profileUrl":"http://graaasp.epfl.ch/#item=user_5","filterCapability":{},"networkPresence":{"value":"XA","displayValue":"Extended Away"},"aboutMe":"\u003cp\u003eDenis Gillet received the Diploma in Electrical Engineering from the \u003ca href=\"http://www.epfl.ch/index.en.html\" target=\"_blank\"\u003eSwiss Federal Institute of Technology in Lausanne\u003c/a\u003e (EPFL) in 1988, and the Ph.D. degree in Information Systems also from the EPFL in 1995. During 1992 he was appointed as Research Fellow at the Information Systems Laboratory of Stanford University in the United States. He is currently Ma&icirc;tre d'enseignement et de recherche (Associate Professor) at the\u003ca href=\"http://sti.epfl.ch/\" target=\"_blank\"\u003e EPFL School of Engineering\u003c/a\u003e, where he leads the \u003ca href=\"http://react.epfl.ch\" target=\"_blank\"\u003eReact\u003c/a\u003e multi-disciplinary research group. His current research interests include new learning technologies, sustainable interaction and collaboration systems, real-time Internet services, as well as autonomous transportation systems. Dr. Gillet is Associate Editor of the\u003ca href=\"http://www.inderscience.com/browse/index.php?journalID=246\" target=\"_blank\"\u003e International Journal of Technology Enhanced Learning\u003c/a\u003e and the \u003ca href=\"http://www.computer.org/portal/web/tlt\" target=\"_blank\"\u003eIEEE Transactions on Learning Technologies\u003c/a\u003e.\u003c/p\u003e","id":"5","objectId":5,"thumbnailUrl":"http://graaasp.epfl.ch/user/picture/5/thumb/Denis2.jpg","displayName":"Denis Gillet"},{"updated":"2011-05-13T11:26:23.000Z","profileUrl":"http://graaasp.epfl.ch/#item=user_9","filterCapability":{},"networkPresence":{"value":"XA","displayValue":"Extended Away"},"aboutMe":"\u003cp\u003eSee my \u003ca href=\"http://people.epfl.ch/christophe.salzmann\" target=\"_blank\"\u003eofficial profil page at EPFL&nbsp;\u003c/a\u003e\u003c/p\u003e","id":"9","objectId":9,"thumbnailUrl":"http://graaasp.epfl.ch/user/picture/9/thumb/ChS.jpg","displayName":"christophe.salzmann"},{"updated":"2011-05-09T13:38:28.000Z","profileUrl":"http://graaasp.epfl.ch/#item=user_28","filterCapability":{},"networkPresence":{"value":"XA","displayValue":"Extended Away"},"aboutMe":"\u003cp\u003eNa Li was born in Hubei province, China. She received her bachelor  degree in software engineering from \u003ca href=\"http://en.wikipedia.org/wiki/Tongji_University\"\u003eTongji University\u003c/a\u003e in 2007. From January 2007, she worked as an intern developer in SAP  Labs China for six months. Then she continued her study in \u003ca href=\"http://en.wikipedia.org/wiki/Tongji_University\"\u003eTongji University\u003c/a\u003e as a graduate student, and obtained her master degree in computer  applied technology in 2009. Since September 2009, she became a Ph.D.  student in the \u003ca href=\"http://interaction.epfl.ch/\"\u003eREACT\u003c/a\u003e research  team, at the \u003ca href=\"http://lawww.epfl.ch/\"\u003eLaboratoire d'Automatique\u003c/a\u003e of EPFL, being advised by \u003ca href=\"http://people.epfl.ch/denis.gillet\"\u003eMER  Denis Gillet\u003c/a\u003e. \u003cbr /\u003e \u003cbr /\u003eCurrently, she is involved in the \u003ca href=\"http://www.role-project.eu/\"\u003eROLE\u003c/a\u003e project, which aims at  offering adaptivity and personalization in technology enhanced learning  environments. Her research topic mainly focuses on trust modeling and  evaluation in social software, in order to aggregate, sort and filter  user-generated content in open learning environment.\u003c/p\u003e\n\u003cp\u003eFor more information, please find her official profile \u003ca href=\"http://people.epfl.ch/na.li\" target=\"_blank\"\u003ehere\u003c/a\u003e.\u003c/p\u003e","id":"28","objectId":28,"thumbnailUrl":"http://graaasp.epfl.ch/user/picture/28/thumb/lina.png","displayName":"Na Li"},
+  {"interests":[],"parentType":"@space","id":"442","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=space_442","updated":"2011-05-16T19:32:14.000Z","description":"","objectId":442,"name":"Rails","thumbnailUrl":"http://graaasp.epfl.ch/space/picture/442/thumb/rails.jpg","displayName":"Rails","filterCapability":{}},{"interests":[],"parentType":"@space","id":"443","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=space_443","updated":"2011-05-16T19:32:34.000Z","description":"","objectId":443,"name":"Role","thumbnailUrl":"http://graaasp.epfl.ch/space/picture/443/thumb/role.png","displayName":"Role","filterCapability":{}},{"interests":[],"parentType":"@space","id":"444","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=space_444","updated":"2011-05-16T19:32:58.000Z","description":"","objectId":444,"name":"Ruby","thumbnailUrl":"http://graaasp.epfl.ch/space/picture/444/thumb/ruby.png","displayName":"Ruby","filterCapability":{}},{"interests":[],"parentType":"@space","id":"445","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=space_445","updated":"2011-05-16T19:34:12.000Z","description":"","objectId":445,"name":"Graasp","thumbnailUrl":"http://graaasp.epfl.ch/space/picture/445/thumb/graaasp_logo.png","displayName":"Graasp","filterCapability":{}},{"interests":[],"parentType":"@space","id":"446","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=space_446","updated":"2011-05-16T19:34:38.000Z","description":"","objectId":446,"name":"JTEL","thumbnailUrl":"http://graaasp.epfl.ch/space/picture/446/thumb/jtel.png","displayName":"JTEL","filterCapability":{}},{"interests":[],"parentType":"@space","id":"447","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=space_447","updated":"2011-05-17T08:55:07.000Z","description":"","objectId":447,"name":"diagram 2D","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/space_thumb.png","displayName":"diagram 2D","filterCapability":{}},
+  {"appUrl":"http://graaasp.epfl.ch/gadget/recommender.xml","parentType":"@space","id":"751","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=widget_751","updated":"2011-05-17T09:01:54.000Z","objectId":751,"name":"Recommender","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/widget_thumb.png","displayName":"Recommender","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"http://graaasp.epfl.ch/gadget/gyroscope.xml","parentType":"@space","id":"752","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=widget_752","updated":"2011-05-17T11:21:55.000Z","objectId":752,"name":"Gyroscope","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/widget_thumb.png","displayName":"Gyroscope","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"http://graaasp.epfl.ch/gadget/pad3d.xml","parentType":"@space","id":"754","parentId":"441","profileUrl":"http://graaasp.epfl.ch/#item=widget_754","updated":"2011-05-18T07:10:50.000Z","objectId":754,"name":"3D pad","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/widget_thumb.png","displayName":"3D pad","appType":"WidgetGadget","filterCapability":{}}
+  ];
+
+  var urls = []
+  for (var i = 0; i < array.length; i++) {
+    urls.push(array[i].thumbnailUrl);
+  }
+  
+  webGLStart(urls);  
+  gadgets.window.adjustHeight();
+
+};
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

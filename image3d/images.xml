@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Pics viewer" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="Shows image urls in 3D"
+                width="500"
+                height="500">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content view="preview" type="url" href="http://graaasp.epfl.ch/gadget/previews/pad3d.png"/>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+.gadgets-gadget{width: 100%;}
+.item{padding: 5px;margin: 5px; border-radius:5px;
+  cursor:pointer; margin-left: 15px; font-size: 12px;
+  width: 84px;
+  height: 52px;
+  display:inline-block;
+  }
+.item div{
+  text-align: center;
+}
+.title{border-top: 1px solid #aaa; font-size: 14px; text-indent: 5px; background-color: #ddd;
+  margin-bottom: 5px; padding: 3px}
+  
+.people {
+  border: solid 1px rgba(102,153,255,0.7); }
+
+.item {
+  background: -moz-linear-gradient(top, #fefefe, #eeeeee);
+  background: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#eeeeee)); }
+.item:hover {
+  background: -moz-linear-gradient(top, #eeeeee, #fefefe);
+  background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#fefefe)); }
+
+.name{
+    height: 14px;
+    width: 80px;
+    overflow:hidden;
+} 
+.thumb{
+  margin-bottom:5px;
+/*  display: inline-block;*/
+  float:left;
+  width:100px;
+  padding:2px;
+  border: 1px solid #ccc;
+  margin-right: 5px;
+}
+</style>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+  
+<div id="container">
+<div id="images"></div>
+</div>
+
+<!-- <script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script> -->
+<!-- <script type="text/javascript" src="http://shindig.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+
+<script type="text/javascript">
+function drawImage(url) {
+  // body...
+  var item_el = $('<div></div>');
+  
+  // thumbnail
+  var thumb = $('<div></div>').addClass('thumb');
+  item_el.html(thumb);
+  var img = $('<img style="width:100px"></img>').attr('src',url);
+  thumb.html(img);
+  
+  item_el.appendTo(('#images'));
+  
+  gadgets.window.adjustHeight();
+  
+}
+
+var onEvent = function (envelope, message) {
+		var url = message["url"];
+    
+    drawImage(url);
+		return true;
+
+};
+
+</script>
+
+<script type="text/javascript">
+var isOwner = false;
+
+// gets the data and calls build for container
+var initialize = function() {
+  var url = 'http://graaasp.epfl.ch/images/logo/graaasp_logo.png';
+  
+  drawImage(url) 
+  gadgets.openapp.connect(onEvent);
+  
+  
+
+};
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

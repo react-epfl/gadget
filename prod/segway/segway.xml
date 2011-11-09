@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Segway Control Simulation" 
+                author_email="benjamin.fankhauser@epfl.ch" 
+                author="Benjamin Fankhauser" 
+                description="Text area that can be edited by all users of a certain space"
+                width="500"
+                height="500"
+                thumbnail="http://graaasp.epfl.ch/gadget/prod/segway/scrn.png"
+                screenshot="http://graaasp.epfl.ch/gadget/prod/segway/scrn.png">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  
+
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+  
+  	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+	<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/prod/segway/rotate.js"></script>
+
+<script type="text/javascript">
+	var offset=30;
+	var lm_offset=176;
+	var nm_offset=176+offset;
+	var hlm_offset=lm_offset+22;
+	var hnm_offset=nm_offset+22;
+	var dt=0.01;
+	var u=0;
+	var u_ln=0;
+	var u_ln_max=0;
+	var u_ln_min=0;
+	var u_nl=0;
+	var u_nl_max=0;
+	var u_nl_min=0;
+	var K=[];
+	var x=[];
+	var xln=[];
+	var cf=0;
+	var mr=0;
+	var mp=0;
+	var d=0;
+	var p=0;
+	var R=0;
+	var kp=0;
+	var sat=0;
+	var Jr=0;
+	var Jp=0;
+	var g=9.81;
+	var t=0;
+	var olsim=false;
+	var clsim=false;
+	var impuls=0;
+	var lninteraction=false;
+	var nlinteraction=false;
+//Classes!!
+function reset(){
+	$("#baseline").css({"position":"absolute","left":50,"top":190});
+	$("#wheel").css({"position":"absolute","left":""+lm_offset,"top":"140"});
+	$("#wheel_nl").css({"position":"absolute","left":""+nm_offset,"top":"140"});
+	$("#handlebar").css({"position":"absolute","left":""+hlm_offset,"top":"63"});
+	$("#handlebar_nl").css({"position":"absolute","left":""+hnm_offset,"top":"63"});
+	$("#handlebar").rotate(0);
+	$("#handlebar_nl").rotate(0);
+	$("#wheel").rotate(0);
+	$("#wheel_nl").rotate(0);
+	$("#offset").val(0.3);
+	$("#x_1").val(0);
+	$("#x_2").val(0);
+	$("#x_3").val(0);
+	$("#x_4").val(0);
+	$("#c_f").val(0.05);
+	$("#m_r").val(3);
+	$("#m_p").val(2.5);
+	$("#d").val(0.5);
+	$("#p").val(0.08);
+	$("#R").val(0.2);
+	$("#k_xi").val(-1.3109);
+	$("#k_theta").val(-70.1035);
+	$("#k_dxi").val(-5.7463);
+	$("#k_dtheta").val(-20.1857);	
+	$("#saturation").val("inf");
+	$("#dbtext").text("");
+	updateValues();
+	updateUbox();
+	$("#wheel").show();
+	$("#handlebar").show();
+	$("#wheel_nl").show();
+	$("#handlebar_nl").show();
+	$("#checkbox_ln").prop("checked",true);
+	$("#checkbox_nl").prop("checked",true);
+	$("#legend_ln").show(600);
+	$("#ubox_ln").show();
+	$("#ubox_ln_mm").show();
+	$("#legend_nl").show(600);
+	$("#ubox_nl").show();
+	$("#ubox_nl_mm").show();
+	}
+function updateValues(){
+	x[1]=parseFloat($("#x_1").val()*100);
+	x[2]=parseFloat($("#x_2").val())/180*Math.PI;
+	x[3]=parseFloat($("#x_3").val()*100);
+	x[4]=parseFloat($("#x_4").val())/180*Math.PI;
+	xln=x;
+	K[1]=parseFloat($("#k_xi").val());
+	K[2]=parseFloat($("#k_theta").val());
+	K[3]=parseFloat($("#k_dxi").val());
+	K[4]=parseFloat($("#k_dtheta").val());
+	offset=parseFloat($("#offset").val()*100);
+	cf=parseFloat($("#c_f").val());
+	mr=parseFloat($("#m_r").val());
+	mp=parseFloat($("#m_p").val());
+	d=parseFloat($("#d").val());
+	p=parseFloat($("#p").val());
+	R=parseFloat($("#R").val());
+	kp=parseFloat($("#k_p").val());
+	sat=$("#saturation").val();
+	lninteraction=false;
+	nlinteraction=false;
+	if (sat!="inf"&&isNaN(sat)){
+		sat="inf";
+		$("#saturation").val("inf");
+		alert("It's hard to believe you really meant that, did you? Anyway, we changed it back for you");
+	}
+	u=0;
+	u_ln=0;
+ 	u_ln_max=0;
+	u_ln_min=0;
+	u_nl=0;
+ 	u_nl_max=0;
+	u_nl_min=0;
+	t=0;
+	Jr=0.5*mr*R*R;
+	Jp=(1/12)*mp*(p*p+4*d*d);
+	updateSize(R,d);
+}
+function updatePointer(theta,objID){
+
+	if (theta>0&&theta<=45){
+		$(objID).css({cursor:"nw-resize"});
+	}
+	else if (theta>45&&theta<=90){
+		$(objID).css({cursor:"n-resize"});
+	}
+	else if (theta>90&&theta<=180){
+		$(objID).css({cursor:"ne-resize"});
+	}
+	else if (theta>-45&&theta<=0){
+		$(objID).css({cursor:"ne-resize"});
+	}
+	else if (theta>-90&&theta<=-45){
+		$(objID).css({cursor:"n-resize"});
+	}
+	else if (theta>-180&&theta<=-90){
+		$(objID).css({cursor:"nw-resize"});
+	}
+	
+}
+function updateSize(R,d){
+
+	//Resize Wheel
+	var topDist=201-60*R/0.25;
+	lm_offset=211-35*R/0.25;
+	nm_offset=211-35*R/0.25+offset;
+	$("#wheel").css({"top":topDist,"left":lm_offset});
+	$("#wheel").height(70*R/0.25);
+	$("#wheel").width(70*R/0.25);
+	leftDist=nm_offset-35*R/0.25;
+	$("#wheel_nl").css({"top":topDist,"left":nm_offset});
+	$("#wheel_nl").height(70*R/0.25);
+	$("#wheel_nl").width(70*R/0.25);
+	
+	//Resize Handlebar
+	topDist=201-25*R/0.25-113*2*d;
+	hlm_offset=lm_offset+35*R/0.25-13;
+	$("#handlebar").css({"top":topDist,"left":hlm_offset});
+	var test=200*d+6;
+	$("#handlebar").height(452*d);
+	$("#handlebar").width(26);
+	hnm_offset=nm_offset+35*R/0.25-13;;
+	$("#handlebar_nl").css({"top":topDist,"left":hnm_offset});
+	$("#handlebar_nl").height(452*d);
+	$("#handlebar_nl").width(26);
+}
+function updateLM(xi,theta){
+		xi=Math.round(1000*xi)/1000;
+		theta=Math.round(1000*theta)/1000;
+		var pos1=parseInt(xi*100)+lm_offset;
+		var pos2=parseInt(xi*100)+hlm_offset;
+		var angle=(180*parseInt(xi*100))/(Math.PI*25);
+		if (xi<-3||xi>8){
+			$("#wheel").hide();
+			$("#handlebar").hide();
+		}
+		else{
+			$("#wheel").rotate(angle);
+			$("#handlebar").rotate(theta*180/Math.PI);
+			$("#wheel").css({"position":"absolute","left":pos1});
+			$("#handlebar").css({"position":"absolute","left":pos2});
+			if($("#checkbox_ln").prop("checked")==true){
+				$("#wheel").show();
+				$("#handlebar").show();
+				}
+		}
+}
+function updateNM(xi,theta){
+	xi=Math.round(1000*xi)/1000;
+	theta=Math.round(1000*theta)/1000;
+	var pos1=parseInt(xi*100)+lm_offset+offset;
+	var pos2=parseInt(xi*100)+hlm_offset+offset;
+	var angle=(180*parseInt(xi*100))/(Math.PI*25);
+	if (xi<-3||xi>8){
+		$("#wheel_nl").hide();
+		$("#handlebar_nl").hide();
+	}
+	else{
+		$("#wheel_nl").rotate(angle);
+		$("#handlebar_nl").rotate(theta*180/Math.PI);
+		$("#wheel_nl").css({"position":"absolute","left":pos1});
+		$("#handlebar_nl").css({"position":"absolute","left":pos2});
+		if($("#checkbox_nl").prop("checked")==true){
+			$("#wheel_nl").show();
+			$("#handlebar_nl").show();
+			}
+	}
+}
+function updateUbox(){
+		
+	// Calculate Current State
+	var pos=410+20*u_ln;
+	if (u_ln>=0){
+		$("#ubox_ln").css({"left":410});
+		$("#ubox_ln").width(20*u_ln);
+	}
+	else{
+		$("#ubox_ln").width(-20*u_ln);
+		$("#ubox_ln").css({"left":pos});
+	}
+	pos=410+20*u_nl;
+	if (u_nl>=0){
+		$("#ubox_nl").css({"left":410});
+		$("#ubox_nl").width(20*u_nl);
+	}
+	else{
+		$("#ubox_nl").width(-20*u_nl);
+		$("#ubox_nl").css({"left":pos});
+	}
+	
+	// Calculate Min/Max State
+	pos=410+20*u_ln_min;
+	$("#ubox_ln_mm").css({"left":pos});
+	$("#ubox_ln_mm").width(20*(u_ln_max-u_ln_min));
+	pos=410+20*u_nl_min;
+	$("#ubox_nl_mm").css({"left":pos});
+	$("#ubox_nl_mm").width(20*(u_nl_max-u_nl_min));
+	
+	// Calculate Saturation
+	if ((sat!="inf")&&($("#checkbox_ln").prop("checked")==true)&&(u_ln!=0)){
+		pos=410-20*parseFloat(sat);
+		$("#ubox_ln_sat").css({"left":pos});
+		$("#ubox_ln_sat").width(20*2*parseFloat(sat)-2);
+		$("#ubox_ln_sat").show();
+		if ((u_ln>=parseFloat(sat))||(u_ln<=-parseFloat(sat))){
+			$("#ubox_ln").css({"background-color":"#de7a79"});
+		}
+		else{
+			$("#ubox_ln").css({"background-color":"#afa69a"});
+		}
+	}
+	else{
+		$("#ubox_ln_sat").hide();
+		$("#ubox_ln").css({"background-color":"#afa69a"});
+	}
+	if ((sat!="inf")&&($("#checkbox_nl").prop("checked")==true)&&(u_nl!=0)){
+		pos=410-20*parseFloat(sat);
+		$("#ubox_nl_sat").css({"left":pos});
+		$("#ubox_nl_sat").width(20*2*parseFloat(sat)-2);
+		$("#ubox_nl_sat").show();
+		if ((u_nl>=parseFloat(sat))||(u_nl<=-parseFloat(sat))){
+			$("#ubox_nl").css({"background-color":"#b72c2b"});
+		}
+		else{
+			$("#ubox_nl").css({"background-color":"#000000"});
+		}
+	}
+	else{
+		$("#ubox_nl_sat").hide();
+		$("#ubox_nl").css({"background-color":"#000000"});
+	}
+	
+	// Show Value
+	if (u_ln==0){
+		$("#ubox_ln_txt").hide();
+	}
+	else if($("#checkbox_ln").prop("checked")==true){
+		var uval=Math.round(1000*u_ln)/1000;
+		$("#ubox_ln_txt").text("u: "+uval)
+		$("#ubox_ln_txt").show();
+	}
+	if (u_nl==0){
+		$("#ubox_nl_txt").hide();
+	}
+	else if($("#checkbox_nl").prop("checked")==true){
+		uval=Math.round(1000*u_nl)/1000;
+		$("#ubox_nl_txt").text("u: "+uval)
+		$("#ubox_nl_txt").show();
+	}
+}
+function olsimulation(){
+	
+	if (olsim==false&&clsim==false){
+		olsim=true;
+		updateValues();
+		updateUbox();
+		
+		jQuery.fn.timer = function() {
+			var theta=xln[2]/Math.PI*180;
+			updatePointer(theta,"#handlebar");
+			theta=x[2]/Math.PI*180;
+			updatePointer(theta,"#handlebar_nl");
+			
+			x=rg4Int(x,false);			
+			xln=rg4Intln(xln,false);
+			
+			updateNM(x[1],x[2]);
+			updateLM(xln[1],xln[2]);
+			
+			t=Math.round((t+dt)*1000)/1000;
+			$("#dbtext").text("t: "+t+" s");
+		}
+
+		olsimID=window.setInterval(function() {
+			$("#anim").timer();
+		},dt*1000);
+	
+	}
+	else{
+		window.clearInterval(olsimID);
+		olsim=false;
+		if(clsim==true){
+			clsim=false;
+			window.clearInterval(clsimID);
+		}
+	}
+}
+function clsimulation(){
+	
+	if (olsim==false&&clsim==false){
+		clsim=true;
+		updateValues();
+
+		jQuery.fn.timer = function() {
+			var theta=xln[2]/Math.PI*180;
+			updatePointer(theta,"#handlebar");
+			theta=x[2]/Math.PI*180;
+			updatePointer(theta,"#handlebar_nl");
+			
+			x=rg4Int(x,true);			
+			xln=rg4Intln(xln,true);
+			
+			updateNM(x[1],x[2]);
+			updateLM(xln[1],xln[2]);
+			
+			t=Math.round((t+dt)*1000)/1000;
+			$("#dbtext").text("t: "+t+" s");
+			updateUbox();
+		}
+
+		clsimID=window.setInterval(function() {
+			$("#anim").timer();
+		},dt*1000);
+	
+	}
+	else{
+		window.clearInterval(clsimID);
+		clsim=false;
+		if(olsim==true){
+			window.clearInterval(olsimID);
+			olsim=false;
+		}
+	}
+}
+function xderln(s,v){
+	var xdot=[];
+	xdot[1]=s[3]; 
+	xdot[2]=s[4];
+	xdot[3]=-1.9074*s[2]-0.1687*s[3]+0.0337*s[4]+0.5193*v;
+	xdot[4]=17.548*s[2]+0.5522*s[3]-0.1104*s[4]-0.777*v;
+	
+	return xdot;
+}
+function xder(s,v){
+	var xdot=[];
+	xdot[1]=s[3]; 
+	xdot[2]=s[4];
+	xdot[3]=(R*R*((v + cf*(s[4] - s[3]/R))/R + d*mp*s[4]*s[4]*Math.sin(s[2]))*(2*mp*d*d + 2*Jp))/(4*Jp*Jr + R*R*d*d*mp*mp + 2*Jp*R*R*mp + 4*Jp*R*R*mr + 4*Jr*d*d*mp + 4*R*R*d*d*mp*mr - R*R*d*d*mp*mp*Math.cos(2*s[2])) + (2*R*R*d*mp*Math.cos(s[2])*(cf*(s[4] - s[3]/R) - d*g*mp*Math.sin(s[2])))/(4*Jp*Jr + R*R*d*d*mp*mp + 2*Jp*R*R*mp + 4*Jp*R*R*mr + 4*Jr*d*d*mp + 4*R*R*d*d*mp*mr - R*R*d*d*mp*mp*Math.cos(2*s[2])); 
+	xdot[4] =- ((cf*(s[4] - s[3]/R) - d*g*mp*Math.sin(s[2]))*(4*Jr + 2*R*R*mp + 4*R*R*mr))/(4*Jp*Jr + R*R*d*d*mp*mp + 2*Jp*R*R*mp + 4*Jp*R*R*mr + 4*Jr*d*d*mp + 4*R*R*d*d*mp*mr - R*R*d*d*mp*mp*Math.cos(2*s[2])) - (2*R*R*d*mp*Math.cos(s[2])*((v + cf*(s[4] - s[3]/R))/R + d*mp*s[4]*s[4]*Math.sin(s[2])))/(4*Jp*Jr + R*R*d*d*mp*mp + 2*Jp*R*R*mp + 4*Jp*R*R*mr + 4*Jr*d*d*mp + 4*R*R*d*d*mp*mr - R*R*d*d*mp*mp*Math.cos(2*s[2]));
+	return xdot;
+}
+function eInt(s){
+	var xint=[];
+	var xdot=xder(s);
+	for (i=1;i<5;i++){
+		xint[i]=xdot[i]*dt+s[i];
+	}
+	return xint;
+}
+function rg4Intln(s,oc){
+	var xint=[];
+	var snew=[];
+	var k1=[];
+	var k2=[];
+	var k3=[];
+	var k4=[];
+	// Calculate k1
+	if (oc){
+		u=-K[1]*s[1]-K[2]*s[2]-K[3]*s[3]-K[4]*s[4];
+		u=satTester(u);
+		u_ln=u;
+		if (u_ln>u_ln_max){
+			u_ln_max=u_ln;
+		}
+		if (u_ln<u_ln_min){
+			u_ln_min=u_ln;
+		}
+	}
+	var xdot=xderln(s,u);
+	for (i=1;i<5;i++){
+		k1[i]=xdot[i]*dt;
+	}
+	// Calculate k2
+	for (i=1;i<5;i++){
+		snew[i]=s[i]+0.5*k1[i];
+	}
+	if (oc){
+		u=-K[1]*snew[1]-K[2]*snew[2]-K[3]*snew[3]-K[4]*snew[4];
+		u=satTester(u);
+	}
+	xdot=xderln(snew,u); 
+	for (i=1;i<5;i++){
+		k2[i]=xdot[i]*dt;
+	}
+	// Calculate k3
+	for (i=1;i<5;i++){
+		snew[i]=s[i]+0.5*k2[i];
+	}
+	if (oc){
+		u=-K[1]*snew[1]-K[2]*snew[2]-K[3]*snew[3]-K[4]*snew[4];
+		u=satTester(u);
+	}
+	xdot=xderln(snew,u); 
+	for (i=1;i<5;i++){
+		k3[i]=xdot[i]*dt;
+	}
+	// Calculate k4
+	for (i=1;i<5;i++){
+		snew[i]=s[i]+k3[i];
+	}
+	if (oc){
+		u=-K[1]*snew[1]-K[2]*snew[2]-K[3]*snew[3]-K[4]*snew[4];
+		u=satTester(u);
+	}
+	xdot=xderln(snew,u); 
+	for (i=1;i<5;i++){
+		k4[i]=xdot[i]*dt;
+	}
+	// Calculate xint
+	for (i=1;i<5;i++){
+		xint[i]=(1/6)*(k1[i]+2*k2[i]+2*k3[i]+k4[i])+s[i];
+	}
+	if(Math.abs(xint[2])>=(Math.PI-Math.acos((R-0.03)/2/d))){
+		xint[2]=s[2];
+		xint[3]=0.5*xint[3];
+		xint[4]=-0.5*xint[4];
+	}
+	if(Math.abs(xint[2])>=(Math.PI-Math.acos((R-0.04)/2/d))){
+		if(Math.abs(xint[1]-s[1])<0.01){
+			xint[1]=s[1];
+		}
+	}
+	if (lninteraction){
+		if (s[2]>0){
+			xint[4]=xint[4]-3*s[2]-2;
+		}
+		else{
+			xint[4]=xint[4]-3*s[2]+2;
+		}
+		lninteraction=false;
+	}
+	return xint;
+}
+function rg4Int(s,oc){
+	var xint=[];
+	var snew=[];
+	var k1=[];
+	var k2=[];
+	var k3=[];
+	var k4=[];
+	// Calculate k1
+	if (oc){
+		u=-K[1]*s[1]-K[2]*s[2]-K[3]*s[3]-K[4]*s[4];
+		u=satTester(u);
+		u_nl=u;
+		if (u_nl>u_nl_max){
+			u_nl_max=u_nl;
+		}
+		if (u_nl<u_nl_min){
+			u_nl_min=u_nl;
+		}
+	}
+	var xdot=xder(s,u);
+	for (i=1;i<5;i++){
+		k1[i]=xdot[i]*dt;
+	}
+	// Calculate k2
+	for (i=1;i<5;i++){
+		snew[i]=s[i]+0.5*k1[i];
+	}
+	if (oc){
+		u=-K[1]*snew[1]-K[2]*snew[2]-K[3]*snew[3]-K[4]*snew[4];
+		u=satTester(u);
+	}
+	xdot=xder(snew,u); 
+	for (i=1;i<5;i++){
+		k2[i]=xdot[i]*dt;
+	}
+	// Calculate k3
+	for (i=1;i<5;i++){
+		snew[i]=s[i]+0.5*k2[i];
+	}
+	if (oc){
+		u=-K[1]*snew[1]-K[2]*snew[2]-K[3]*snew[3]-K[4]*snew[4];
+		u=satTester(u);
+	}
+	xdot=xder(snew,u); 
+	for (i=1;i<5;i++){
+		k3[i]=xdot[i]*dt;
+	}
+	// Calculate k4
+	for (i=1;i<5;i++){
+		snew[i]=s[i]+k3[i];
+	}
+	if (oc){
+		u=-K[1]*snew[1]-K[2]*snew[2]-K[3]*snew[3]-K[4]*snew[4];
+		u=satTester(u);
+	}
+	xdot=xder(snew,u); 
+	for (i=1;i<5;i++){
+		k4[i]=xdot[i]*dt;
+	}
+	// Calculate xint
+	for (i=1;i<5;i++){
+		xint[i]=(1/6)*(k1[i]+2*k2[i]+2*k3[i]+k4[i])+s[i];
+	}
+	
+	if(Math.abs(xint[2])>=(Math.PI-Math.acos((R-0.03)/2/d))){
+		xint[2]=s[2];
+		xint[3]=0.5*xint[3];
+		xint[4]=-0.5*xint[4];
+	}
+	if(Math.abs(xint[2])>=(Math.PI-Math.acos((R-0.04)/2/d))){
+		if(Math.abs(xint[1]-s[1])<0.01){
+			xint[1]=s[1];
+		}
+	}
+	if (nlinteraction){
+		if (s[2]>0){
+			xint[4]=xint[4]-3*s[2]-2;
+		}
+		else{
+			xint[4]=xint[4]-3*s[2]+2;
+		}
+		nlinteraction=false;
+	}
+	return xint;
+}
+function satTester(u){
+	if (sat!="inf"){
+		if (u>parseFloat(sat)){
+			u=parseFloat(sat);
+		}
+		else if(u<-parseFloat(sat)){
+			u=-parseFloat(sat);
+		}
+	}
+	return u;
+}
+function lmcheck(){
+	$("#legend_ln").toggle(600);
+	$("#ubox_ln").toggle();
+	$("#ubox_ln_mm").toggle();
+	if ($("#checkbox_ln").prop("checked")==false) {
+		$("#ubox_ln_sat").hide();
+		$("#ubox_ln_txt").hide();
+		$("#wheel").hide();
+		$("#handlebar").hide();
+	}
+	else{
+		$("#wheel").show();
+		$("#handlebar").show();
+	}
+}
+function nmcheck(){
+	$("#legend_nl").toggle(600);
+	$("#ubox_nl").toggle();
+	$("#ubox_nl_mm").toggle();
+	if ($("#checkbox_nl").prop("checked")==false) {
+		$("#ubox_nl_sat").hide();
+		$("#ubox_nl_txt").hide();
+		$("#wheel_nl").hide();
+		$("#handlebar_nl").hide();
+	}
+	else{	
+		$("#wheel_nl").show();
+		$("#handlebar_nl").show();	
+	}
+}
+function lnclick(){
+	if(olsim||clsim){
+		lninteraction=true;
+	}
+}
+function nlclick(){
+	if(olsim||clsim){
+		nlinteraction=true;
+	}
+}
+</script>
+
+<style type="text/css">
+	
+	.animation {
+	    /*background: url(../images/boxBottom.jpg); 
+	    background-repeat: no-repeat
+	    background-attachment: scroll left bottom;
+	    background-position: left bottom;*/
+		background-color: #f0eae1;
+	    float: left;
+		height: 200 px;
+		//width: 1000;
+		border: 1px black solid;
+	    margin-right: 10px;
+	    padding: 15px;
+	 }
+	.box {
+		background-color: #f0eae1;
+		float: left;
+		height: 120 px;
+		width: 144.5 px;
+		border: 1px black solid;
+	    margin-right: 10px;
+	    padding: 15px;
+	 }
+	.main {
+		background-color: #d9d1c5;
+	    height: 231px;
+		width: 747px;
+		border: 1px black solid;
+	    margin-bottom: 10px;
+	    padding: 10px;
+		padding-right: 0px;
+	 }
+	.title {
+		position:absolute;
+		left:410px;
+		top:30px;
+		font-size:2em;
+		font-weight:bold;
+		color: #d9d1c5;
+	}
+	#ubox_ln {
+		background-color: #afa69a;
+	    height: 10;
+		width: 10;
+		border-size:1;
+		position:absolute;
+		left:410;
+		top: 100;
+	 }
+	#ubox_ln_mm {
+		background-color: #d9d1c5;
+	    height: 10;
+		width: 10;
+		border-size:1;
+		position:absolute;
+		left:410;
+		top: 100;
+	 }
+	#ubox_ln_sat {
+	    height: 9;
+		width: 10;
+		border: 1px black solid;
+		position:absolute;
+		left:410;
+		top: 100;
+	 }
+	#ubox_ln_txt {
+		color:#afa69a;
+		position:absolute;
+		left:410;
+		top: 80;
+	 }
+	#ubox_nl {
+		background-color: #000000;
+	    height: 10;
+		width: 10;
+		border-size:1;
+		position:absolute;
+		left:410;
+		top: 115;
+	 }
+	#ubox_nl_mm {
+		background-color: #afa69a;
+	    height: 10;
+		width: 10;
+		border-size:1;
+		position:absolute;
+		left:410;
+		top: 115;
+	 }
+	#ubox_nl_sat {
+	    height: 9;
+		width: 10;
+		border: 1px black solid;
+		position:absolute;
+		left:410;
+		top: 115;
+	 }
+	#ubox_nl_txt {
+		color:black;
+		position:absolute;
+		left:410;
+		top: 130;
+	 }
+	#ubox_md {
+		height: 25;
+		width: 2;
+		background-color: #f0eae1;
+		position:absolute;
+		left:409;
+		top: 100;
+	 }
+	
+	
+</style>
+	
+<div class="main" id="animpane">
+<div id="anim" class="animation">
+	<div id="legend_ln">
+		<img src="http://graaasp.epfl.ch/gadget/prod/segway/checkbox.png"> Linear Model<br>
+	</div>
+	<div id="legend_nl">
+    	<img src="http://graaasp.epfl.ch/gadget/prod/segway/checkbox_nl.png"> Non-Linear Model<br>
+	</div>	
+	<div id="ubox_ln_mm">&nbsp;</div>
+	<div id="ubox_nl_mm">&nbsp;</div>
+	<div id="ubox_md">&nbsp;</div>
+	<div id="ubox_ln">&nbsp;</div>
+	<div id="ubox_nl">&nbsp;</div>
+	<div id="ubox_ln_sat">&nbsp;</div>
+	<div id="ubox_nl_sat">&nbsp;</div>
+	<div id="ubox_ln_txt">&nbsp;</div>
+	<div id="ubox_nl_txt">&nbsp;</div>
+	<div id="dbtext">&nbsp;</div>
+	<div id="testtext">&nbsp;</div>
+	<div class="title">Control of a Segway</div>
+	<img src="http://graaasp.epfl.ch/gadget/prod/segway/baseline.png" id="baseline"/>
+    <img src="http://graaasp.epfl.ch/gadget/prod/segway/wheel_nl.png" id="wheel_nl"/>
+    <img src="http://graaasp.epfl.ch/gadget/prod/segway/handlebar_nl.png" id="handlebar_nl" onclick="nlclick()"/>
+	<img src="http://graaasp.epfl.ch/gadget/prod/segway/wheel.png" id="wheel" width="70" height="70"/>
+	<img src="http://graaasp.epfl.ch/gadget/prod/segway/handlebar.png" id="handlebar" onclick="lnclick()"/>
+</div>
+</div>
+<div class="main" id="boxpane" style="width:747;">
+<div class="box">
+	<b>Simulation Model:</b>
+	<table>
+		<tr>
+			<td>Linear:</td>
+			<td><input id="checkbox_ln" type="checkbox" value="Linear Model" checked="true" onclick="lmcheck()"/></td>
+		</tr>
+		<tr>
+			<td>Non-Linear:</td>
+			<td><input id="checkbox_nl" type="checkbox" value="Non-Linear Model" checked="true" onclick="nmcheck()"/></td>
+		</tr>
+	</table>		
+	Offset:	<input type="text" id="offset" value="0.2" size="1" /><br>
+	<b>Open Loop:</b><br>
+	<table>
+        <tr>
+            <td><input type="button" value="Strt/Stp" onclick="olsimulation();"/></td>
+        </tr>
+	</table><br>
+</div>
+<div class="box">
+	<b>Closed Loop:</b>
+	<table>
+		<tr>
+			<td>K<sub>&xi;</sub>:</td>
+			<td><input type="text" id="k_xi" value="1" size="2" /></td>
+			<td>K<sub>d&xi;</sub>:</td>
+			<td><input type="text" id="k_dxi" value="1" size="2" /></td>
+		</tr>
+		<tr>
+			<td>K<sub>&theta;</sub>:</td>
+			<td><input type="text" id="k_theta" value="1" size="2" /></td>
+			<td>K<sub>d&theta;</sub>:</td>
+			<td><input type="text" id="k_dtheta" value="1" size="2" /></td>
+		</tr>
+	</table>
+	<table>
+		<tr>
+			<td>Saturation:</td>
+			<td> &plusmn; <input type="text" id="saturation" value="inf" size="2" /></td>
+		</tr>
+	</table>
+	<input type="button" value="Strt/Stp" onclick="clsimulation()"/>
+</div>
+<div id="box2" class="box">
+	<b>Initial Conditions:</b>
+	<table id="tab2">
+			<tr>
+				<td>&xi;:</td>
+				<td><input type="text" id="x_1" size="2" /></td>
+				<td>d&xi;:</td>
+				<td><input type="text" id="x_3" size="2" /></td>
+			</tr>
+			<tr>
+				<td>&theta;:</td>
+				<td><input type="text" id="x_2" size="2" /></td>
+				<td>d&theta;:</td>
+				<td><input type="text" id="x_4" size="2" /></td>
+			</tr>
+		</table>	
+		
+		<input type="button" value="reset" onclick="reset()"/>
+</div>
+<div class="box" style="margin-right: 0">
+	<b>Parameters:</b>
+	<table>
+			<tr>
+				<td>C<sub>f</sub>:</td>
+				<td><input type="text" id="c_f" size="2" /></td>
+				<td>d:</td>
+				<td><input type="text" id="d" size="2" /></td>
+			</tr>
+			<tr>
+				<td>m<sub>r</sub>:</td>
+				<td><input type="text" id="m_r" size="2" /></td>
+				<td>p:</td>
+				<td><input type="text" id="p" size="2" /></td>
+			</tr>
+			<tr>
+				<td>m<sub>p</sub>:</td>
+				<td><input type="text" id="m_p" size="2" /></td>
+				<td>R:</td>
+				<td><input type="text" id="R" size="2" /></td>
+			</tr>
+	</table>
+</div>
+</div>
+
+<script type="text/javascript">
+	reset();
+	var w=parseInt($("#animpane").width())-43;
+	$("#anim").width(w);
+	$("#boxpane").height(151);
+	</script>
+
+  ]]></Content>
+</Module>

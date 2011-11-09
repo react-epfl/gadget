@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Wiki gadget" 
+                author_email="jad.naoum@epfl.ch" 
+                author="Jad Naoum" 
+                description="Wiki gadget. The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
+                width="350"
+                height="500"
+                thumbnail="http://graaasp.epfl.ch/gadget/prod/wiki/thumbnail.png"
+                screenshot="http://graaasp.epfl.ch/gadget/prod/wiki/screenshot.png">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+    
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<style type="text/css">
+  
+  input{
+    cursor:pointer;
+  }
+  
+  #table{
+    border-spacing: 20px;
+    width: 100%;
+    vertical-align: top;
+    margin-top: 0;
+    table-layout: fixed;
+  }
+  
+  #name{
+    width: 23%;
+    text-align: left;
+  }
+  
+  #entry{
+    width: 54%;
+    text-align: left;
+  }
+  
+  #date{
+    width: 23%;
+    text-align: left;
+  }
+  
+  li{
+    display: inline;
+    position: relative;
+    right: 35;
+    background: none repeat scroll 0 0 #FEFEFE;
+    border: 1px solid #AAAAAA;
+    border-radius: 5px 5px 5px 5px;
+    color: #777777;
+    cursor: pointer;
+    font-size: 12px;
+    margin-right: 10px;
+    padding: 3px;
+    text-align: center;
+    width: 60px;
+    float: left;
+    font-weight: bold;
+  }
+  
+  div{
+    clear: left;
+  }
+  
+  img{
+    cursor: pointer;
+  }
+  
+  .button:hover{
+    background-color: #C8C8C8;
+    color: black;
+  }
+  
+  .active{
+    background-color: #C8C8C8;
+    color: black;
+  }
+  
+  not_active{
+    background-color: #FEFEFE;
+    color: #777777;
+  }
+  
+  #everything{
+    margin-left: 20px;
+    margin-top: 20px;
+  }
+  
+</style>
+<div id = "everything">
+<ul>
+  <li id = "view_tab" class = "button active" onclick = "view()">View</li>
+  <li id = "edit_tab" class = "button" onclick = "edit()">Edit</li>
+  <li id = "history_tab" class = "button" onclick = "history()">History</li>
+</ul>
+<br />
+
+<div id = "view"></div>
+
+<div id = "edit">
+  <br />
+  <textarea id = "text_area"></textarea>
+  <br />
+  <input type="button" value ="Save" id = "save_button" onclick = "saving()">
+</div>
+
+<div id = "history">
+  <br />
+  <table id = "table" rules = "rows" frame = "hsides">
+  <div id = "arrow"></div>
+  <input type="button" value ="Clear History" id = "clear_button" onclick = "clearHistory()">
+</div>
+</div>
+
+<script type="text/javascript">
+  //initializing variables
+  var counter = 0;
+  var current_tab = "view_tab";
+  var current = "view";
+  $("#edit").hide();
+  $("#history").hide();
+  changeCurrent(current, current);
+  
+  var app = {context: "", viewerName: "", data: "", root_url: "http://graaasp.epfl.ch/gadget/prod/wiki/"};
+  
+  
+  var saved_text = "";
+  
+  function view(){
+    changeCurrentTab(current_tab, "view_tab");
+    changeCurrent(current, "view");
+  }
+  
+  function edit(){
+    changeCurrentTab(current_tab, "edit_tab");
+    changeCurrent(current, "edit");    
+    
+    //Check runtinymce() to see what happens after it initializes. (continueEdit is called)
+    runTinyMCE();
+    
+    if(tinyMCE.activeEditor != null)
+      tinyMCE.activeEditor.setContent($("#view").html());
+  }
+  
+  function continueEdit(){
+    tinymce.execCommand('mceFocus',false,'text_area');
+    tinyMCE.activeEditor.setContent($("#view").html());
+  }
+  
+  function saving(){
+    saved_text = tinyMCE.activeEditor.getContent({format : 'raw'});
+    tinyMCE.activeEditor.setContent("");
+    changeCurrentTab(current_tab, "view_tab");
+    changeCurrent(current, "view");
+    
+    //showing the entered text 
+    $("#view").replaceWith("<div id = 'view'>" + saved_text + "</div>");
+    
+    //retrieve the array of entries 
+    var dataObj = {viewer_name: app.viewerName, data: saved_text, 
+      date:  get_date()}    
+    osapi.appdata.get({userId: app.context}).execute(function(data){
+      var history = (data && data[app.context]) ? JSON.parse(data[app.context]["history"]) : [];
+      history.push(dataObj);
+      
+      // save data to the array of entries
+      osapi.appdata.update({userId: app.context, 
+      data: {"history": JSON.stringify(history)}}).execute(function() {
+    });
+      });
+  }
+  
+  function history(){
+    changeCurrentTab(current_tab, "history_tab");
+    changeCurrent(current, "history");
+    
+    //Erasing the old history
+    $("#table").replaceWith("<table id = 'table' rules = 'rows' frame = 'hsides'><tr><th id ='name'>Viewer Name</th><th id='entry'>Entry</th><th id = 'date'>Date</th></tr></table>");
+    
+    // get appdata
+    osapi.appdata.get({userId: app.context}).execute(function(data){
+      data = data[app.context];
+      if (data) {
+        data = JSON.parse(data["history"]);
+        for(i=data.length-1; i>=data.length-5; i--){
+          if(i>-1)
+            $("#table").append(printHistoryItem(data[i]));
+        }
+        counter = data.length - 6;  
+      };
+
+      $("#arrow").replaceWith("<div id = 'arrow'><p id = 'more_history'><img src = '"+app.root_url+"arrow.png' onclick = 'more()' style = 'position:absolute; left: 50%'></p></div>");
+      $("#table").insertBefore("#arrow");
+    });
+  }
+  
+  function clearHistory(){
+    if(!confirm("Are you sure you want to clear the history?")){return ""};
+    saved_text = $("#view").html();
+    osapi.appdata['delete']({
+      userId: app.context,
+      keys: ['history']
+    }).execute(function(response){
+        //showing the entered text 
+        $("#view").replaceWith("<div id = 'view'>" + saved_text + "</div>");
+
+        //retrieve the array of entries 
+        var dataObj = {viewer_name: app.viewerName, data: saved_text, 
+          date:  get_date()}    
+        osapi.appdata.get({userId: app.context}).execute(function(data){
+          var history = (data && data[app.context]) ? JSON.parse(data[app.context]["history"]) : [];
+          history.push(dataObj);
+          // save data to the array of entries
+          osapi.appdata.update({userId: app.context, 
+          data: {"history": JSON.stringify(history)}}).execute(function() {
+        });
+          });
+          $("#view").hide();
+          history();
+    });
+  }
+  
+  function more(){
+    osapi.appdata.get({userId: app.context}).execute(function(data){
+      data = data[app.context];
+      if (data) {
+        data = JSON.parse(data["history"]);  
+      };
+      for(i=counter; i>=counter-4; i--){
+        if(i>-1)
+          $("#table").append(printHistoryItem(data[i]));
+      }
+      $("#arrow").replaceWith("<div id = 'arrow'><p id = 'more_history'><img src = '"+app.root_url+"arrow.png' onclick = 'more()' style = 'position:absolute; left: 50%'></p></div>");
+      $("#table").insertBefore("#arrow");
+      counter = counter - 5;
+    });
+  }
+  
+  function printHistoryItem(history_item){
+    return "<tr><td>" + history_item.viewer_name + "</td><td>" + 
+    history_item.data + "</td><td>" + history_item.date + "</td></tr>";
+  }
+  
+  function changeCurrentTab(older, newer){
+  	$("#" + older).attr("class", "button not_active");
+    $("#" + newer).attr("class", "button active");
+    current_tab = newer;
+  }
+  
+  function changeCurrent(older, newer){
+    $("#" + older).hide();
+    $("#" + newer).show();
+    current = newer;
+  }
+  
+  function get_date(){
+    var currentTime = new Date();
+    
+    var hours = currentTime.getHours();
+    var minutes = currentTime.getMinutes();
+    return(currentTime.toDateString().substring(4,15) + " -" + hours + ":" + minutes + "-");
+  }
+  
+</script>
+
+
+
+
+<script type="text/javascript" >
+  function loadScript(scriptURL) {
+      var scriptElem = document.createElement('SCRIPT');
+      scriptElem.setAttribute('type', 'text/javascript');
+      scriptElem.setAttribute('src', scriptURL);
+      document.body.appendChild(scriptElem);
+  };
+  loadScript(app.root_url+"tinymce/jscripts/tiny_mce/tiny_mce.js");
+  
+  function runTinyMCE(){
+    // console.log(tinyMCE)
+    tinyMCE.init({
+            mode : "textareas",
+            theme : "advanced",
+            oninit: continueEdit,
+    });
+  }
+  
+  var initialize = function() {
+    // batch: get viewer and context for gadget
+    var batch = osapi.newBatch();
+    batch.add('viewer', osapi.people.getViewer());
+    if (osapi.context) { // only for spaces extended container
+      batch.add('context', osapi.context.get());
+    } else {
+      batch.add('context', osapi.people.getOwner());    
+    }
+    batch.execute(function(data){
+      app.viewer = data.viewer;
+      app.viewerName = app.viewer.displayName;
+
+      var contextId = "@owner"
+      var contextType = "@user"
+      if (osapi.context) { // only for spaces extended container
+        contextId = data.context.contextId
+        contextType = data.context.contextType      
+      }
+      var prefix = (contextType === "@space") ? "s_" : "";
+      app.context = prefix + contextId;
+
+      // getting the last entered text and displaying it
+      osapi.appdata.get({userId: app.context}).execute(function(data){
+              data = data[app.context];
+              if (data) {
+                data = JSON.parse(data["history"]);
+                $("#view").replaceWith("<div id = 'view'>" + data[data.length-1].data + "</div>");
+                saved_text = data[data.length-1].data;
+              };
+            });
+    });
+  };
+  
+
+  setTimeout(initialize,500);
+</script >
+    
+
+  ]]></Content>
+</Module>

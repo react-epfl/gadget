@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="IFrame gadget" author_email="evgeny.bogdanov@epfl.ch" author="Evgeny Bogdanov" description="Space owner enters url and it is displayed as an iframe by gadget." width="500" height="500">
+    <Require feature="opensocial-0.8"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+iframe{
+  width: 98%;
+  height: 90%;
+}
+#management{
+  margin-bottom:5px;
+}
+</style>
+  
+<div id="management" style="display:none">
+  <label for="url" >Enter url for iframe: </label>
+  <input id="url" type="text" />
+  <button onclick="changeUrl();" >Update</button>
+</div>
+
+<div id="importedGadget">
+  <iframe id="iframe" src="">
+</div>
+  
+</iframe>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+<!-- <script type="text/javascript" src="http://202.120.34.34/gadgets/libs/jquery-1.6.0.min.js"></script> -->
+<!-- <script src="http://202.120.34.34/gadgets/libs/openapp.js"></script> -->
+
+<script type="text/javascript">
+jQuery.noConflict();
+
+var contextId = 0,
+    contextType = '';
+    
+var changeUrl = function() {
+  var url = jQuery("#url").val();
+  jQuery('#iframe').attr('src',url);
+  
+  var prefix = (contextType === "@space") ? "s_" : "p_";
+  var userId = prefix + contextId;
+  osapi.appdata.update({userId: userId, data: {url: url}}).execute(function() {
+    // empty
+  });
+}
+// gets the data and calls build for container
+var initialize = function() {
+  // draw graphs
+  // buildAllGraphs(data);
+  
+  // get widget viewer
+  osapi.people.getViewer().execute(function(result) {
+    var viewerId = result.id;     
+    // get owner of widget (based on space in which widget lives)
+    osapi.people.getOwner().execute(function(result) {
+      var ownerId = result.id;
+      if (viewerId === ownerId) { // current viewer is the owner, then show management block
+        jQuery('#management').show();
+      }
+    });
+  });
+  
+  // get the widget's context
+  osapi.context.get().execute(function(response){
+    contextId = response.contextId;
+    contextType = response.contextType;
+    var prefix = (contextType === "@space") ? "s_" : "p_";
+    var userId = prefix + contextId;
+    // get widgets appdata for this context
+    osapi.appdata.get({userId: userId}).execute(function(result) {
+      if (!result.error && result[userId]) {
+
+        jQuery('#iframe').attr('src',result[userId]["url"]);
+        // alert('Your name is ' + result + '!');
+      }
+    });
+  });
+
+
+  gadgets.window.adjustHeight();
+  init();
+};
+
+
+var prefs;          // the OpenSocial gadgets.Prefs object (contains the user preferences)
+var title;          // the gadget title as defined in the gadget user preference
+var sender;         // the url of the gadget
+var pageId;         // the url of the current page in which the gadget is displayed
+var success;        // whether the interaction was successful. Value between 0 and 1, 0 for unsuccessful, 1 for successfull. Not provided if no info.
+var debug = false;  // set to true for console output
+
+var timeIn;           // time when the mouse moves into widget
+var timeOut;          // time when the mouse moves out of widget
+var threshold = 5000; // amount of time in ms the mouse needs to be inside widget to be considered as used
+
+// Construct the message and attributes, send out the events.
+function sendMessage(state){
+    var message = {
+	"http://purl.org/dc/terms/title": title,
+	"http://www.role-project.eu/rdf/terms/pageId": pageId
+    };
+    // if success has a value, then put it in the message
+    if (typeof success !== 'undefined') {
+	message["http://www.role-project.eu/rdf/terms/success"] = success;
+    };
+    var envelope = {
+	event: state,
+	type: "namespaced-properties",
+	uri: pageId,
+ 	// sharing: "open",
+ 	sender: sender,
+	message: message
+    };
+    gadgets.openapp.publish(envelope);
+    if (debug){ console.log("Envelope: " + JSON.stringify(envelope) );};
+}
+
+// event handler functions calculating whether a "used" event is send
+function mouseEnter() {  
+    timeIn = new Date().getTime();
+    if (debug){ console.log("TimeIn:" + timeIn);}
+}
+
+function mouseExit() {  
+    timeOut = new Date().getTime();
+    if (debug){ console.log("TimeInOut:" + timeOut); };
+    if (timeOut - timeIn > threshold) {
+	if (debug) {console.log("Threshold crossed, sending event:")};
+	sendMessage("used_widget");
+    }
+}
+
+/**
+init : auto adjust the gadget height, 
+       construct the pageId, prefs, title and sender
+	   bind the event handler functions
+	   construct the request object.
+*/
+function init(){
+
+    // get pageId from parent. split(';') to get rid of some garbage in the location. Check whether it can be accessed (XSS)
+    try {
+	pageId = window.parent.location.protocol + "://" + window.parent.location.host + "/"+ window.parent.location.pathname.split(';')[0];
+    } catch (err) {
+	if (typeof console != 'undefined') {
+	    console.info("Unable to set pageId due to XSS");
+	}
+    }
+
+    prefs = new gadgets.Prefs();
+    title = prefs.getString("titleUserPref");
+
+    //analyze the url for attributes. 
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');     
+    for(var i = 0; i < hashes.length; i++)     
+    {         
+	hash = hashes[i].split('=');
+	vars.push(hash[0]);
+	vars[hash[0]] = hash[1];
+    }
+    sender = unescape(vars["url"]);
+
+    // bind the event handler functions
+    jQuery('#importedGadget').bind('mouseenter',mouseEnter);
+    jQuery('#importedGadget').bind('mouseleave',mouseExit);
+};
+
+setTimeout(initialize,1000);
+// gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Player widget" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="This is a functional skin gadget. When added to a space, it allows to view content of all assets from a space. For example, youtube videos or slideshare presentations one by one. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<style type="text/css">
+  .gadgets-gadget{width: 100%;}
+</style>
+  
+<div id="container"></div>
+
+<script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
+<!-- <script type="text/javascript" src="http://graaasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+
+<script type="text/javascript">
+var isOwner = false;
+
+// gets the data and calls build for container
+var initialize = function() {
+
+  osapi.context.get().execute(function(response){
+    osapi.assets.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
+      // console.log(response);
+      build(response.list);
+    });
+
+  });
+
+  
+
+};
+
+// build the container with gadgets
+var build = function(assets){
+
+  var container = document.getElementById('container');
+
+  if(assets.length == 0){
+    left.innerHTML = "No assets were found!"
+  }
+
+  for (var i = 0; i < assets.length; i++) {
+    var asset = assets[i];
+    
+    //only show embed assets
+    if(asset.assetEntity == undefined)
+      continue;
+    
+    var asset_el = document.createElement('div');
+    asset_el.id = 'gadget-chrome-'+(asset.id);
+    asset_el.setAttribute('class','gadget');
+    
+    var asset_name = document.createElement('div')
+    asset_name.innerHTML = asset.displayName;
+    asset_el.appendChild(asset_name)
+    
+    var asset_body = document.createElement('div')
+    asset_body.innerHTML = asset.assetEntity;
+    asset_el.appendChild(asset_body);
+    
+    
+    container.appendChild(asset_el);
+
+  }
+  
+  // resize the gadget
+  gadgets.window.adjustHeight();
+
+};
+
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Widgets container" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="This functional skin takes all widgets from a space and shows them in a grid layout: two column view. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+    <Require feature="dynamic-height" />
+    <Require feature="shindig-container" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+  .gadgets-gadget{width: 100%;}
+  body{overflow:hidden;background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
+  .gadget{margin: 10px; border: 1px solid #87AFDA; border-radius: 5px; color: #36C;}
+  .gadgets-gadget-title-bar{padding:5px; border-bottom: 1px solid #87AFDA; background-color: #D4E6FC;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    }
+  .gadgets-gadget-content{padding:5px; 
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  }
+  #container {
+    width:100%;
+    height:100%;
+    background-color:white;
+    border-radius:5px;
+  }
+</style>
+  
+  <div id="container" onmouseover="adjustHeight();">
+    <div style="font-size:16px;text-indent:10px;padding-top:5px;">Apps from the space (only OpenSocial gadgets)</div>
+    <div id="left" style="width: 50%; position: relative; float: left; top: 0px;"></div>
+    <div id="right" style="width: 50%; position: relative; float: left; top: 0px;"></div>
+  </div>
+<script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
+<!-- <script type="text/javascript" src="http://graaasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+
+<script type="text/javascript">
+var isOwner = false;
+var my = {};
+
+// gets the data and calls build for container
+  var initialize = function() {
+
+  // This container lays out and renders gadgets itself.
+
+  my.LayoutManager = function() {
+    shindig.LayoutManager.call(this);
+  };
+
+  my.LayoutManager.inherits(shindig.LayoutManager);
+
+  my.LayoutManager.prototype.getGadgetChrome = function(gadget) {
+    var chromeId = 'gadget-chrome-' + gadget.id;
+    return chromeId ? document.getElementById(chromeId) : null;
+  };
+
+  shindig.container.layoutManager = new my.LayoutManager();
+  
+  osapi.people.getViewer().execute(function(viewer){
+    osapi.context.get().execute(function(response){
+      var context = response;
+      osapi.applications.get({contextId: context.contextId, contextType: context.contextType}).execute(function(response){
+        // console.log(response);
+  		
+        build(response.list,context,viewer);
+        
+        // We set three timeouts to make sure the widgets are loaded to do proper resizing
+        // if it take long time, it will be resized when mouse is moved above the widget
+        // 3 seconds
+        setTimeout(adjustHeight,3000);
+        // 10 seconds
+        setTimeout(adjustHeight,10000);
+        // 60 seconds
+        setTimeout(adjustHeight,60000);
+      });
+    });    
+  })
+
+  
+
+};
+
+var adjustHeight = function() {
+  gadgets.window.adjustHeight();
+}
+
+// build the container with gadgets
+var build = function(my_gadgets,context,viewer){
+
+  var left = document.getElementById('left');
+  var right = document.getElementById('right');
+  
+  if(my_gadgets.length == 0){
+    left.innerHTML = "No apps were found in this space!"
+  }
+  
+  for (var i = 0; i < my_gadgets.length; i++) {
+    var gadget_data = my_gadgets[i];
+   
+    //only show opensocial gadgets
+    if(gadget_data.appType != "WidgetGadget")
+      continue;
+    
+    var context_id = context.contextId;
+    if (context.contextType == "@space") {
+      context_id = "s_"+context.contextId;
+    }
+    var viewer_id = viewer.id;
+    var token = ""+context_id+":"+viewer_id+":"+gadget_data.id+":default:"+escape(gadget_data.appUrl)+":"+gadget_data.id+":1";
+    //debugger
+    var gadget = shindig.container.createGadget(
+        {specUrl: gadget_data.appUrl, height: '400px', title: gadget_data.displayName,
+          secureToken: token});
+
+    shindig.container.addGadget(gadget);
+    
+    var gadget_el = document.createElement('div');
+    gadget_el.id = 'gadget-chrome-'+(gadget.id);
+    gadget_el.setAttribute('class','gadget');
+    if(i % 2 == 0){
+      left.appendChild(gadget_el);    
+    }else{
+      right.appendChild(gadget_el);
+    }
+        
+
+    shindig.container.setView("home");
+    shindig.container.renderGadget(gadget);
+  }
+  
+  // resize the gadget
+  adjustHeight();
+
+};
+
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+  ]]></Content>
+</Module>

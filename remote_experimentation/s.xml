@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <Module>
+   <ModulePrefs title="Remote device control" height="180" width="120" scaling="false" >
+     <Require feature="opensocial-0.8" />
+     <Require feature="dynamic-height" />
+   </ModulePrefs>
+   <Content type="html">
+     <![CDATA[
+     <div style="height: 120px">
+
+       <iframe src="http://128.178.5.71:8080/s1.xml" width="180px" height="120px" style="border:none; position: absolute; left:0px; top:0px" ></iframe>
+      </div> 
+      
+      <script type="text/javascript">
+          var initialize = function() {
+              gadgets.window.adjustHeight();
+          };
+      </script>
+
+      <script type="text/javascript">
+          gadgets.util.registerOnLoadHandler(initialize);
+      </script>
+      
+     ]]>
+   </Content>
+ </Module>

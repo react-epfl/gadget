@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="IFrame gadget" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="Space owner enters url and it is displayed as an iframe by gadget."
+                width="500"
+                height="500">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+iframe{
+  width: 98%;
+  height: 90%;
+}
+#management{
+  margin-bottom:5px;
+}
+</style>
+  
+<div id="management" style="display:none">
+  <label for="url" >Enter url for iframe: </label>
+  <input id="url" type="text" />
+  <button onclick="changeUrl();" >Update</button>
+</div>
+
+<iframe id="iframe" src="">
+  
+</iframe>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+
+<script type="text/javascript">
+var contextId = 0,
+    contextType = '';
+    
+var changeUrl = function() {
+  var url = $("#url").val();
+  $('#iframe').attr('src',url);
+  
+  var prefix = (contextType === "@space") ? "s_" : "p_";
+  var userId = prefix + contextId;
+  osapi.appdata.update({userId: userId, data: {url: url}}).execute(function() {
+    // empty
+  });
+}
+// gets the data and calls build for container
+var initialize = function() {
+  // batch: get viewer and context for gadget
+  var batch = osapi.newBatch();
+  batch.add('viewer', osapi.people.getViewer());
+  batch.add('context', osapi.context.get());
+  batch.execute(function(data){
+    var viewerId = data.viewer.id
+      , context = data.context
+      , contextId = context.contextId
+      , contextType = context.contextType
+      , prefix = (contextType === "@space") ? "s_" : "p_"
+      , userId = prefix + contextId
+      ;
+    
+    // batch: get viewer
+    var batch = osapi.newBatch();
+    batch.add('owner', osapi.people.getOwner());
+    batch.add('appdata', osapi.appdata.get({userId: userId}));
+    batch.execute(function(data){
+      var ownerId = data.owner.id;
+      
+      // current viewer is the owner, then show management block
+      if (viewerId === ownerId) { 
+        $('#management').show();
+      }
+      
+      // update iframe based on appdata
+      var userAppdata = data.appdata[userId];
+      if (userAppdata) {
+         $('#iframe').attr('src',userAppdata["url"]);
+      }
+    });
+      
+  });
+    
+  gadgets.window.adjustHeight();
+};
+
+// setTimeout(initialize,1000);
+
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

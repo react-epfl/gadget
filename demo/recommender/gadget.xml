@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Recommender widget (demo)" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="This is a recommender gadget. When added to a space, it allows to get recommendations for this space. It recommends people, widgets, resources, spaces. This is a demo gadget. The real gadget (http://graaasp.epfl.ch/gadget/recommender.xml) works only in spaces enabled containers (for example Graasp - http://graasp.epfl.ch )"
+                thumbnail="http://graaasp.epfl.ch/gadget/demo/recommender/thumbnail.png"
+                screenshot="http://graaasp.epfl.ch/gadget/demo/recommender/screenshot.png">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<style type="text/css">
+  .gadgets-gadget{width: 100%;}
+  .item{padding: 5px;margin: 5px; border-radius:5px; 
+    cursor:pointer; margin-left: 15px; font-size: 12px;
+    width: 84px;
+    height: 52px;
+    display:inline-block;
+    }
+  .item div{
+    text-align: center;
+  }
+  .title{border-top: 1px solid #aaa; font-size: 14px; text-indent: 5px; background-color: #ddd;
+    margin-bottom: 5px; padding: 3px}
+    
+  .people {
+    border: solid 1px rgba(102,153,255,0.7); }
+
+  .spaces {
+    border: solid 1px rgba(255,153,51,0.7); }
+
+  .assets {
+    border: solid 1px rgba(153,204,102,0.7); }
+
+  .tools {
+    border: solid 1px rgba(255,153,153,0.7); }
+    
+  .item {
+    background: -moz-linear-gradient(top, #fefefe, #eeeeee);
+    background: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#eeeeee)); }
+  .item:hover {
+    background: -moz-linear-gradient(top, #eeeeee, #fefefe);
+    background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#fefefe)); }
+  
+  .name{
+      height: 14px;
+      width: 80px;
+      overflow:hidden;
+  } 
+  .thumb{
+    margin-bottom:5px;
+  }
+</style>
+  
+<div id="container">
+  <div>
+    <div class="title">People</div>
+    <div id="people" class="block">
+    </div>  
+  </div>
+
+  <div>
+    <div class="title">Spaces</div>
+    <div id="spaces" class="block">
+    </div>  
+  </div>
+
+  <div>
+    <div class="title">Assets</div>
+    <div id="assets" class="block">
+    </div>  
+  </div>
+
+  <div>
+    <div class="title">Tools</div>
+    <div id="tools" class="block">
+    </div>  
+  </div>
+</div>
+
+<script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
+<!-- <script type="text/javascript" src="http://graaasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+
+<script type="text/javascript">
+var isOwner = false;
+
+// gets the data and calls build for container
+var initialize = function() {
+
+  var items = {"spaces":{"startIndex":0,"totalResults":3,"entry":[{"interests":[],"parentType":"@person","id":"79","parentId":"20","profileUrl":"http://graaasp.epfl.ch/#item=space_79","updated":"2011-04-14T11:18:03.000Z","description":"\u003cp\u003ePLE used for language learning at SJTU.\u003c/p\u003e","objectId":79,"name":"Bundle 2 - SJTU","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/space_thumb.png","displayName":"Bundle 2 - SJTU","filterCapability":{}},{"interests":[],"parentType":"@person","id":"154","parentId":"20","profileUrl":"http://graaasp.epfl.ch/#item=space_154","updated":"2011-04-14T11:18:04.000Z","description":"My space to learn english!","objectId":154,"name":"English course","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/space_thumb.png","displayName":"English course","filterCapability":{}},{"interests":[],"parentType":"@person","id":"285","parentId":"3","profileUrl":"http://graaasp.epfl.ch/#item=space_285","updated":"2011-04-14T11:18:04.000Z","description":"","objectId":285,"name":"Collaborative working space","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/space_thumb.png","displayName":"Collaborative working space","filterCapability":{}}],"itemsPerPage":3},"documents":{"startIndex":0,"totalResults":2,"entry":[{"parentType":"@space","id":"241","parentId":"193","profileUrl":"http://graaasp.epfl.ch/#item=asset_241","updated":"2011-05-18T05:52:00.000Z","description":"\u003cp\u003e37:50\u003c/p\u003e","objectId":241,"name":"Web Hooks and the Programmable World of Tomorrow","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/asset_thumb.png","documentEntity":"\u003ciframe title='YouTube video player' width='640' height='390' src='http://www.youtube.com/embed/Fw8EPrIjCOc?wmode=transparent' frameborder='0' allowfullscreen\u003e\u003c/iframe\u003e","displayName":"Web Hooks and the Programmable World of Tomorrow","filterCapability":{}},{"parentType":"@space","id":"687","parentId":"311","profileUrl":"http://graaasp.epfl.ch/#item=asset_687","updated":"2011-03-18T14:11:25.000Z","description":"","objectId":687,"name":"Chapal","thumbnailUrl":"http://graaasp.epfl.ch/asset/picture/687/thumb/asset687-clipped.png","documentEntity":"http://www.chapal.fr/CHAPAL/index1.html","displayName":"Chapal","filterCapability":{}}],"itemsPerPage":2},"applications":{"startIndex":0,"totalResults":0,"entry":[],"itemsPerPage":0},"people":{"startIndex":0,"totalResults":3,"entry":[{"updated":"2011-05-31T06:07:02.000Z","profileUrl":"http://graaasp.epfl.ch/#item=user_30","filterCapability":{},"networkPresence":{"value":"XA","displayValue":"Extended Away"},"id":"30","objectId":30,"thumbnailUrl":"http://graaasp.epfl.ch/images/pics/user_thumb.png","displayName":"erikis"},{"updated":"2011-05-31T06:07:05.000Z","profileUrl":"http://graaasp.epfl.ch/#item=user_79","filterCapability":{},"networkPresence":{"value":"XA","displayValue":"Extended Away"},"aboutMe":"\u003cp\u003epokpokpokpok\u003c/p\u003e","id":"79","objectId":79,"thumbnailUrl":"http://graaasp.epfl.ch/images/pics/user_thumb.png","displayName":"tomas.kuzar"},{"updated":"2011-05-31T06:07:08.000Z","profileUrl":"http://graaasp.epfl.ch/#item=user_143","filterCapability":{},"networkPresence":{"value":"XA","displayValue":"Extended Away"},"aboutMe":"\u003cp\u003e\u003cimg title=\"Cool\" src=\"http://graaasp.epfl.ch/javascripts/tiny_mce/plugins/emotions/img/smiley-cool.gif\" border=\"0\" alt=\"Cool\" /\u003e\u003c/p\u003e","id":"143","objectId":143,"thumbnailUrl":"http://graaasp.epfl.ch/images/pics/user_thumb.png","displayName":"歪歪"}],"itemsPerPage":3}}
+
+  build_item("assets",items.documents.entry);
+  build_item("people",items.people.entry);
+  build_item("spaces",items.spaces.entry);
+  build_item("tools",items.applications.entry);
+
+  
+
+};
+
+// build the container with gadgets
+var build_item = function(type,data){
+  for (var i = 0; i < data.length; i++) {
+    var item = data[i];
+    
+    var item_el = $('<div></div>').addClass('item '+type).attr('href',item.profileUrl)
+        .attr('target',"_blank").attr('title',item.displayName);
+    item_el.click(function() {
+      window.open(item.profileUrl);
+    })
+    item_el.appendTo(('#'+type));
+    
+    // thumbnail
+    var thumb = $('<div></div>').addClass('thumb');
+    item_el.html(thumb);
+    var img = $('<img></img>').attr('src',item.thumbnailUrl);
+    thumb.html(img);
+    
+    // name
+    var name = $('<div></div>').addClass('name');
+    name.appendTo(item_el);
+    name.text(item.displayName);
+  }
+  
+  // resize the gadget
+  gadgets.window.adjustHeight();
+
+};
+
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

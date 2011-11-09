@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="iPlotz Mockup"
+               author_email="na.li@epfl.ch"
+               author="Na Li"
+               description="A free online prototyping tool"
+               width="100%"
+               height="1000"
+               scrolling="true"
+               thumbnail="http://graaasp.epfl.ch/gadget/iplotz/thumbnail.png"
+               screenshot="http://graaasp.epfl.ch/gadget/iplotz/screenshot.png">
+</ModulePrefs>
+<Content type="html"><![CDATA[
+
+<embed type="application/x-shockwave-flash" src="https://iplotz.com/app/iplotz.swf" width="100%" height="1000" scrolling="true" id="iplotz" bgcolor="#ffffff" pluginspage="http://www.adobe.com/go/getflashplayer" allowfullscreen="true" allowscriptaccess="always" quality="high" menu="false" loop="false">
+
+   ]]>
+</Content>
+</Module>

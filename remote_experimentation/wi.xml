@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ <Module>
+   <ModulePrefs title="Remote device graph" height="300" width="550" scaling="false" >
+     <Require feature="opensocial-0.8" />
+     <Require feature="dynamic-height" />
+   </ModulePrefs>
+   <Content type="html">
+     <![CDATA[
+     <div style="height: 300px">
+
+       <iframe src="http://128.178.5.71:8080/ws2.xml" width="550px" height="300px" style="border:none; position: absolute; left:0px; top:0px" ></iframe>
+       </div>
+       
+       <script type="text/javascript">
+           var initialize = function() {
+               gadgets.window.adjustHeight();
+           };
+       </script>
+
+       <script type="text/javascript">
+           gadgets.util.registerOnLoadHandler(initialize);
+       </script>
+
+     ]]>
+   </Content>
+ </Module>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Embed player view" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="This functional skin, when added to a space, allows to view content of all documents from a space. For example, youtube videos, slideshare presentations, wikipedia, etc. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+  body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
+  .gadgets-gadget{width: 100%;}
+  .doc {margin: 5px 0px;position:relative;}
+  .title {margin: 5px 0px; color: #333; text-indent: 10px; 
+    background-color: #EEE;
+    border-top: 1px solid #AAA;
+    padding: 1px 3px;
+  }
+  .content {
+    margin-top: 5px;
+    font-size: 12px;
+    text-indent:10px;
+  }
+  #container {
+    background-color:white;
+    border-radius:5px;
+    padding:5px;
+  }
+  .desc{
+    margin-left:10px;
+  }
+</style>
+  
+<div id="container">
+  <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Assets from the space</div>
+</div>
+
+<script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
+<!-- <script type="text/javascript" src="http://graaasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+
+<script type="text/javascript">
+var isOwner = false;
+
+// gets the data and calls build for container
+var initialize = function() {
+
+  osapi.context.get().execute(function(response){
+    osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
+      // console.log(response);
+      build(response.list);
+    });
+
+  });
+
+  
+
+};
+
+var adjustHeight = function() {
+  gadgets.window.adjustHeight();
+}
+
+// build the container with gadgets
+var build = function(documents){
+  
+  var container = $('#container');
+
+  if(documents.length == 0){
+    container.text("No assets were found in this space!");
+  }
+//debugger
+  for (var i = 0; i < documents.length; i++) {
+    var doc = documents[i];
+    
+    
+    var doc_id = 'document_'+doc.id;
+    var doc_el = $("<div id='"+doc_id+"'></div>");
+    doc_el.attr('class','doc');
+    
+    var doc_name = $('<div class="title"></div>');
+    doc_name.text(doc.displayName);
+    doc_el.append(doc_name)
+    
+    
+    //only show embed documents
+    if (typeof doc.documentEntity !== undefined) {
+      var doc_body = $('<div class="content"></div>');
+      doc_body.html(doc.documentEntity);
+      doc_el.append(doc_body);
+    }
+
+    // description block
+    // var doc_desc = $('<div class="desc"></div>')
+    // var desc = (doc.description && doc.description.length != 0) ? doc.description.slice(0,150)+"..." : "";
+    // doc_desc.html(desc);
+    // doc_el.append(doc_desc)
+    
+    
+    container.append(doc_el);
+
+  }
+  
+  // resize the gadget
+  gadgets.window.adjustHeight();
+
+  // 2 seconds
+  setTimeout(adjustHeight,2000);
+  // 5 seconds
+  setTimeout(adjustHeight,5000);
+};
+
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

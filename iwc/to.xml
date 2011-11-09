@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="To" author="Evgeny Bogdanov" author_email="evgeny.bogdanov@epfl.ch" description="Test of openapp (to gadget)." height="500">
+    <Require feature="opensocial-0.8" />
+    <!--<Require feature="dynamic-height" />-->
+    <Require feature="pubsub" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<div id="data"></div>
+
+<script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAArYowhPTyKQn7tayyo_1sixT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS_b5dYAqSj_axhktZy0hCXbg1lLA"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<script type="text/javascript">
+
+google.load("jquery", "1.4.2");
+
+var isOwner = false;
+var moduleId = 0;
+
+var initialize = function() {  
+  gadgets.openapp.connect(onEvent);
+};
+
+var onEvent = function (envelope, message) {
+		var name = message["name"];
+		var lastname = message["lastname"];
+
+    var item = $("<div>name: "+name+", lastname: "+lastname+"</div>");
+    item.appendTo($("#data"));
+    
+		return true;
+
+};
+
+
+</script>
+
+<style>
+</style>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+  ]]></Content>
+</Module>

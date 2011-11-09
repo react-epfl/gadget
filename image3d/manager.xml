@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Manager of 3D viewer" author="Evgeny Bogdanov" author_email="evgeny.bogdanov@epfl.ch" description="Adds images to 3D viewer" height="500">
+    <Require feature="opensocial-0.8" />
+    <!--<Require feature="dynamic-height" />-->
+    <Require feature="pubsub" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<label for="text">Image url: </label><input id="text" type="text"></input>
+<button id="button">Button</button>
+
+<script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAArYowhPTyKQn7tayyo_1sixT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS_b5dYAqSj_axhktZy0hCXbg1lLA"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<script type="text/javascript">
+
+google.load("jquery", "1.4.2");
+
+var isOwner = false;
+var moduleId = 0;
+
+var initialize = function() {
+  $("#button").click(onClick)
+};
+
+var onClick = function() {
+  // get url
+  var url = $("#text").attr('value');
+  // send data
+  	gadgets.openapp.publish({
+			event: "select",
+			type: "json",
+			message: {
+				url: url,
+			}
+		});
+	
+  
+};
+
+
+
+</script>
+
+<style>
+</style>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+  ]]></Content>
+</Module>

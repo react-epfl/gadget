@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+  <ModulePrefs title="Portability demonstrator" scrolling="true">
+    <Require feature="opensocial-0.8" />
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+    <Require feature="locked-domain"/>
+    <OAuth>
+      <Service name="portability">
+        <Access url="http://iamac71.epfl.ch:3000/oauth/access_token" method="GET" /> 
+        <Request url="http://iamac71.epfl.ch:3000/oauth/request_token" method="GET" /> 
+        <Authorization url="http://iamac71.epfl.ch:3000/oauth/authorize" /> 
+      </Service>
+    </OAuth>
+  </ModulePrefs>
+  <Content type="html">
+  <![CDATA[ 
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+  <script src="http://gadget-doc-examples.googlecode.com/svn/trunk/opensocial-gadgets/popup.js"></script>
+
+  <style>
+  body{
+    padding: 10px;
+  }
+  #main {
+    margin: 0px;
+    padding: 0px;
+    font-size: small;
+  }
+  .title{
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid #aaa;
+    margin-bottom: 5px;
+  }
+  .name{
+    font-weight: bold;
+  }
+  .value{
+    text-indent: 10px;
+  }
+  .space_name{
+    position:relative;
+    top:-10px;
+    margin-left:5px;
+  }
+  p{
+    padding:0px;
+    margin:0px;
+  }
+  </style>
+
+  <div id="main">
+    <div id="person" class="title">Person API </div>
+    <div><span class="name">Name:</span> <span id="name" class="value"></span></div>
+    <div><span class="name">About: </span><span id="about" class="value"></span></div>
+      
+    <br></br>
+    <div class="title">Space API</div>
+    <div id="spaces" style="display: none"></div>
+    <div id="approval" style="display: none">
+      <img src="http://gadget-doc-examples.googlecode.com/svn/trunk/images/new.gif">
+      <a href="#" id="personalize">Approve access to Graasp's spaces</a>
+    </div>
+
+    <div id="waiting" style="display: none">
+      Please click
+      <a href="#" id="approvaldone">I've approved access</a>
+      once you've approved access to your data.
+    </div>
+  </div>
+
+
+
+  <script type="text/javascript">
+    function init() {
+      osapi.people.getViewer().execute(function(viewer){
+        var name = viewer.displayName
+          , about = viewer.aboutMe
+          ;
+        $('#name').html(name);
+        $('#about').html(about);
+        // it should check whether space is supported or not
+        // since they are supported in moodle, we can't rely on them
+        if (!document.location.href.match(/moodle/)) {
+          console.log("in moodle");
+          fetchData();
+        } else {
+          $('#spaces').show();
+          console.log("in graasp");        
+          osapi.spaces.get({contextId: viewer.id, contextType: "@person"}).execute(function(response){
+            // console.log(JSON.stringify(response));
+            showResults(response)
+            // response[0].displayName;
+            
+          });
+        }        
+      });
+      setTimeout(function() {gadgets.window.adjustHeight();}, 3000);
+    }
+    // Display UI depending on OAuth access state of the gadget (see <divs> above).
+    // If user hasn't approved access to data, provide a "Personalize this gadget" link
+    // that contains the oauthApprovalUrl returned from makeRequest.
+    //
+    // If the user has opened the popup window but hasn't yet approved access, display
+    // text prompting the user to confirm that s/he approved access to data.  The user
+    // may not ever need to click this link, if the gadget is able to automatically
+    // detect when the user has approved access, but showing the link gives users
+    // an option to fetch their data even if the automatic detection fails.
+    //
+    // When the user confirms access, the fetchData() function is invoked again to
+    // obtain and display the user's data.
+    function showOneSection(toshow) {
+      var sections = [ 'spaces', 'approval', 'waiting' ];
+      for (var i=0; i < sections.length; ++i) {
+        var s = sections[i];
+        var el = document.getElementById(s);
+        if (s === toshow) {
+          el.style.display = "block";
+        } else {
+          el.style.display = "none";
+        }
+      }
+    }
+      
+    // Process returned JSON feed to display data.
+    function showResults(result) {
+      showOneSection('spaces');
+
+      var list = result.list;
+
+      for (var i = 0; i < list.length; i++) {
+        entry = list[i];
+        var item = $('<div class="value"></div>');
+        var name = $('<span class="space_name"></span>').html(entry.displayName);
+        var picUrl = entry.thumbnailUrl.replace("graaasp.epfl.ch","localhost:3000")
+        var picture = $('<img class="space_picture"></img>').attr('src',picUrl);
+        item.append(picture);
+        item.append(name);
+        
+        $("#spaces").append(item);
+      }
+      gadgets.window.adjustHeight();
+    }
+
+    // Invoke makeRequest() to fetch data from the service provider endpoint.
+    // Depending on the results of makeRequest, decide which version of the UI
+    // to ask showOneSection() to display. If user has approved access to his
+    // or her data, display data.
+    // If the user hasn't approved access yet, response.oauthApprovalUrl contains a
+    // URL that includes a Google-supplied request token. This is presented in the 
+    // gadget as a link that the user clicks to begin the approval process.     
+    function fetchData() {
+      var params = {};
+      url = "http://iamac71.epfl.ch:3000/proxy/os.json";
+      params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.JSON;
+      params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.OAUTH;
+      params[gadgets.io.RequestParameters.OAUTH_SERVICE_NAME] = "portability";
+      params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+
+      gadgets.io.makeRequest(url, function (response) { 
+        console.log(response);
+        if (response.oauthApprovalUrl) {
+          // Create the popup handler. The onOpen function is called when the user
+          // opens the popup window. The onClose function is called when the popup
+          // window is closed.
+          var popup = shindig.oauth.popup({
+            destination: response.oauthApprovalUrl,
+            windowOptions: null,
+            onOpen: function() { showOneSection('waiting'); },
+            onClose: function() { fetchData(); }
+          });
+          // Use the popup handler to attach onclick handlers to UI elements.  The
+          // createOpenerOnClick() function returns an onclick handler to open the
+          // popup window.  The createApprovedOnClick function returns an onclick 
+          // handler that will close the popup window and attempt to fetch the user's
+          // data again.
+          var personalize = document.getElementById('personalize');
+          personalize.onclick = popup.createOpenerOnClick();
+          var approvaldone = document.getElementById('approvaldone');
+          approvaldone.onclick = popup.createApprovedOnClick();
+          showOneSection('approval');
+        } else if (response.data) {
+          showOneSection('spaces');
+          showResults(response.data);
+        } else {
+          // The response.oauthError and response.oauthErrorText values may help debug
+          // problems with your gadget.
+          var main = document.getElementById('spaces');
+          var err = document.createTextNode('OAuth error: ' +
+            response.oauthError + ': ' + response.oauthErrorText);
+          main.appendChild(err);
+          showOneSection('spaces');
+        }
+      }, params);
+    }
+    // Call fetchData() when gadget loads.
+    gadgets.util.registerOnLoadHandler(init);
+  </script>
+  ]]> 
+  </Content>
+</Module>

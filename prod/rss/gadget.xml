@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="RSS gadget" 
+               author="Erik Isaksson" 
+               author_email="evgeny.bogdanov@epfl.ch" 
+               description="The RSS Gadget. Space owners can change rss for gadget. Space viewers can see it." 
+               height="500"
+               thumbnail="http://graaasp.epfl.ch/gadget/prod/rss/thumbnail.png"
+               screenshot="http://graaasp.epfl.ch/gadget/prod/rss/screenshot.png">
+    <Require feature="osapi" />
+    <!--<Require feature="dynamic-height" />-->
+    <Require feature="pubsub" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<div id="feed"></div>
+
+<script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAArYowhPTyKQn7tayyo_1sixT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS_b5dYAqSj_axhktZy0hCXbg1lLA"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+<script type="text/javascript" src="/lib/openapp/openapp.js"></script>
+
+<script type="text/javascript">
+
+google.load("feeds", "1");
+google.load("jquery", "1.4.2");
+
+var defaultUrl = "http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml";
+
+var isOwner = false
+  , moduleId = 0
+  , context = ""
+  , viewerId
+  , ownerId
+  ;
+
+var initialize = function() {
+  //$(window).adjustHeight(500);
+  var prefs = new gadgets.Prefs();
+  moduleId = prefs.getModuleId();
+  
+  var batch = osapi.newBatch();
+  batch.add('viewer', osapi.people.getViewer());
+  if (osapi.context) { // only for spaces extended container
+    batch.add('context', osapi.context.get());
+  } else {
+    batch.add('context', osapi.people.getOwner());    
+  }
+  batch.execute(function(data){    
+    viewerId = data.viewer.id;
+    var contextId = "@owner";
+    var contextType = "@user";
+    if (osapi.context) { // only for spaces extended container
+      contextId = data.context.contextId
+      contextType = data.context.contextType      
+    }
+    
+    var prefix = (contextType === "@space") ? "s_" : "";
+    context = prefix + contextId;
+    
+    var batch = osapi.newBatch();
+    batch.add('owner', osapi.people.getOwner());
+    batch.add('appdata', osapi.appdata.get({userId: context, keys: ['feedUrl']}));
+    batch.execute(function(data){
+      ownerId = data.owner.id; 
+      isOwner = (viewerId == ownerId);
+      var spaceAppdata = data.appdata[context];
+      if (spaceAppdata) {
+        var url =  spaceAppdata["feedUrl"];
+        fetch(url);
+      } else {
+        fetch(defaultUrl);
+      }
+    });
+  });
+};
+
+var fetch = function(url) {
+  var feed = new google.feeds.Feed(url);
+  feed.setNumEntries(20);
+  feed.load(function(result) {
+    var container = document.getElementById("feed");
+    $(container).html("");
+    if (!result.error) {
+      createTitleElt(url, result.feed, container).appendTo(container);
+      for ( var i = 0; i < result.feed.entries.length; i++) {
+        createEntryElt(result.feed.entries[i]).appendTo(container);
+      }
+    } else {
+      createErrorElt(url, result.error, container).appendTo(container);
+    }
+    $(container).show();
+  });
+};
+
+var createEntryElt = function(entry) {
+  var entryElt = $("<a/>").addClass("entry").html(entry.title).attr("href",
+      entry.link);
+  entryElt.get(0).obj = entry;
+  var contentElt = $("<div/>").addClass("content").html(entry.contentSnippet)
+      .appendTo(entryElt);
+  var linkElt = $("<a/>").addClass("entryLink").text("read").attr("title",
+      "in a new window").attr("href", entry.link).appendTo(contentElt);
+  contentElt.find("a").attr("target", "_blank");
+  entryElt
+      .click(function(event) {
+        if (event.target !== this && event.target.tagName === "A") {
+          if (event.target.href.substring(0, 11) !== "javascript:") {
+            window.open(event.target.href);
+          }
+          event.returnValue = false;
+          event.preventDefault();
+          return false;
+        }
+        var feed = document.getElementById("feed");
+        var oldSel = typeof feed.selectedEntry !== "undefined" ? feed.selectedEntry
+            : null;
+        if (oldSel) {
+          $(oldSel).toggleClass("selectedEntry");
+          $(oldSel).children().slideUp();
+        }
+        if (oldSel === this) {
+          feed.selectedEntry = null;
+        } else {
+          feed.selectedEntry = this;
+          $(this).toggleClass("selectedEntry");
+          $(this).children().slideDown();
+
+          gadgets.openapp.publish({
+            event: "select",
+            type: "namespaced-properties",
+            uri: this.obj.link,
+            message: {
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": "http://purl.org/rss/1.0/item",
+              "http://purl.org/dc/terms/title": this.obj.title,
+              "http://purl.org/dc/terms/description": this.obj.contentSnippet
+            }
+          });
+        }
+        event.returnValue = false;
+        event.preventDefault();
+        return false;
+      });
+  return entryElt;
+};
+
+var createTitleElt = function(url, feed, container) {
+  var entryElt = $("<a/>").addClass("entry").addClass("title").html(
+      feed.title).attr("href", feed.link);
+  entryElt.get(0).obj = feed;
+  var contentElt = $("<div/>").addClass("content").html(feed.description)
+      .appendTo(entryElt);
+  var linkElt = $("<a/>").addClass("entryLink").text("website").attr("title",
+      "opens in a new window").attr("href", feed.link).appendTo(
+      contentElt);
+  contentElt.find("a").attr("target", "_blank");
+  var feedUrlElt = $("<div/>").css("margin-top", "1em").appendTo(contentElt);
+  $("<span/>").css("font-weight", "bold").text("Feed URL: ").appendTo(
+      feedUrlElt);
+  var feedUrlInput = $("<input/>").attr("type", "text").css("width", "50%")
+      .val(url).click(function() {
+        this.setSelectionRange(0, this.value.length);
+      }).appendTo(feedUrlElt);
+  if (isOwner) {
+    var feedUrlUpdate = $("<a/>").addClass("entryLink").text("set as current")
+        .attr("title", "the feed located at the URL on the left").attr(
+            "href", "javascript:void(0)").appendTo(feedUrlElt);
+    createExamplesElt(feedUrlInput, feedUrlUpdate).appendTo(contentElt);
+    feedUrlUpdate.click(function(event) {
+      var data = { feedUrl: feedUrlInput.val() };
+      osapi.appdata.update({userId: context, data: data}).execute(function() {
+        // empty
+      });
+      //$.post('/social/rest/appdata/@viewer/@self', data, function() {}, 'json');
+      $(container).fadeOut(function() {
+        fetch(feedUrlInput.val());
+      });
+    });
+  } else {
+    feedUrlInput.attr("readonly", "readonly");
+  }
+  entryElt
+      .click(function(event) {
+        if (event.target !== this && event.target.tagName === "A") {
+          if (event.target.href.substring(0, 11) !== "javascript:") {
+            window.open(event.target.href);
+          }
+          event.returnValue = false;
+          event.preventDefault();
+          return false;
+        } else if (event.target !== this
+            && event.target.tagName !== "DIV") {
+          event.returnValue = false;
+          event.preventDefault();
+          return false;
+        }
+        var feed = document.getElementById("feed");
+        var oldSel = typeof feed.selectedEntry !== "undefined" ? feed.selectedEntry
+            : null;
+        if (oldSel) {
+          $(oldSel).toggleClass("selectedEntry");
+          $(oldSel).children().slideUp();
+        }
+        if (oldSel === this) {
+          feed.selectedEntry = null;
+        } else {
+          feed.selectedEntry = this;
+          $(this).toggleClass("selectedEntry");
+          $(this).children().slideDown();
+
+          gadgets.openapp.publish({
+            event: "select",
+            type: "namespaced-properties",
+            uri: this.obj.link,
+            message: {
+              "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": "http://purl.org/rss/1.0/channel",
+              "http://purl.org/dc/terms/title": this.obj.title,
+              "http://purl.org/dc/terms/description": this.obj.description
+            }
+          });
+        }
+        event.returnValue = false;
+        event.preventDefault();
+        return false;
+      });
+  return entryElt;
+};
+
+var createErrorElt = function(url, error, container) {
+  var entryElt = createTitleElt(url, {
+    title : "Feed error",
+    description : error.message,
+    link : "javascript:void(0)"
+  }, container);
+  entryElt.addClass("selectedEntry");
+  entryElt.unbind();
+  entryElt.find(".content").css("display", "block");
+  return entryElt;
+};
+
+var createExamplesElt = function(feedUrlInput, feedUrlUpdate) {
+  var examplesElt = $("<div/>");
+  $("<span/>").text("Examples: ").css("font-weight", "bold").appendTo(
+      examplesElt);
+  createExampleElt(
+      "BBC News",
+      "http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml",
+      feedUrlInput, feedUrlUpdate).appendTo(examplesElt);
+  $("<span/>").text(", ").appendTo(examplesElt);
+  createExampleElt("ROLE", "http://www.role-project.eu/?feed=atom",
+      feedUrlInput, feedUrlUpdate).appendTo(examplesElt);
+  return examplesElt;
+};
+
+var createExampleElt = function(text, url, feedUrlInput, feedUrlUpdate) {
+  return $("<a/>").text(text).attr("href", "javascript:void(0)").attr(
+      "title", "then click 'set as current'").click(function() {
+    feedUrlInput.val(url);
+    feedUrlUpdate.fadeOut().fadeIn(0);
+  });
+};
+
+</script>
+
+<style>
+@CHARSET "UTF-8";
+
+body {
+  background: #fff;
+  color: #000;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+a,a:link,a:active,a:visited {
+  color: #000;
+}
+
+input {
+  border: 0px;
+  background: #fff;
+  color: #000;
+  font-family: sans-serif;
+  font-size: 12px;
+}
+
+.selectedEntry a,.selectedEntry a:link,.selectedEntry a:active,.selectedEntry a:visited
+  {
+  color: #fff;
+}
+
+.entry,entry:link,.entry:active,.entry:visited {
+  display: block;
+  color: #000;
+  padding: .5em;
+  border-bottom: 1px solid #ddd;
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 0px 1px 0px 1px;
+}
+
+.content {
+  font-size: 12px;
+  font-weight: normal;
+  display: none;
+  font-weight: normal;
+}
+
+.entry:hover {
+  background: #ddddff;
+}
+
+.selectedEntry,.selectedEntry:link,.selectedEntry:active,.selectedEntry:visited,.selectedEntry:hover
+  {
+  background: #5555dd;
+  color: #fff;
+}
+
+.entryLink,.entryLink:link,.entryLink:visited,.entryLink:active {
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 90%;
+  border: 1px solid #555;
+  padding: 0px 2px 0px 2px;
+  margin-left: .5em;
+}
+
+.selectedEntry .entryLink,.selectedEntry .entryLink:link,.selectedEntry .entryLink:visited,.selectedEntry .entryLink:active
+  {
+  color: #fff;
+  border: 1px solid #ddddff;
+}
+
+.selectedEntry .entryLink:hover {
+  background: #ddddff;
+  color: #000;
+}
+
+.title,title:link,.title:active,.title:visited {
+  font-size: 16px;
+  border-bottom: 1px solid #000;
+}
+
+#feed {
+  height: 500px;
+  overflow: auto;
+}
+</style>
+
+<script type="text/javascript">
+setTimeout(initialize, 1000);
+</script>
+
+  ]]></Content>
+</Module>

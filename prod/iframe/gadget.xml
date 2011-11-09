@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="IFrame gadget" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="Space owner enters url and it is displayed as an iframe by gadget. Space non-owners can't change url but can see iframe."
+                width="500"
+                height="500"
+                thumbnail="http://graaasp.epfl.ch/gadget/prod/iframe/thumbnail.png"
+                screenshot="http://graaasp.epfl.ch/gadget/prod/iframe/screenshot.png">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+iframe{
+  width: 98%;
+  height: 90%;
+}
+#management{
+  margin-bottom:5px;
+}
+</style>
+
+<div id="management" style="display:none">
+  <label for="url" >Enter url for iframe: </label>
+  <input id="url" type="text" />
+  <button onclick="changeUrl();" >Update</button>
+  <button onclick="removeUrl();" >Clear</button>
+</div>
+
+<iframe id="iframe" src="">
+
+</iframe>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<script type="text/javascript">
+var sendClickEvent = function() {
+  // hack to get gadget id (should be fixed in opensocial 2.1 with spaces)
+  var appId = document.location.search.match(/&st=.+:.+:(.+):.+:.+:.+:.+/)[1];
+
+  gadgets.openapp.publish({
+    event: "click",
+    type: "json",
+    message: {
+      appId: appId,
+    }
+  });
+};
+
+var contextId = 0,
+    contextType = '';
+
+var changeUrl = function() {
+  var url = $("#url").val();
+  $('#iframe').attr('src',url);
+
+  var prefix = (contextType === "@space") ? "s_" : "";
+  var userId = prefix + contextId;
+  osapi.appdata.update({userId: userId, data: {url: url}}).execute(function() {
+    // empty
+  });
+}
+var removeUrl = function() {
+  $("#url").val("");
+  $('#iframe').attr('src',"");
+
+  var prefix = (contextType === "@space") ? "s_" : "";
+  var userId = prefix + contextId;
+  osapi.appdata["delete"]({userId: userId, keys: ['url']}).execute(function() {
+    // empty
+  });
+}
+// gets the data and calls build for container
+var initialize = function() {
+  $(document).bind("click",sendClickEvent);
+
+  // batch: get viewer and context for gadget
+  var batch = osapi.newBatch();
+  batch.add('viewer', osapi.people.getViewer());
+  if (osapi.context) { // only for spaces extended container
+    batch.add('context', osapi.context.get());
+  } else {
+    batch.add('context', osapi.people.getOwner());    
+  }
+  batch.execute(function(data){
+    var viewerId = data.viewer.id
+      , context = data.context
+      ;
+
+    contextId = "@owner"
+    contextType = "@user"
+    if (osapi.context) { // only for spaces extended container
+      contextId = data.context.contextId
+      contextType = data.context.contextType      
+    }
+    var prefix = (contextType === "@space") ? "s_" : ""
+      , userId = prefix + contextId
+      ;
+
+    // batch: get viewer
+    var batch = osapi.newBatch();
+    batch.add('owner', osapi.people.getOwner());
+    batch.add('appdata', osapi.appdata.get({userId: userId}));
+    batch.execute(function(data){
+
+      var ownerId = data.owner.id;
+
+      // current viewer is the owner, then show management block
+      if (viewerId === ownerId) { 
+        $('#management').show();
+      }
+
+      // update iframe based on appdata
+      var userAppdata = data.appdata[userId];
+      if (userAppdata) {
+         $('#iframe').attr('src',userAppdata["url"]);
+         $("#url").val(userAppdata["url"]);
+      }
+    });
+
+  });
+
+  gadgets.window.adjustHeight();
+};
+
+setTimeout(initialize,1000);
+
+// gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

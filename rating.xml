@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Rating gadget" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="Click 'Rate' button, click the widget you want to rate and type your description. The rated widgets should emit 'click' events, when user clicks inside. See http://graaasp.epfl.ch/gadget/rating.md for the changes required to be done in widgets that can be rated (or emitting 'click' events)."
+                width="500"
+                height="500">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+body{
+  font-size: 12px;
+}
+#notice{
+  margin:5px;
+  padding:5px;
+  font-size:12px;
+  color:555;
+  border:1px solid #ccc;
+  background-color: #eee;
+}
+#ratings{
+  font-size:12px;
+  padding:5px;
+}
+#ratings_title{
+  margin-top:5px;
+  margin-left: 10px;  
+}
+.rating{
+  border-top: 1px solid #999;
+  margin-top:5px;
+}
+.title{
+  border-bottom: 1px solid #ccc;
+  padding: 0 5px;
+}
+.desc{
+  padding:2px 5px;
+}
+label{
+  font-size: 12px;
+}
+</style>
+  
+<button id="button_rate" onclick="rateClicked();" >Rate widget</button>
+
+<div id="notice" style="display:none">
+  Select the widget you want to rate by clicking on it.
+</div>
+
+<div id="rating" style="display:none">
+  
+  <b><label for="description">Enter your description for widget <span id="app_id"></span> </label></b>
+  <textarea id="description"></textarea>
+  <div>
+    <button onclick="save()">Save</button>
+    <button onclick="cancel()">Cancel</button>
+  </div>
+</div>
+
+<div id="ratings_title"><b>Existing ratings:</b></div>
+<div id="ratings">
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<script type="text/javascript">
+
+var viewerId,appdata,appId,userId;
+
+var buildRating = function(text,viewer,app) {
+  var div = $("<div class='rating'></div>");
+  var title = $("<div class='title'></div>");
+  div.append(title);
+  title.append("User <b>"+viewer+"</b> rated ").append("widget <b>"+app+"</b> as:").append("<br/>")
+  
+  var desc = $("<div class='desc'></div>");
+  div.append(desc);
+  desc.append(text);
+  $("#ratings").prepend(div);
+}
+
+var rateClicked = function() {
+  $('#notice').show();
+  $('#button_rate').attr("disabled","disabled");
+  gadgets.openapp.connect(onMessage);
+  gadgets.window.adjustHeight();
+}
+
+var save = function() {
+  $('#button_rate').removeAttr("disabled");
+  
+  $('#rating').hide();
+  
+  var text = $("#description").val();
+  
+  // send opensocial appdata update
+  // get current data
+  osapi.appdata.get({userId: userId}).execute(function(data){
+    var newdata = (data && data[userId]) ? JSON.parse(data[userId]["ratings"]) : [];
+    newdata.push([appId,viewerId,text])
+    // add to current data and sent
+    osapi.appdata.update({userId: userId, data: {"ratings": JSON.stringify(newdata)}}).execute(function() {
+      // empty
+    });
+  });
+  
+  buildRating(text,viewerId,appId);
+  gadgets.window.adjustHeight();
+}
+
+var cancel = function() {
+  $('#button_rate').removeAttr("disabled");
+  
+  $('#rating').hide();
+
+  gadgets.window.adjustHeight();  
+}
+
+var onMessage = function(envelope, message) {
+  gadgets.openapp.disconnect();
+  // close the notice
+  $('#notice').hide();
+  $('#rating').show();
+  // get id of gadget to rate
+  appId = message["appId"];
+  $('#app_id').text(appId);
+  gadgets.window.adjustHeight();
+};
+
+// gets the data and calls build for container
+var initialize = function() {
+  // batch: get viewer and context for gadget
+  var batch = osapi.newBatch();
+  batch.add('viewer', osapi.people.getViewer());
+  if (osapi.context) { // only for spaces extended container
+    batch.add('context', osapi.context.get());
+  } else {
+    batch.add('context', osapi.people.getOwner());    
+  }
+  batch.execute(function(data){
+    viewerId = data.viewer.id;
+    var context = data.context;
+    
+    contextId = "@owner"
+    contextType = "@user"
+    if (osapi.context) { // only for spaces extended container
+      contextId = data.context.contextId
+      contextType = data.context.contextType      
+    }
+    var prefix = (contextType === "@space") ? "s_" : "";
+    userId = prefix + contextId;
+    
+    // get updata
+    osapi.appdata.get({userId: userId}).execute(function(data){
+      appdata = data[userId];
+
+      // build ratings
+      if (appdata) {
+        var array = JSON.parse(appdata["ratings"])
+
+        for (var i = 0,length=array.length; i < length; i++){
+          var item = array[i];
+          console.log(item);
+          buildRating(item[2],item[1],item[0]);
+        }
+        gadgets.window.adjustHeight();
+      }
+    });
+      
+  });
+    
+  gadgets.window.adjustHeight();
+};
+
+setTimeout(initialize,1000);
+
+// gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

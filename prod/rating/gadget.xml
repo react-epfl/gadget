@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Rating gadget" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="Click 'Rate' button, click the widget you want to rate and type your description. The rated widgets should emit 'click' events, when user clicks inside. See http://graaasp.epfl.ch/gadget/prod/rating/info.md for the changes required to be done in widgets that can be rated (or emitting 'click' events)."
+                width="100"
+                height="500"
+                thumbnail="http://graaasp.epfl.ch/gadget/prod/rating/thumbnail.png"
+                screenshot="http://graaasp.epfl.ch/gadget/prod/rating/screenshot.png">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+    <script type="text/javascript" src="http://graaasp.epfl.ch/gadget/prod/rating/files/jquery.rating.pack.js"></script>
+    
+
+<style type="text/css">
+
+body{
+  font-size: 12px;
+  color: #333;
+}
+#notice{
+  margin:5px;
+  padding:5px;
+  font-size:12px;
+  color:#555;
+  border:1px solid #ccc;
+  background-color: #eee;
+}
+#ratings{
+  font-size:12px;
+  padding:5px;
+}
+#ratings_title{
+  margin-top:5px;
+  margin-left: 10px;  
+}
+.rating{
+  border-top: 1px solid #999;
+  margin-top:5px;
+}
+.rating .value{
+  height: 20px;
+  margin-left: 10px;
+}
+textarea{
+  width: 100%;
+}
+.title{
+  border-bottom: 1px solid #ccc;
+  padding: 0 5px;
+  background-color: #eee;
+}
+.rating .desc{
+  padding:0px 0px;
+  margin-left: 10px;
+}
+label{
+  font-size: 12px;
+}
+a.cancel, a.cancel:visited{
+  color: #36C; text-decoration: none;
+}
+fieldset{
+  border-width: 1px;
+}
+</style>
+  
+<button id="button_rate" onclick="rateClicked();" >Click to start rating</button>
+
+<div id="notice" style="display:none">
+  Select what you want to rate by clicking
+</div>
+
+<div id="rating" style="display:none">
+  <fieldset>
+    <legend>Rating for content in widget <b><span id="app_id"></span></b></legend>
+    <div><b>Your rating</b></div>
+    <div style="margin-bottom:5px; height: 20px">
+      <input name="auto_star" type="radio" class="auto-submit-star" value="1"/>
+      <input name="auto_star" type="radio" class="auto-submit-star" value="2"/>
+      <input name="auto_star" type="radio" class="auto-submit-star" value="3"/>
+      <input name="auto_star" type="radio" class="auto-submit-star" value="4"/>
+      <input name="auto_star" type="radio" class="auto-submit-star" value="5"/>
+    </div>
+    
+    <div>
+      <b><label for="description">Explain your rating </label></b>
+      <textarea id="description"></textarea>
+    </div>
+    <div>
+      <button onclick="save()">Submit rating</button>
+      or
+      <a href="#" class="cancel" onclick="cancel(); return false;">Cancel</button>
+    </div>    
+  </fieldset>
+</div>
+
+<div id="ratings_title"><b>Existing ratings:</b></div>
+<div id="ratings">
+</div>
+
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<script type="text/javascript">
+// load stylesheets (hacky, problem in shindig in css with background:url(image.png))
+var scriptElem = document.createElement('link');
+scriptElem.setAttribute('href', "http://graaasp.epfl.ch/gadget/prod/rating/files/jquery.rating.css");
+scriptElem.setAttribute('rel', "stylesheet");
+scriptElem.setAttribute('type', "text/css");
+document.body.appendChild(scriptElem);
+
+var viewerId,appdata,appId,userId,curRating = 0;
+
+var buildRating = function(text,viewer,app,rating) {
+  var div = $("<div class='rating'></div>");
+  var title = $("<div class='title'></div>");
+  div.append(title);
+  title.append("<b>"+viewer+"</b> rated content in ").append("<b>"+app+"</b>").append("<br/>");
+  // build rating
+  var desc = $("<div class='value'></div>");
+  div.append(desc);  
+  for (var i = 1; i <= 5; i++) {
+    var checked = ((i === parseInt(rating)) ? 'checked="checked"' : "");
+    desc.append('<input class="star2" type="radio" disabled="disabled" '+checked+'/>');
+  }
+  
+  var desc = $("<div class='desc'></div>");
+  div.append(desc);
+  desc.append(text);
+  $("#ratings").prepend(div);
+  
+  // set nice rating stars
+  $('.star2').rating();
+}
+
+var rateClicked = function() {
+  $('#notice').show();
+  $('#button_rate').attr("disabled","disabled");
+  gadgets.openapp.connect(onMessage);
+  gadgets.window.adjustHeight();
+}
+
+var save = function() {
+  $('#button_rate').removeAttr("disabled");
+  
+  $('#rating').hide();
+  
+  var text = $("#description").val();
+  
+  // send opensocial appdata update
+  // get current data
+  osapi.appdata.get({userId: userId}).execute(function(data){
+    var newdata = (data && data[userId]) ? JSON.parse(data[userId]["ratings"]) : [];
+    newdata.push([appId,viewerId,text,curRating])
+    // add to current data and sent
+    osapi.appdata.update({userId: userId, data: {"ratings": JSON.stringify(newdata)}}).execute(function() {
+      // empty
+    });
+  });
+  
+  var users = [viewerId], apps = [appId];
+  getUserApp(users,apps,function(userHash,appHash) {
+    buildRating(text,userHash[viewerId].displayName,appHash[appId].displayName,curRating);
+    gadgets.window.adjustHeight();
+  });
+}
+
+var cancel = function() {
+  $('#button_rate').removeAttr("disabled");
+  
+  $('#rating').hide();
+
+  gadgets.window.adjustHeight();  
+}
+
+var onMessage = function(envelope, message) {
+  gadgets.openapp.disconnect();
+  // close the notice
+  $('#notice').hide();
+  $('#rating').show();
+  // nullify description
+  $('#description').val("");
+  // remove default cancel button
+  $('.rating-cancel').remove();
+  // nullify rating
+  $('#rating .star-rating-on').removeClass('star-rating-on');
+  // get id of gadget to rate
+  appId = message["appId"];
+  // Deprecated:
+  if (osapi.applications) {
+    osapi.applications.get({contextId: appId}).execute(function(app) {
+      $('#app_id').text(app.displayName);    
+    })
+  } else {
+    $('#app_id').text(appId);
+  }
+
+  curRating = 0; // reinitialize the rating
+  gadgets.window.adjustHeight();
+};
+
+var getUserApp = function(users,apps,fn) {
+  var batch = osapi.newBatch();
+  batch.add('users', osapi.people.get({userId: users}));
+  if (osapi.applications) {
+    batch.add('apps', osapi.applications.get({contextId: apps}));
+  }
+  batch.execute(function(data){
+    var userHash = {};
+    var appHash = {};
+    var u = (data.users.list) ? data.users.list : [data.users];
+    var a = apps;
+    if (osapi.applications) {
+      a = (data.apps.list) ? data.apps.list : [data.apps];
+    }
+    // console.log(u);
+    // console.log(a);
+    for (var i = a.length - 1; i >= 0; i--){
+      var item = a[i];
+      appHash[item.id] = item;
+    }
+    for (var i = u.length - 1; i >= 0; i--){
+      var item = u[i];
+      userHash[item.id] = item;
+    }
+    // console.log(userHash);
+    // console.log(appHash);
+    
+    fn(userHash,appHash);
+    
+  })
+}
+
+// gets the data and calls build for container
+var initialize = function() {
+  // batch: get viewer and context for gadget
+  var batch = osapi.newBatch();
+  batch.add('viewer', osapi.people.getViewer());
+  if (osapi.context) { // only for spaces extended container
+    batch.add('context', osapi.context.get());
+  } else {
+    batch.add('context', osapi.people.getOwner());    
+  }
+  batch.execute(function(data){
+    viewerId = data.viewer.id;
+    var context = data.context;
+    
+    contextId = "@owner"
+    contextType = "@user"
+    if (osapi.context) { // only for spaces extended container
+      contextId = data.context.contextId
+      contextType = data.context.contextType      
+    }
+    var prefix = (contextType === "@space") ? "s_" : "";
+    userId = prefix + contextId;
+    
+    // get updata
+    osapi.appdata.get({userId: userId}).execute(function(data){
+      appdata = data[userId];
+
+      // build ratings
+      if (appdata) {
+        var array = JSON.parse(appdata["ratings"]);
+        var users = [], apps = [];
+        
+        for (var i = 0,length=array.length; i < length; i++){
+          users.push(array[i][1]);
+          apps.push(array[i][0]);
+        }
+        
+        getUserApp(users,apps,function(userHash,appHash) {
+          for (var i = 0,length=array.length; i < length; i++){
+            var item = array[i];
+            buildRating(item[2],userHash[item[1]].displayName,appHash[item[0]].displayName,item[3]);
+          }
+          gadgets.window.adjustHeight();
+        });
+
+      }
+    });
+      
+  });
+    
+  // add rating
+  // $('.star').rating('readOnly', true)
+  $('.auto-submit-star').rating({
+    callback: function(value, link){
+      curRating = value;
+    }
+  });  
+  
+  gadgets.window.adjustHeight();
+};
+
+setTimeout(initialize,1000);
+
+// gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>
