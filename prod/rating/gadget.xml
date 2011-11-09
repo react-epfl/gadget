@@ -14,7 +14,7 @@
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
     
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
-    <script type="text/javascript" src="http://graaasp.epfl.ch/gadget/prod/rating/files/jquery.rating.pack.js"></script>
+    <script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/rating/jquery.rating.pack.js"></script>
     
 
 <style type="text/css">
@@ -109,7 +109,7 @@ fieldset{
 <script type="text/javascript">
 // load stylesheets (hacky, problem in shindig in css with background:url(image.png))
 var scriptElem = document.createElement('link');
-scriptElem.setAttribute('href', "http://graaasp.epfl.ch/gadget/prod/rating/files/jquery.rating.css");
+scriptElem.setAttribute('href', "http://graaasp.epfl.ch/gadget/libs/rating/jquery.rating.css");
 scriptElem.setAttribute('rel', "stylesheet");
 scriptElem.setAttribute('type', "text/css");
 document.body.appendChild(scriptElem);
