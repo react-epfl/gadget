@@ -31,7 +31,7 @@ that data is being processed
 <![CDATA[
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
-<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/rating/jquery.rating.pack.js"></script>
+<script type="text/javascript" src="http://www.pl-area.net/gadgets/libs/rating/jquery.rating.pack.js"></script>
 
 
 <style type="text/css">
@@ -50,7 +50,7 @@ form {
 
 fieldset div {
 	margin:0.3em 0;
-	clear:both;
+	#clear:both;
 }
 
 label {
@@ -141,6 +141,10 @@ input.button{
 	margin-top:0.5em;
 }
 
+#add_skill{
+	clear:both;
+	float:left
+}
 
 /*end imported css*/
 table{
@@ -336,8 +340,8 @@ table{
   <fieldset>
 		<legend>Add a new skill</legend>
 		<div><label>Topic</label> <input type="text" id="new_skill_topic" name="new_skill_topic"></div>
-		<!--<div><label>Level</label> <input type="text" id="new_skill_level" name="new_skill_level"></div>-->
-		<div  id="rating">
+		<div style="display:none"><label>Level</label> <input type="text" id="new_skill_level" name="new_skill_level"></div>
+		<div  id="rating" style="display:block">
 			<label>Level</label>
 			<input name="auto_star" type="radio" class="auto-submit-star" value="1"/>
 			<input name="auto_star" type="radio" class="auto-submit-star" value="2"/>
@@ -346,13 +350,8 @@ table{
 			<input name="auto_star" type="radio" class="auto-submit-star" value="5"/>
 			<input name="auto_star" type="radio" class="auto-submit-star" value="6"/>
 			<input name="auto_star" type="radio" class="auto-submit-star" value="7"/>
-			<input name="auto_star" type="radio" class="auto-submit-star" value="8"/>		
-			<div style="display:none">
-			  <button onclick="save()">Add</button>
-			  or
-			  <a href="#" class="cancel" onclick="cancel(); return false;">Cancel</button>
-			</div>    			
-		</div>		
+			<input name="auto_star" type="radio" class="auto-submit-star" value="8"/>				
+		</div>	
 		<input type="button" value ="Add new skill" id = "add_skill" onclick = "add_item(skills_fields,'skills',show_skills)"></input>
 	</fieldset>
 	<fieldset>
@@ -387,6 +386,13 @@ table{
   var academics_fields ={"new_diploma_start_day":"", "new_diploma_start_month":"","new_diploma_start_year":"","new_diploma_end_day":"","new_diploma_end_month":"", "new_diploma_end_year":"","new_diploma_topic":"", "new_diploma_institution":""};
   var skills_fields ={"new_skill_topic":"", "new_skill_level":""};
 
+	// Skill rating : load stylesheets (hacky, problem in shindig in css with background:url(image.png))
+	var scriptElem = document.createElement('link');
+	scriptElem.setAttribute('href', "http://www.pl-area.net/gadgets/libs/rating/jquery.rating.css");
+	scriptElem.setAttribute('rel', "stylesheet");
+	scriptElem.setAttribute('type', "text/css");
+	document.body.appendChild(scriptElem); 
+	var skillLevel = 0;
 //************************************* 
 //#####  skill level ######
 //************************************* 
@@ -397,12 +403,16 @@ table{
 //************************************* 
 var initialize = function() {
 
-	// load stylesheets (hacky, problem in shindig in css with background:url(image.png))
-	var scriptElem = document.createElement('link');
-	scriptElem.setAttribute('href', "http://graaasp.epfl.ch/gadget/prod/rating/files/jquery.rating.css");
-	scriptElem.setAttribute('rel', "stylesheet");
-	scriptElem.setAttribute('type', "text/css");
-	document.body.appendChild(scriptElem);  
+ 	 // add rating "watcher"
+	$('.auto-submit-star').rating({
+	  callback: function(value, link){
+	    skillLevel = value;
+	    console.log("skill Level="+skillLevel);
+	    document.getElementById('new_skill_level').value=value;
+	  }
+	}); 
+	//remove default cancel rating sign
+	$('.rating-cancel').remove();
 	
     // batch: get viewer and context for gadget
     var batch = osapi.newBatch();
@@ -633,9 +643,10 @@ function add_item(fields, appdata_key, calling_func){
 	 osapi.appdata.get({userId: app.viewer.id}).execute(function(data){
 	 	console.log("ADDING NEW ITEM");
 	 	console.log("data object retrieved "+JSON.stringify(data));
+	 	var data_object = [];
      	if (data[app.viewer.id]){
      		if(data[app.viewer.id][appdata_key]){
-     			var data_object=JSON.parse(data[app.viewer.id][appdata_key]);
+     			data_object=JSON.parse(data[app.viewer.id][appdata_key]);
      			console.log("parsed data with key "+appdata_key);
      		}else{
      			var data_object=[];
