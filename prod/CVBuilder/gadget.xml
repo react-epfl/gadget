@@ -3,11 +3,11 @@
   <ModulePrefs title="CVBuilder gadget" 
                 author_email="freddy.limpens@epfl.ch" 
                 author="Freddy Limpens	" 
-                description="multi tab form-style gaget to edit and export nicely typed CVs"
+                description="multi tab form-style gaget to edit and export nicely typed Europass-compatible CVs"
                 width="500"
                 height="500"
-                thumbnail="http://graaasp.epfl.ch/gadget/prod/iframe/thumbnail.png"
-                screenshot="http://graaasp.epfl.ch/gadget/prod/iframe/screenshot.png">
+                thumbnail="http://graaasp.epfl.ch/gadget/prod/CVBuilder/thumbnail.gif"
+                screenshot="http://graaasp.epfl.ch/gadget/prod/CVBuilder/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
