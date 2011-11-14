@@ -84,6 +84,10 @@ fieldset {
 	padding:0 0.5em 0.5em;
 }
 
+#add_skill{
+	clear:both;
+	float:left
+}
 
 .date fieldset label {
 	float:none;
@@ -141,10 +145,6 @@ input.button{
 	margin-top:0.5em;
 }
 
-#add_skill{
-	clear:both;
-	float:left
-}
 
 /*end imported css*/
 table{
@@ -154,6 +154,7 @@ table{
     text-align:center;
     margin-top: 0;
    # table-layout: fixed;
+   font-size:0.9em;
   }
   
 
@@ -182,7 +183,8 @@ table{
   <li id = "academics_tab" onclick = "show_academics()">Academics</li>
   <li id = "experience_tab" onclick = "show_experience()">Experience</li>
   <li id = "skills_tab" onclick = "show_skills()">Skills</li>
-  <input type="button" id = "save_to_pdf" onclick = "save_to_pdf()" value="Export to PDF" style="display: inline; padding: 3px 10px; font-size: 12; position: relative; bottom:1em;"></input>
+  <input type="button" id = "save_to_pdf" onclick = "save_to_pdf()" value="Export to PDF" style="display: inline; padding: 3px 10px;  position: relative; bottom:1em;"></input>
+  
 </ul>
 
 <!-- ###  CONTACT TAB ### -->
@@ -231,7 +233,7 @@ table{
 				<div>
 					<label for="year">Year</label>
 					<select id="new_diploma_start_year">
-						<option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option>
+						<option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option>
 					</select>
 				</div>
 			</fieldset>
@@ -253,7 +255,7 @@ table{
 				<div>
 					<label for="year">Year</label>
 					<select id="new_diploma_end_year">
-						<option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option>
+						<option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option>
 					</select>
 				</div>
 			</fieldset>
@@ -294,7 +296,7 @@ table{
 				<div>
 					<label for="year">Year</label>
 					<select id="new_expe_start_year">
-						<option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option>
+						<option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option>
 					</select>
 				</div>
 			</fieldset>
@@ -316,7 +318,7 @@ table{
 				<div>
 					<label for="year">Year</label>
 					<select id="new_expe_end_year">
-						<option value="2004">2004</option><option value="2005">2005</option><option value="2006">2006</option><option value="2007">2007</option><option value="2008">2008</option>
+						<option value="2012">2012</option><option value="2011">2011</option><option value="2010">2010</option><option value="2009">2009</option><option value="2008">2008</option><option value="2007">2007</option><option value="2006">2006</option><option value="2005">2005</option><option value="2004">2004</option><option value="2003">2003</option><option value="2002">2002</option><option value="2001">2001</option><option value="2000">2000</option><option value="1999">1999</option><option value="1998">1998</option><option value="1997">1997</option><option value="1996">1996</option><option value="1995">1995</option><option value="1994">1994</option><option value="1993">1993</option><option value="1992">1992</option><option value="1991">1991</option><option value="1990">1990</option><option value="1989">1989</option><option value="1988">1988</option><option value="1987">1987</option><option value="1986">1986</option><option value="1985">1985</option><option value="1984">1984</option><option value="1983">1983</option><option value="1982">1982</option><option value="1981">1981</option><option value="1980">1980</option><option value="1979">1979</option><option value="1978">1978</option><option value="1977">1977</option><option value="1976">1976</option><option value="1975">1975</option><option value="1974">1974</option><option value="1973">1973</option><option value="1972">1972</option><option value="1971">1971</option><option value="1970">1970</option>
 					</select>
 				</div>
 			</fieldset>
@@ -361,6 +363,9 @@ table{
 	</fieldset>
 </div>
 
+<ul>
+	 <input type="button" id = "reset" onclick = "reset()" value="Reset ALL data" style="display: inline; padding: 3px 10px;  position: relative; bottom:1em; top:1em"></input>
+</ul>
 
 
 <script type="text/javascript">
@@ -393,10 +398,6 @@ table{
 	scriptElem.setAttribute('type', "text/css");
 	document.body.appendChild(scriptElem); 
 	var skillLevel = 0;
-//************************************* 
-//#####  skill level ######
-//************************************* 
-
   
 //************************************* 
 //#####  initialization function ######
@@ -511,12 +512,12 @@ var initialize = function() {
 	
 	//creat contact data object
 	var contactData = {
-			"firstName":document.getElementById('firstname').value,
-			"lastName":document.getElementById('lastname').value,
-			"email":document.getElementById('email').value,
-			"address":document.getElementById('address').value,
-			"city":document.getElementById('city').value,
-			"country":document.getElementById('country').value
+			"firstName":escape(document.getElementById('firstname').value),
+			"lastName":escape(document.getElementById('lastname').value),
+			"email":escape(document.getElementById('email').value),
+			"address":escape(document.getElementById('address').value),
+			"city":escape(document.getElementById('city').value),
+			"country":escape(document.getElementById('country').value)
 			};
 
 	//update appdata object
@@ -540,7 +541,7 @@ function show_academics(){
   
  
   //Erasing the old view of the table
-    $("#table_diploma").replaceWith("<table id = 'table_diploma' rules='rows' frame='hsides'><tr><th id ='start' style='width=15%'>Start</th><th id='End' style='width=15%'>End</th><th id = 'topic'style='width=35%'>Main Topic/Skill</th><th id='institution' style='width=25%'>Institution</th><th style='width=10%'></th></tr></table>");
+    $("#table_diploma").replaceWith("<table id = 'table_diploma' rules='rows' frame='hsides'><tr><th id ='start' style='width:15%'>Start</th><th id='End' style='width:15%'>End</th><th id = 'topic'style='width:35%'>Main Topic/Skill</th><th id='institution' style='width:25%'>Institution</th><th style='width:10%'></th></tr></table>");
     
     // get appdata
     osapi.appdata.get({userId: app.viewer.id}).execute(function(data){
@@ -555,8 +556,8 @@ function show_academics(){
 				console.log(item);	
 				item="<tr><td>" + data[i].new_diploma_start_month+"/"+data[i].new_diploma_start_year+
 					"</td><td>" + data[i].new_diploma_end_month+"/"+ data[i].new_diploma_end_year+ 
-					"</td><td>" + data[i].new_diploma_topic + 
-					"</td><td>"+ data[i].new_diploma_institution+
+					"</td><td>" + unescape(data[i].new_diploma_topic) + 
+					"</td><td>"+ unescape(data[i].new_diploma_institution)+
 					"</td><td><input type='button' value='-' onclick='remove_item(\"diplomas\", "+i+",show_academics)'></input></td></tr>";			
 			    console.log(item);
 			    $("#table_diploma").append(item);
@@ -573,7 +574,7 @@ function show_experience(){
 	changeCurrent(current, "experience");    
 
 	//Erasing the old view of the table
-    $("#table-expe").replaceWith("<table id = 'table-expe' rules='rows' frame='hsides'><tr><th id ='start_expe' style='width=15%'>Start</th><th id='end_expe' style='width=15%'>End</th><th id='activity_expe' style='width=35%'>Description</th><th id='employer' style='width=25%'>Employer</th><th style='width=10%'></th></tr></table>");
+    $("#table-expe").replaceWith("<table id = 'table-expe' rules='rows' frame='hsides'><tr><th id ='start_expe' style='width:15%'>Start</th><th id='end_expe' style='width:15%'>End</th><th id='activity_expe' style='width:35%'>Description</th><th id='employer' style='width:25%'>Employer</th><th style='width:10%'></th></tr></table>");
     
     // get appdata
     osapi.appdata.get({userId: app.viewer.id}).execute(function(data){
@@ -587,8 +588,8 @@ function show_experience(){
 				console.log(item);	
 				item="<tr><td>" + data[i].new_expe_start_month+"/"+data[i].new_expe_start_year+
 					"</td><td>" + data[i].new_expe_end_month+"/"+data[i].new_expe_end_year + 
-					"</td><td>" + data[i].new_expe_activity + 
-					"</td><td>"+ data[i].new_expe_employer+
+					"</td><td>" + unescape(data[i].new_expe_activity )+ 
+					"</td><td>"+ unescape(data[i].new_expe_employer)+
 					"</td><td><input type='button' value='-' onclick='remove_item(\"experience\", "+i+",show_experience)'></input></td></tr>";			
 			    console.log(item);
 			    $("#table-expe").append(item);
@@ -616,8 +617,8 @@ function show_skills(){
 			console.log("skills table length="+data.length);
 			for(i=data.length-1; i>=0; i--)
 			{					
-				item="<tr><td>" + data[i].new_skill_topic+
-					"</td><td>" + data[i].new_skill_level +					
+				item="<tr><td>" + unescape(data[i].new_skill_topic)+
+					"</td><td>" + data[i].new_skill_level + "/8"+					
 					"</td><td><input type='button' value='-' onclick='remove_item(\"skills\", "+i+",show_skills)'></input></td></tr>";			
 			    console.log(item);
 			    $("#table-skills").append(item);
@@ -626,20 +627,29 @@ function show_skills(){
 	});    
 }
 //*************************************  
+ //## fction to reset all data
+ //************************************* 
+function reset(){   
+	alert("WARNING\n This will ERASE all submitted and stored DATA\n (Press Escape key to discard, OK to proceed)");
+	osapi.appdata.update({"userId":app.viewer.id, "data": {"contact":"", "experience":"", "skills":"", "diplomas":""}}).execute(function(response){
+	if (response.error){
+		alert("Error " + response.error.code + " when *RESETTING* item  " + response.error.message); 
+	} 
+	else {
+		console.log("All data erased "+JSON.stringify(response)); 		    
+		}	      		
+	});  
+}
+//*************************************  
  //## fction to add new ITEM (GENERIC)
  //************************************* 
 function add_item(fields, appdata_key, calling_func){
-	//create tmp object
-//!! Should escape XML forbidden char.
-	
+	//Collect data and create tmp data object	
 	for (var key in fields){		
-		fields[key] = document.getElementById(key).value;		
+		fields[key] = escape(document.getElementById(key).value);		
 	};	
-	//test
-	console.log("Fields from FOR LOOP:"+JSON.stringify(fields));	
-		
-	// add new expe and update appdata
-	
+			
+	// add new expe and update appdata	
 	 osapi.appdata.get({userId: app.viewer.id}).execute(function(data){
 	 	console.log("ADDING NEW ITEM");
 	 	console.log("data object retrieved "+JSON.stringify(data));
@@ -653,22 +663,24 @@ function add_item(fields, appdata_key, calling_func){
      			console.log("empty data");
      		}
      	}
-
+		// add collected data to current appdata
       	data_object.push(fields);
-      	
+      	// Prepare request's parameters: hack passing through a string parsed afterwards to be able 
+      	// to change the field updated in appdata object 
       	var data_object_string = JSON.stringify(data_object);
-     	data_object_string = data_object_string.replace(/\"/g,"\\\"");
+     	data_object_string = data_object_string.replace(/\"/g,"\\\""); // double escape of "
      	var param_object_string="{\"userId\":\""+app.viewer.id+"\", \"data\": {\""+appdata_key+"\": \""+data_object_string+"\"}}";
 		console.log(param_object_string);
 		var param_object = JSON.parse(param_object_string);
-		console.log(JSON.stringify(param_object));    
+		console.log(JSON.stringify(param_object));   
+		//submit request 
       	osapi.appdata.update(param_object).execute(function(response){
  			if (response.error){
     			alert("Error " + response.error.code + " when *adding* item  " + response.error.message); 
     		} 
    			else {
     			console.log("ITEM ADDITION Success "+JSON.stringify(response)); 		    
-    			calling_func();
+    			calling_func(); // go back to where we come from
      		}	      		
     	});   
 
@@ -841,7 +853,7 @@ function save_to_pdf(){
 		// make Request
 		var filename=cvdata.identification.lastname;
 		console.log("opening window");
-		window.open('http://graaasp.epfl.ch:3000/proxy/cv.json?filename='+filename+'&data='+JSON.stringify(cvdata));
+		window.open('http://graaasp.epfl.ch/proxy/cv.json?filename='+filename+'&data='+JSON.stringify(cvdata));
 		
     });    
     
