@@ -31,7 +31,7 @@ that data is being processed
 <![CDATA[
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
-<script type="text/javascript" src="http://www.pl-area.net/gadgets/libs/rating/jquery.rating.pack.js"></script>
+<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/rating/jquery.rating.pack.js"></script>
 
 
 <style type="text/css">
@@ -388,7 +388,7 @@ table{
 
 	// Skill rating : load stylesheets (hacky, problem in shindig in css with background:url(image.png))
 	var scriptElem = document.createElement('link');
-	scriptElem.setAttribute('href', "http://www.pl-area.net/gadgets/libs/rating/jquery.rating.css");
+	scriptElem.setAttribute('href', "http://graaasp.epfl.ch/gadget/libs/rating/jquery.rating.css");
 	scriptElem.setAttribute('rel', "stylesheet");
 	scriptElem.setAttribute('type', "text/css");
 	document.body.appendChild(scriptElem); 
@@ -841,7 +841,7 @@ function save_to_pdf(){
 		// make Request
 		var filename=cvdata.identification.lastname;
 		console.log("opening window");
-		window.open('http://iamac71.epfl.ch:3000/proxy/cv.json?filename='+filename+'&data='+JSON.stringify(cvdata));
+		window.open('http://graaasp.epfl.ch:3000/proxy/cv.json?filename='+filename+'&data='+JSON.stringify(cvdata));
 		
     });    
     
