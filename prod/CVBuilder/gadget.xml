@@ -512,12 +512,12 @@ var initialize = function() {
 	
 	//creat contact data object
 	var contactData = {
-			"firstName":escape(document.getElementById('firstname').value),
-			"lastName":escape(document.getElementById('lastname').value),
-			"email":escape(document.getElementById('email').value),
-			"address":escape(document.getElementById('address').value),
-			"city":escape(document.getElementById('city').value),
-			"country":escape(document.getElementById('country').value)
+			"firstName":encodeURIComponent(document.getElementById('firstname').value),
+			"lastName":encodeURIComponent(document.getElementById('lastname').value),
+			"email":encodeURIComponent(document.getElementById('email').value),
+			"address":encodeURIComponent(document.getElementById('address').value),
+			"city":encodeURIComponent(document.getElementById('city').value),
+			"country":encodeURIComponent(document.getElementById('country').value)
 			};
 
 	//update appdata object
@@ -556,8 +556,8 @@ function show_academics(){
 				console.log(item);	
 				item="<tr><td>" + data[i].new_diploma_start_month+"/"+data[i].new_diploma_start_year+
 					"</td><td>" + data[i].new_diploma_end_month+"/"+ data[i].new_diploma_end_year+ 
-					"</td><td>" + unescape(data[i].new_diploma_topic) + 
-					"</td><td>"+ unescape(data[i].new_diploma_institution)+
+					"</td><td>" + decodeURIComponent(data[i].new_diploma_topic) + 
+					"</td><td>"+ decodeURIComponent(data[i].new_diploma_institution)+
 					"</td><td><input type='button' value='-' onclick='remove_item(\"diplomas\", "+i+",show_academics)'></input></td></tr>";			
 			    console.log(item);
 			    $("#table_diploma").append(item);
@@ -588,8 +588,8 @@ function show_experience(){
 				console.log(item);	
 				item="<tr><td>" + data[i].new_expe_start_month+"/"+data[i].new_expe_start_year+
 					"</td><td>" + data[i].new_expe_end_month+"/"+data[i].new_expe_end_year + 
-					"</td><td>" + unescape(data[i].new_expe_activity )+ 
-					"</td><td>"+ unescape(data[i].new_expe_employer)+
+					"</td><td>" + decodeURIComponent(data[i].new_expe_activity )+ 
+					"</td><td>"+ decodeURIComponent(data[i].new_expe_employer)+
 					"</td><td><input type='button' value='-' onclick='remove_item(\"experience\", "+i+",show_experience)'></input></td></tr>";			
 			    console.log(item);
 			    $("#table-expe").append(item);
@@ -617,7 +617,7 @@ function show_skills(){
 			console.log("skills table length="+data.length);
 			for(i=data.length-1; i>=0; i--)
 			{					
-				item="<tr><td>" + unescape(data[i].new_skill_topic)+
+				item="<tr><td>" + decodeURIComponent(data[i].new_skill_topic)+
 					"</td><td>" + data[i].new_skill_level + "/8"+					
 					"</td><td><input type='button' value='-' onclick='remove_item(\"skills\", "+i+",show_skills)'></input></td></tr>";			
 			    console.log(item);
@@ -646,7 +646,7 @@ function reset(){
 function add_item(fields, appdata_key, calling_func){
 	//Collect data and create tmp data object	
 	for (var key in fields){		
-		fields[key] = escape(document.getElementById(key).value);		
+		fields[key] = encodeURIComponent(document.getElementById(key).value);		
 	};	
 			
 	// add new expe and update appdata	
@@ -738,12 +738,12 @@ function save_to_pdf(){
 	cvdata={"locale":"en_GB","docInfo":{"issuedate":"19/10/2011","xsdversion":"V2.0","comment":"AutomaticallygeneratedEuropassCV"},"prefs":[{"name":"step1.firstName","before":"step1.lastName"},{"name":"step1.addressInfo","keep":"true"},{"name":"step1.telephone","keep":"false"},{"name":"step1.mobile","keep":"false"},{"name":"step1.fax","keep":"false"},{"name":"step1.email","keep":"true"},{"name":"step1.nationality","keep":"false"},{"name":"step1.birthDate","keep":"false","format":""},{"name":"step1.gender","keep":"false"},{"name":"step1.photo","keep":"false"},{"name":"step1.application.label","keep":"false"},{"name":"step3List","keep":"true","before":"step4List"},{"name":"step3List[0].company.sector.label","keep":"false"},{"name":"step3List[0].company.addressInfo","keep":"false"},{"name":"step3List[0].company.name","keep":"true"},{"name":"step3List[0].activities","keep":"true"},{"name":"step3List[0].position.label","keep":"false"},{"name":"step4List","keep":"true"},{"name":"step4List[0].level.label","keep":"false"},{"name":"step4List[0].educationalOrg.addressInfo","keep":"false"},{"name":"step4List[0].educationalOrg.name","keep":"true"},{"name":"step4List[0].skills","keep":"true"},{"name":"step4List[0].title","keep":"false"},{"name":"step5.motherLanguages","keep":"false"},{"name":"step5.foreignLanguageList","keep":"false"},{"name":"step6.socialSkills","keep":"false"},{"name":"step6.organisationalSkills","keep":"false"},{"name":"step6.technicalSkills","keep":"false"},{"name":"step6.computerSkills","keep":"false"},{"name":"step6.artisticSkills","keep":"false"},{"name":"step6.otherSkills","keep":"true"},{"name":"step6.drivingLicences","keep":"false"},{"name":"step7.additionalInfo","keep":"false"},{"name":"step7.annexes","keep":"false"},{"name":"grid","keep":"false"}],"identification":{"firstname":"","lastname":"","contactinfo":{"address":{"addressLine":[""],"municipality":"","postalCode":"","country":{"code":"","label":""}},"telephone":"","fax":"","mobile":"","email":""},"demographics":{"birthdate":null,"gender":"NA","nationality":[{"code":null,"label":"\t\t\t\t"}]}},"application":{"code":null,"label":""},"workexperiencelist":[{"period":{"from":{"year":"2000","month":"01","day":"01"},"to":{"year":"2001","month":"01","day":"01"}},"position":{"code":null,"label":""},"activities":"","employer":{"name":"","address":{"addressLine":[""],"municipality":"","postalCode":"","country":{"label":""}},"sector":{"code":null,"label":""}}}],"educationlist":[{"period":{"from":{"year":"2000","month":"01","day":"01"},"to":{"year":"2001","month":"01","day":"01"}},"title":"","skills":"","organisation":{"name":"","address":{"addressLine":[""],"municipality":"","postalCode":"","country":{"label":""}},"type":""},"level":{"code":null,"label":""},"educationalfield":{"code":null,"label":""}}],"languagelist":[{"type":"europass:mother","label":""}],"skilllist":{"skill":[{"type":"social","value":""},{"type":"organisational","value":""},{"type":"technical","value":""},{"type":"computer","value":""},{"type":"artistic","value":""},{"type":"other","value":""}],"structured-skill":[{"type":"europass:driving","drivinglicence":null}]},"misclist":[{"type":"additional","value":""},{"type":"annexes","value":""}]};
 	
 	// retrieve data from contact fields	
-	cvdata.identification.firstname=document.getElementById('firstname').value;
-	cvdata.identification.lastname=document.getElementById('lastname').value;
-	cvdata.identification.contactinfo.email=document.getElementById('email').value;
-	cvdata.identification.contactinfo.address.addressLine[0]=document.getElementById('address').value;
-	cvdata.identification.contactinfo.address.municipality=document.getElementById('city').value;
-	cvdata.identification.contactinfo.address.country.label=document.getElementById('country').value;
+	cvdata.identification.firstname=decodeURIComponent(document.getElementById('firstname').value);
+	cvdata.identification.lastname=decodeURIComponent(document.getElementById('lastname').value);
+	cvdata.identification.contactinfo.email=decodeURIComponent(document.getElementById('email').value);
+	cvdata.identification.contactinfo.address.addressLine[0]=decodeURIComponent(document.getElementById('address').value);
+	cvdata.identification.contactinfo.address.municipality=decodeURIComponent(document.getElementById('city').value);
+	cvdata.identification.contactinfo.address.country.label=decodeURIComponent(document.getElementById('country').value);
 	
 	console.log(JSON.stringify(cvdata));
 	
@@ -787,8 +787,8 @@ function save_to_pdf(){
 				cvdata.workexperiencelist[i].period.to.year = expedata[i].new_expe_end_year;
 				cvdata.workexperiencelist[i].period.to.month = expedata[i].new_expe_end_month;
 				cvdata.workexperiencelist[i].period.to.day = expedata[i].new_expe_end_day;
-				cvdata.workexperiencelist[i].activities = escape(expedata[i].new_expe_activity);
-				cvdata.workexperiencelist[i].employer.name = escape(expedata[i].new_expe_employer);
+				cvdata.workexperiencelist[i].activities = decodeURIComponent(expedata[i].new_expe_activity);
+				cvdata.workexperiencelist[i].employer.name = decodeURIComponent(expedata[i].new_expe_employer);
 				console.log("AFTER cvdata.workexperiencelist[i]= "+JSON.stringify(cvdata.workexperiencelist[i]));
 				console.log("*CV Data expe:*"+JSON.stringify(cvdata.workexperiencelist));
 			}						  
@@ -839,9 +839,9 @@ function save_to_pdf(){
 				console.log("month filled");
 				cvdata.educationlist[i].period.to.day = dipdata[i].new_diploma_end_day;
 				console.log("day filled");
-				cvdata.educationlist[i].skills = escape(dipdata[i].new_diploma_topic);
+				cvdata.educationlist[i].skills = decodeURIComponent(dipdata[i].new_diploma_topic);
 				console.log("topic filled");
-				cvdata.educationlist[i].organisation.name = escape(dipdata[i].new_diploma_institution);
+				cvdata.educationlist[i].organisation.name = decodeURIComponent(dipdata[i].new_diploma_institution);
 				console.log("institution filled");
 			}						  
 			console.log("end fill diplo");
@@ -849,11 +849,13 @@ function save_to_pdf(){
 		
 		console.log("out");
 	    //console.log(cvdata);
+		
 		console.log(JSON.stringify(cvdata));
+		console.log(encodeURIComponent(JSON.stringify(cvdata)));
 		// make Request
 		var filename=cvdata.identification.lastname;
 		console.log("opening window");
-		window.open('http://graaasp.epfl.ch/proxy/cv.json?filename='+filename+'&data='+JSON.stringify(cvdata));
+		window.open('http://graaasp.epfl.ch/proxy/cv.json?filename='+filename+'&data='+encodeURIComponent(JSON.stringify(cvdata)));
 		
     });    
     
@@ -875,6 +877,13 @@ function save_to_pdf(){
     $("#" + newer).show();
     current = newer;
   }
+
+//************************************* 
+//## fction to protect data with <![CDATA[  ]]> 
+//************************************* 
+function escapeData(string){
+	return "<![CDATA["+string+"]]>";
+}
 
 //************************************* 
 //## fction to get the date  
