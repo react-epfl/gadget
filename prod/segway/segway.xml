@@ -3,7 +3,7 @@
   <ModulePrefs title="Segway Control Simulation" 
                 author_email="benjamin.fankhauser@epfl.ch" 
                 author="Benjamin Fankhauser" 
-                description="Text area that can be edited by all users of a certain space"
+                description="Text area that can be edited by all users of a certain space!"
                 width="500"
                 height="500"
                 thumbnail="http://graaasp.epfl.ch/gadget/prod/segway/scrn.png"
@@ -96,9 +96,9 @@ function reset(){
 	$("#ubox_nl_mm").show();
 	}
 function updateValues(){
-	x[1]=parseFloat($("#x_1").val()*100);
+	x[1]=parseFloat($("#x_1").val());
 	x[2]=parseFloat($("#x_2").val())/180*Math.PI;
-	x[3]=parseFloat($("#x_3").val()*100);
+	x[3]=parseFloat($("#x_3").val());
 	x[4]=parseFloat($("#x_4").val())/180*Math.PI;
 	xln=x;
 	K[1]=parseFloat($("#k_xi").val());
