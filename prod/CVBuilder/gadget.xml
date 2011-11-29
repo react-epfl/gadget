@@ -482,23 +482,23 @@ var initialize = function() {
 	    	console.log(JSON.stringify(contact)); 	   
 	    
 			if (contact.firstName){
-		  		document.getElementById('firstname').value=contact.firstName;
+		  		document.getElementById('firstname').value=decodeURIComponent(contact.firstName);
 		  	}
 		  	if (contact.lastName){
-		  		document.getElementById('lastname').value=contact.lastName;
+		  		document.getElementById('lastname').value=decodeURIComponent(contact.lastName);
 		  	}
 		  	// email 	  		  	
 		  	if(contact.email){
-		  		document.getElementById('email').value=contact.email;	
+		  		document.getElementById('email').value=decodeURIComponent(contact.email);	
 			}
 			if(contact.address){
-		  		document.getElementById('address').value=contact.address;	
+		  		document.getElementById('address').value=decodeURIComponent(contact.address);	
 			}
 			if(contact.city){
-		  		document.getElementById('city').value=contact.city;	
+		  		document.getElementById('city').value=decodeURIComponent(contact.city);	
 			}
 			if(contact.country){
-		  		document.getElementById('country').value=contact.country;	
+		  		document.getElementById('country').value = decodeURIComponent(contact.country);	
 			}
 		}	
 	});
@@ -801,7 +801,7 @@ function save_to_pdf(){
 			var other_skills="";
 			for(i=0; i<=skilldata.length-1; i++)
 			{	
-				other_skills = other_skills+ skilldata[i].new_skill_topic + "(level: "+skilldata[i].new_skill_level+")\n";							
+				other_skills = other_skills+ decodeURIComponent(skilldata[i].new_skill_topic) + "(level: "+skilldata[i].new_skill_level+")\n";							
 			}	
 			cvdata.skilllist.skill[5].value = other_skills; 	
 								  
@@ -855,7 +855,7 @@ function save_to_pdf(){
 		// make Request
 		var filename=cvdata.identification.lastname;
 		console.log("opening window");
-		window.open('http://graaasp.epfl.ch/proxy/cv.json?filename='+filename+'&data='+encodeURIComponent(JSON.stringify(cvdata)));
+		window.open('http://graaasp.epfl.ch/proxy/cv.json?filename='+filename+'&data='+escapeData(encodeURIComponent(JSON.stringify(cvdata))));
 		
     });    
     
@@ -879,10 +879,14 @@ function save_to_pdf(){
   }
 
 //************************************* 
-//## fction to protect data with <![CDATA[  ]]> 
+//## fction to protect data with 
 //************************************* 
 function escapeData(string){
-	return "<![CDATA["+string+"]]>";
+	return "<!"+"[CDATA["+string+"]"+"]>";
+}
+
+function unescapeData(string){
+	return string.substring(9,(string.length-3))
 }
 
 //************************************* 
