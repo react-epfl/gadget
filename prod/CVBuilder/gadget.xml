@@ -23,7 +23,9 @@ in tables for other tabs
 that data is being processed 
 - serve the pdf for download
 
-
+#####  TODO   ######
+- before displaying, change "<" or ">" into "&lt;" or "&gt;" otherwise the HTML code is screwed up. 
+This pb does not affect PDF generation and these characters display correctly in the final PDF 
 
 
 -->
@@ -556,8 +558,8 @@ function show_academics(){
 				console.log(item);	
 				item="<tr><td>" + data[i].new_diploma_start_month+"/"+data[i].new_diploma_start_year+
 					"</td><td>" + data[i].new_diploma_end_month+"/"+ data[i].new_diploma_end_year+ 
-					"</td><td>" + decodeURIComponent(data[i].new_diploma_topic) + 
-					"</td><td>"+ decodeURIComponent(data[i].new_diploma_institution)+
+					"</td><td>" + escapeSpecial(decodeURIComponent(data[i].new_diploma_topic)) + 
+					"</td><td>"+ escapeSpecial(decodeURIComponent(data[i].new_diploma_institution))+
 					"</td><td><input type='button' value='-' onclick='remove_item(\"diplomas\", "+i+",show_academics)'></input></td></tr>";			
 			    console.log(item);
 			    $("#table_diploma").append(item);
@@ -588,8 +590,8 @@ function show_experience(){
 				console.log(item);	
 				item="<tr><td>" + data[i].new_expe_start_month+"/"+data[i].new_expe_start_year+
 					"</td><td>" + data[i].new_expe_end_month+"/"+data[i].new_expe_end_year + 
-					"</td><td>" + decodeURIComponent(data[i].new_expe_activity )+ 
-					"</td><td>"+ decodeURIComponent(data[i].new_expe_employer)+
+					"</td><td>" + escapeSpecial(decodeURIComponent(data[i].new_expe_activity ))+ 
+					"</td><td>"+ escapeSpecial(decodeURIComponent(data[i].new_expe_employer))+
 					"</td><td><input type='button' value='-' onclick='remove_item(\"experience\", "+i+",show_experience)'></input></td></tr>";			
 			    console.log(item);
 			    $("#table-expe").append(item);
@@ -617,7 +619,7 @@ function show_skills(){
 			console.log("skills table length="+data.length);
 			for(i=data.length-1; i>=0; i--)
 			{					
-				item="<tr><td>" + decodeURIComponent(data[i].new_skill_topic)+
+				item="<tr><td>" + escapeSpecial(decodeURIComponent(data[i].new_skill_topic))+
 					"</td><td>" + data[i].new_skill_level + "/8"+					
 					"</td><td><input type='button' value='-' onclick='remove_item(\"skills\", "+i+",show_skills)'></input></td></tr>";			
 			    console.log(item);
@@ -879,7 +881,7 @@ function save_to_pdf(){
   }
 
 //************************************* 
-//## fction to protect data with 
+//## fction to protect data with CDATA
 //************************************* 
 function escapeData(string){
 	return "<!"+"[CDATA["+string+"]"+"]>";
@@ -887,6 +889,14 @@ function escapeData(string){
 
 function unescapeData(string){
 	return string.substring(9,(string.length-3))
+}
+//************************************* 
+//## fction to escape some special charaecters
+//************************************* 
+function escapeSpecial(string){
+	string = string.replace(/</g,"&lt;");
+	string = string.replace(/>/g,"&gt;");
+	return string;
 }
 
 //************************************* 
