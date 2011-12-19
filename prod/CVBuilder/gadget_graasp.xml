@@ -381,6 +381,7 @@ table{
   // set the "contact" tab to default one
   var current_tab = "contact_tab";
   var current = "contact";
+  var userIsOwner = false;
   $("#academics").hide();
   $("#experience").hide();
   $("#skills").hide();
@@ -427,12 +428,31 @@ var initialize = function() {
     } else {
       batch.add('context', osapi.people.getOwner());    
     }
+    batch.add('owner', osapi.people.getOwner()); 
     batch.execute(function(data){
-      app.viewer = data.viewer;
-      app.viewerName = app.viewer.displayName;
-
-      var contextId = "@owner"
-      var contextType = "@user"
+    
+		app.viewer = data.viewer;
+		app.viewerName = app.viewer.displayName;
+		
+		var contextId = "@owner"
+		var contextType = "@user"
+	//checking if owner is the same as viewer	
+		console.log("Owner ="+JSON.stringify(data.owner));
+		console.log("Viewer ="+JSON.stringify(data.viewer));
+		
+		if (data.owner.id == data.viewer.id){		 	
+		 	userIsOwner = true;
+		 	console.log("owner is the same as viewer, var="+userIsOwner);
+		 }
+		 else{
+		 	console.log("owner is NOT the same as viewer");
+		 	userIsOwner = false;
+		 }
+		    
+    
+     
+	
+        
       if (osapi.context) { // only for spaces extended container
         contextId = data.context.contextId
         contextType = data.context.contextType      
@@ -512,9 +532,15 @@ var initialize = function() {
 //************************************* 
 //### Fction to update contact info ###
 //************************************* 
-	function update_contact(){
+function update_contact(){
 	
-	//creat contact data object
+	// checking that current user is the owner of the space 
+	if (!userIsOwner){
+		alert("To update the contact info, you have to be the owner of *this installation* of the widget");
+		return 1;
+	}
+	
+	//creat contact-related data object
 	var contactData = {
 			"firstName":encodeURIComponent(document.getElementById('firstname').value),
 			"lastName":encodeURIComponent(document.getElementById('lastname').value),
@@ -534,8 +560,10 @@ var initialize = function() {
 		    	alert("Contact data updated");	    	
 		     }		    
 	  	});	   
-	}
-
+	  	
+	 // update people data
+	 
+}
 //************************************* 
 //## fction to display "Academics"   
 //************************************* 
@@ -666,7 +694,11 @@ function show_skills_people(){
  //## fction to save "Skills" in people data  
  //************************************* 
 function add_competence(){
-	
+	// checking that current user is the owner of the space 
+	if (!userIsOwner){
+		alert("You have to run the widget in a space where you have writing rights!");
+		return 1;
+	}
 	//create competence tmp object
 //!! Should escape XML forbidden char.
 	competence_tmp = {
@@ -828,7 +860,7 @@ function remove_item(appdata_key, index, calling_func){
 	});
 }
 //*************************************  
- //## fction to reset all data
+ //## fction to reset all appdata (ie/not contact nor competences)
  //************************************* 
 function reset(){   
 	alert("WARNING\n This will ERASE all submitted and stored DATA\n (Press Escape key to discard, OK to proceed)");
