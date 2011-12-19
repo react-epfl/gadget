@@ -24,9 +24,19 @@ that data is being processed
 - serve the pdf for download
 
 #####  TODO   ######
-- make user warning when running widget from a space not owned by the viewer !!
 - update contact data to "people" data and not appdata
 
+#NOTE01: for addresses and emails, data will be saved with a type "CVData" so that it does not interfere 
+with container functions. To avoid asking the user fill in again this fields, th CVBuilder widget will
+check if adress/email already exist in person data, and will pre-fill the fields so that the user only 
+have to update. However, this would not work for "name" field and in this case CVBuilder will modify 
+this info globally. 
+
+#NOTE02: which contact data fields can have a type (so that we can recognize them as being reserved for 
+the CV builder, see http://opensocial-resources.googlecode.com/svn/spec/trunk/Social-Data.xml#Person ):
+	 - address : YES
+	 - emails : ?
+	 - name : NO   
 
 -->
  
@@ -562,7 +572,22 @@ function update_contact(){
 	  	});	   
 	  	
 	 // update people data
-	 
+	 //create name temp-object:
+	 var name_object = {
+            "familyName":encodeURIComponent(document.getElementById('lastname').value),
+            "givenName":encodeURIComponent(document.getElementById('firstname').value)
+        };
+        
+     //create emails temp. object:
+     "emails":
+        [
+            {
+                "primary":true,
+                "value":"evg.b@gmail.com",
+                "type":"email"
+            }
+        ], 
+     
 }
 //************************************* 
 //## fction to display "Academics"   
