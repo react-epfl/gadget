@@ -421,8 +421,10 @@ var initialize = function() {
     var batch = osapi.newBatch();
     batch.add('viewer', osapi.people.getViewer());
     if (osapi.context) { // only for spaces extended container
+    	console.log ("Space-enabled container !!");
       batch.add('context', osapi.context.get());
     } else {
+    	console.log ("Space NOT enabled in this container !!");
       batch.add('context', osapi.people.getOwner());    
     }
     batch.execute(function(data){
@@ -472,6 +474,7 @@ var initialize = function() {
 	
 	//TEST
 	console.log("viewer id:"+app.viewer.id);
+	console.log("app context :"+ app.context);
 	
 	//B. AppData method (current)	
 	osapi.appdata.get({userId: app.viewer.id}).execute(function(data){
@@ -523,7 +526,7 @@ var initialize = function() {
 			};
 
 	//update appdata object
-	osapi.appdata.update({userId: app.viewerId, 
+	osapi.appdata.update({userId: app.viewer.id, 
 	    data: {"contact": JSON.stringify(contactData)}}).execute(function(response) {		    
 		    if (response.error) 
 		    	{ alert("Error " + response.error.code + " retrieving application data: " + response.error.message); } 
