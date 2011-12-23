@@ -567,27 +567,79 @@ function update_contact(){
 		    	{ alert("Error " + response.error.code + " retrieving application data: " + response.error.message); } 
 		    else {
 		    	console.log(JSON.stringify(response)); 
-		    	alert("Contact data updated");	    	
+		    	console.log("Contact data updated in APPDATA");	    	
 		     }		    
 	  	});	   
 	  	
-	 // update people data
+	 // ## update people data ##
 	 //create name temp-object:
-	 var name_object = {
-            "familyName":encodeURIComponent(document.getElementById('lastname').value),
-            "givenName":encodeURIComponent(document.getElementById('firstname').value)
-        };
+	 
         
      //create emails temp. object:
-     "emails":
-        [
-            {
-                "primary":true,
-                "value":"evg.b@gmail.com",
-                "type":"email"
-            }
-        ], 
+     var email_CV = {
+                "primary":false,
+                "value":encodeURIComponent(document.getElementById('email').value),
+                "type":"CVData"
+            };
+     //create CV related address object
+     var address_CV =   {
+                "streetAddress":encodeURIComponent(document.getElementById('address').value),
+                "country":encodeURIComponent(document.getElementById('country').value),
+                "locality":encodeURIComponent(document.getElementById('city').value),
+                "type":"CVData"
+            }; 
      
+     //get adress, emails, and name objects from people data
+     // the rule: IF there is already >=1 address object 
+     //				check FOR EACH if it has a type key equal to CVData => isCVData = 1; CVDataIndex = i
+     //				IF isCVData == 1
+     //					udpate address[CVDataIndex]
+     //				ELSE
+     //					add the current CVData address/email object
+     //					
+     //			ELSE
+     //				add the current CVData address/email object
+     
+      osapi.people.get({userId: "@owner"}).execute(function(data){
+	 	console.log("Updating CONTACT INFO in PEOPLE data");
+	 	console.log("emails: "+JSON.stringify(email_CV));
+	 	console.log("name: "+JSON.stringify(address_CV));
+	 	console.log("data object retrieved "+JSON.stringify(data));
+	 	// parsing already existing data
+     	if (data["name"]){     		
+     		console.log("parsing contact info : "+data["name"]);
+   			var new_name_object = data["name"];
+   			new_name_object.familyName = encodeURIComponent(document.getElementById('lastname').value);
+   			new_name_object.givenName = encodeURIComponent(document.getElementById('firstname').value);
+   			console.log("updated already existing name object");
+     	}
+     	else{     		  	
+     		var new_name_object = {
+            	"familyName":encodeURIComponent(document.getElementById('lastname').value),
+            	"givenName":encodeURIComponent(document.getElementById('firstname').value)
+        	};
+     		console.log("adding new name object");
+     	}     
+     	console.log("parsing name done");
+     		// add collected competences to data object
+      		//competences.push(competence_tmp);
+     		//console.log("\nNEW comp. data = "+JSON.stringify(competences));
+      	
+      	// save data to the array of entries
+     	osapi.people.update(
+     		{userId: "@owner", 
+      		person: {"name": new_name_object}
+      		}).execute(function(response){
+      			if (response.error){
+      				alert("Error " + response.error.code + " retrieving people for contact data: " + response.error.message); 
+      			} 
+		   		else {
+		    		console.log("Contact updated : "+JSON.stringify(response));
+		    		//reload display to see new comp. 		    
+					show_contact();
+		     	}	      		
+      		});
+	});
 }
 //************************************* 
 //## fction to display "Academics"   
