@@ -386,7 +386,7 @@ table{
   changeCurrent(current, current);
   //gadgets.util.registerOnLoadHandler(show_contact);// careful: doesn't work in moodle :>> use setTiumeOUt instead to be sure that everything is loaded before calliong
   // data object to store data
-  var app = {context: "", viewerName: "",viewerId:"", data: ""};
+  var app = {context: "", viewerName: "",viewerId:"", data: "", ownerId: ""};
   
   // fields ID array for adding new item
   var expe_fields = {"new_expe_start_day":"test","new_expe_start_month":"test","new_expe_start_year":"test", "new_expe_end_day":"test", "new_expe_end_month":"test", "new_expe_end_year":"test","new_expe_activity":"test", "new_expe_employer":"test"};
@@ -431,11 +431,13 @@ var initialize = function() {
       app.viewer = data.viewer;
       app.viewerName = app.viewer.displayName;
 
-      var contextId = "@owner"
-      var contextType = "@user"
+      var contextId = "@owner";    
+      var contextType = "@user";
       if (osapi.context) { // only for spaces extended container
         contextId = data.context.contextId
         contextType = data.context.contextType      
+      } else {
+      	app.ownerId = data.context.id; // user - owner of the widget  
       }
       var prefix = (contextType === "@space") ? "s_" : "";
       app.context = prefix + contextId;
@@ -477,14 +479,19 @@ var initialize = function() {
 	console.log("app context :"+ app.context);
 	
 	//B. AppData method (current)	
-	osapi.appdata.get({userId: app.viewer.id}).execute(function(data){
+	osapi.appdata.get({userId: app.context}).execute(function(data){
 		if (data.error) 
 		    	{ alert("Error " + data.error.code + " retrieving application data: " + data.error.message); } 
 		else {			
-			console.log(JSON.stringify(data));			
-	    	var contact = data[app.viewer.id];
+			console.log(JSON.stringify(data));
+			if (osapi.context) { // only for spaces extended container			
+	    		var contact = data[app.context];
+	    	} else {
+	    		var contact = data[app.ownerId];
+	    	}
+	    	console.log("data= "+JSON.stringify(contact));
 	    	contact = JSON.parse(contact["contact"]);
-	    	console.log(JSON.stringify(contact)); 	   
+	    	console.log("contact data= "+JSON.stringify(contact)); 	   
 	    
 			if (contact.firstName){
 		  		document.getElementById('firstname').value=decodeURIComponent(contact.firstName);
@@ -526,7 +533,7 @@ var initialize = function() {
 			};
 
 	//update appdata object
-	osapi.appdata.update({userId: app.viewer.id, 
+	osapi.appdata.update({userId: app.context, 
 	    data: {"contact": JSON.stringify(contactData)}}).execute(function(response) {		    
 		    if (response.error) 
 		    	{ alert("Error " + response.error.code + " retrieving application data: " + response.error.message); } 
