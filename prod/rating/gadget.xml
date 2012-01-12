@@ -192,8 +192,8 @@ var onMessage = function(envelope, message) {
   // get id of gadget to rate
   appId = message["appId"];
   // Deprecated:
-  if (osapi.applications) {
-    osapi.applications.get({contextId: appId}).execute(function(app) {
+  if (osapi.apps) {
+    osapi.apps.get({contextId: appId}).execute(function(app) {
       $('#app_id').text(app.displayName);    
     })
   } else {
@@ -207,15 +207,15 @@ var onMessage = function(envelope, message) {
 var getUserApp = function(users,apps,fn) {
   var batch = osapi.newBatch();
   batch.add('users', osapi.people.get({userId: users}));
-  if (osapi.applications) {
-    batch.add('apps', osapi.applications.get({contextId: apps}));
+  if (osapi.apps) {
+    batch.add('apps', osapi.apps.get({contextId: apps}));
   }
   batch.execute(function(data){
     var userHash = {};
     var appHash = {};
     var u = (data.users.list) ? data.users.list : [data.users];
     var a = apps;
-    if (osapi.applications) {
+    if (osapi.apps) {
       a = (data.apps.list) ? data.apps.list : [data.apps];
     }
     // console.log(u);

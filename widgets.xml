@@ -62,7 +62,7 @@ var my = {};
   osapi.people.getViewer().execute(function(viewer){
     osapi.context.get().execute(function(response){
       var context = response;
-      osapi.applications.get({contextId: context.contextId, contextType: context.contextType}).execute(function(response){
+      osapi.apps.get({contextId: context.contextId, contextType: context.contextType}).execute(function(response){
         // console.log(response);
   		
         build(response.list,context,viewer);

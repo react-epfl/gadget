@@ -59,7 +59,7 @@ var my = {};
   shindig.container.layoutManager = new my.LayoutManager();
 
   osapi.context.get().execute(function(response){
-    osapi.applications.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
+    osapi.apps.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
       //console.log(response);
       build(response.list);
     });

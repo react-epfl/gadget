@@ -536,7 +536,7 @@ var initialize = function() {
         array = array.concat(response.list);
         osapi.spaces.get({contextId: context.contextId, contextType: context.contextType}).execute(function(response){
           array = array.concat(response.list);
-          osapi.applications.get({contextId: context.contextId, contextType: context.contextType}).execute(function(response){
+          osapi.apps.get({contextId: context.contextId, contextType: context.contextType}).execute(function(response){
             array = array.concat(response.list);
             
             var urls = []

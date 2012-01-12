@@ -94,7 +94,7 @@ var initialize = function() {
       build_item("assets",items.documents.entry);
       build_item("people",items.people.entry);
       build_item("spaces",items.spaces.entry);
-      build_item("tools",items.applications.entry);
+      build_item("tools",items.apps.entry);
     });
 
   });
