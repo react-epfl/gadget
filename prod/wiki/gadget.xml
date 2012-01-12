@@ -6,8 +6,8 @@
                 description="Wiki gadget. The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
                 width="350"
                 height="500"
-                thumbnail="http://graaasp.epfl.ch/gadget/prod/wiki/thumbnail.png"
-                screenshot="http://graaasp.epfl.ch/gadget/prod/wiki/screenshot.png">
+                thumbnail="http://graasp.epfl.ch/gadget/prod/wiki/thumbnail.png"
+                screenshot="http://graasp.epfl.ch/gadget/prod/wiki/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -128,7 +128,7 @@
   $("#history").hide();
   changeCurrent(current, current);
   
-  var app = {context: "", viewerName: "", data: "", root_url: "http://graaasp.epfl.ch/gadget/prod/wiki/"};
+  var app = {context: "", viewerName: "", data: "", root_url: "http://graasp.epfl.ch/gadget/prod/wiki/"};
   
   
   var saved_text = "";

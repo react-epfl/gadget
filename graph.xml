@@ -18,12 +18,12 @@
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="http://graaasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+<!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
 
-<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/rgraph/RGraph.common.core.js"></script>
-<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/rgraph/RGraph.common.tooltips.js"></script>
-<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/rgraph/RGraph.bar.js"></script>
-<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/rgraph/RGraph.line.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.common.core.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.common.tooltips.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.bar.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.line.js"></script>
 
 <script type="text/javascript">
   function buildAllGraphs(data){

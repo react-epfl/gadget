@@ -6,8 +6,8 @@
                 description="Space owner enters url and it is displayed as an iframe by gadget. Space non-owners can't change url but can see iframe."
                 width="500"
                 height="500"
-                thumbnail="http://graaasp.epfl.ch/gadget/prod/iframe/thumbnail.png"
-                screenshot="http://graaasp.epfl.ch/gadget/prod/iframe/screenshot.png">
+                thumbnail="http://graasp.epfl.ch/gadget/prod/iframe/thumbnail.png"
+                screenshot="http://graasp.epfl.ch/gadget/prod/iframe/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>

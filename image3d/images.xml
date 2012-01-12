@@ -9,7 +9,7 @@
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
-  <Content view="preview" type="url" href="http://graaasp.epfl.ch/gadget/previews/pad3d.png"/>
+  <Content view="preview" type="url" href="http://graasp.epfl.ch/gadget/previews/pad3d.png"/>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
 <style type="text/css">
@@ -95,7 +95,7 @@ var isOwner = false;
 
 // gets the data and calls build for container
 var initialize = function() {
-  var url = 'http://graaasp.epfl.ch/images/logo/graaasp_logo.png';
+  var url = 'http://graasp.epfl.ch/images/logo/graaasp_logo.png';
   
   drawImage(url) 
   gadgets.openapp.connect(onEvent);

@@ -6,8 +6,8 @@
                 description="Text area that can be edited by all users of a certain space!"
                 width="500"
                 height="500"
-                thumbnail="http://graaasp.epfl.ch/gadget/prod/segway/scrn.png"
-                screenshot="http://graaasp.epfl.ch/gadget/prod/segway/scrn.png">
+                thumbnail="http://graasp.epfl.ch/gadget/prod/segway/scrn.png"
+                screenshot="http://graasp.epfl.ch/gadget/prod/segway/scrn.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -16,7 +16,7 @@
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
   
   	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
-	<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/prod/segway/rotate.js"></script>
+	<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/segway/rotate.js"></script>
 
 <script type="text/javascript">
 	var offset=30;
@@ -746,10 +746,10 @@ function nlclick(){
 <div class="main" id="animpane">
 <div id="anim" class="animation">
 	<div id="legend_ln">
-		<img src="http://graaasp.epfl.ch/gadget/prod/segway/checkbox.png"> Linear Model<br>
+		<img src="http://graasp.epfl.ch/gadget/prod/segway/checkbox.png"> Linear Model<br>
 	</div>
 	<div id="legend_nl">
-    	<img src="http://graaasp.epfl.ch/gadget/prod/segway/checkbox_nl.png"> Non-Linear Model<br>
+    	<img src="http://graasp.epfl.ch/gadget/prod/segway/checkbox_nl.png"> Non-Linear Model<br>
 	</div>	
 	<div id="ubox_ln_mm">&nbsp;</div>
 	<div id="ubox_nl_mm">&nbsp;</div>
@@ -763,11 +763,11 @@ function nlclick(){
 	<div id="dbtext">&nbsp;</div>
 	<div id="testtext">&nbsp;</div>
 	<div class="title">Control of a Segway</div>
-	<img src="http://graaasp.epfl.ch/gadget/prod/segway/baseline.png" id="baseline"/>
-    <img src="http://graaasp.epfl.ch/gadget/prod/segway/wheel_nl.png" id="wheel_nl"/>
-    <img src="http://graaasp.epfl.ch/gadget/prod/segway/handlebar_nl.png" id="handlebar_nl" onclick="nlclick()"/>
-	<img src="http://graaasp.epfl.ch/gadget/prod/segway/wheel.png" id="wheel" width="70" height="70"/>
-	<img src="http://graaasp.epfl.ch/gadget/prod/segway/handlebar.png" id="handlebar" onclick="lnclick()"/>
+	<img src="http://graasp.epfl.ch/gadget/prod/segway/baseline.png" id="baseline"/>
+    <img src="http://graasp.epfl.ch/gadget/prod/segway/wheel_nl.png" id="wheel_nl"/>
+    <img src="http://graasp.epfl.ch/gadget/prod/segway/handlebar_nl.png" id="handlebar_nl" onclick="nlclick()"/>
+	<img src="http://graasp.epfl.ch/gadget/prod/segway/wheel.png" id="wheel" width="70" height="70"/>
+	<img src="http://graasp.epfl.ch/gadget/prod/segway/handlebar.png" id="handlebar" onclick="lnclick()"/>
 </div>
 </div>
 <div class="main" id="boxpane" style="width:747;">

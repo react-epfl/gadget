@@ -4,15 +4,15 @@
                 author_email="evgeny.bogdanov@epfl.ch" 
                 author="Evgeny Bogdanov" 
                 description="OpenApp interwidget communication. Just add url with image in the right widget and left widget will show it."
-                thumbnail="http://graaasp.epfl.ch/gadget/demo/openapp/thumbnail.png"
-                screenshot="http://graaasp.epfl.ch/gadget/demo/openapp/screenshot.png">
+                thumbnail="http://graasp.epfl.ch/gadget/demo/openapp/thumbnail.png"
+                screenshot="http://graasp.epfl.ch/gadget/demo/openapp/screenshot.png">
     <!-- <Require feature="opensocial-0.9" />
     <Require feature="osapi" /> -->
     <Require feature="dynamic-height" />
     <!-- <Require feature="shindig-container" /> -->
     <!-- <Require feature="gadgetcontainer" /> -->
   </ModulePrefs>
-  <Content view="preview" type="url" href="http://graaasp.epfl.ch/gadget/previews/remote_lab.png"/>
+  <Content view="preview" type="url" href="http://graasp.epfl.ch/gadget/previews/remote_lab.png"/>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
 <style type="text/css">
@@ -48,7 +48,7 @@ var my = {};
 
   shindig.container.layoutManager = new my.LayoutManager();
 
-  var gadgets = [{"appUrl":"http://graaasp.epfl.ch/gadget/image3d/3d.xml","parentType":"@space","id":"776","parentId":"464","profileUrl":"http://graaasp.epfl.ch/#item=widget_776","updated":"2011-05-23T09:32:13.000Z","objectId":776,"name":"image3d","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/widget_thumb.png","displayName":"image3d","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"http://graaasp.epfl.ch/gadget/image3d/manager.xml","parentType":"@space","id":"777","parentId":"464","profileUrl":"http://graaasp.epfl.ch/#item=widget_777","updated":"2011-05-23T09:32:36.000Z","objectId":777,"name":"manager","thumbnailUrl":"http://graaasp.epfl.ch/images/pics/widget_thumb.png","displayName":"manager","appType":"WidgetGadget","filterCapability":{}}]
+  var gadgets = [{"appUrl":"http://graasp.epfl.ch/gadget/image3d/3d.xml","parentType":"@space","id":"776","parentId":"464","profileUrl":"http://graasp.epfl.ch/#item=widget_776","updated":"2011-05-23T09:32:13.000Z","objectId":776,"name":"image3d","thumbnailUrl":"http://graasp.epfl.ch/images/pics/widget_thumb.png","displayName":"image3d","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"http://graasp.epfl.ch/gadget/image3d/manager.xml","parentType":"@space","id":"777","parentId":"464","profileUrl":"http://graasp.epfl.ch/#item=widget_777","updated":"2011-05-23T09:32:36.000Z","objectId":777,"name":"manager","thumbnailUrl":"http://graasp.epfl.ch/images/pics/widget_thumb.png","displayName":"manager","appType":"WidgetGadget","filterCapability":{}}]
 
   build(gadgets);
 

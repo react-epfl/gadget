@@ -9,7 +9,7 @@
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
-  <Content view="preview" type="url" href="http://graaasp.epfl.ch/gadget/previews/gyroscope.png"/>
+  <Content view="preview" type="url" href="http://graasp.epfl.ch/gadget/previews/gyroscope.png"/>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
 <style type="text/css">
@@ -63,10 +63,10 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://iamac71.epfl.ch:8090/nowjs/now.js"></script>
-<!-- <script type="text/javascript" src="http://graaasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+<!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
 
-<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/glMatrix-0.9.5.min.js"></script>
-<script type="text/javascript" src="http://graaasp.epfl.ch/gadget/libs/webgl-utils.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/webgl-utils.js"></script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
     #ifdef GL_ES
