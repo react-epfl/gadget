@@ -362,7 +362,7 @@
   //initializing variables
   var needToSave = false;
   var file;
-  var root_url = "http://iamac115.epfl.ch/gadget/prod/calendar/";
+  var root_url = "http://graasp.epfl.ch/gadget/prod/calendar/";
   var tempDate = new Date();
   var day;
   var date = new Date();
@@ -376,7 +376,7 @@
   var selectedWeekDay = date.getDay();
   var viewMonth = date.getMonth();
   var viewYear = date.getFullYear();
-  var app = {context: "", viewerName: "", data: {days: [], months: []}, root_url: "http://iamac115.epfl.ch/gadgets/prod/calendar/"};
+  var app = {context: "", viewerName: "", data: {days: [], months: []}, root_url: "http://graasp.epfl.ch/gadgets/prod/calendar/"};
   //app.data = {days: [], months: []};
   var currEditDay = new DayClass(selectedYear, selectedMonth, selectedDay);
   var currEditDayPosition;
