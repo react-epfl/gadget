@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Collaborative editor" author_email="mpalmer@gmail.com" description="Makes use of an etherpad lite service." height="500">
+  <Require feature="osapi" />
+  </ModulePrefs>
+	<UserPref name="host" datatype="string" 
+               default_value="http://beta.etherpad.org"/>
+	<UserPref name="pad" datatype="string" 
+               default_value="test"/>
+  <Content type="html"><![CDATA[
+    	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+    	
+  	<style type = "text/css">
+  	  #settings, #hide{
+  	    margin-top: 5px;
+  	    margin-bottom: 5px;
+  	  }
+  	</style>
+  <button id = "settings" onclick = "showSettings();" style = "display:none">Settings</button>
+  <button id = "hide" onclick = "hideSettings();" style = "display:none">Hide</button>
+	<div id="management" style="display:none; margin-bottom: 5px;">
+	  <label style= "margin-bottom: 5px"> Host: http://beta.etherpad.org </label><br />
+    <label for="pad" >Pad: </label>
+    <input id="pad" type="text" />
+    <button onclick="changeUrl();" >Update</button>
+    <button onclick="removeUrl();" >Clear</button>
+  </div>
+	<iframe id="content" src="" width="100%" height="100%" frameborder="0"></iframe>
+	
+	<script type="text/javascript">
+	$("#pad").keypress(function(event) {if(event.keyCode == 13) {changeUrl();}})
+	
+	  var getGadget = function(){
+      // gadgets.util.registerOnLoadHandler(function(){
+        var host = "http://beta.etherpad.org";
+  			var pad = $("#pad").val();
+  			document.getElementById("content").src = host+"/p/"+pad;
+      // });
+	  }
+	  
+	  var changeUrl = function() {
+      var url = $("#pad").val();
+
+      var prefix = (contextType === "@space") ? "s_" : "";
+      var userId = prefix + contextId;
+      osapi.appdata.update({userId: userId, data: {pad: url}}).execute(function() {
+      });
+      getGadget();
+    }
+    var removeUrl = function() {
+      $("#pad").val("test");
+
+      var prefix = (contextType === "@space") ? "s_" : "";
+      var userId = prefix + contextId;
+      osapi.appdata["delete"]({userId: userId, keys: ['pad']}).execute(function() {
+      });
+      getGadget();
+    }
+    var showSettings = function(){
+      $("#settings").hide();
+      $("#hide").show();
+      $("#management").show();
+    }
+    var hideSettings = function(){
+      $("#hide").hide();
+      $("#settings").show();
+      $("#management").hide();
+    }
+    // gets the data and calls build for container
+    var initialize = function() {
+      // batch: get viewer and context for gadget
+      var batch = osapi.newBatch();
+      batch.add('viewer', osapi.people.getViewer());
+      if (osapi.context) { // only for spaces extended container
+        batch.add('context', osapi.context.get());
+      } else {
+        batch.add('context', osapi.people.getOwner());    
+      }
+      batch.execute(function(data){
+        var viewerId = data.viewer.id
+          , context = data.context
+          ;
+
+        contextId = "@owner"
+        contextType = "@user"
+        if (osapi.context) { // only for spaces extended container
+          contextId = data.context.contextId
+          contextType = data.context.contextType      
+        }
+        var prefix = (contextType === "@space") ? "s_" : ""
+          , userId = prefix + contextId
+          ;
+
+        // batch: get viewer
+        var batch = osapi.newBatch();
+        batch.add('owner', osapi.people.getOwner());
+        batch.add('appdata', osapi.appdata.get({userId: userId}));
+        batch.execute(function(data){
+
+          var ownerId = data.owner.id;
+
+          // current viewer is the owner, then show management block
+          if (viewerId === ownerId) { 
+            $('#settings').show();
+          }
+
+          // update iframe based on appdata
+          var userAppdata = data.appdata[userId];
+          if (userAppdata) {
+             $("#pad").val(userAppdata["pad"]);
+             getGadget();
+          }
+          else{
+            $("#pad").val("test");
+            getGadget();
+          }
+        });
+
+      });
+    };
+
+    setTimeout(initialize,1000);
+    
+	</script>
+  ]]></Content>
+</Module>

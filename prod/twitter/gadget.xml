@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
   <ModulePrefs title="Twitter gadget" 
-                author_email="jad.naoum@epfl.ch" 
+                author_email="jad.naoum@gmail.com" 
                 author="Jad Naoum" 
                 description="Widget that retrieves Twitter tweets."
                 width="350"
-                height="500"
-                thumbnail="http://graasp.epfl.ch/gadget/prod/iframe/thumbnail.png"
-                screenshot="http://graasp.epfl.ch/gadget/prod/iframe/screenshot.png">
+                height="600"
+                thumbnail="http://graasp.epfl.ch/gadget/prod/twitter/thumbnail.png"
+                screenshot="http://graasp.epfl.ch/gadget/prod/twitter/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -164,7 +164,7 @@
 
 
 <script type="text/javascript">
-  var app = {context: "", viewerName: "", data: [], root_url: "http://iamac115.epfl.ch/"};
+  var app = {context: "", viewerName: "", data: [], root_url: "http://graasp.epfl.ch/gadget/prod/twitter/"};
   var count = 0;
   $('input').bind('keypress', function(e) {
           if(e.keyCode==13){

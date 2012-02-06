@@ -1,0 +1,991 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Wiki gadget" 
+                author_email="jad.naoum@epfl.ch" 
+                author="Jad Naoum" 
+                description="Text area that can be edited by all users of a certain space"
+                width="500"
+                height="500"
+                thumbnail="http://graaasp.epfl.ch/gadget/prod/calendar/thumbnail.png"
+                screenshot="http://graaasp.epfl.ch/gadget/prod/calendar/screenshot.png">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+    
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<!-- <script type = "text/javascript" src = "http://iamac115.epfl.ch/prototype.js"></script> -->
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+<script type="text/javascript">
+//Classes!!
+    
+    //CLASS DAY
+    function DayClass(year, month, day, tasks){
+      if(tasks == null){
+        this.tasks = new Array();
+        this.numOfTasks = 0;
+      }
+      else{
+        this.tasks = tasks;
+        numOfTasks = tasks.length;
+      }
+      
+      this.year = year;
+      this.month = month;
+      this.day = day;
+      
+    }
+
+    DayClass.prototype.addTask = function(t){
+      this.numOfTasks++;
+      this.tasks.push(t);
+    }
+    
+    DayClass.prototype.removeTask = function(num){
+      this.numOfTasks--;
+      this.tasks.splice(num,1);
+    }
+    
+    DayClass.prototype.deleteTasks = function(){
+      this.numOfTasks = 0;
+      this.tasks = new Array();
+    }
+    
+    DayClass.prototype.equals = function(d){
+        if (this.year === d.year && this.month === d.month && this.day === d.day)
+          return true;
+        else
+          return false;
+      }
+
+
+    //CLASS MONTH
+    function MonthClass(year, month, days){
+      if(days == null){
+        this.days = [];
+        this.numOfDays = 0;
+      }
+      else{
+        this.days = days;
+        this.numOfDays = days.length;
+      }
+        
+      this.year = year;
+      this.month = month;
+    }
+
+    MonthClass.prototype.addDay = function(d){
+      this.days.push(d);
+      this.numOfDays++;
+    }
+    
+    MonthClass.prototype.removeDay = function(num){
+      this.numOfDays--;
+      this.days.splice(num,1);
+    }
+
+    MonthClass.prototype.equals = function(m){
+      if (this.year === m.year && this.month === m.month)
+        return true;
+      else
+        return false;
+    }
+    
+    MonthClass.prototype.deleteDay = function(n){
+      for(i=0; i<this.numOfDays; i++){
+        if(this.days[i] == n){
+          this.removeDay(i);
+          i = this.numOfDays;
+        }
+      }
+    }
+</script> 
+    
+<style type="text/css">
+
+  table{
+    text-align: center;
+    background-color: black;
+    border-radius: 7px 7px 7px 7px;
+    padding: 5px;
+    height: 221;
+  }
+  
+  #month, #days{
+    color: white;
+  }
+  
+  table td{
+    padding: 3px;
+    width: 30px;
+  }
+  
+  #month{
+    color: #CCFF33;
+  }
+  
+  #days{
+    background-color: gray;
+    color: white;
+    font-size: 14;
+  }
+  
+  img{
+    cursor: pointer;
+  }
+  
+  #box{
+/*    background-color: black;*/
+    height: 221px;
+    width: 278px;
+    position: relative;
+    left: 300px;
+    bottom: 221px;
+    border-radius: 7px 7px 7px 7px;
+  }
+  
+  #title{
+    text-align: center;
+    color: #CCFF33;
+    padding: 10px;
+  }
+  
+  .current_cell{
+    background-color: gray;
+  }
+  
+  #add{
+    font-style: italic;
+    font-size: 12;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    cursor: pointer;
+    float: left;
+    position: relative;
+/*    left: 39px;*/
+    left: 53px;
+    color: white;
+    background-color: gray;
+  }
+  
+/*  #save{
+    font-style: italic;
+    font-size: 12;
+    padding-left: 2px;
+    padding-right: 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    cursor: pointer;
+    float: right;
+    position: relative;
+    right: 46px;
+    color: white;
+    background-color: gray;
+  }*/
+  
+  input{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 233px;
+    font-size: 14px;
+    border: none;
+  }
+  
+/*  #save_button{
+    cursor:pointer;
+    position: relative;
+    right: 40px;
+    float: right;
+  }*/
+  
+  #delete_button{
+    cursor: pointer;
+    position: relative;
+    top: 3px;
+    right: 3px;
+  }
+  
+  #add_button{
+    cursor: pointer;
+    float: left;
+    position: relative;
+/*    left: 46px;*/
+    left: 63px;
+  }
+  
+  #add_button1{
+    cursor: pointer;
+    float: left;
+    position: relative;
+    left: 43px;
+  }
+  
+/*  #binder1{
+    cursor: default;
+    float: left;
+    position: relative;
+    left: 270px;
+    bottom: 223px;
+    z-index: 1;
+  }
+  
+  #binder2{
+    cursor: default;
+    float: left;
+    position: relative;
+    left: 238px;
+    bottom: 126px;
+    z-index: 1;
+  }
+  
+  #binder3{
+    cursor: default;
+    float: left;
+    position: relative;
+    left: 207px;
+    bottom: 31px;
+    z-index: 1;
+  }*/
+  
+  .current_month:hover{
+    background-color: gray;
+  }
+  
+  #calendar{
+    background-image:default;
+  }
+  
+  #box{
+    background-image:default;
+  }
+  
+</style>
+
+<table id = "calendar">
+  <tr>
+    <th><img src = "left_arrow.png" onclick = newMonth(-1)></th>
+    <th id = "month" colspan = 5></th>
+    <th><img src = "right_arrow.png" onclick = newMonth(1)></th>
+  </tr>
+  <tr id = "days">
+    <th>Mon</th>
+    <th>Tue</th>
+    <th>Wed</th>
+    <th>Thu</th>
+    <th>Fri</th>
+    <th>Sat</th>
+    <th>Sun</th>
+  </tr>
+  <tr id = "first">
+    <td id = "day0"></td>
+    <td id = "day1"></td>
+    <td id = "day2"></td>
+    <td id = "day3"></td>
+    <td id = "day4"></td>
+    <td id = "day5"></td>
+    <td id = "day6"></td>
+  </tr>
+  <tr id = "second">
+    <td id = "day7"></td>
+    <td id = "day8"></td>
+    <td id = "day9"></td>
+    <td id = "day10"></td>
+    <td id = "day11"></td>
+    <td id = "day12"></td>
+    <td id = "day13"></td>
+  </tr>
+  <tr id = "third">
+    <td id = "day14"></td>
+    <td id = "day15"></td>
+    <td id = "day16"></td>
+    <td id = "day17"></td>
+    <td id = "day18"></td>
+    <td id = "day19"></td>
+    <td id = "day20"></td>
+  </tr>
+  <tr id = "fourth">
+    <td id = "day21"></td>
+    <td id = "day22"></td>
+    <td id = "day23"></td>
+    <td id = "day24"></td>
+    <td id = "day25"></td>
+    <td id = "day26"></td>
+    <td id = "day27"></td>
+    
+  </tr>
+  <tr id = "fifth">
+    <td id = "day28"></td>
+    <td id = "day29"></td>
+    <td id = "day30"></td>
+    <td id = "day31"></td>
+    <td id = "day32"></td>
+    <td id = "day33"></td>
+    <td id = "day34"></td>
+  </tr>
+  <tr id = "sixth">
+    <td id = "day35"></td>
+    <td id = "day36"></td>
+    <td id = "day37"></td>
+    <td id = "day38"></td>
+    <td id = "day39"></td>
+    <td id = "day40"></td>
+    <td id = "day41"></td>
+  </tr>
+</table>
+
+<!-- <img id = "binder1" src = "binder_medium.png">
+<img id = "binder2" src = "binder_medium.png">
+<img id = "binder3" src = "binder_medium.png"> -->
+
+<div id = "box" onclick = 'save()'>
+  <div id = "title"></div>
+  <img id = "add_button1" src = "add.png" title = "Add" onclick = "newTask(event)">
+  <div id = "add" onclick = "newTask(event)"> Click here to add a task </div>
+  <img id = "add_button" src = "add.png" title = "Add" onclick = "newTask(event)">
+  <!-- <img id = "ical_button" src = "ical.png" title = "Add to Ical"> -->
+  <div id = "text"></div>
+</div>
+
+<!-- <a id = "ical" onclick = "makeIcsFile()">Click</a> -->
+
+
+<!-- <a href="http://iamac115.epfl.ch/window.html" onclick="return popitup('http://iamac115.epfl.ch/window.html')">Link to popup</a> -->
+<!-- <input id = "ical" type = "button" value = "ical" onclick = "makeIcsFile()"></input> -->
+
+<script type="text/javascript">
+  //initializing variables
+  var needToSave = false;
+  var file;
+  var root_url = "http://iamac115.epfl.ch/gadget/prod/calendar/";
+  var tempDate = new Date();
+  var day;
+  var date = new Date();
+  var currentDay = date.getDate();
+  var currentMonth = date.getMonth();
+  var currentYear = date.getFullYear();
+  var selectedDate = date;
+  var selectedMonth = date.getMonth();
+  var selectedDay = date.getDate();
+  var selectedYear = date.getFullYear();
+  var selectedWeekDay = date.getDay();
+  var viewMonth = date.getMonth();
+  var viewYear = date.getFullYear();
+  var app = {context: "", viewerName: "", data: {days: [], months: []}, root_url: "http://iamac115.epfl.ch/gadgets/prod/calendar/"};
+  //app.data = {days: [], months: []};
+  var currEditDay = new DayClass(selectedYear, selectedMonth, selectedDay);
+  var currEditDayPosition;
+  var currEditMonth = new MonthClass(selectedYear, selectedMonth);
+  var currEditMonthPosition;
+  var removeIt = false;
+  var removeIt2 = false;
+  var startTime = 0;
+  var endTime = 0;
+  //More initial things happen in the initialize function at the bottom!!!
+
+  // initialize();
+  // initialAdd();
+  // getCurrEditDay();
+  // getCurrEditMonth();
+  // update(tempDate);
+  // 
+  // //setting the backrounds at the beginning
+  // $("#calendar").css("background-image", "url(" + root_url + "season"+ ((viewMonth + 1) * 2 - 1) + ".jpg)");
+  // $("#box").css("background-image", "url(" + root_url + "season"+ ((viewMonth + 1) * 2) + ".jpg)");
+  // 
+  // //Showing gray box and first day
+  // $("#day" + (currentDay + (day - 2))).attr("class", "current_month current_cell");
+  // $("#title").html(dayFn(date.getDay()) + " " + 
+  //   month(date.getMonth()) + " " + date.getDate() + ", " + date.getFullYear());
+  // 
+  // //writing tasks initially
+  // $("#text").empty();
+  // writeTasks();
+  // 
+  // //change the background color back when the mouse leaves it
+  // $("#calendar").delegate('.current_month', 'click', function(){
+  //   //Get the new month and year 
+  //   date = tempDate;
+  //   selectedMonth = date.getMonth();
+  //   selectedYear = date.getFullYear();
+  // 
+  //   // $(this).css("background-color", "gray");
+  //   displayBox(this);
+  //   
+  //   //changing the gray background for the differend days
+  //   if(selectedMonth == viewMonth && selectedYear == viewYear){
+  //     $(".current_cell").attr("class", "current_month");
+  //     $(this).attr("class", "current_month current_cell");
+  //   }
+  // });
+  
+  function displayBox(element){
+    //Getting the day,month,year and displaying them
+    if (element.id.length == 5)
+      var num = element.id.substring(3,5);    
+    else
+      var num = element.id.substring(3,4); 
+      
+    selectedDay = num - (day - 2);
+    var temp = new Date(selectedYear, selectedMonth, selectedDay);
+    selectedWeekDay = temp.getDay();
+    
+    $("#title").html(dayFn(selectedWeekDay) + " " + 
+      month(selectedMonth) + " " + selectedDay + ", " + selectedYear);
+    
+    //get the current day and month that are being edited
+    getCurrEditDay();
+    getCurrEditMonth();
+    
+    //delete all previous tasks and display all the new tasks of the current day
+    $("#text").empty();
+    writeTasks();
+  }
+  
+  function initialAdd(){
+    var found1 = false;
+    var found2 = false;
+    if(app.data.days.length > 0)
+      for(i = 0; i<app.data.days.length; i++){
+        if(currEditDay.equals(app.data.days[i])){
+          found1 = true;
+          i = app.data.days.length;
+        }
+      }
+    
+      if(app.data.months.length > 0)
+        for(i = 0; i<app.data.months.length; i++){
+          if(currEditMonth.equals(app.data.months[i])){
+            found2 = true;
+            i = app.data.months.length;
+          }
+        }
+    if(found1 == false){
+      app.data.days.push(currEditDay);
+    }
+    
+    if(found2 == false)
+      app.data.months.push(currEditMonth);
+    
+    // console.log(app.data.days);
+    // console.log(app.data.months);
+    // console.log(app.data);
+  }
+  
+  //Gets the tasks from the current day and displays them
+  function writeTasks(){
+    for(i=0; i < currEditDay.numOfTasks; i++){
+      $("#text").append("<input type = 'text' value = '"+currEditDay.tasks[i]+"' class = 'input'><img src = '"+root_url+"delete2.png' id = 'delete_button' class = 'first' title = 'Delete' onclick = 'deleteParent(this)'></input>");
+    }
+    $(".input").css("background-color", "inherit");
+    $(".input").css("color", "white");
+  }
+  
+  function newTask(event){
+    stop(event);      
+    $("#text").append("<input type = 'text' value = '• ' class = 'input' onclick = 'stop(event)'><img src = '"+root_url+"delete2.png' id = 'delete_button' class = 'first' title = 'Delete' onclick = 'deleteParent(this)'></input>");
+    
+    // $('#text input').bind('keypress', function(e) {
+    //         if(e.keyCode==13){
+    //           save();
+    //         }
+    // });
+    needToSave = true;
+  }
+  
+  function stop(event){
+    event.stopPropagation();
+  }
+  
+  function writeStars(){
+    var m = new MonthClass(viewYear, viewMonth);
+    
+    for(i=0; i<app.data.months.length; i++){
+      if(m.equals(app.data.months[i])){
+        m = app.data.months[i];
+        i = app.data.months.length;
+      }
+    }
+    
+    $(".stars").remove();
+    for(i=0; i<m.numOfDays; i++){
+      var n = m.days[i] + day - 2;
+      if($("#day"+ n + " .stars").length == 0) 
+        $("#day"+ n).append("<font color = '#CCFF33' class = 'stars'>*</font>");
+    }
+  }
+  
+  function writeOneStar(){
+    var n = currEditDay.day + day - 2;
+    if($("#day"+ n + " .stars").length == 0 && selectedMonth==viewMonth && selectedYear==viewYear) 
+      $("#day"+ n).append("<font color = '#CCFF33' class = 'stars'>*</font>");
+  }
+  
+  function deleteOneStar(){
+    var n = currEditDay.day + day - 2;
+    if($("#day"+ n + " .stars").length > 0) 
+      $("#day"+ n + " .stars").remove();
+  }
+  
+  function getCurrEditMonth(){
+    removeIt2 = false;
+    currEditMonth = new MonthClass(selectedYear, selectedMonth);
+    for(i=0; i<app.data.months.length; i++){
+      if(currEditMonth.equals(app.data.months[i])){
+        currEditMonth = app.data.months[i];
+        currEditMonthPosition = i;
+        removeIt2 = true;
+        i = app.data.months.length;
+      }
+    }
+  }
+  
+  function updateCurrEditMonth(){
+    if(removeIt2 == true){
+      var temp = app.data.months[currEditMonthPosition];
+      currEditMonth = new MonthClass(temp.year, temp.month, temp.days);
+      app.data.months.splice(currEditMonthPosition,1);
+    }
+    
+    currEditMonth.deleteDay(currEditDay.day);
+
+    if(currEditDay.numOfTasks != 0){
+      currEditMonth.addDay(currEditDay.day);
+    }
+
+    if(currEditMonth.numOfDays != 0)
+      app.data.months.push(currEditMonth);
+    console.log(app.data.months);
+  }  
+  
+  //checking if that day already exists i.e. the user has already added tasks.
+  function getCurrEditDay(){
+    removeIt = false;
+    currEditDay = new DayClass(selectedYear, selectedMonth, selectedDay);
+    for(i =0; i<app.data.days.length; i++){
+      if(currEditDay.equals(app.data.days[i])){
+        currEditDay = app.data.days[i];
+        currEditDayPosition = i;
+        removeIt = true;
+        i = app.data.days.length;
+      }
+    }
+  }
+  
+  function updateCurrEditDay(){
+    //Removing the old day to make space for a new one
+    if (removeIt == true){
+      var temp = app.data.days[currEditDayPosition];
+      currEditDay = new DayClass(temp.year, temp.month, temp.day, temp.tasks);
+      app.data.days.splice(currEditDayPosition,1);    
+    }
+    
+    //Removing all the tasks of the old day
+    currEditDay.deleteTasks();
+
+    $("#text").children('input').each(function(){
+      var child = $(this);
+      currEditDay.addTask(child.val());
+    });
+
+    if(currEditDay.numOfTasks != 0)
+      app.data.days.push(currEditDay);
+    console.log(app.data.days);
+  }
+  
+  function deleteParent(child){
+    $(child).prev().remove();
+    $(child).remove();
+    
+    getCurrEditDay();
+    getCurrEditMonth();
+    updateCurrEditDay();
+    updateCurrEditMonth();
+
+    if(currEditDay.numOfTasks == 0){
+      deleteOneStar();
+      needToSave = false;
+    }
+    
+    osapi.appdata.update({userId: app.context, 
+    data: {"calendar": JSON.stringify(app.data)}}).execute(function() {
+    });
+  }
+    
+  function save(){
+    if(needToSave == true){
+      //changing colors of the inserted tasks
+      $(".input").css("background-color", "inherit");
+      // $(".input").css("background-color", "black");
+      $(".input").css("color", "white");
+      $(".input").attr("disabled", "disabled");
+      // app.data = {days: [], months: []};
+  
+      //casting currEditDay and Month into dayclass and monthclass
+      currEditMonth = new MonthClass (currEditMonth.year, currEditMonth.month);
+      currEditDay = new DayClass (currEditDay.year, currEditDay.month, currEditDay.day, currEditDay.tasks);
+      
+      getCurrEditDay();
+      getCurrEditMonth();
+      updateCurrEditDay();
+      updateCurrEditMonth();
+
+      // updateMonths();
+      // console.log("saved");
+      if(currEditDay.numOfTasks != 0)
+        writeOneStar();
+      else
+        deleteOneStar();
+      // app.data = {days: [], months: []};
+      // console.log(app.data);
+      osapi.appdata.update({userId: app.context, 
+      data: {"calendar": JSON.stringify(app.data)}}).execute(function() {
+      });
+    }
+    needToSave = false;
+  }
+
+  //check which arrow was clicked and change the month accordingly
+  function newMonth(num){
+    if(num == -1){
+      if(tempDate.getMonth() == 0)
+        tempDate = new Date(tempDate.getFullYear() - 1, 11);
+      else
+        tempDate = new Date(tempDate.getFullYear(), tempDate.getMonth() - 1);
+      
+      viewMonth = tempDate.getMonth();
+      viewYear = tempDate.getFullYear();  
+      update(tempDate);
+      
+      // if(selectedMonth != viewMonth || selectedYear != viewYear)
+      //   $(".current_cell").css("background-color", "black");
+      // else
+      //   $(".current_cell").css("background-color", "gray");
+    }
+    else{
+      if(tempDate.getMonth() == 11)
+        tempDate = new Date(tempDate.getFullYear() + 1, 0);
+      else
+        tempDate = new Date(tempDate.getFullYear(), tempDate.getMonth() + 1);
+      
+      
+      viewMonth = tempDate.getMonth();
+      viewYear = tempDate.getFullYear();
+      update(tempDate);
+      
+      // if(selectedMonth != viewMonth || selectedYear != viewYear)
+      //    $(".current_cell").css("background-color", "black");
+      //  else
+      //    $(".current_cell").css("background-color", "gray");
+
+    }
+    save();
+    writeStars();
+    $("#calendar").css("background-image", "url(" + root_url + "season"+ ((viewMonth + 1) * 2 - 1) + ".jpg)");
+    $("#box").css("background-image", "url(" + root_url + "season"+ ((viewMonth + 1) * 2) + ".jpg)");  
+  } 
+  
+  //filling in the calendar with the appropriate numbers
+  function update(tempDate){
+    var numOfDaysBefore;
+    
+    $("#month").html(month(tempDate.getMonth()) + " " + tempDate.getFullYear());
+    
+    var t = new Date(tempDate.getFullYear(), tempDate.getMonth(), 1);
+    day = t.getDay();
+    if(day == 0)
+      day = 7;
+    else;
+      
+    //entering the days of the month and changing their properties
+    for (i = day-1; i< numberOfDays(tempDate.getFullYear(), tempDate.getMonth()) + day-1; i++){
+        $("#day"+i).html(i - (day) + 2);
+        $("#day"+i).css("font-size", "16");
+        $("#day"+i).css("cursor", "pointer");
+        $("#day"+i).attr("class", "current_month");
+    if((i-day+2 == currentDay) && (tempDate.getMonth() == currentMonth) 
+        && (tempDate.getFullYear() == currentYear))
+      $("#day"+i).css("color", "#CCFF33");
+    else
+      $("#day"+i).css("color", "white");
+    }
+
+    //entering the few days of last month
+    if(tempDate.getMonth() == 0)
+      numOfDaysBefore = numberOfDays(tempDate.getFullYear()-1, 11);
+    else
+      numOfDaysBefore = numberOfDays(tempDate.getFullYear(), tempDate.getMonth()-1);
+      
+    for(i = day-2; i>-1; i--){
+      $("#day"+i).html(numOfDaysBefore - (day-2-i));
+      // $("#day"+i).css("color", "#616161");
+      $("#day"+i).css("color", "#B0C4DE");
+      $("#day"+i).css("font-size", "11");
+      $("#day"+i).css("cursor", "default");
+      $("#day"+i).attr("class", "other_month");
+      $("#day"+i).css("font-style", "italic");
+    }
+
+    //entering the few days of next month      
+    for(i = numberOfDays(tempDate.getFullYear(), tempDate.getMonth()) + day-1; i<= 41; i++){
+      $("#day"+i).html(i - numberOfDays(tempDate.getFullYear(), tempDate.getMonth()) - day+ 2);
+      // $("#day"+i).css("color", "#616161");
+      $("#day"+i).css("color", "#B0C4DE");
+      $("#day"+i).css("font-size", "11");
+      $("#day"+i).css("cursor", "default");
+      $("#day"+i).attr("class", "other_month");
+      $("#day"+i).css("font-style", "italic");
+    }
+    
+    //adding the gray box
+    if(viewMonth == selectedMonth)
+      $("#day" + (selectedDay + (day - 2))).attr("class", "current_month current_cell");
+  }
+  
+  //Returns the name of the month based on the number
+  function month(month){
+    switch (month){
+      case 0:
+        return "January";
+      case 1:
+        return "February";
+      case 2:
+        return "March";
+      case 3:
+        return "April";
+      case 4:
+        return "May";
+      case 5:
+        return "June";
+      case 6:
+        return "July";
+      case 7:
+        return "August";
+      case 8:
+        return "September";
+      case 9:
+        return "October";
+      case 10:
+        return "November";
+      case 11:
+        return "December";
+      default:
+        return "Error with the number of the month"
+        
+    }
+  }
+  
+  //returns the number of days in a month
+  function numberOfDays(year, month){
+    return new Date(year, month+1, 0).getDate();
+  }
+  
+  function dayFn(day){
+    switch (day){
+      case 0: 
+        return "Sunday";
+      case 1:
+        return "Monday";
+      case 2:
+        return "Tuesday";
+      case 3:
+        return "Wednesday";
+      case 4:
+        return "Thursday";
+      case 5: 
+        return "Friday";
+      case 6:
+        return "Saturday";
+      default:
+        return "Error with the number of the day"
+    }
+  }
+
+  // function makeIcsFile(){
+  //   var file = "BEGIN:VCALENDAR\nMETHOD:PUBLISH\nVERSION:2.0\nX-WR-CALNAME:Graaasp-Calendar" +
+  //   "\nPRODID:-//Apple Inc.//iCal 4.0.4//EN\nX-APPLE-CALENDAR-COLOR:#2CA10B" +
+  //   "\nX-WR-TIMEZONE:Europe/Zurich" + "\nCALSCALE:GREGORIAN\nBEGIN:VTIMEZONE\nTZID:Europe/Zurich" + 
+  //   "\nBEGIN:DAYLIGHT\nTZOFFSETFROM:+0100\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU" + 
+  //   "\nDTSTART:19810329T020000\nTZNAME:GMT+02:00\nTZOFFSETTO:+0200\nEND:DAYLIGHT" + 
+  //   "\nBEGIN:STANDARD\nTZOFFSETFROM:+0200\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU" + 
+  //   "\nDTSTART:19961027T030000\nTZNAME:GMT+01:00\nTZOFFSETTO:+0100" + 
+  //   "\nEND:STANDARD\nEND:VTIMEZONE\n";
+  //   for(i =0; i<app.data.days.length; i++){
+  //       startTime = 0;
+  //       endTime = 0;
+  //     for(j=0; j<app.data.days[i].tasks.length; j++){
+  //       var dt = new Date();
+  //       file = file + "BEGIN:VEVENT\nCREATED:" + dt.getFullYear() + addZero(dt.getMonth() + 1) + addZero(dt.getDate()) + "T" + addZero(dt.getHours()) + addZero(dt.getMinutes()) + addZero(dt.getSeconds()) + "Z\nUID:" + createUUID() + "\nDTEND;TZID=Europe/Zurich:" + addZero(app.data.days[i].year) + addZero(app.data.days[i].month+1) + addZero(app.data.days[i].day) + "T" + makeEndTime() + "00\nTRANSP:OPAQUE\nSUMMARY:" + (app.data.days[i].tasks[j]).substr(2,app.data.days[i].tasks[j].length - 2) + "\nDTSTART;TZID=Europe/Zurich:" + addZero(app.data.days[i].year) + addZero(app.data.days[i].month+1) + addZero(app.data.days[i].day) + "T" + makeStartTime() + "00\nDTSTAMP:" + dt.getFullYear() + addZero(dt.getMonth() + 1) + addZero(dt.getDate()) + "T" + addZero(dt.getHours()) + addZero(dt.getMinutes()) + addZero(dt.getSeconds()) + "Z\nSEQUENCE:3\nEND:VEVENT\n";
+  //       startTime = endTime;
+  //     }
+  //   }
+  //   file = file + "END:VCALENDAR\n";
+  //   file = encodeURIComponent(file);
+  //   // $("#ical").attr("href", "http://128.178.5.146:3000/widgets/calendar_widget/download/" + file);
+  
+  function makeIcsFile(){
+    if(app.data.days.length > 0){
+      var file = "BEGIN:VCALENDAR\nMETHOD:PUBLISH\nVERSION:2.0\nX-WR-CALNAME:Graaasp-Calendar" +
+      "\nPRODID:-//Apple Inc.//iCal 4.0.4//EN\nX-APPLE-CALENDAR-COLOR:#2CA10B" +
+      "\nX-WR-TIMEZONE:Europe/Zurich" + "\nCALSCALE:GREGORIAN\nBEGIN:VTIMEZONE\nTZID:Europe/Zurich" + 
+      "\nBEGIN:DAYLIGHT\nTZOFFSETFROM:+0100\nRRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU" + 
+      "\nDTSTART:19810329T020000\nTZNAME:GMT+02:00\nTZOFFSETTO:+0200\nEND:DAYLIGHT" + 
+      "\nBEGIN:STANDARD\nTZOFFSETFROM:+0200\nRRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU" + 
+      "\nDTSTART:19961027T030000\nTZNAME:GMT+01:00\nTZOFFSETTO:+0100" + 
+      "\nEND:STANDARD\nEND:VTIMEZONE\n";
+      for(i =0; i<app.data.days.length; i++){
+        for(j=0; j<app.data.days[i].tasks.length; j++){
+          var dt = new Date();
+          file = file + "BEGIN:VTODO\nCREATED:" + dt.getFullYear() + addZero(dt.getMonth() + 1) + addZero(dt.getDate()) + "T" + addZero(dt.getHours()) + addZero(dt.getMinutes()) + addZero(dt.getSeconds()) + "Z\nUID:" + createUUID() + "\nX-APPLE-SORT-ORDER:" +((i+1)*(j+1)) +"\nSUMMARY:" + (app.data.days[i].tasks[j]).substr(2,app.data.days[i].tasks[j].length - 2) + "\nDUE;VALUE=DATE:" + addZero(app.data.days[i].year) + addZero(app.data.days[i].month+1) + addZero(app.data.days[i].day) + "\nDTSTAMP:" + dt.getFullYear() + addZero(dt.getMonth() + 1) + addZero(dt.getDate()) + "T" + addZero(dt.getHours()) + addZero(dt.getMinutes()) + addZero(dt.getSeconds()) + "Z\nSEQUENCE:1\nEND:VTODO\n";
+        }
+      }
+      file = file + "END:VCALENDAR\n";
+      window.open('http://graaasp.epfl.ch/proxy/ical.json?filename=iCal_file&data='+escapeData(encodeURIComponent(JSON.stringify(file))));
+   
+    }
+    else{
+      alert("Cannot create an iCal file with no tasks in your calendar!");
+    }
+  
+  }
+  
+  function escapeData(string){
+    return "<!"+"[CDATA["+string+"]"+"]>";
+  }
+    
+  function addZero(num){
+    if(num < 10)
+      num = "0" + num;
+    
+    return num;
+  }
+  
+  function makeStartTime(){
+    if(startTime < 10)
+      return "000" + startTime;
+    else if(startTime > 10 && startTime < 100)
+      return "00" + startTime;
+    else if(startTime > 100 && startTime < 1000)
+      return "0" + startTime;
+    else
+      return startTime;
+  }
+  
+  function makeEndTime(){
+    if(((startTime*1) % 100) == 45)
+      endTime = (startTime*1) + 55;
+    else
+      endTime = (startTime*1) + 15;
+    
+    if(endTime < 10)
+      return "000" + endTime;
+    else if(endTime > 10 && endTime < 100)
+      return "00" + endTime;
+    else if(endTime > 100 && endTime < 1000)
+      return "0" + endTime;
+    else
+      return endTime;
+  }
+  
+  function createUUID() {
+      // http://www.ietf.org/rfc/rfc4122.txt
+      var s = [];
+      var hexDigits = "0123456789ABCDEF";
+      for (var i = 0; i < 32; i++) {
+          s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+      }
+      s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+      s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+
+      var uuid = s.join("");
+      uuid = uuid.substr(0,8) + "-" + uuid.substr(8,4) + "-" + uuid.substr(12,4) + "-" + uuid.substr(16,4) + "-" + uuid.substr(20,12);
+      return uuid;
+  }
+  
+    
+  function popitup(url) {
+    newWindow = window.open(url,'name','height=200,width=150');
+    if (window.focus) 
+      newWindow.focus();
+  
+    return false;
+  }
+  
+  var initialize = function() {
+    // batch: get viewer and context for gadget
+    var batch = osapi.newBatch();
+    batch.add('viewer', osapi.people.getViewer());
+    batch.add('context', osapi.context.get());
+    batch.execute(function(data){
+      app.viewer = data.viewer;
+      app.viewerName = app.viewer.displayName;
+  
+      var contextId = data.context.contextId
+      var contextType = data.context.contextType
+      var prefix = (contextType === "@space") ? "s_" : "";
+      app.context = prefix + contextId;
+  
+      osapi.appdata.get({userId: app.context}).execute(function(data){
+        data = data[app.context];
+        if (data) 
+          app.data = JSON.parse(data["calendar"]);
+        
+        // console.log(app.data);
+                
+        // initialAdd();
+        getCurrEditDay();
+        getCurrEditMonth();
+        update(tempDate);
+        
+        //setting the backrounds at the beginning
+        $("#calendar").css("background-image", "url(" + root_url + "season"+ ((viewMonth + 1) * 2 - 1) + ".jpg)");
+        $("#box").css("background-image", "url(" + root_url + "season"+ ((viewMonth + 1) * 2) + ".jpg)");
+        
+        //Showing gray box and first day
+        $("#day" + (currentDay + (day - 2))).attr("class", "current_month current_cell");
+        $("#title").html(dayFn(date.getDay()) + " " + 
+          month(date.getMonth()) + " " + date.getDate() + ", " + date.getFullYear());
+        
+        //writing tasks initially
+        $("#text").empty();
+        writeTasks();
+        writeStars();
+        
+        //change the background color back when the mouse leaves it
+        $("#calendar").delegate('.current_month', 'click', function(event){
+          save();
+          needToSave = false;
+
+          //Get the new month and year 
+          date = tempDate;
+          selectedMonth = date.getMonth();
+          selectedYear = date.getFullYear();
+        
+          // $(this).css("background-color", "gray");
+          displayBox(this);
+
+          //changing the gray background for the differend days
+          if(selectedMonth == viewMonth && selectedYear == viewYear){
+            $(".current_cell").attr("class", "current_month");
+            $(this).attr("class", "current_month current_cell");
+          }
+        });
+      });
+    });
+    
+  };
+  
+  setTimeout(initialize, 500);
+  
+</script>
+
+
+
+
+  ]]></Content>
+</Module>

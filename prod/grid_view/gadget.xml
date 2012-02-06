@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Widgets container" 
+                author_email="jad.naoum@gmail.com" 
+                author="Jad Naoum" 
+                description="This functional skin takes all widgets from a space and shows them in a grid layout where the number of columns can be changed. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+    <Require feature="dynamic-height" />
+    <Require feature="shindig-container" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+  .gadgets-gadget{width: 100%;}
+  body{
+    overflow:hidden;
+    background-color:transparent;
+    font-family: "Helvetica Neue", arial, sans-serif;
+    font-size: 13px;
+  }
+  
+  .gadget{
+    margin: 10px; 
+    border: 1px solid #87AFDA; 
+    border-radius: 5px; 
+    color: #36C;
+    clear: both;
+  }
+  
+  .gadgets-gadget-title-bar{
+    padding:5px; 
+    border-bottom: 1px solid #87AFDA; 
+    background-color: #D4E6FC;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+    
+  .gadgets-gadget-content{
+    padding:5px; 
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+  
+  #container {
+    width:100%;
+    height:100%;
+    background-color:white;
+    border-radius:5px;
+  }
+  
+  .select_pic{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    cursor: pointer;
+  }
+  
+  .center_window{
+    width: 97%;
+    height: 100px;
+    border: 1px solid #87AFDA;
+    border-radius: 5px;
+    margin: 10px;
+  }
+  
+  .left_window{
+    width: 95%;
+    height: 100px;
+    border: 1px solid #87AFDA;
+    border-radius: 5px;
+    margin: 10px;
+    float: left;
+  }
+  
+  .right_window{
+    width: 95%;
+    height: 100px;
+    border: 1px solid #87AFDA;
+    border-radius: 5px;
+    margin: 10px;
+    float: right;
+  }
+  
+  .leftmost_window, .middlemost_window, .rightmost_window{
+    width: 93%;
+    height: 100px;
+    border: 1px solid #87AFDA;
+    border-radius: 5px;
+    margin: 10px;
+    float: left;
+  }
+  
+  #widget_list{
+    z-index: 1;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    list-style-type: none;
+  }
+  
+  li{
+    cursor: pointer;
+    border-top: 1px solid gray;
+    border-left: 1px solid gray;
+    border-right: 1px solid gray;
+    background-color: #F5F5F5;
+    width: 200px;
+  }
+  
+  li:hover{
+    background-color: #A9A9A9;
+  }
+  
+  .button{
+    margin-left: 40px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 0px 0px;
+    background-color: #7cceee;
+    border-radius: 5px;
+    border-bottom-color: #333;
+    border: 1px solid #61c4ea;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 0px 0px;
+    color: #333;
+    font-family: 'Verdana', Arial, sans-serif;
+    font-size: 11px;
+    text-shadow: #b2e2f5 0px 1px 0px;
+    padding: 1px;
+    cursor: pointer;
+  }
+  
+  .view_pic{
+    position: relative;
+    top: 5px;
+  }
+  
+  label.big{
+    position: relative;
+    left: 42%;
+  }
+  
+  label.medium{
+    position: relative;
+    left: 33%;
+  }
+  
+  label.small{
+    position: relative;
+    left: 24%;
+  }
+</style>
+
+  <div id="container" onmouseover="adjustHeight();">
+    <div style="font-size:16px;text-indent:10px;padding-top:5px;padding-bottom:5px">Apps from the space (only OpenSocial gadgets)</div>
+    <input type="radio" class = "views" id = "view1" name = "views"><img class="view_pic" src="http://graasp.epfl.ch/gadget/prod/grid_view/view1.png"></input>
+    <input type="radio" class = "views" id = "view2" name = "views"><img class="view_pic" src="http://graasp.epfl.ch/gadget/prod/grid_view/view2.png"></input>
+    <input type="radio" class = "views" id = "view3" name = "views"><img class="view_pic" src="http://graasp.epfl.ch/gadget/prod/grid_view/view3.png"></input>
+    <input type="radio" class = "views" id = "view4" name = "views"><img class="view_pic" src="http://graasp.epfl.ch/gadget/prod/grid_view/view4.png"></input>
+    <input type="radio" class = "views" id = "view5" name = "views"><img class="view_pic" src="http://graasp.epfl.ch/gadget/prod/grid_view/view5.png"></input>
+     <input type="radio" class = "views" id = "view6" name = "views"><img class="view_pic" src="http://graasp.epfl.ch/gadget/prod/grid_view/view6.png"></input>
+    <input type="button" class = "button" id="reset_button" value="Reset Widgets"></input>
+    <div id= "center" style = "width: 100%; position: relative; top:0px;"></div>
+    <div id="left" style="width: 50%; position: relative; float: left; top: 0px;"></div>
+    <div id="right" style="width: 50%; position: relative; float: left; top: 0px;"></div>
+    <div id="leftmost" style="width: 33%; position: relative; float: left; top: 0px;"></div>
+    <div id="middlemost" style="width: 33%; position: relative; float: left; top: 0px;"></div>
+    <div id="rightmost" style="width: 33%; position: relative; float: left; top: 0px;"></div>
+  </div>
+
+<script type="text/javascript" src="http://iamac115.epfl.ch/list_popup.js"></script>
+<script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
+<!-- <script type="text/javascript" src="http://graaasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+
+<script type="text/javascript">
+var isOwner = false;
+var my = {};
+// var my_gadgets_final = [];
+var app = {context: "", viewerName: "", data: {my_gadgets_final: [], my_gadgets_temp: [], view: ""}, root_url: "http://graasp.epfl.ch/gadget/prod/grid_view/"};
+
+// gets the data and calls build for container
+  var initialize = function() {
+    
+  // This container lays out and renders gadgets itself.
+
+  my.LayoutManager = function() {
+    shindig.LayoutManager.call(this);
+  };
+
+  my.LayoutManager.inherits(shindig.LayoutManager);
+
+  my.LayoutManager.prototype.getGadgetChrome = function(gadget) {
+    var chromeId = 'gadget-chrome-' + gadget.id;
+    return chromeId ? document.getElementById(chromeId) : null;
+  };
+
+  shindig.container.layoutManager = new my.LayoutManager();
+  
+  osapi.people.getViewer().execute(function(viewer){
+    osapi.context.get().execute(function(response){
+      var context = response;
+      osapi.apps.get({contextId: context.contextId, contextType: context.contextType}).execute(function(response){
+        
+      //getting the user's ettings
+      var batch = osapi.newBatch();
+      batch.add('viewer', osapi.people.getViewer());
+      batch.add('context', osapi.context.get());
+      batch.execute(function(data){
+        app.viewer = data.viewer;
+        app.viewerName = app.viewer.displayName;
+    
+        var contextId = data.context.contextId
+        var contextType = data.context.contextType
+        var prefix = (contextType === "@space") ? "s_" : "";
+        app.context = prefix + contextId;
+    
+        osapi.appdata.get({userId: app.context}).execute(function(data){
+          data = data[app.context];
+          if (data){ 
+            app.data = JSON.parse(data["settings"]);
+            var gadgets_list = response.list;
+
+            if(app.data.my_gadgets_final == [])
+              app.data.my_gadgets_temp = createMyGadgetsTemp(gadgets_list);
+
+            //setting the initial view based on app
+            if(app.data.view == "" || app.data.view == null){
+              app.data.view = "view1";
+              $("#view1").attr('checked', 'checked');
+            }
+            else{
+              $("#"+app.data.view).attr('checked', 'checked');
+            }
+
+            buildSkeleton(gadgets_list, context, viewer);
+            $('.views').change(function(){
+              buildSkeleton(gadgets_list, context, viewer);
+              save();
+            });
+
+            $("#reset_button").click(function(){
+              app.data.my_gadgets_temp = createMyGadgetsTemp(gadgets_list);
+              app.data.my_gadgets_final = [];
+              buildSkeleton(gadgets_list, context, viewer);
+              save();
+            })
+
+            $(document).click(function(e){
+               var elem = $(e.target).attr('id');
+               if(elem !== 'widget_list' && $("#widget_list").length != 0){
+                   $('#widget_list').remove();
+               }
+            });
+            
+          }
+        });
+      });
+    
+      // We set three timeouts to make sure the widgets are loaded to do proper resizing
+      // if it take long time, it will be resized when mouse is moved above the widget
+      // 3 seconds
+      setTimeout(adjustHeight,3000);
+      // 10 seconds
+      setTimeout(adjustHeight,10000);
+      // 60 seconds
+      setTimeout(adjustHeight,60000);
+      });
+    });    
+  });
+
+  
+
+};
+
+var adjustHeight = function() {
+  gadgets.window.adjustHeight();
+}
+
+
+var buildSkeleton = function(my_gadgets_initial, context, viewer){
+  //getting the view
+  if($("#view1").is(':checked')){
+    var center_number = my_gadgets_initial.length;
+  }
+  else if($("#view2").is(':checked')){
+    var center_number = 2;
+  }
+  else if($("#view3").is(':checked') || $("#view4").is(':checked')){
+    var center_number = 1;
+  }
+  else{
+    var center_number = 0;
+  }
+  
+  var left = $("#left");
+  var right = $("#right");
+  var center = $("#center");
+  var leftmost = $("#leftmost");
+  var middlemost = $("#middlemost");
+  var rightmost = $("#rightmost");
+  
+  left.empty();
+  right.empty();
+  center.empty();
+  leftmost.empty();
+  middlemost.empty();
+  rightmost.empty();
+  
+  if(my_gadgets_initial.length == 0){
+    center.innerHTML = "No apps were found in this space!";
+  }
+  
+  var temp = center_number
+  for(var i =0; i < my_gadgets_initial.length; i++) {
+    if(my_gadgets_initial[i].appType == "WidgetGadget"){
+      if(center_number > 0){
+        center.append("<div id = 'window"+i+"' class ='center_window'><img src = '"+app.root_url+"select.png' class = 'select_pic'><label class ='big'>Click to add Widget</label></div>");
+        center_number--;
+      }
+      else if($("#view2").is(':checked') || $("#view3").is(':checked')||$("#view5").is(':checked')){
+        if((i+temp) % 2 == 0){
+          left.append("<div id = 'window"+i+"' class ='left_window'><img src = '"+app.root_url+"select.png' class = 'select_pic'><label class = 'medium'>Click to add Widget</label></div>");
+        }
+        else{
+          right.append("<div id = 'window"+i+"' class ='right_window'><img src = '"+app.root_url+"select.png' class = 'select_pic'><label class = 'medium'>Click to add Widget</label></div>");
+        }
+      }
+      else{
+        if((i+temp) % 3 == 0){
+          leftmost.append("<div id = 'window"+i+"' class ='leftmost_window'><img src = '"+app.root_url+"select.png' class = 'select_pic'><label class = 'small'>Click to add Widget</label></div>");
+        }
+        else if((i+temp) % 3 == 1){
+          middlemost.append("<div id = 'window"+i+"' class ='middlemost_window'><img src = '"+app.root_url+"select.png' class = 'select_pic'><label class = 'small'>Click to add Widget</label></div>");
+        }
+        else{
+          rightmost.append("<div id = 'window"+i+"' class ='rightmost_window'><img src = '"+app.root_url+"select.png' class = 'select_pic'><label class = 'small'>Click to add Widget</label></div>");
+        }
+      }
+    }    
+  }
+  
+  for(var k=0; k<app.data.my_gadgets_final.length; k++){
+    if(app.data.my_gadgets_final[k] != null){
+      buildGadget(app.data.my_gadgets_final[k], "window"+k, my_gadgets_initial, context, viewer);
+    }
+  }
+  
+  //upon clicking on the select image
+  $('.select_pic').click(function(event) {
+    event.stopPropagation();
+    
+    if($("#widget_list").length == 0){
+      var _this = $(this)
+      var containing_window = _this.parent();
+      var containing_section = _this.parent().parent();
+      
+      //building the list of gadgets for the user to choose from
+      _this.parent().append("<ul id ='widget_list'></ul>");
+      for(var i =0; i<app.data.my_gadgets_temp.length; i++){
+        if(i == app.data.my_gadgets_temp.length -1)
+          $("#widget_list").append("<li class = 'list_e' style = 'border-bottom:1px solid gray'>"+app.data.my_gadgets_temp[i]+"</li>")
+        else
+          $("#widget_list").append("<li class = 'list_e'>"+app.data.my_gadgets_temp[i]+"</li>")
+      }
+      
+      //building the gagdet that the user picks from the list
+      $('.list_e').click(function() {
+        _this = $(this);
+        gadget_window_id = _this.parent().parent().attr('id');
+        gadget_name = _this.text();
+        buildGadget(gadget_name, gadget_window_id, my_gadgets_initial, context, viewer);
+        removeFromTemp(gadget_name);
+        save();
+      });
+    }
+  });
+  
+  
+}
+
+var buildGadget = function(gadget_name, gadget_window_id, my_gadgets_initial, context, viewer){
+  //removing the select_pic and the popup list
+  $("#"+gadget_window_id).empty();
+  
+  //have the gadget_window equal to the window that will contain the gadget
+  var gadget_index = gadget_window_id.charAt(6);
+  app.data.my_gadgets_final[gadget_index] = gadget_name;
+  
+  for(var j =0; j<my_gadgets_initial.length; j++){
+    if(gadget_name == my_gadgets_initial[j].displayName){
+      var gadget_data = my_gadgets_initial[j];
+      j = my_gadgets_initial.length;
+    }
+  }
+  
+  var context_id = context.contextId;
+  if (context.contextType == "@space") {
+    context_id = "s_"+context.contextId;
+  }
+  var viewer_id = viewer.id;
+  var token = ""+context_id+":"+viewer_id+":"+gadget_data.id+":default:"+escape(gadget_data.appUrl)+":"+gadget_data.id+":1";
+  //debugger
+  var gadget = shindig.container.createGadget(
+      {specUrl: gadget_data.appUrl, height: '400px', title: gadget_data.displayName,
+        secureToken: token});
+
+  shindig.container.addGadget(gadget);
+  
+  var gadget_el = document.createElement('div');
+  gadget_el.id = 'gadget-chrome-'+(gadget.id);
+  gadget_el.setAttribute('class','gadget');
+  $("#"+gadget_window_id).after(gadget_el);
+  $("#"+gadget_window_id).remove();
+  
+  shindig.container.setView("home");
+  shindig.container.renderGadget(gadget);
+  
+  // resize the gadget
+  adjustHeight();
+  
+}
+
+//remove the widget from the list of possible widgets that the user can choose from
+removeFromTemp = function(gadget_name){
+  for(var n=0; n<app.data.my_gadgets_temp.length; n++){
+    if(gadget_name == app.data.my_gadgets_temp[n]){
+      app.data.my_gadgets_temp.splice(n,1);
+      n = app.data.my_gadgets_temp.length + 1;
+    }
+  }
+}
+
+var createMyGadgetsTemp = function(array){
+  var a = [];
+  for(var i=0; i<array.length; i++){
+    if(array[i].appType == "WidgetGadget"){
+      a.push(array[i].displayName);
+    }
+  }
+  return a;
+}
+
+var save = function(){
+  app.data.view = $("#container input[type='radio']:checked").attr('id');
+
+  osapi.appdata.update({userId: app.context, 
+  data: {"settings": JSON.stringify(app.data)}}).execute(function() {});
+}
+
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+  ]]></Content>
+</Module>

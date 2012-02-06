@@ -11,16 +11,34 @@
 
 <style type="text/css">
   .gadgets-gadget{width: 100%;}
-  body{overflow:hidden;background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
-  .gadget{margin: 10px; border: 1px solid #87AFDA; border-radius: 5px; color: #36C;}
-  .gadgets-gadget-title-bar{padding:5px; border-bottom: 1px solid #87AFDA; background-color: #D4E6FC;
+  body{
+    overflow:hidden;
+    background-color:transparent;
+    font-family: "Helvetica Neue", arial, sans-serif;
+    font-size: 13px;
+  }
+  
+  .gadget{
+    margin: 10px; 
+    border: 1px solid #87AFDA; 
+    border-radius: 5px; 
+    color: #36C;
+  }
+  
+  .gadgets-gadget-title-bar{
+    padding:5px; 
+    border-bottom: 1px solid #87AFDA; 
+    background-color: #D4E6FC;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    }
-  .gadgets-gadget-content{padding:5px; 
-  border-bottom-left-radius: 5px;
-  border-bottom-right-radius: 5px;
   }
+    
+  .gadgets-gadget-content{
+    padding:5px; 
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+  
   #container {
     width:100%;
     height:100%;
