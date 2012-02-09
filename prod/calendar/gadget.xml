@@ -3,7 +3,7 @@
   <ModulePrefs title="Calendar app" 
                 author_email="jad.naoum@gmail.com" 
                 author="Jad Naoum" 
-                description="Calendar gadget to assign events to dates"
+                description="Calendar app to assign events to dates"
                 width="500"
                 height="500"
                 thumbnail="http://graasp.epfl.ch/gadget/prod/calendar/thumbnail.png"
