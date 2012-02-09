@@ -6,8 +6,8 @@
                 description="Calendar gadget to assign events to dates"
                 width="500"
                 height="500"
-                thumbnail="http://graaasp.epfl.ch/gadget/prod/calendar/thumbnail.png"
-                screenshot="http://graaasp.epfl.ch/gadget/prod/calendar/screenshot.png">
+                thumbnail="http://graasp.epfl.ch/gadget/prod/calendar/thumbnail.png"
+                screenshot="http://graasp.epfl.ch/gadget/prod/calendar/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -845,7 +845,7 @@
         }
       }
       file = file + "END:VCALENDAR\n";
-      window.open('http://graaasp.epfl.ch/proxy/ical.json?filename=iCal_file&data='+escapeData(encodeURIComponent(JSON.stringify(file))));
+      window.open('http://graasp.epfl.ch/proxy/ical.json?filename=iCal_file&data='+escapeData(encodeURIComponent(JSON.stringify(file))));
    
     }
     else{
