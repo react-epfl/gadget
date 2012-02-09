@@ -3,11 +3,11 @@
   <ModulePrefs title="Segway Control Simulation" 
                 author_email="benjamin.fankhauser@epfl.ch" 
                 author="Benjamin Fankhauser" 
-                description="Text area that can be edited by all users of a certain space!"
+                description="Segway Control Simulation"
                 width="500"
                 height="500"
-                thumbnail="http://graasp.epfl.ch/gadget/prod/segway/scrn.png"
-                screenshot="http://graasp.epfl.ch/gadget/prod/segway/scrn.png">
+                thumbnail="http://graasp.epfl.ch/gadget/prod/segway/thumbnail.png"
+                screenshot="http://graasp.epfl.ch/gadget/prod/segway/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
