@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Resources viewer" author="Evgeny Bogdanov" author_email="evgeny.bogdanov@epfl.ch" description="Shows a resource that was received from other widgets" height="500">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<div id="container"></div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<script type="text/javascript">
+
+var isOwner = false;
+var moduleId = 0;
+
+var initialize = function() {  
+  gadgets.openapp.connect(getResource);
+};
+
+var getResource = function (envelope, message) {
+	var id = message.id;
+	var mimetype = message.mimetype;
+
+  var container = $("#container");
+  var item = $("<div>id: "+id+", mimetype: "+mimetype+"</div>");
+  container.append(item);
+  
+  osapi.documents.get({contextId: id}).execute(function(doc) {
+    item.append($("<div><b>Name:</b>"+doc.displayName+" </div>"))
+    item.append($("<div><b>Description:</b>"+doc.description+" </div>"))
+  })  
+};
+
+
+</script>
+
+<style>
+</style>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+  ]]></Content>
+</Module>

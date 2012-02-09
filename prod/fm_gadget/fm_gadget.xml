@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-	<ModulePrefs title="FlashMeeting" height="600" width="500" author="Knowledge Media Institute" author_affiliation="The Open University UK" screenshot="http://fm.ea-tel.eu/gadgets/fm_screenshot.png" thumbnail="http://fm.ea-tel.eu/gadgets/fm_thumbnail.png" description="FlashMeeting is a tool for simultaneous video/audio/text conferencing.">
+	<ModulePrefs title="FlashMeeting app (OS appdata)" height="600" width="500" author="Knowledge Media Institute" author_affiliation="The Open University UK" screenshot="http://fm.ea-tel.eu/gadgets/fm_screenshot.png" thumbnail="http://fm.ea-tel.eu/gadgets/fm_thumbnail.png" description="FlashMeeting is a tool for simultaneous video/audio/text conferencing. It is based on OpenSocial AppData api and not user prefs.">
 	  <Require feature="dynamic-height"/>
 	  <Require feature="osapi" />
 	</ModulePrefs>

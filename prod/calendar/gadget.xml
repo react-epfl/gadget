@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Wiki gadget" 
-                author_email="jad.naoum@epfl.ch" 
+  <ModulePrefs title="Calendar app" 
+                author_email="jad.naoum@gmail.com" 
                 author="Jad Naoum" 
-                description="Text area that can be edited by all users of a certain space"
+                description="Calendar gadget to assign events to dates"
                 width="500"
                 height="500"
                 thumbnail="http://graaasp.epfl.ch/gadget/prod/calendar/thumbnail.png"

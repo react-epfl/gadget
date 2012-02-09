@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Resources selector" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="Shows documents in the space and sends events once a document is selected">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+  body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
+  .gadgets-gadget{width: 100%;}
+  .doc {margin: 5px 0px;position:relative;}
+  .title {margin: 5px 0px; color: #333; text-indent: 10px; 
+    background-color: #EEE;
+    border-top: 1px solid #AAA;
+    padding: 1px 3px;
+  }
+  .content {
+    margin-top: 5px;
+    font-size: 12px;
+    text-indent:10px;
+  }
+  #container {
+    background-color:white;
+    border-radius:5px;
+    padding:5px;
+  }
+  .desc{
+    margin-left:10px;
+  }
+</style>
+  
+<div id="container">
+  <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources existing in a space</div>
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<script type="text/javascript">
+var isOwner = false;
+
+// gets the data and calls build for container
+var initialize = function() {
+
+  osapi.context.get().execute(function(response){
+    osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
+      // console.log(response);
+      build(response.list);
+    });
+  });
+};
+
+var adjustHeight = function() {
+  gadgets.window.adjustHeight();
+}
+
+// build the container with gadgets
+var build = function(documents){
+  
+  var container = $('#container');
+
+  if(documents.length == 0){
+    container.text("No resources were found in this space!");
+  }
+
+  for (var i = 0; i < documents.length; i++) {
+    var doc = documents[i];
+    
+    var mimetype = "application/png";
+    
+    var doc_id = 'document_'+doc.id;
+    var doc_el = $("<div id='"+doc_id+"'></div>");
+    doc_el.attr('class','doc');
+    
+    var doc_name = $('<div class="title"></div>');
+    doc_name.text(doc.displayName);
+    doc_el.append(doc_name)
+    
+    // description block
+    // var doc_desc = $('<div class="desc"></div>')
+    // var desc = (doc.description && doc.description.length != 0) ? doc.description.slice(0,150)+"..." : "";
+    // doc_desc.html(desc);
+    // doc_el.append(doc_desc)
+    
+    // send button
+    var choose = $("<button type='button'>Choose</button>");
+    choose.click(closure(doc.id,mimetype))
+    doc_el.append(choose)
+    
+    container.append(doc_el);
+
+  }
+  
+  // resize the gadget
+  gadgets.window.adjustHeight();
+
+  // 2 seconds
+  setTimeout(adjustHeight,2000);
+  // 5 seconds
+  setTimeout(adjustHeight,5000);
+};
+
+var closure = function(par1,par2) {
+  var tmp1 = par1;
+  var tmp2 = par2;
+  return function(i){
+    sendId(tmp1,tmp2);
+  }
+}
+
+function sendId(id,mimetype) {
+  // send data to openapp
+	gadgets.openapp.publish({
+		event: "select",
+		type: "json",
+		message: {
+			id: id,
+			mimetype: mimetype
+		}
+	});
+}
+
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>

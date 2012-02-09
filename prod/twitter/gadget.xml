@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Twitter gadget" 
+  <ModulePrefs title="Twitter app" 
                 author_email="jad.naoum@gmail.com" 
                 author="Jad Naoum" 
                 description="Widget that retrieves Twitter tweets."

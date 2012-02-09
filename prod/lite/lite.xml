@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Collaborative editor" author_email="mpalmer@gmail.com" description="Makes use of an etherpad lite service." height="500">
+  <ModulePrefs title="Collaborative editor (OS appdata)" author_email="mpalmer@gmail.com" description="Makes use of an etherpad lite service. It is based on OpenSocial AppData api and not user prefs." height="500">
   <Require feature="osapi" />
   </ModulePrefs>
 	<UserPref name="host" datatype="string" 
