@@ -40,26 +40,41 @@
     var batch = osapi.newBatch();
     batch.add('viewer', osapi.people.getViewer());
     batch.add('owner', osapi.people.getOwner());
-    batch.add('context', osapi.context.get());
+    if (osapi.context) { // only for spaces extended container
+      batch.add('context', osapi.context.get());
+    } else {
+      batch.add('context', osapi.people.getOwner());    
+    }
     batch.execute(function(data){
       // Widget viewer
       $('#viewer').append(data.viewer.displayName);
       // Widget owner
       $('#owner').append(data.owner.displayName);
-      
+
+      contextId = "@owner"
+      contextType = "@user"
+      if (osapi.context) { // only for spaces extended container
+        contextId = data.context.contextId
+        contextType = data.context.contextType      
+      }
+   
       // Widget context (id and type)
-      $('#id').append(data.context.contextId);
-      $('#type').append(data.context.contextType);
+      $('#id').append(contextId);
+      $('#type').append(contextType);
       
       // check osapi.people.get
       osapi.people.get({userId: data.viewer.id}).execute(function(user){
         $('#osapi_people').append(user.displayName);
       });
-      
-      // check osapi.spaces.get
-      osapi.spaces.get({contextId: data.context.contextId}).execute(function(space){
-        $('#osapi_spaces').append(space.displayName);
-      });
+
+      if (osapi.spaces) {
+         // check osapi.spaces.get
+        osapi.spaces.get({contextId: data.context.contextId}).execute(function(space){
+          $('#osapi_spaces').append(space.displayName);
+        });
+      } else {
+        $('#osapi_spaces').append("No spaces supported in this container");
+      }
     })
     
   };
