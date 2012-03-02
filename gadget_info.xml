@@ -79,9 +79,9 @@
     
   };
 
-  // setTimeout(getData, 1000);
+  setTimeout(getData, 1000);
   // console.log(gadgets);
-  gadgets.util.registerOnLoadHandler(getData);
+  // gadgets.util.registerOnLoadHandler(getData);
   </script>
   <div id="viewer"><b>Viewer:</b> </div>
   <div id="owner"><b>Owner:</b> </div>
