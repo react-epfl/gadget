@@ -68,10 +68,9 @@
         $('#osapi_people').append(user.displayName);
       });
 
-      console.log(location.href)
       if (osapi.spaces) {
          // check osapi.spaces.get
-         //osapi.applications.get({}).execute(function(space){
+         //osapi.applications.get({contextId: data.context.contextId}).execute(function(space){
          //console.log(space)
          //$('#osapi_apps').append("Space Name: "+space.displayName);
          //$('#osapi_apps').append(", Space Parent Id: "+space.parentId);
@@ -98,6 +97,7 @@
   <br />
   <div id="osapi_people"><b>osapi.people.get({userId: viewerId}):</b> </div>
   <div id="osapi_spaces"><b>osapi.spaces.get({contextId: contextId}):</b> </div>
+  <!--<div id="osapi_apps"><b>osapi.applications.get({contextId: contextId}):</b> </div>-->
   ]]>
   </Content>
 </Module>
