@@ -24,6 +24,7 @@
               description="Shows viewer, owner and context where gadget lives"
               width="500"
               height="500">
+      <Require feature="opensocial" />
       <Require feature="osapi" />
     </ModulePrefs>
  <Content type="html" view="default,canvas,home,profile">
@@ -67,10 +68,17 @@
         $('#osapi_people').append(user.displayName);
       });
 
+      console.log(location.href)
       if (osapi.spaces) {
          // check osapi.spaces.get
+         //osapi.applications.get({}).execute(function(space){
+         //console.log(space)
+         //$('#osapi_apps').append("Space Name: "+space.displayName);
+         //$('#osapi_apps').append(", Space Parent Id: "+space.parentId);
+         //});
         osapi.spaces.get({contextId: data.context.contextId}).execute(function(space){
-          $('#osapi_spaces').append(space.displayName);
+          $('#osapi_spaces').append("Space Name: "+space.displayName);
+          $('#osapi_spaces').append(", Space Parent Id: "+space.parentId);
         });
       } else {
         $('#osapi_spaces').append("No spaces supported in this container");
