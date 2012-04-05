@@ -69,18 +69,24 @@
       });
 
       if (osapi.spaces) {
-         // check osapi.spaces.get
-         //osapi.applications.get({contextId: data.context.contextId}).execute(function(space){
-         //console.log(space)
-         //$('#osapi_apps').append("Space Name: "+space.displayName);
-         //$('#osapi_apps').append(", Space Parent Id: "+space.parentId);
-         //});
         osapi.spaces.get({contextId: data.context.contextId}).execute(function(space){
+          console.log(space)
           $('#osapi_spaces').append("Space Name: "+space.displayName);
-          $('#osapi_spaces').append(", Space Parent Id: "+space.parentId);
+          $('#osapi_spaces').append(", Space Parent Id (Course): "+space.parentId);
         });
       } else {
         $('#osapi_spaces').append("No spaces supported in this container");
+        }
+
+      if (osapi.apps) {
+        // check osapi.apps.get
+        osapi.apps.get({contextId: "@self"}).execute(function(app){
+          console.log(app)
+          $('#osapi_apps').append("App Name: "+app.displayName);
+          $('#osapi_apps').append(", App Parent Id (Widgetspace): "+app.parentId);
+        });
+      } else {
+        $('#osapi_apps').append("No apps API is supported in this containers");
       }
     })
     
@@ -97,7 +103,7 @@
   <br />
   <div id="osapi_people"><b>osapi.people.get({userId: viewerId}):</b> </div>
   <div id="osapi_spaces"><b>osapi.spaces.get({contextId: contextId}):</b> </div>
-  <!--<div id="osapi_apps"><b>osapi.applications.get({contextId: contextId}):</b> </div>-->
+  <div id="osapi_apps"><b>osapi.apps.get({contextId: "@self"}):</b> </div>
   ]]>
   </Content>
 </Module>
