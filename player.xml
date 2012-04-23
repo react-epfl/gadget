@@ -69,7 +69,7 @@ var build = function(documents){
   var container = $('#container');
 
   if(documents.length == 0){
-    container.text("No assets were found in this space!");
+    container.text("No resource were found in this space!");
   }
 //debugger
   for (var i = 0; i < documents.length; i++) {
