@@ -46,6 +46,7 @@ var isOwner = false;
 // gets the data and calls build for container
 var initialize = function() {
 
+    console.log(osapi)
   osapi.context.get().execute(function(response){
     osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
       // console.log(response);
@@ -99,7 +100,6 @@ var build = function(documents){
     
     
     container.append(doc_el);
-    console.log(osapi)
   }
   
   // resize the gadget
