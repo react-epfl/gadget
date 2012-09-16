@@ -16,22 +16,26 @@
 var isOwner = false;
 var moduleId = 0;
 
-var initialize = function() {  
+var initialize = function() {
   gadgets.openapp.connect(getResource);
 };
 
 var getResource = function (envelope, message) {
+  // Get the document selected in another widget
 	var id = message.id;
 	var mimetype = message.mimetype;
 
   var container = $("#container");
   var item = $("<div>id: "+id+", mimetype: "+mimetype+"</div>");
   container.append(item);
-  
-  osapi.documents.get({contextId: id}).execute(function(doc) {
+
+  // Get document + data
+  osapi.documents.get({contextId: id, size: "-1"}).execute(function(doc) {
+    console.log(doc)
     item.append($("<div><b>Name:</b>"+doc.displayName+" </div>"))
     item.append($("<div><b>Description:</b>"+doc.description+" </div>"))
-  })  
+    item.append($("<div><b>Data (Base64):</b>"+doc.data+" </div>"))
+  })
 };
 
 

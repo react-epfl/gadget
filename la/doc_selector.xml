@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Resources selector" 
-                author_email="evgeny.bogdanov@epfl.ch" 
-                author="Evgeny Bogdanov" 
+  <ModulePrefs title="Resources selector"
+                author_email="evgeny.bogdanov@epfl.ch"
+                author="Evgeny Bogdanov"
                 description="Shows documents in the space and sends events once a document is selected">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
@@ -13,7 +13,7 @@
   body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
   .gadgets-gadget{width: 100%;}
   .doc {margin: 5px 0px;position:relative;}
-  .title {margin: 5px 0px; color: #333; text-indent: 10px; 
+  .title {margin: 5px 0px; color: #333; text-indent: 10px;
     background-color: #EEE;
     border-top: 1px solid #AAA;
     padding: 1px 3px;
@@ -32,21 +32,144 @@
     margin-left:10px;
   }
 </style>
-  
+
 <div id="container">
+  <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Upload new file</div>
+  <form id="form" method="post" enctype = "multipart/form-data" onsubmit="formSubmit(this);" >
+    <input id="request" type="hidden" name="request"></input>
+    <input id="file" type="file" name="file"></input>
+    <input id="upload" type="submit" value="Upload"></input>
+  </form>
   <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources existing in a space</div>
+  <div id="list"></div>
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
 
 <script type="text/javascript">
+/**
+*
+*  AJAX IFRAME METHOD (AIM) - for jquery
+*  http://www.webtoolkit.info/
+*
+**/
+
+AIM = {
+
+	frame : function(c) {
+
+		var n = 'f' + Math.floor(Math.random() * 99999);
+		var d = document.createElement('DIV');
+		d.innerHTML = '<iframe style="display:none" src="about:blank" id="'+n+'" name="'+n+'" ></iframe>';
+		document.body.appendChild(d);
+
+		var i = document.getElementById(n);
+    var iframe = $("#" + n)
+		iframe.load(function(e){
+			AIM.loaded(n);
+		});
+
+		if (c && typeof(c.onComplete) == 'function') {
+			i.onComplete = c.onComplete;
+		}
+
+		return n;
+	},
+
+	form : function(f, name) {
+		f.setAttribute('target', name);
+	},
+
+	submit : function(f, c) {
+		AIM.form(f, AIM.frame(c));
+		if (c && typeof(c.onStart) == 'function') {
+			return c.onStart();
+		} else {
+			return true;
+		}
+	},
+
+	loaded : function(id) {
+		var i = document.getElementById(id);
+		if (i.contentDocument) {
+			var d = i.contentDocument;
+		} else if (i.contentWindow) {
+			var d = i.contentWindow.document;
+		} else {
+			var d = window.frames[id].document;
+		}
+		if (d.location.href == "about:blank") {
+			return;
+		}
+
+		if (typeof(i.onComplete) == 'function') {
+			i.onComplete(d.body.innerHTML);
+		}
+	}
+
+}
+
+var formSubmit = function (form) {
+  var file = $("#file")
+  var filename = file.val().split('/').pop().split('\\').pop()
+  if (filename === "") {
+    alert("Please, choose a file first")
+    return false
+  }
+  var action = "/rpc?method=documents.create&id=documents.create"
+  action = action + "&st=" + getQueryVariable("st")
+  form.action=action
+  var request={"method":"documents.create",
+   "params": {
+     "document": {
+       "displayName": filename,
+       "parentId": parentSpaceId,
+       "mimeType":"image/png",
+       "fileName": filename
+     }
+   },
+   "id":"documents.create"
+  }
+  // add request payload to the form
+  $('#request').val(JSON.stringify(request))
+  var f = $("#file").val()
+  return AIM.submit(form, {'onStart' : startUpload, 'onComplete' : completeUpload})
+}
+var app = {}
 var isOwner = false;
+var parentSpaceId = null;
+
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+            return decodeURIComponent(pair[1]);
+        }
+    }
+    console.log('Query variable %s not found', variable);
+}
+
+var startUpload = function () {
+  $("#upload").val("Loading...").attr("disabled",true)
+}
+var completeUpload = function (res) {
+  $("#upload").val("Upload").attr("disabled",false)
+  res = res.replace(/<\/?[^>]+>/gi, '') // strip html tags
+	res = eval("(" + res + ")"); //turn text into json object
+
+  buildItem(res.result.entry)
+  adjustHeight()
+}
 
 // gets the data and calls build for container
 var initialize = function() {
-
+  app.list = $("#list")
   osapi.context.get().execute(function(response){
+    parentSpaceId = response.contextId
+
     osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
       // console.log(response);
       build(response.list);
@@ -60,41 +183,17 @@ var adjustHeight = function() {
 
 // build the container with gadgets
 var build = function(documents){
-  
-  var container = $('#container');
+  console.log(documents)
 
   if(documents.length == 0){
-    container.text("No resources were found in this space!");
+    app.list.text("No resources were found in this space!");
   }
 
   for (var i = 0; i < documents.length; i++) {
     var doc = documents[i];
-    
-    var mimetype = "application/png";
-    
-    var doc_id = 'document_'+doc.id;
-    var doc_el = $("<div id='"+doc_id+"'></div>");
-    doc_el.attr('class','doc');
-    
-    var doc_name = $('<div class="title"></div>');
-    doc_name.text(doc.displayName);
-    doc_el.append(doc_name)
-    
-    // description block
-    // var doc_desc = $('<div class="desc"></div>')
-    // var desc = (doc.description && doc.description.length != 0) ? doc.description.slice(0,150)+"..." : "";
-    // doc_desc.html(desc);
-    // doc_el.append(doc_desc)
-    
-    // send button
-    var choose = $("<button type='button'>Choose</button>");
-    choose.click(closure(doc.id,mimetype))
-    doc_el.append(choose)
-    
-    container.append(doc_el);
-
+    buildItem(doc)
   }
-  
+
   // resize the gadget
   gadgets.window.adjustHeight();
 
@@ -103,6 +202,32 @@ var build = function(documents){
   // 5 seconds
   setTimeout(adjustHeight,5000);
 };
+
+buildItem = function (doc) {
+  var mimetype = "application/png";
+
+  var doc_id = 'document_'+doc.id;
+  var doc_el = $("<div id='"+doc_id+"'></div>");
+  doc_el.attr('class','doc');
+
+  var doc_name = $('<div class="title"></div>');
+  doc_name.text(doc.displayName);
+  doc_name.append(" - " + doc.updated.replace("T"," ").replace(/.....$/,""))
+  doc_el.append(doc_name)
+
+  // description block
+  // var doc_desc = $('<div class="desc"></div>')
+  // var desc = (doc.description && doc.description.length != 0) ? doc.description.slice(0,150)+"..." : "";
+  // doc_desc.html(desc);
+  // doc_el.append(doc_desc)
+
+  // send button
+  var choose = $("<button type='button'>Select</button>");
+  choose.click(closure(doc.id,mimetype))
+  doc_el.append(choose)
+
+  app.list.prepend(doc_el);
+}
 
 var closure = function(par1,par2) {
   var tmp1 = par1;

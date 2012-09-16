@@ -47,6 +47,8 @@
       batch.add('context', osapi.people.getOwner());    
     }
     batch.execute(function(data){
+      console.log("data")
+      console.log(data)
       // Widget viewer
       $('#viewer').append(data.viewer.displayName);
       // Widget owner
@@ -70,6 +72,7 @@
 
       if (osapi.spaces) {
         osapi.spaces.get({contextId: data.context.contextId}).execute(function(space){
+          console.log("Space")
           console.log(space)
           $('#osapi_spaces').append("<br />").append("Space Name: "+space.displayName);
           $('#osapi_spaces').append("<br />").append("Space Parent Id (Course): "+space.parentId);
@@ -81,6 +84,7 @@
       if (osapi.apps) {
         // check osapi.apps.get
         osapi.apps.get({contextId: "@self"}).execute(function(app){
+          console.log("App")
           console.log(app)
           $('#osapi_apps').append("<br />").append("App Name: "+app.displayName);
           $('#osapi_apps').append("<br />").append("App Parent Id (Widgetspace): "+app.parentId);
