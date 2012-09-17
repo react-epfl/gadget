@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<Module>
+  <ModulePrefs title="Gadgets statistics"
+              author_email="evgeny.bogdanov@epfl.ch" 
+              author="Evgeny Bogdanov" 
+              description="Shows viewer, owner and context where gadget lives"
+              width="500"
+              height="500">
+      <Require feature="opensocial" />
+      <Require feature="osapi" />
+    </ModulePrefs>
+ <Content type="html" view="default,canvas,home,profile">
+ <![CDATA[
+ <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>-->
+ <script type="text/javascript" src="http://localhost/gadgets/libs/jquery.min.js"></script>
+ 
+ <script type="text/javascript">
+
+ /**
+  * Request for friend information.
+  */
+  function getData() {  
+    // 3 requests in one
+    var batch = osapi.newBatch();
+    batch.add('viewer', osapi.people.getViewer());
+    batch.add('owner', osapi.people.getOwner());
+    if (osapi.context) { // only for spaces extended container
+      batch.add('context', osapi.context.get());
+    } else {
+      batch.add('context', osapi.people.getOwner());    
+    }
+    batch.execute(function(data){
+      // Widget viewer
+      $('#viewer').append(data.viewer.displayName);
+      // Widget owner
+      $('#owner').append(data.owner.displayName);
+
+      contextId = "@owner"
+      contextType = "@user"
+      if (osapi.context) { // only for spaces extended container
+        contextId = data.context.contextId
+        contextType = data.context.contextType      
+      }
+   
+      // Widget context (id and type)
+      $('#id').append(contextId);
+      $('#type').append(contextType);
+      
+      // check osapi.people.get
+      osapi.people.get({userId: data.viewer.id}).execute(function(user){
+        $('#osapi_people').append("<br />").append(user.displayName);
+      });
+
+      if (osapi.spaces) {
+        osapi.spaces.get({contextId: data.context.contextId}).execute(function(space){
+          console.log(space)
+          $('#osapi_spaces').append("<br />").append("Space Name: "+space.displayName);
+          $('#osapi_spaces').append("<br />").append("Space Parent Id (Course): "+space.parentId);
+        });
+      } else {
+        $('#osapi_spaces').append("No spaces supported in this container");
+        }
+
+      if (osapi.apps) {
+        // check osapi.apps.get
+        osapi.apps.get({contextId: "@self"}).execute(function(app){
+          console.log(app)
+          $('#osapi_apps').append("<br />").append("App Name: "+app.displayName);
+          $('#osapi_apps').append("<br />").append("App Parent Id (Widgetspace): "+app.parentId);
+        });
+      } else {
+        $('#osapi_apps').append("No apps API is supported in this containers");
+      }
+    })
+    
+  };
+
+  setTimeout(getData, 1000);
+  // console.log(gadgets);
+  // gadgets.util.registerOnLoadHandler(getData);
+  </script>
+  <div id="viewer"><b>Viewer:</b> </div>
+  <div id="owner"><b>Owner:</b> </div>
+  <div id="id"><b>Context Id:</b> </div>
+  <div id="type"><b>Context Type:</b> </div>
+  <br />
+  <div id="osapi_people"><b>osapi.people.get({userId: viewerId}):</b> </div><br />
+  <div id="osapi_spaces"><b>osapi.spaces.get({contextId: contextId}):</b> </div><br />
+  <div id="osapi_apps"><b>osapi.apps.get({contextId: "@self"}):</b> </div>
+  ]]>
+  </Content>
+</Module>
