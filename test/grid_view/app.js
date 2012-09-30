@@ -22,7 +22,7 @@ var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
           , data: { view: "" }
-          , root_url: "http://graasp.epfl.ch/gadget/test/grid_view/"
+          , root_url: "http://localhost/gadget/test/grid_view/"
           }
 
 // gets the data and calls build for container
@@ -47,73 +47,62 @@ var initialize = function() {
   }
 
   //getting the user's settings
-  var batch = osapi.newBatch();
-  batch.add('viewer', osapi.people.getViewer());
-  batch.add('context', osapi.context.get());
-  batch.execute(function(data){
-    var viewer = data.viewer
-    app.viewer = viewer;
-    app.viewerName = viewer.displayName;
-
-    var context = data.context
+  getData(function (data) {
+    app.viewer = data.viewer // .displayName
+    app.viewerName = data.viewer.displayName
+    var context = data.context // .contextId, .contextType
     app.context = context
-    var contextId = context.contextId
-    var contextType = context.contextType
-    var prefix = (contextType === "@space") ? "s_" : "";
-    app.contextId = prefix + contextId;
+    var prefix = (context.contextType === "@space") ? "s_" : "";
+    app.contextId = prefix + context.contextId;
+    app.owner = data.owner
+    var appdata = data.appdata // .settings
+    var apps = data.apps // .list
 
-    var batch = osapi.newBatch();
-    batch.add('owner', osapi.people.getOwner());
-    batch.add('appdata', osapi.appdata.get({userId: app.contextId}));
-    batch.add('apps', osapi.apps.get({contextId: contextId, contextType: contextType}));
-    batch.execute(function(res){
-      // current viewer is the owner, then show management block
-      if (viewer.id === res.owner.id) {
-        isOwner = true
-      }
+    // current viewer is the owner, then show management block
+    if (app.viewer.id === app.owner.id) {
+      isOwner = true
+    }
 
-      // --- apps from space ---
-      var apps = res.apps
-      var gadgets_list = apps.list
+    // --- apps from space ---
+    var gadgets_list = apps.list
 
-      // build a hash containing {id, app} pairs from the space
-      app.hash = {}
-      app.sizeType = "px" // px or % to calculate the size
-      app.order = [] // list of app ids
-      app.sizes = {} // hash or app sizes {id: size, id: size}
-      _.each(apps.list, function (item) {
-        app.hash[item.id] = item
-      })
-      // -----------------------
+    // build a hash containing {id, app} pairs from the space
+    app.hash = {}
+    app.sizeType = "px" // px or % to calculate the size
+    app.order = [] // list of app ids
+    app.sizes = {} // hash or app sizes {id: size, id: size}
+    _.each(apps.list, function (item) {
+      app.hash[item.id] = item
+    })
+    // -----------------------
 
-      var data = res.appdata[app.contextId]
-      if (data) {
-        app.data = JSON.parse(data.settings)
+    appdata = appdata[app.contextId]
+    if (appdata) {
+      app.data = JSON.parse(appdata.settings)
 
-        app.order = app.data.order || []
-        app.sizes = app.data.sizes || {}
-        app.sizeType = app.data.sizeType || "px" // px or % to calculate the size
-      }
-      // set AppSize
-      $('#select_button').val(app.sizeType)
-      // refresh order of apps based on current spaces from the app
-      refreshAppsList()
+      app.order = app.data.order || []
+      app.sizes = app.data.sizes || {}
+      app.sizeType = app.data.sizeType || "px" // px or % to calculate the size
+    }
+    // set AppSize
+    $('#select_button').val(app.sizeType)
+    // refresh order of apps based on current spaces from the app
+    refreshAppsList()
 
-      buildSkeleton(gadgets_list);
+    buildSkeleton(gadgets_list);
 
-      $("#help_button").click(function(){
-        $('#popup').show()
-      })
+    $("#help_button").click(function(){
+      $('#popup').show()
+    })
 
-      // We set three timeouts to make sure the apps are loaded to do proper resizing
-      // if it take long time, it will be resized when mouse is moved above the app
-      // 1 seconds
-      setTimeout(adjustHeight,1000);
-      // 3 seconds
-      setTimeout(adjustHeight,3000);
-      // 10 seconds
-      setTimeout(adjustHeight,10000);
-    });
+    // We set three timeouts to make sure the apps are loaded to do proper resizing
+    // if it take long time, it will be resized when mouse is moved above the app
+    // 1 seconds
+    setTimeout(adjustHeight,1000);
+    // 3 seconds
+    setTimeout(adjustHeight,3000);
+    // 10 seconds
+    setTimeout(adjustHeight,10000);
   });
 
 };
@@ -316,13 +305,17 @@ var buildGadget = function (id) {
   var gadget = app.hash[id]
 
   // get secure token for each widget from osapi.apps request
-  var gadgetEl = shindig.container.createGadget(
+  var gadgetParams = 
     { specUrl: gadget.appUrl
     , height: '400px'
-    , secureToken: gadget.token
     , appId: id
-    })
-
+    , secureToken: gadget.token
+    }
+  var gadgetEl = shindig.container.createGadget(gadgetParams)
+  // if no token specified, make it anonymous by removing secureToken
+  if (!gadget.token) {
+    delete gadgetEl.secureToken
+  }
   shindig.container.addGadget(gadgetEl);
 
   var gadget_el = $('<div><div>')
@@ -342,6 +335,9 @@ var save = function(notHumanAct){
   //only owner can save changes
   if (humanAct && !isOwner) {
     $("#not_owner").show()
+    return
+  }
+  if (isFreeze) {
     return
   }
   var data = {}
