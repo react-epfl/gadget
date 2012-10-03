@@ -14,7 +14,8 @@
     background-color:transparent;
     background-image:none;
     font-family: "Helvetica Neue", arial, sans-serif;
-    font-size: 13px;}
+    font-size: 13px;
+    overflow: hidden;}
   .gadgets-gadget{width: 100%;}
   .gadget-title {
     font-size: 16px;
