@@ -10,7 +10,11 @@
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
 <style type="text/css">
-  body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
+  body{
+    background-color:transparent;
+    background-image:none;
+    font-family: "Helvetica Neue", arial, sans-serif;
+    font-size: 13px;}
   .gadgets-gadget{width: 100%;}
   .gadget-title {
     font-size: 16px;
@@ -24,33 +28,48 @@
     color: #333; 
     background-color: #EEE;
     border-top: 1px solid #AAA;
+    position: relative;
+    min-height: 50px;
     }
 
   .thumbnail {
     display: inline-block;
     color: #333; 
     background-color: #EEE;
-    border-top: 1px solid #AAA;
-    margin: 2px 2px;
+    margin: 2px 5px;
+    width: 30px;
+    padding: 5px;
+    position: absolute;
+    left: 0;
   }
   .title {
     display: inline-block;
-    margin: 10px 5px;
+    margin: 2px 10px;
+    /*width: 200px;*/
+    padding: 5px;
     vertical-align: top;
+    padding-left: 50px;
+    padding-right: 110px;
+    min-height: 30px;
+/*    position: relative;
+    float: left;*/
   }
   .download {
     display: inline-block;
-    margin: 2px 5px;
-    position:absolute;
-    right:10px;
+    margin: 2px 2px;
+    width: 110px;
+    /*padding: 5px;*/
+    position: absolute;
+    top: 0;
+    right: 0;
   }
+
   .downloadall {
     font-size:16px;
     display: inline-block;
     margin: 5px;
-    position: relative;
-    float: right;
-    left: 0%;
+    position: absolute;
+    right: 10px;
   }
   .preview_button {
     display: inline-block;
