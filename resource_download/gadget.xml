@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Embed player view" 
-                author_email="evgeny.bogdanov@epfl.ch" 
-                author="Evgeny Bogdanov" 
-                description="This functional skin, when added to a space, allows to view content of all documents from a space. For example, youtube videos, slideshare presentations, wikipedia, etc. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+  <ModulePrefs title="Resource Download View" 
+      author="Andrii Vozniuk" 
+      author_email="andrii.vozniuk@epfl.ch" 
+      description="This functional skin, when added to a space, allows to view and download
+       resources from the space. At the moment, it works only in Graasp - http://graasp.epfl.ch">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -130,6 +131,20 @@ var changePreviewMode = function() {
     initialize();
 }
 
+// Checks if the document is a webpage Bookmark
+var isBookmark = function(doc) {
+  var isBookmark = false;
+  if (typeof doc.documentEntity !== "undefined") {
+    var docEntitiy = doc.documentEntity;
+    var firstSeven = docEntitiy.substring(0,7);
+
+    if (firstSeven === "http://") {
+      isBookmark = true;
+    }
+  }
+  return isBookmark;
+}
+
 // build the container with gadgets
 var build = function(documents){
   
@@ -186,7 +201,10 @@ var build = function(documents){
       doc_name.append(doc_name_link);
       doc_name_link.text(doc.displayName);
     } else {
-      doc_name.text(doc.displayName);
+      var asset_url = doc.profileUrl;
+      var doc_name_link = $("<a href='"+asset_url+"' target='_blank'></a>");
+      doc_name.append(doc_name_link);
+      doc_name_link.text(doc.displayName);
     }
     
     doc_el.append(doc_name);
@@ -211,14 +229,22 @@ var build = function(documents){
     var doc_body = $('<div class="content"></div>');
 
     if (app.showingPreview == true) {
+      var preview_el = $("<div class='preview'></div>");
+
       //show embedded documents 
       if (typeof doc.documentEntity !== "undefined") {
-        doc_body.html(doc.documentEntity);
+        if (!isBookmark(doc)) {
+          doc_body.html(doc.documentEntity);
+        } else {
+          var site_preview_url = app.containerUrl + "/item4a/picture/full/asset/" + doc.id;
+          var preview_img = $("<img alt='Resource Preview' src='"+ site_preview_url +"' width='63%'></img>");
+          preview_el.append(preview_img);
+          doc_body.append(preview_el);
+        }
       }
 
       // show a preview of the attachment
       if (typeof doc.attachment !== "undefined") {
-        var preview_el = $("<div class='preview'></div>");
         var preview_path = app.containerUrl + "/attachment/" + doc.attachment.objectId;
         var preview_img = $("<img alt='Resource Preview' src='"+ preview_path +"' width='63%'></img>");
         preview_el.append(preview_img);
