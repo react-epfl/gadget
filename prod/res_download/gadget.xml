@@ -102,7 +102,7 @@
 <script type="text/javascript"> 
 var isOwner = false;
 
-var app = {containerUrl: "", contextId: "", showingPreview: false}
+var app = {containerUrl: "", contextId: "", showingPreview: false, rootUrl: "http://graasp.epfl.ch/gadget/prod/res_download/"}
 
 // gets the data and calls build for container
 var initialize = function() {
@@ -212,7 +212,8 @@ var build = function(documents){
       var downloadUrl = doc.attachment.url;
       var download_el = $("<div class='download'></div>");
 
-      var download_img = $("<img alt='Download' src='download.png' height='32' width='32' style='margin: 2px 5px; display:inline-block; vertical-align:middle'></img>");
+      var download_img = $("<img alt='Download' height='32' width='32' style='margin: 2px 5px; display:inline-block; vertical-align:middle'></img>");
+      download_img.attr("src", app.rootUrl + "download.png");
       var img_link = $("<a href='"+downloadUrl+"' target='_blank'></a>");
       img_link.append(download_img);
       download_el.append(img_link);
