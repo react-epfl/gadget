@@ -47,14 +47,12 @@
   .title {
     display: inline-block;
     margin: 2px 10px;
-    /*width: 200px;*/
+    font-family: "Helvetica Neue", arial, sans-serif;
     padding: 5px;
     vertical-align: top;
     padding-left: 50px;
     padding-right: 110px;
     min-height: 30px;
-/*    position: relative;
-    float: left;*/
   }
   .download {
     display: inline-block;
