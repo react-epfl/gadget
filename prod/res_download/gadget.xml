@@ -212,7 +212,6 @@ var build = function(documents){
       var downloadUrl = doc.attachment.url;
       var download_el = $("<div class='download'></div>");
 
-      // TODO: Replace link to the image on the server
       var download_img = $("<img alt='Download' src='download.png' height='32' width='32' style='margin: 2px 5px; display:inline-block; vertical-align:middle'></img>");
       var img_link = $("<a href='"+downloadUrl+"' target='_blank'></a>");
       img_link.append(download_img);
