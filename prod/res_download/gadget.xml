@@ -193,17 +193,10 @@ var build = function(documents){
     //document name, downloads the attachment on click
     var doc_name = $('<div class="title"></div>');
     
-    if (typeof doc.attachment !== "undefined") {
-      var downloadUrl = doc.attachment.url;
-      var doc_name_link = $("<a href='"+downloadUrl+"' target='_blank'></a>");
-      doc_name.append(doc_name_link);
-      doc_name_link.text(doc.displayName);
-    } else {
-      var asset_url = doc.profileUrl;
-      var doc_name_link = $("<a href='"+asset_url+"' target='_blank'></a>");
-      doc_name.append(doc_name_link);
-      doc_name_link.text(doc.displayName);
-    }
+    var asset_url = doc.profileUrl;
+    var doc_name_link = $("<a href='"+asset_url+"' target='_blank'></a>");
+    doc_name.append(doc_name_link);
+    doc_name_link.text(doc.displayName);
     
     doc_el.append(doc_name);
 
