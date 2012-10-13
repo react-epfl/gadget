@@ -14,7 +14,7 @@
 <div id="container" onmouseover="adjustHeight();">
   <div id="not_owner" style="display:none">You are not a space owner. Your changes to apps arrangement will not be saved.</div>
   <div id="popup" style="display:none">
-    <div><b>App size</b>: fixed or flexible (apps resize automatically when window is resized)</div>
+    <div><b>App size</b>: fixed or relative (apps resize automatically when window is resized)</div>
     <div><b>Drag&Drop an app</b> to change the order</div>
     <div><b>Resize an app</b> by dragging its right border</div>
     <span class="button" onclick="$('#popup').hide()">Close</span>
@@ -24,7 +24,7 @@
     <input type="button" class = "select button" id="help_button" value="Help"></input>
     <select class = "select" id="select_button" onchange="sizeTypeChanged();">
       <option value="px">fixed (px)</option>
-      <option value="%">flexible (%)</option>
+      <option value="%">relative (%)</option>
     </select>
     <span id="name" class="select">App size: </span>
   </div>

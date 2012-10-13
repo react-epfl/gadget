@@ -64,7 +64,7 @@ var initialize = function() {
     }
 
     // --- apps from space ---
-    var gadgets_list = apps.list
+    app.list = apps.list
 
     // build a hash containing {id, app} pairs from the space
     app.hash = {}
@@ -89,7 +89,7 @@ var initialize = function() {
     // refresh order of apps based on current spaces from the app
     refreshAppsList()
 
-    buildSkeleton(gadgets_list);
+    buildSkeleton();
 
     $("#help_button").click(function(){
       $('#popup').show()
@@ -203,6 +203,12 @@ var buildSkeleton = function () {
   var center = $("#center")
     , context = app.context
     , viewer = app.viewer
+
+  // warning message when no apps exist
+  if (app.list.length == 0) {
+    $("#center").append($('<span style="margin-left:20px">No apps exist in this space</span>'))
+    return
+  }
 
   // build first drop_here block
   var fakeGadget = $('<div id="fake_gadget" appId="0"></div>')

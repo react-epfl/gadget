@@ -24,7 +24,7 @@
     <input type="button" class = "select button" id="help_button" value="Help"></input>
     <select class = "select" id="select_button" onchange="sizeTypeChanged();">
       <option value="px">fixed (px)</option>
-      <option value="%">flexible (%)</option>
+      <option value="%">relative (%)</option>
     </select>
     <span id="name" class="select">App size: </span>
   </div>
@@ -39,69 +39,42 @@
 // no appdata calls if isFreeze set to true
 var isFreeze = true
 function getData(callback) {
-  var output = {
-    viewer:
-      { displayName: "Evgeny1"
-      , id: "3"
-      }
-  , context:
-      { contextId: "55"
-      , contextType: "@space"
-      }
-  , owner:
-      { displayName: "Evgeny1"
-      , id: "3"
-      }
-  , apps:
-      { list: [
-          { appType: "WidgetGadget"
-          , appUrl: "http://localhost/gadget/test/gadget_info.xml"
-          , displayName: "info"
-          , filterCapability: {}
-          , id: "76"
-          , name: "info"
-          , objectId: 76
-          , parentId: "55"
-          , parentType: "@space"
-          , profileUrl: "http://localhost:3000/#item=widget_76"
-          , thumbnailUrl: "http://localhost:3000/images/pics/widget_thumb.png"
-          , token: null
-          , updated: "2012-09-16T19:41:48.000Z"
-          },
-          { appType: "WidgetGadget"
-          , appUrl: "http://localhost/gadget/test/iframe.xml"
-          , displayName: "iframe"
-          , filterCapability: {}
-          , id: "77"
-          , name: "iframe"
-          , objectId: 77
-          , parentId: "55"
-          , parentType: "@space"
-          , profileUrl: "http://localhost:3000/#item=widget_77"
-          , thumbnailUrl: "http://localhost:3000/images/pics/widget_thumb.png"
-          , token: null
-          , updated: "2012-09-16T19:42:12.000Z"
+  var output =
+    { viewer:
+        { displayName: "Evgeny1"
+        , id: "3"
+        }
+    , context:
+        { contextId: "55"
+        , contextType: "@space"
+        }
+    , owner:
+        { displayName: "Evgeny1"
+        , id: "3"
+        }
+    , apps:
+        { list: [
+            { appType: "WidgetGadget"
+            , appUrl: "http://localhost/gadget/test/gadget_info.xml"
+            , displayName: "info"
+            , id: "76"
+            },
+            { appType: "WidgetGadget"
+            , appUrl: "http://localhost/gadget/test/iframe.xml"
+            , displayName: "iframe"
+            , id: "77"
 
-          },
-          { appType: "WidgetGadget"
-          , appUrl: "http://localhost/gadget/test/gadget_info.xml"
-          , displayName: "info2"
-          , filterCapability: {}
-          , id: "78"
-          , name: "info2"
-          , objectId: 78
-          , parentId: "55"
-          , parentType: "@space"
-          , profileUrl: "http://localhost:3000/#item=widget_78"
-          , thumbnailUrl: "http://localhost:3000/images/pics/widget_thumb.png"
-          , token: null
-          , updated: "2012-09-17T08:59:15.000Z"
-          }
-      ]}
-  , appdata: {
-      s_55: { settings: '{"order":["76","77","78"],"sizes":{"76":540,"77":324,"78":275},"sizeType":"px"}'  }
+            },
+            { appType: "WidgetGadget"
+            , appUrl: "http://localhost/gadget/test/gadget_info.xml"
+            , displayName: "info2"
+            , id: "78"
+            }
+        ]}
+    , appdata: {
+        s_55: { settings: '{"order":["76","77","78"],"sizes":{"76":540,"77":324,"78":275},"sizeType":"px"}'  }
+      }
     }
-  }
 
   callback(output)
 }
@@ -113,3 +86,4 @@ gadgets.util.registerOnLoadHandler(initialize);
 
   ]]></Content>
 </Module>
+
