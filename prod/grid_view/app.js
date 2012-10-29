@@ -22,7 +22,7 @@ var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
           , data: { view: "" }
-          , root_url: "http://localhost/gadget/test/grid_view/"
+          , root_url: "http://graasp.epfl.ch/gadget/prod/grid_view/"
           }
 
 // gets the data and calls build for container
