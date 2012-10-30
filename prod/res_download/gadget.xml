@@ -164,17 +164,13 @@ var build = function(documents){
   preview.append(preview_button);
   header.append(preview);
 
-  if(documents.length > 0) {
-    var downloadall = $("<div class='downloadall'></div>");
-    downloadSpaceUrl = app.containerUrl + '/space/download/' + app.contextId;
-    var download_link = $("<a href='"+downloadSpaceUrl+"' target='_blank'>Download All</a>");
-    downloadall.append(download_link);
-    header.append(downloadall);
-  } else {
+  if (documents.length == 0) {
     container.text("No resource were found in this space!");
   }
 
   container.append(header);
+
+  var existsDownDoc = false; // if at least one doc is downloadable
 
   for (var i = 0; i < documents.length; i++) {
     var doc = documents[i];
@@ -214,6 +210,8 @@ var build = function(documents){
       var download_link = $("<a href='"+downloadUrl+"' target='_blank' style='display:inline-block; vertical-align:middle'>Download</a>");
       download_el.append(download_link);
       doc_el.append(download_el);
+
+      existsDownDoc = true;
     }
 
     //Showing the previews
@@ -253,7 +251,15 @@ var build = function(documents){
 
     container.append(doc_el);
   }
-  
+
+  if(existsDownDoc) {
+    var downloadall = $("<div class='downloadall'></div>");
+    downloadSpaceUrl = app.containerUrl + '/space/download/' + app.contextId;
+    var download_link = $("<a href='"+downloadSpaceUrl+"' target='_blank'>Download All</a>");
+    downloadall.append(download_link);
+    header.append(downloadall);
+  }
+
   // resize the gadget
   gadgets.window.adjustHeight();
 
