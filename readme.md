@@ -12,9 +12,9 @@ Howto
 License - Creative Commons
 ==========================
 
-Attribution alone (by) - [<img src="http://upload.wikimedia.org/wikipedia/commons/6/64/CC-BY.png">][licensefull]
+Creative Commons Attribution alone (by) - [<img src="http://upload.wikimedia.org/wikipedia/commons/6/64/CC-BY.png" style="position:relative; top 5px">][licensefull]
 
-See [Creative Commons Attribution alone licence][licensehuman]
+See [Creative Commons <i>Attribution alone licence</i>][licensehuman]
 
 [licensefull]: http://creativecommons.org/licenses/by/3.0/legalcode
 [licensehuman]: http://creativecommons.org/licenses/by/3.0/
