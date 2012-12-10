@@ -24,7 +24,11 @@ gadget_name_folder
 License - Creative Commons
 ==========================
 
+<<<<<<< HEAD
 Creative Commons Attribution alone (by) - [<img src="http://upload.wikimedia.org/wikipedia/commons/6/64/CC-BY.png">][licensefull]
+=======
+Creative Commons Attribution alone (by) - [<img src="http://upload.wikimedia.org/wikipedia/commons/6/64/CC-BY.png" style="position:relative; top: 5px;">][licensefull]
+>>>>>>> 821516346487de0a0fda64119a0a2aeda45131c6
 
 See [Creative Commons <i>Attribution alone licence</i>][licensehuman]
 
