@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Module>
   <ModulePrefs title="Portability demonstrator" scrolling="true">
-    <Require feature="opensocial-0.8" />
+    <Require feature="opensocial-0.9" />
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
     <Require feature="locked-domain"/>

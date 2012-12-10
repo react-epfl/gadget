@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
   <ModulePrefs title="IFrame gadget" author_email="evgeny.bogdanov@epfl.ch" author="Evgeny Bogdanov" description="Space owner enters url and it is displayed as an iframe by gadget." width="500" height="500">
-    <Require feature="opensocial-0.8"/>
+    <Require feature="opensocial-0.9"/>
     <Require feature="osapi"/>
     <Require feature="dynamic-height"/>
   </ModulePrefs>

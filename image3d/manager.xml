@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
   <ModulePrefs title="Manager of 3D viewer" author="Evgeny Bogdanov" author_email="evgeny.bogdanov@epfl.ch" description="Adds images to 3D viewer" height="500">
-    <Require feature="opensocial-0.8" />
+    <Require feature="opensocial-0.9" />
     <!--<Require feature="dynamic-height" />-->
     <Require feature="pubsub" />
   </ModulePrefs>

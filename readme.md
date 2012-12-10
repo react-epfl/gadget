@@ -21,6 +21,8 @@ gadget_name_folder
 
 4. Production-ready gadgets should be added to folder prod/
 
+5. Temporal gadgets should be added to folder temp/
+
 License - Creative Commons
 ==========================
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
  <Module>
    <ModulePrefs title="Remote device graph" height="300" width="550" scaling="false" >
-     <Require feature="opensocial-0.8" />
+     <Require feature="opensocial-0.9" />
      <Require feature="dynamic-height" />
    </ModulePrefs>
    <Content type="html">
