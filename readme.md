@@ -12,7 +12,7 @@ Howto
 License - Creative Commons
 ==========================
 
-Creative Commons Attribution alone (by) - [<img src="http://upload.wikimedia.org/wikipedia/commons/6/64/CC-BY.png" style="position:relative; top 5px">][licensefull]
+Creative Commons Attribution alone (by) - [<img src="http://upload.wikimedia.org/wikipedia/commons/6/64/CC-BY.png" style="position:relative; top: 5px;">][licensefull]
 
 See [Creative Commons <i>Attribution alone licence</i>][licensehuman]
 
