@@ -32,3 +32,12 @@ See [Creative Commons <i>Attribution alone licence</i>][licensehuman]
 
 [licensefull]: http://creativecommons.org/licenses/by/3.0/legalcode
 [licensehuman]: http://creativecommons.org/licenses/by/3.0/
+
+Acknowledgments
+===============
+This "Component" has been initially developed by "Evgeny Bogdanov, Andrii Vozniuk, Na Li, Jad Naoum, Freddy Limpens, 
+Benjamin Fankhauser" in their capacity 
+as employees of the Swiss Federal Institute of Technology in Lausanne (EPFL) with the partial 
+support of the 6th and 7th Framework Programs for Research and Technological Development of the 
+European Union in Information and Communication Technologies (ROLE and Go-Lab Integrated Projects), 
+as well as with the partial support of the Swiss AAA/SWITCH program.
