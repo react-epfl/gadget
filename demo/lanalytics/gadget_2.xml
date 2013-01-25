@@ -129,7 +129,7 @@
     [
       {
         x: ["Anonym","Denis","Andrii","Sten","Evgeny","Wissam"],
-        y: [1500,934,630,850,520,426],
+        y: [1500,934,630,850,375,426],
         name:"The number of visit per user in January 2013"
       },
       // {
