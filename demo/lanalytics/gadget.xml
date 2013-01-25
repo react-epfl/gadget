@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Added object" 
-                author_email="andrii.vozniuk@epfl.ch" 
-                author="Andrii Vozniuk" 
-                description="This gadget displays the number of uploaded items per day."
+  <ModulePrefs title="Graph (demo)" 
+                author_email="evgeny.bogdanov@epfl.ch" 
+                author="Evgeny Bogdanov" 
+                description="Gadget to display data as graphs. Takes data from documents in a space and shows it on the graph. This is a demo gadget. The real gadget (http://graasp.epfl.ch/gadget/graph.xml) works only in spaces enabled containers (for example Graasp - http://graasp.epfl.ch )"
                 width="500"
                 height="500"
                 thumbnail="http://graasp.epfl.ch/gadget/demo/graph/thumbnail.png"
@@ -28,7 +28,15 @@
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.line.js"></script>
 
 <script type="text/javascript">
-
+  function buildAllGraphs(data){
+    for (var i=0; i < data.length; i++) {
+      buildTwoGraphs(i,data[i],data[i].name)
+    };
+  }
+  function buildTwoGraphs (number,data,title) {
+    buildBarGraph(number,data,title);
+    buildLineGraph(number,data,title);
+  }
   function buildBarGraph(number,data,title_name){
     title_name += " - Bar";
     var x = data.x;
@@ -38,15 +46,14 @@
     
     var title = $("<div id='"+"graph_title_"+number+"'></div>").addClass("graph_title")
         .text(title_name);
-		title.appendTo(graph)
-		var body_id = "graph_body_"+number;
-		var canvas = $("<canvas id='"+body_id+"'></canvas>").addClass("graph_body")
-		  .attr('width','485').attr('height','300');
-		canvas.appendTo(graph)
-		
-		build_rgraph_bar(body_id,x,y);
+    title.appendTo(graph)
+    var body_id = "graph_body_"+number;
+    var canvas = $("<canvas id='"+body_id+"'></canvas>").addClass("graph_body")
+      .attr('width','485').attr('height','300');
+    canvas.appendTo(graph)
+    
+    build_rgraph_bar(body_id,x,y);
   }
-
   function buildLineGraph(number,data,title_name){
     title_name += " - Line";
     var x = data.x;
@@ -56,27 +63,27 @@
     
     var title = $("<div id='"+"graph_line_title_"+number+"'></div>").addClass("graph_title")
         .text(title_name);
-		title.appendTo(graph)
-		var body_id = "graph_line_body_"+number;
-		var canvas = $("<canvas id='"+body_id+"'></canvas>").addClass("graph_body")
-		  .attr('width','485').attr('height','300');
-		canvas.appendTo(graph)
-		
+    title.appendTo(graph)
+    var body_id = "graph_line_body_"+number;
+    var canvas = $("<canvas id='"+body_id+"'></canvas>").addClass("graph_body")
+      .attr('width','485').attr('height','300');
+    canvas.appendTo(graph)
+    
     build_rgraph_line(body_id,x,y);
+    
   }
-
-	function build_rgraph_bar(body_el,x,y){
+  function build_rgraph_bar(body_el,x,y){
     var bar = new RGraph.Bar(body_el, y);
-		
-		bar.Set('chart.background.barcolor1', 'white');
+    
+    bar.Set('chart.background.barcolor1', 'white');
     bar.Set('chart.background.barcolor2', 'white');
-		bar.Set('chart.background.grid.width','0.5');
-		
+    bar.Set('chart.background.grid.width','0.5');
+    
     bar.Set('chart.labels', x);
     bar.Set('chart.gutter', 30);
     bar.Set('chart.background.grid.autofit', true);
     bar.Set('chart.background.grid.autofit.numhlines', 10);
-		bar.Set('chart.background.grid.autofit.numvlines', x.length);
+    bar.Set('chart.background.grid.autofit.numvlines', x.length);
         
 
     bar.Set('chart.hmargin', 1);
@@ -87,24 +94,23 @@
     bar.Set('chart.text.size', 8);
     bar.Set('chart.text.font', 'Verdana');
 
-		bar.Set('chart.ylabels.count', 10);
-		
-		bar.Set('chart.labels.above',true);
-		bar.Set('chart.labels.above.size',6)
+    bar.Set('chart.ylabels.count', 10);
+    
+    bar.Set('chart.labels.above',true);
+    bar.Set('chart.labels.above.size',6)
 
     bar.Draw();      
-	}
-
-	function build_rgraph_line(body_el,x,y){
+  }
+  function build_rgraph_line(body_el,x,y){
     var line = new RGraph.Line(body_el, y);
     line.Set('chart.background.barcolor1', 'white');
     line.Set('chart.background.barcolor2', 'white');;
     line.Set('chart.colors', ['#ff9999','#99ff99','#9999ff']);
     line.Set('chart.linewidth', 2);
 
-		line.Set('chart.key.background','rgba(255,255,255,0.3)')
-		line.Set('chart.key.position.x',35)
-		line.Set('chart.key.position.y',155)
+    line.Set('chart.key.background','rgba(255,255,255,0.3)')
+    line.Set('chart.key.position.x',35)
+    line.Set('chart.key.position.y',155)
     line.Set('chart.text.size', 8);
     line.Set('chart.text.font', 'Verdana');
 
@@ -117,17 +123,16 @@
 
     line.Set('chart.background.grid.autofit', true);
     line.Set('chart.background.grid.autofit.numhlines', 10);
-		line.Set('chart.background.grid.autofit.numvlines', x.length-1);
+    line.Set('chart.background.grid.autofit.numvlines', x.length-1);
 
     line.Draw();
-	}
-
+  }
   var data = 
     [
       {
         x: [8,"","",11,"","",14,"","",17,"","",20,"","",23,"","",26,"","",29,"","",2,"","",5,"","",8,"","",11,"","",14,"","",17],
         y: [0.0,0.0,0.0,0.0,37.5,42.67,58.97,14.7,78.6,32.0,0.0,40.5,74.75,16.79,92.62,31.83,140.0,65.14,0.0,69.0,59.73,32.55,42.0,110.87,0.0,24.0,34.96,5.64,19.73,106.03,38.09,5.64,38.98,78.42,5.64,16.54,101.92,60.24,50.49,0.0],
-        name:"Visits per day"
+        name:"User 1"
       },
       {
         x: [8,"","",11,"","",14,"","",17,"","",20,"","",23,"","",26,"","",29,"","",2,"","",5,"","",8,"","",11,"","",14,"","",17],
@@ -135,6 +140,7 @@
         name:"User 2"
       }
     ]
+    
 </script>
 
 <script type="text/javascript">
@@ -143,7 +149,7 @@ var isOwner = false;
 // gets the data and calls build for container
 var initialize = function() {
   // draw graphs
-  buildBarGraph(i,data[0],data[0].name)
+  buildAllGraphs(data);
     
   gadgets.window.adjustHeight();
 
