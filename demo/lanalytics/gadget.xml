@@ -4,8 +4,8 @@
                 author_email="evgeny.bogdanov@epfl.ch" 
                 author="Evgeny Bogdanov" 
                 description="Gadget to display data as graphs. Takes data from documents in a space and shows it on the graph. This is a demo gadget. The real gadget (http://graasp.epfl.ch/gadget/graph.xml) works only in spaces enabled containers (for example Graasp - http://graasp.epfl.ch )"
-                width="500"
-                height="500"
+                width="200"
+                height="200"
                 thumbnail="http://graasp.epfl.ch/gadget/demo/graph/thumbnail.png"
                 screenshot="http://graasp.epfl.ch/gadget/demo/graph/screenshot.png">
     <Require feature="osapi" />
