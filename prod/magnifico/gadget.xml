@@ -6,15 +6,18 @@
             author_email="na.li@epfl.ch"
             description="A search widget for finding experts with domain-specific expertise. The dataset used is Mendeley corpus. This widget is developed in the context of the ROLE project, http://www.role-project.eu."
             height="330"
-            width="1000">
+            width="1000"
+			thumbnail="http://graasp.epfl.ch/gadget/prod/magnifico/thumbnail.png"
+			screenshot="http://graasp.epfl.ch/gadget/prod/magnifico/screenshot.png"
+            >
         <Require feature="osapi" />
         <Require feature="dynamic-height" />
     </ModulePrefs>
     <Content type="html" view="default"><![CDATA[
    	
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" type="text/css">
+	<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
-	<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
 
 <div style="width:870px;margin-left:auto;margin-right:auto">
 <div class="navbar navbar-fixed-top">
