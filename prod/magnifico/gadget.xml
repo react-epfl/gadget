@@ -25,18 +25,19 @@
 	    <div class="container-fluid" style="width:870px;margin-left:auto;margin-right:auto">
 		  <center>
 			  <img src="logo1.png" height="62px" width="262px"/>
-			  <input type = "text" id="query" name="query" style="width:540px; margin-top:25px; height: 30px" placeholder = "Enter research field here." onkeyup = "catch_return_key()"/>
+			  <input type = "text" id="query" name="query" style="width:540px; margin-top:25px; height: 30px" placeholder = "Enter expertise here." onkeyup = "catch_return_key()"/>
 			  <button id="search_btn" type="submit" class="btn btn-small btn-info"  style="margin-top:18px" onclick = "show_search_results()">
 				<img src="logo-button.png" height="21px" width="25px">
 			  </button>
-			
 		  </center>
 	    </div>
+
 	  </div>
 </div>
 <div class="container" style="margin-top: 80px">
     <div class="content" id = "result_content">
-    	<div id = "intro_text" style = "display: block; color: #999; font-size: x-large; text-align: center; height: 100px; padding-top: 90px">Discover experts in your research field!</div>
+    	<div id = "intro_text" style = "display: block; color: #999; font-size: x-large; text-align: center; height: 50px; padding-top: 60px">Discover people with expertise!</div>
+    	<div id = "example_text" style = "text-align: center; color: #999; padding-bottom: 50px">Popular expertise: e-learning, computer graphics, recommender systems, data mining...</div>
     	<img src="loading.gif" id = "loading_img" height="62px" width="62px" style = "display: none; margin-left: 400px"/>
     	<div id = "error_msg" style="margin-top: 30px; display: none">
     		<div style = "float: left; margin-left: 200px">
@@ -59,8 +60,8 @@
 <script type="text/javascript">
 	<!-- global variables -->
 	var app = {};
-	app.java_server = "http://128.178.5.141:8889/?query=";
-	app.rails_server = "http://128.178.5.141:3001/expert_list/";
+	app.java_server = "http://reactbuild.epfl.ch:8889/?query=";
+	app.rails_server = "http://reactbuild.epfl.ch:3001/expert_list/";
 
 	function catch_return_key(){
 		if(event.keyCode == 13)
@@ -72,6 +73,8 @@
 		document.getElementById('result_count').style.display = 'none';
 		document.getElementById('error_msg').style.display = 'none';
 		document.getElementById('intro_text').style.display = 'none';
+		document.getElementById('example_text').style.display = 'none';
+		
 		var loading_img = document.getElementById('loading_img');
 		loading_img.style.display = 'block';
 		var query = document.getElementById('query').value;
