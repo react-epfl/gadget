@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs
+            title="Magnifico"
+            author="Na Li"
+            author_email="na.li@epfl.ch"
+            description="A search widget for finding experts with domain-specific expertise. The dataset used is Mendeley corpus. This widget is developed in the context of the ROLE project, http://www.role-project.eu."
+            height="330"
+            width="1000"
+			thumbnail="http://graasp.epfl.ch/gadget/prod/magnifico/thumbnail.png"
+			screenshot="http://graasp.epfl.ch/gadget/prod/magnifico/screenshot.png"
+            >
+        <Require feature="osapi" />
+        <Require feature="dynamic-height" />
+    </ModulePrefs>
+    <Content type="html" view="default"><![CDATA[
+   	
+	<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
+
+<div style="width:870px;margin-left:auto;margin-right:auto">
+<div class="navbar navbar-fixed-top">
+	  <div class="navbar-inner">
+	    <div class="container-fluid" style="width:870px;margin-left:auto;margin-right:auto">
+		  <center>
+			  <img src="logo1.png" height="62px" width="262px"/>
+			  <input type = "text" id="query" name="query" style="width:540px; margin-top:25px; height: 30px" placeholder = "Enter expertise here." onkeyup = "catch_return_key()"/>
+			  <button id="search_btn" type="submit" class="btn btn-small btn-info"  style="margin-top:18px" onclick = "show_search_results()">
+				<img src="logo-button.png" height="21px" width="25px">
+			  </button>
+		  </center>
+	    </div>
+
+	  </div>
+</div>
+<div class="container" style="margin-top: 80px">
+    <div class="content" id = "result_content">
+    	<div id = "intro_text" style = "display: block; color: #999; font-size: x-large; text-align: center; height: 50px; padding-top: 60px">Discover people with expertise!</div>
+    	<div id = "example_text" style = "text-align: center; color: #999; padding-bottom: 50px">Popular expertise: e-learning, computer graphics, recommender systems, data mining...</div>
+    	<img src="loading.gif" id = "loading_img" height="62px" width="62px" style = "display: none; margin-left: 400px"/>
+    	<div id = "error_msg" style="margin-top: 30px; display: none">
+    		<div style = "float: left; margin-left: 200px">
+    		    <img src = "Hehe.ico" id = "error_icon" height = "48px" width = "48px"/>
+    		</div>
+    		<div style = "float: left; margin-left: 15px; margin-top: 15px; text-align: center; font-size: large; font-weight: 500; color: #FF7F24">Oops! No experts were found. Please try to adjust your search query.</div>
+    	</div>
+    	<p id = "result_count" style = "color: #999; margin-left: 10px; display: none"></p>
+		  <div class="span9" style = "float:left;width:870px;padding-left:5px">
+			<table class="table table-hover">
+				<tbody id = "tb_list">
+				</tbody>
+			</table>
+		  </div>
+	
+	</div>
+	<div style = "float: left; font-size: small; border-top: 1px solid #ccc; padding-top: 10px; width: 870px"><a target = "_blank" href="http://react.epfl.ch/">© React Group EPFL</a></div>
+</div>
+</div>
+<script type="text/javascript">
+	<!-- global variables -->
+	var app = {};
+	app.java_server = "http://reactbuild.epfl.ch:8889/?query=";
+	app.rails_server = "http://reactbuild.epfl.ch:3001/expert_list/";
+
+	function catch_return_key(){
+		if(event.keyCode == 13)
+			show_search_results();
+	}
+
+	function show_search_results(){
+		$('#tb_list').empty();
+		document.getElementById('result_count').style.display = 'none';
+		document.getElementById('error_msg').style.display = 'none';
+		document.getElementById('intro_text').style.display = 'none';
+		document.getElementById('example_text').style.display = 'none';
+		
+		var loading_img = document.getElementById('loading_img');
+		loading_img.style.display = 'block';
+		var query = document.getElementById('query').value;
+
+		var encoded_query = encodeURIComponent(query);
+
+		var url = app.java_server + encoded_query;
+		<!-- get publicaitons that are relevant to the query -->
+		osapi.http.get({'href':url}).execute(function(result){
+			if((!result.error) && (result.content != "")){
+				var rails_url = app.rails_server + encodeURIComponent(result.content) + ".json";
+				osapi.http.get({'href':rails_url,'format':'json'}).execute(function(json_response){
+					if(!json_response.error){
+						loading_img.style.display = 'none';
+						display_experts(json_response.content);
+						gadgets.window.adjustHeight();
+					}
+					else{
+						display_error();
+					}
+				});
+			}
+			else{
+				display_error();
+			}
+		});
+	
+	}
+
+	function display_error(){
+		var loading_img = document.getElementById('loading_img');
+		if(loading_img.style.display != 'none')
+			loading_img.style.display = 'none';
+		document.getElementById('error_msg').style.display = 'block';
+		gadgets.window.adjustHeight();
+	}
+
+	function display_experts(response){
+	var experts_list = response.experts_list;
+	var publications = response.publications;
+	var result_num = document.getElementById('result_count');
+	result_num.innerHTML = experts_list.length + " results found.";
+	if(result_num.style.display == 'none')
+		result_num.style.display = "block";
+
+	$.each(experts_list, function(){
+		var row = $('<tr></tr>');
+		var left_td = $('<td></td>');
+		var mid_td = $('<td></td>');
+		var right_td = $('<td></td>');
+		mid_td.attr("style", "padding-left: 30px");
+
+		<!-- picture -->
+		var picture = $('<img/>').attr("src",this.photo_url);
+		picture.attr("class", "img-polaroid");
+		picture.attr("style", "width: 75px");
+
+		<!-- academic status -->
+		var academic_status = $('<p></p>');
+		academic_status.attr("style","text-align:center; font-size: 13px; margin-top: 5px");
+		academic_status.text(this.academic_status);
+		left_td.append(picture);
+		left_td.append(academic_status);
+
+		<!-- name -->
+		var name = $('<div></div>');
+		name.attr("style", "margin-top: 5px; margin-bottom: 5px");
+		var name_link = $('<a></a>');
+		name_link.attr("href", this.profile_url);
+		name_link.attr("target", "_blank");
+		name_link.attr("style", "font-size: 20px");
+		name_link.text(this.first_name + " " + this.last_name);
+		name.append(name_link);
+
+		<!-- research interests -->
+		var research_intrst_header = $('<div></div>');
+		research_intrst_header.text("Research Interests");
+		research_intrst_header.attr("class", "nav-header");
+		research_intrst_header.attr("style", "margin-left: -15px");
+		var research_intrst = $('<div></div>');
+		research_intrst.attr("style", "font-size: 13px");
+		research_intrst.text(this.research_interests);
+
+		<!-- bio_info -->
+		var bio_info_header = $('<div></div>');
+		bio_info_header.text("Biographical Information");
+		bio_info_header.attr("class", "nav-header");
+		bio_info_header.attr("style", "margin-left: -15px");
+		var bio_info = $('<div></div>');
+		bio_info.attr("style", "font-size: 13px");
+		bio_info.text(this.bio_info);
+
+		<!-- publications -->
+		var publications_header = $('<div></div>');
+		publications_header.text("Recent Publications");
+		publications_header.attr("class", "nav-header");
+		publications_header.attr("style", "margin-left: -15px");
+
+
+
+		mid_td.append(name);
+		mid_td.append(research_intrst_header);
+		mid_td.append(research_intrst);
+		mid_td.append(bio_info_header);
+		mid_td.append(bio_info);
+		mid_td.append(publications_header);
+		build_publication_list(mid_td, publications[this.id]);
+
+		row.append(left_td);
+		row.append(mid_td);
+		row.append(right_td);
+		$('#tb_list').append(row);
+		<!-- console.log(this); -->
+	});
+	
+	
+
+	}
+
+	function build_publication_list(place_holder, publications){
+		build_one_publication(place_holder, publications[0]);
+		if(publications.length > 1){
+		more_publications = publications.slice(1);
+		var more_link_p = $('<p></p>')
+		var more_link = $('<a></a>');
+
+		more_link.attr("class", "accordion-toggle");
+		more_link.attr("style", "float: right");
+		more_link.text("more publications");
+
+		var more_publications_div = $('<div></div>');
+		more_publications_div.attr("id", "more");
+		more_publications_div.attr("class", "collapse");
+		more_publications_div.attr("display", "none");
+		$.each(more_publications, function(){
+			build_one_publication(more_publications_div, this);
+		});
+		more_link_p.append(more_link);
+		place_holder.append(more_publications_div);
+		place_holder.append(more_link_p);
+
+		more_link.click(function(){
+			more_publications_div.collapse('toggle');
+			if(more_link.text() == "more publications")
+				more_link.text("collapse publications");
+			else
+				more_link.text("more publications");
+
+			gadgets.window.adjustHeight();
+		});			
+
+		}
+
+	}
+
+	function build_one_publication(place_holder, one_publication){
+			<!-- title -->
+			var publication_title = $('<p></p>');
+			publication_title.attr("style", "font-weight: 600; font-size: 13px");
+			publication_title.text(one_publication.title);
+
+			<!-- published_in -->
+			var published_in = $('<p></p>');
+			published_in.attr("style", "font-size: 13px");
+			published_in.text("Published in: " + " " + one_publication.published_in + " - " + one_publication.publish_year);
+
+			<!-- reader_count -->
+			var reader_count = $('<p></p>');
+			reader_count.attr("style", "font-size: 13px; color: #FF7F24");
+			reader_count.text(one_publication.reader_count + " people have read this paper.");
+
+			place_holder.append(publication_title);
+			place_holder.append(published_in);
+			place_holder.append(reader_count);
+	}
+</script>
+	]]></Content>
+</Module>
