@@ -107,10 +107,10 @@ var app = {containerUrl: "", contextId: "", showingPreview: false, rootUrl: "htt
 // gets the data and calls build for container
 var initialize = function() {
 
-  console.log(osapi)
   osapi.context.get().execute(function(response){
     app.containerUrl = response.containerUrl;
-    app.contextId = response.contextId; 
+    app.contextId = response.contextId;
+    app.context = response
     osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
       // console.log(response);
       build(response.list);
@@ -151,7 +151,7 @@ var build = function(documents){
 
   var header = $("<div id='gadget_header'></div>");
   var title = $("<div class='gadget-title'></div>");
-  title.text('Resources from the space');
+  title.text('Resources from the space: '+app.context.displayName);
   header.append(title);
 
   //the preview button

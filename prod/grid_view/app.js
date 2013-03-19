@@ -58,6 +58,9 @@ var initialize = function() {
     var appdata = data.appdata // .settings
     var apps = data.apps // .list
 
+    // add space title
+    $("#title").append(" "+context.displayName)
+
     // current viewer is the owner, then show management block
     if (app.viewer.id === app.owner.id) {
       isOwner = true
