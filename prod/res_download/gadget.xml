@@ -151,7 +151,7 @@ var build = function(documents){
 
   var header = $("<div id='gadget_header'></div>");
   var title = $("<div class='gadget-title'></div>");
-  title.text('Resources from the space: '+app.context.displayName);
+  title.text('Resources from the space');
   header.append(title);
 
   //the preview button
