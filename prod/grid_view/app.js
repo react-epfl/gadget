@@ -61,7 +61,7 @@ var initialize = function() {
     // add space title
     var currentSpace = data.currentSpace
     if (currentSpace) {
-      $("#title").append("_" + currentSpace.displayName)
+      //$("#title").append(" " + currentSpace.displayName)
     }
 
     // current viewer is the owner, then show management block

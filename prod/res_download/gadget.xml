@@ -154,9 +154,9 @@ var build = function(documents){
   header.append(title);
 
   // add space name to the title
-  osapi.spaces.get({contextId: app.contextId}).execute(function(currentSpace){
-    title.append(": " + currentSpace.displayName)
-  });
+  /*osapi.spaces.get({contextId: app.contextId}).execute(function(currentSpace){*/
+    /*title.append(": " + currentSpace.displayName)*/
+  /*});*/
 
   //the preview button
   var preview = $("<div class='preview_button' id='preview_button'></div>");
