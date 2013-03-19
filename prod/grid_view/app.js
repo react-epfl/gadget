@@ -58,12 +58,16 @@ var initialize = function() {
     var appdata = data.appdata // .settings
     var apps = data.apps // .list
 
+    // add space title
+    var currentSpace = data.currentSpace
+    if (currentSpace) {
+      $("#title").append("_" + currentSpace.displayName)
+    }
+
     // current viewer is the owner, then show management block
     if (app.viewer.id === app.owner.id) {
       isOwner = true
     }
-
-    console.log(context)
 
     // --- apps from space ---
     app.list = apps.list
