@@ -60,7 +60,6 @@ var initialize = function() {
 
     // add space title
     var currentSpace = data.currentSpace
-    console.log(currentSpace)
     if (currentSpace) {
       $("#title").append(": " + currentSpace.displayName)
     }
