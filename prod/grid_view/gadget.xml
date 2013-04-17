@@ -38,7 +38,10 @@
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/grid_view/data.js"></script>
 
 <script type="text/javascript">
-gadgets.util.registerOnLoadHandler(initialize);
+//gadgets.util.registerOnLoadHandler(initialize);
+$(window).load(function () {
+initialize()
+})
 </script>
 
   ]]></Content>
