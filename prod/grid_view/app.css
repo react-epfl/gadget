@@ -4,7 +4,7 @@ body{
   font-size: 13px;
 }
 .sprite{
-  background: url("http://localhost/gadget/test/grid_view/sprite.png") no-repeat top left;
+  background: url("http://graasp.epfl.ch/gadget/test/grid_view/sprite.png") no-repeat top left;
   display: inline-block;
 }
 .view1{ background-position: 0 0; width: 30px; height: 18px; }
