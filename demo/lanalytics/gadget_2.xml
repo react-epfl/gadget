@@ -54,7 +54,6 @@
     build_rgraph_bar(body_id,x,y);
   }
   function buildLineGraph(number,data,title_name){
-    title_name += " - Line";
     var x = data.x;
     var y = data.y;
     var graph = $("<div id='"+"graph_line_"+number+"'></div>")
@@ -129,9 +128,9 @@
   var data = 
     [
       {
-        x: [1,"","","",5,"","","","",10,"","","","",15,"","","","",20,"","","","",25,"","","","",30,""],
-        y: [0.0,0.0,0.0,0.0,37.5,42.67,58.97,14.7,78.6,32.0,0.0,40.5,74.75,16.79,92.62,31.83,140.0,65.14,0.0,69.0,59.73,32.55,42.0,110.87,22,24.0,31,0,0,0,0],
-        name:"The number of daily comments in January 2013"
+        x: ["Anonym","Denis","Andrii","Sten","Evgeny","Wissam"],
+        y: [1500,934,630,850,375,426],
+        name:"The number of visit per user in January 2013"
       },
       // {
       //   x: [8,"","",11,"","",14,"","",17,"","",20,"","",23,"","",26,"","",29,"","",2,"","",5,"","",8,"","",11,"","",14,"","",17],

@@ -22,12 +22,14 @@ function getData(callback) {
 
     var batch = osapi.newBatch();
     batch.add('owner', osapi.people.getOwner());
+    batch.add('currentSpace', osapi.spaces.get({contextId: contextId}));
     batch.add('appdata', osapi.appdata.get({userId: prefixContextId}));
     batch.add('apps', osapi.apps.get({contextId: contextId, contextType: contextType}));
     batch.execute(function(res){
       output.owner = res.owner
       output.apps = res.apps
       output.appdata = res.appdata
+      output.currentSpace = res.currentSpace
 
       callback(output)
     });

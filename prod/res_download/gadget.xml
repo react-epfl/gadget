@@ -107,10 +107,9 @@ var app = {containerUrl: "", contextId: "", showingPreview: false, rootUrl: "htt
 // gets the data and calls build for container
 var initialize = function() {
 
-  console.log(osapi)
   osapi.context.get().execute(function(response){
     app.containerUrl = response.containerUrl;
-    app.contextId = response.contextId; 
+    app.contextId = response.contextId;
     osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
       // console.log(response);
       build(response.list);
@@ -133,8 +132,8 @@ var changePreviewMode = function() {
 var isBookmark = function(doc) {
   var isBookmark = false;
   if (typeof doc.documentEntity !== "undefined") {
-    var docEntitiy = doc.documentEntity;
-    var firstSeven = docEntitiy.substring(0,7);
+    var docEntity = doc.documentEntity;
+    var firstSeven = docEntity.substring(0,7);
 
     if (firstSeven === "http://") {
       isBookmark = true;
@@ -153,6 +152,11 @@ var build = function(documents){
   var title = $("<div class='gadget-title'></div>");
   title.text('Resources from the space');
   header.append(title);
+
+  // add space name to the title
+  osapi.spaces.get({contextId: app.contextId}).execute(function(currentSpace){
+    title.append(": " + currentSpace.displayName)
+  });
 
   //the preview button
   var preview = $("<div class='preview_button' id='preview_button'></div>");
