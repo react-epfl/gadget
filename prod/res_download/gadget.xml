@@ -276,7 +276,10 @@ var build = function(documents){
 </script>
 
 <script type="text/javascript">
-gadgets.util.registerOnLoadHandler(initialize);
+//gadgets.util.registerOnLoadHandler(initialize);
+$(window).load(function () {
+initialize()
+})
 </script>
 
 
