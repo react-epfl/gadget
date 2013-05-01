@@ -129,9 +129,9 @@ var identifyUser = function() {
   } else {
     $('#login_popup').modal('show');
     $('#user_name').keyup(function(){
-    if (event.keyCode === 13) {
-      saveUserName();
-    }})
+      if (event.keyCode === 13) {
+        saveUserName();
+      }})
     $('#ok_btn').click(function(){
       saveUserName();
     });
