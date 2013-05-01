@@ -45,7 +45,6 @@
     <div id="error_msg" class="alert fade in hide alert-error">  
       Please enter a valid name! 
     </div> 
-    <!-- <span>Please enter a valid name!</span> -->
     <input type="text" id="user_name">
   </div>
   <div class="modal-footer" id="popup_footer">

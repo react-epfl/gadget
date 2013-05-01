@@ -122,17 +122,16 @@ var initialize = function() {
 // identify which user is using this url
 var identifyUser = function() {
   // check if the cookie exists, if not, set the cookie
-  if($.cookie('graasp_user')){
+  if ($.cookie('graasp_user')) {
     app.user_name = $.cookie('graasp_user');
     $('#hello_msg').text("Hello" + " " + app.user_name + "!");
     updateUserActions(app.user_name);
-  } 
-  else{
+  } else {
     $('#login_popup').modal('show');
     $('#user_name').keyup(function(){
-    if(event.keyCode == 13)
+    if (event.keyCode === 13) {
       saveUserName();
-    })
+    }})
     $('#ok_btn').click(function(){
       saveUserName();
     });
@@ -142,11 +141,11 @@ var identifyUser = function() {
 // save user's name in appData and display user name on the page
 var saveUserName = function() {
   app.user_name = $('#user_name').val();
-  if(!app.user_name || /^\s*$/.test(app.user_name) || 0 === app.user_name.length)
+  if (!app.user_name || /^\s*$/.test(app.user_name) || 0 === app.user_name.length) {
     $("#error_msg").show();
-  else{
+  } else{
     updateUserActions(app.user_name);
-    $.cookie('graasp_user', app.user_name), { expires: 1 };
+    $.cookie('graasp_user', app.user_name, { expires: 1 });
     $('#login_popup').modal('hide');
     $('#hello_msg').text("Hello" + " " + app.user_name + "!");
   }
