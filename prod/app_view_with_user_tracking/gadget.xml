@@ -2,7 +2,7 @@
 <Module>
   <ModulePrefs title="Apps view with user tracking"
                 author_email="na.li@epfl.ch"
-                author="Na Li"
+                author="Evgeny Bogdanov, Na Li"
                 description="This functional skin takes all apps from a space and shows them in a grid layout that can be adapted to user's needs. It asks for the user name when the user loads the page, and saves the user actions through appdata. At the moment, it works only in Graasp - http://graasp.epfl.ch">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
