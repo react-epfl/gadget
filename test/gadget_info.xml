@@ -29,9 +29,8 @@
     </ModulePrefs>
  <Content type="html" view="default,canvas,home,profile">
  <![CDATA[
- <!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>-->
- <script type="text/javascript" src="http://localhost/gadgets/libs/jquery.min.js"></script>
- 
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+
  <script type="text/javascript">
 
  /**
@@ -93,9 +92,8 @@
     
   };
 
-  setTimeout(getData, 1000);
   // console.log(gadgets);
-  // gadgets.util.registerOnLoadHandler(getData);
+  gadgets.util.registerOnLoadHandler(getData);
   </script>
   <div id="viewer"><b>Viewer:</b> </div>
   <div id="owner"><b>Owner:</b> </div>
