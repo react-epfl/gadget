@@ -9,7 +9,7 @@
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
-<link href="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/app.css" rel="stylesheet" type="text/css">
+<link href="http://localhost/app_view_with_user_tracking/app.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 
 
@@ -22,19 +22,29 @@
     <span class="button" onclick="$('#popup').hide()">Close</span>
   </div>
   <div id = "banner">
-    <span><img src="graaasp_logo.png" id="graasp_logo"></span>
-    <span id ="title"></span>
-    <span id ="hello_msg"></span>
+    <span><img src = "golab_logo.png" id = "golab_logo"></span>
+    <span id = "title"></span>
+    <span id = "hello_msg"></span>
   </div>
-  <div id="menu" style="">
-    <input type="button" class = "select button" id="help_button" value="Help"></input>
-    <select class = "select" id="select_button" onchange="sizeTypeChanged();">
-      <option value="px">fixed (px)</option>
-      <option value="%">relative (%)</option>
-    </select>
-    <span id="name" class="select">App size: </span>
+  <div id = "description_block">
+    <span>Description</span>
+    <span id = "description"></span>
   </div>
-  <div id="center"></div>
+  <div id="center">
+    <ul class="nav nav-tabs" id="ils_cycle">
+    </ul>
+    <div class="tab-content" id="ils_phases">
+    </div>
+  </div>
+  <div class="accordion-heading">
+    <a class="accordion-toggle" data-toggle="collapse" href="#toolbox">
+      Toolbox
+    </a>
+  </div>
+  <div id="toolbox" class="accordion-body collapse">
+    <div id="tools" class="accordion-inner">
+    </div>
+  </div>
 </div>
 
 <div class="modal hide fade" id="login_popup" data-keyboard="false" data-backdrop="static">
@@ -57,8 +67,8 @@
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery.cookie.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/underscore-min.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/app.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/data.js"></script>
+<script type="text/javascript" src="http://localhost/app_view_with_user_tracking/app.js"></script>
+<script type="text/javascript" src="http://localhost/app_view_with_user_tracking/data.js"></script>
 
 
 <script type="text/javascript">
