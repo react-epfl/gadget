@@ -24,7 +24,7 @@ var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
           , data: { view: "" }
-          , root_url: "http://localhost/app_view_with_user_tracking/"
+          , root_url: "http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/"
           , user_name: ""
           }
 

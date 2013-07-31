@@ -168,7 +168,6 @@ body{
 }
 #title{
   font-size:20px;
-  text-indent:10px;
   padding:5px 0;
   float:left;
   margin-top: 15px;
@@ -176,6 +175,7 @@ body{
 #golab_logo{
   float: left;
   margin-top: 5px;
+  height: 35px;
 }
 #center{
   width: 100%;
@@ -210,17 +210,22 @@ body{
   width:300px;
 }
 #banner{
-  height: 120px;
-  margin-left: 5px;
+  height: 60px;
+  padding-top: 60px;
 }
 #hello_msg{
   float:right;
   margin-right: 15px;
-  margin-top: 15px;
+  margin-top: 10px;
+  color: #fff;
+  background-color: #111;
 }
 #error_msg{
   margin-left: 35px;
   width: 250px;
+}
+#description_block{
+  margin-bottom: 20px;
 }
 .modal-backdrop{
   background-color: rgba(0, 0, 0, 0.5);

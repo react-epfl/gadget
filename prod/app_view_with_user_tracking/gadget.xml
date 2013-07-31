@@ -9,66 +9,75 @@
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
-<link href="http://localhost/app_view_with_user_tracking/app.css" rel="stylesheet" type="text/css">
+<link href="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/app.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 
-
-<div id="container" onmouseover="adjustHeight();">
-  <div id="not_owner" style="display:none">You are not a space owner. Your changes to apps arrangement will not be saved.</div>
-  <div id="popup" style="display:none">
-    <div><b>App size</b>: fixed or relative (apps resize automatically when window is resized)</div>
-    <div><b>Drag&Drop an app</b> to change the order</div>
-    <div><b>Resize an app</b> by dragging its right border</div>
-    <span class="button" onclick="$('#popup').hide()">Close</span>
-  </div>
-  <div id = "banner">
-    <span><img src = "golab_logo.png" id = "golab_logo"></span>
-    <span id = "title"></span>
-    <span id = "hello_msg"></span>
-  </div>
-  <div id = "description_block">
-    <span>Description</span>
-    <span id = "description"></span>
-  </div>
-  <div id="center">
-    <ul class="nav nav-tabs" id="ils_cycle">
-    </ul>
-    <div class="tab-content" id="ils_phases">
-    </div>
-  </div>
-  <div class="accordion-heading">
-    <a class="accordion-toggle" data-toggle="collapse" href="#toolbox">
-      Toolbox
-    </a>
-  </div>
-  <div id="toolbox" class="accordion-body collapse">
-    <div id="tools" class="accordion-inner">
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a href="http://www.go-lab-project.eu/"><img src = "golab_logo.png" id = "golab_logo"></a>
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="active"><a>Go-Lab Inquiry Learning Space</a></li>
+        </ul>
+        <span id = "hello_msg"></span>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="modal hide fade" id="login_popup" data-keyboard="false" data-backdrop="static">
-  <div class="modal-header">
-    <h3>Please enter your name</h3>
+<div class="container">
+  <div id="container" onmouseover="adjustHeight();">
+    <div id="not_owner" style="display:none">You are not a space owner. Your changes to apps arrangement will not be saved.</div>
+    <div id="popup" style="display:none">
+      <div><b>App size</b>: fixed or relative (apps resize automatically when window is resized)</div>
+      <div><b>Drag&Drop an app</b> to change the order</div>
+      <div><b>Resize an app</b> by dragging its right border</div>
+      <span class="button" onclick="$('#popup').hide()">Close</span>
+    </div>
+    <div id = "banner">
+      <span id = "title"></span>
+    </div>
+    <div id = "description_block">
+      <span>Description</span>
+      <span id = "description"></span>
+    </div>
+    <div id="center">
+      <ul class="nav nav-tabs" id="ils_cycle"></ul>
+      <div class="tab-content" id="ils_phases"></div>
+    </div>
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" href="#toolbox">Toolbox</a>
+    </div>
+    <div id="toolbox" class="accordion-body collapse">
+      <div id="tools" class="accordion-inner"></div>
+    </div>
   </div>
-  <div class="modal-body" id="popup_body">
-    <div id="error_msg" class="alert fade in hide alert-error">  
-      Please enter a valid name! 
-    </div> 
-    <input type="text" id="user_name">
+
+  <div class="modal hide fade" id="login_popup" data-keyboard="false" data-backdrop="static">
+    <div class="modal-header">
+      <h3>Please enter your name</h3>
+    </div>
+    <div class="modal-body" id="popup_body">
+      <div id="error_msg" class="alert fade in hide alert-error">  
+        Please enter a valid name! 
+      </div> 
+      <input type="text" id="user_name">
+    </div>
+    <div class="modal-footer" id="popup_footer">
+      <button type="button" class="btn btn-primary" id="ok_btn">Ok</button>
+    </div>
   </div>
-  <div class="modal-footer" id="popup_footer">
-    <button type="button" class="btn btn-primary" id="ok_btn">Ok</button>
-  </div>
-</div>
+</div> <!-- /container -->
+
 
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-ui-1.8.23.custom.min.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery.cookie.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/underscore-min.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="http://localhost/app_view_with_user_tracking/app.js"></script>
-<script type="text/javascript" src="http://localhost/app_view_with_user_tracking/data.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/app.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/data.js"></script>
 
 
 <script type="text/javascript">
