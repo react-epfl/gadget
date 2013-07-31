@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Function plotter" author_email="mpalmer@gmail.com" description="Plots mathematical functions using JSXGraph" height="500">
+	<Require feature="opensocial-0.9" />
+    <Optional feature="openapp" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+ <script type="text/javascript" src="http://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js"></script>
+	<style>
+	@import "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css";
+		#container {
+			position: relative;
+			height: 100%;
+			width: 100%;
+		}
+		#controls {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			height: 2em;
+		}
+		#plot {
+			position: absolute;
+			top: 2em;
+			bottom: 0px;
+			left: 0px;
+			right: 0px;
+		}
+	</style>
+	<div id="container">
+	<div id="controls">
+		<input type="text" id="input" value="sin(x)*x">
+		<input type="button" title="adds a plot of the function" value="plot" onClick="plotter()">
+		<input type="button" title="clear all plots from the graph" value="clear" onClick="clearAll()"> 
+		<input type="button" title="adds a tangent to the last added plot" value="tangent" onClick="addTangent()">
+		<input type="button" title="adds a derivative of the last added plot" value="derivative" onClick="addDerivative()">		
+	</div>
+	<div id="plot">
+		<div id="jxgbox" style="width:100%; height:100%;"></div>
+	</div>
+
+	<script>
+	var board, f, curve; // global objects
+	var ns = {};
+	ns.ical = "http://www.w3.org/2002/12/cal/ical#";
+	ns.role = "http://purl.org/role/terms/";
+	ns.dcterms = "http://purl.org/dc/terms/";
+	ns.rdfs = "http://www.w3.org/2000/01/rdf-schema#";
+	ns.rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+
+ 
+	function plotter() {
+	  var txtraw = document.getElementById('input').value;
+	  var txt = JXG.GeonextParser.geonext2JS(txtraw);
+	  try {
+		  f = new Function('x','var y = '+txt+'; return y;');
+	  curve = board.create('functiongraph',[f,
+	                function(){ 
+	                  var c = new JXG.Coords(JXG.COORDS_BY_SCREEN,[0,0],board);
+	                  return c.usrCoords[1];
+	                },
+	                function(){ 
+	                  var c = new JXG.Coords(JXG.COORDS_BY_SCREEN,[board.canvasWidth,0],board);
+	                  return c.usrCoords[1];
+	                }
+	              ],{name:txtraw, withLabel:true});
+		var message = {};
+		message[ns.rdf+"type"] = "http://www.w3.org/1998/Math/MathML#math"; 
+		message[ns.dcterms+"title"]=txtraw;
+		message[ns.rdf+"value"]=txtraw;
+		gadgets.openapp.publish({}, message);
+	  } catch(mesg) {
+	  	alert("Expression:\""+txtraw+"\" could not be understood as a function.");
+	  }
+	}
+	 
+	function clearAll() {
+	    JXG.JSXGraph.freeBoard(board);
+	    board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[-5,8,8,-5], axis:true});
+	    f = null;
+	    curve = null;
+	}
+	 
+	function addTangent() {
+	    if (JXG.isFunction(f)) {
+	        board.suspendUpdate();
+	        var p = board.create('glider',[1,0,curve], {name:'drag me'});
+	        board.create('tangent',[p], {name:'drag me'});
+	        board.unsuspendUpdate();
+	    }
+	}
+	 
+	function addDerivative() {
+	    if (JXG.isFunction(f)) {
+	        board.create('functiongraph',[JXG.Math.Numerics.D(f),
+	                function(){ 
+	                  var c = new JXG.Coords(JXG.COORDS_BY_SCREEN,[0,0],board);
+	                  return c.usrCoords[1];
+	                },
+	                function(){ 
+	                  var c = new JXG.Coords(JXG.COORDS_BY_SCREEN,[board.canvasWidth,0],board);
+	                  return c.usrCoords[1];
+	                }], {dash:2});
+	    }
+	}
+	var addEvent = function(elem, type, eventHandle) {
+	    if (elem == null || elem == undefined) return;
+	    if ( elem.addEventListener ) {
+	        elem.addEventListener( type, eventHandle, false );
+	    } else if ( elem.attachEvent ) {
+	        elem.attachEvent( "on" + type, eventHandle );
+	    }
+	};
+	addEvent(window, "resize", function(event) {
+		var el = document.getElementById("plot");
+		board.zoom100();
+	});
+	
+	gadgets.util.registerOnLoadHandler(function() {
+ 		board = JXG.JSXGraph.initBoard('jxgbox', {boundingbox:[-5,8,8,-5], axis:true});
+		gadgets.openapp.connect(function(envelope, message) {
+			if (envelope.source === window) {
+				return;
+			}
+			if (message[ns.rdf+"type"] === "http://www.w3.org/1998/Math/MathML#math") {
+				var el = document.getElementById("input");
+				el.value=message[ns.rdf+"value"];
+				yellow = 0;
+				brighten_yellow();
+			}
+		});
+	});
+
+	function get_hex_color (r, g, b) { var hexstring = "0123456789abcdef"; var hex_color = hexstring . charAt (Math . floor (r / 16)) + hexstring . charAt (r % 16) + hexstring . charAt (Math . floor (g / 16)) + hexstring . charAt (g % 16) + hexstring . charAt (Math . floor (b / 16)) + hexstring . charAt (b % 16); return hex_color; }
+
+	var el = document.getElementById("input");	
+	yellow = 0; // initial green value 
+	function brighten_yellow () {
+		yellow += 4;
+		if (yellow >= 256) {
+			return;
+		}
+		el.style.background = get_hex_color(255, 255, yellow);
+		setTimeout ("brighten_yellow ();", 20);
+	}
+
+	</script>
+  ]]></Content>
+</Module>
