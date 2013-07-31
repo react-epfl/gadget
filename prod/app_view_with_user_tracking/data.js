@@ -12,7 +12,6 @@ function getData(callback) {
   batch.add('context', osapi.context.get());
   batch.execute(function(data){
     output.viewer = data.viewer
-
     var context = data.context
     output.context = context
     var contextId = context.contextId
@@ -23,6 +22,7 @@ function getData(callback) {
     var batch = osapi.newBatch();
     batch.add('owner', osapi.people.getOwner());
     batch.add('currentSpace', osapi.spaces.get({contextId: contextId}));
+    batch.add('spaces', osapi.spaces.get({contextId: contextId, contextType: contextType}));
     batch.add('appdata', osapi.appdata.get({userId: prefixContextId}));
     batch.add('apps', osapi.apps.get({contextId: contextId, contextType: contextType}));
     batch.execute(function(res){
@@ -30,9 +30,23 @@ function getData(callback) {
       output.apps = res.apps
       output.appdata = res.appdata
       output.currentSpace = res.currentSpace
-
+      output.spaces = res.spaces
       callback(output)
     });
   });
 
+}
+
+function getDataById(spaceId, callback) {
+  var output = {};
+  var contextType = "@space";
+  var prefixContextId = "s_" + spaceId;
+  var batch = osapi.newBatch();
+  batch.add('appdata', osapi.appdata.get({userId: prefixContextId}));
+  batch.add('apps', osapi.apps.get({contextId: spaceId, contextType: contextType}));
+  batch.execute(function(res){
+    output.appdata = res.appdata;
+    output.apps = res.apps;
+    callback(output);
+  }); 
 }
