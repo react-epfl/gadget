@@ -1,25 +1,3 @@
-var buildRadio = function (i) {
-  var btn = $("<span></span>").attr('view',i).addClass("view_pic sprite view"+i)
-    .mouseover(function (ev) {
-      $(this).addClass("view"+i+"_blue")
-    })
-    .mouseout(function (ev) {
-      $(this).removeClass("view"+i+"_blue")
-    })
-    .click(function (ev) {
-      var view = $(ev.target).attr('view')
-      setViewSize(view)
-      resizeAllApps("%")
-      rebuildSizes()
-      save();
-    });
-  $('#menu').prepend(btn)
-}
-for (var i = 6; i >= 1; i--) {
-  buildRadio(i)
-}
-
-
 var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
@@ -228,12 +206,6 @@ var updateUserActions = function(user_name) {
     }).execute(function() {})
 }
 
-var sizeTypeChanged = function () {
-  app.sizeType = $('#select_button').val()
-  rebuildSizes()
-  resizeAllApps()
-  save(app)
-}
 // sets app sizes based on template
 // always does it in %
 var setViewSize = function (view) {
@@ -262,9 +234,9 @@ var setViewSize = function (view) {
 }
 // builds sizes as % or px depending on chosen type
 // and update the app.sizes accordingly
-var rebuildSizes = function () {
+var rebuildSizes = function (parent) {
   var centerSize = $("#center").width()
-  $("#center").find(".window").each(function (i) {
+  parent.find(".window").each(function (i) {
     var win = $(this)
       , appId = win.attr("appId")
       , size = win.width()
@@ -377,7 +349,8 @@ var buildSkeleton = function (container,app_json) {
         $(".window_placeholder").removeClass("active")
         // save new width
         var appId = ui.element.attr('appId')
-        rebuildSizes()
+        
+        rebuildSizes(ui.element.parent())
         save(app)
       }
     })
