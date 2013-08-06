@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Resources selector"
+                author_email="evgeny.bogdanov@epfl.ch"
+                author="Evgeny Bogdanov"
+                description="Shows documents in the space and sends events once a document is selected">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+  <style type="text/css">
+  body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
+  .gadgets-gadget{width: 100%;}
+  .doc {margin: 5px 0px;position:relative;}
+  .title {margin: 5px 0px; color: #333; text-indent: 10px;
+    background-color: #EEE;
+    border-top: 1px solid #AAA;
+    padding: 1px 3px;
+  }
+  .content {
+    margin-top: 5px;
+    font-size: 12px;
+    text-indent:10px;
+  }
+  #container {
+    background-color:white;
+    border-radius:5px;
+    padding:5px;
+  }
+  .desc{
+    margin-left:10px;
+  }
+#holder { font-weight: bold; text-align: center; padding: 1em 0; border: 5px dashed #555;
+border-radius: 7px; cursor: default; color:#555; width: 100px; min-height: 100px; margin:1em 0;}
+#holder.hover {border: 5px dashed #0c0; }
+#holder img { display: block; margin:10px auto; }
+#holder p { margin: 10px; font-size: 14px; }
+progress {  width: 10%; }
+progress:after {  content: '%'; }
+.fail { background: #c00; padding: 2px; color: #fff; }
+.hidden { display: none !important;}
+  
+</style>
+
+<div id="container">
+  <article>
+  <p id="upload" class="hidden"></p>
+  <p id="filereader"></p>
+  <p id="formdata"></p><form id="form" method="post" enctype = "multipart/form-data" onsubmit="formSubmit(this);" >
+    <input id="request" type="hidden" name="request"></input>
+    <input id="file" type="file" name="file"></input>
+    <input id="upload" type="submit" value="Upload"></input> <div id="holder"> or drag file here 
+  </div>  
+  </form>
+  <p id="progress"></p>
+  <p>Upload progress: <br> <progress id="uploadprogress" min="0" max="100" value="0">0</progress></p>
+</article>
+  
+  <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources existing in a space</div>
+  <div id="list"></div>
+
+  </div>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<script type="text/javascript">
+/**
+*  AJAX IFRAME METHOD (AIM) - for jquery
+*  http://www.webtoolkit.info/
+*
+**/
+AIM = {
+	frame : function(c) {
+
+		var n = 'f' + Math.floor(Math.random() * 99999);
+		var d = document.createElement('DIV');
+		d.innerHTML = '<iframe style="display:none" src="about:blank" id="'+n+'" name="'+n+'" ></iframe>';
+		document.body.appendChild(d);
+
+		var i = document.getElementById(n);
+    var iframe = $("#" + n)
+		iframe.load(function(e){
+			AIM.loaded(n);
+		});
+
+		if (c && typeof(c.onComplete) == 'function') {
+			i.onComplete = c.onComplete;
+		}
+		return n;
+	},
+
+	form : function(f, name) {
+		f.setAttribute('target', name);
+	},
+
+	submit : function(f, c) {
+		AIM.form(f, AIM.frame(c));
+		if (c && typeof(c.onStart) == 'function') {
+			return c.onStart();
+		} else {
+			return true;
+		}
+	},
+	loaded : function(id) {
+		var i = document.getElementById(id);
+		if (i.contentDocument) {
+			var d = i.contentDocument;
+		} else if (i.contentWindow) {
+			var d = i.contentWindow.document;
+		} else {
+			var d = window.frames[id].document;
+		}
+		if (d.location.href == "about:blank") {
+			return;
+		}
+
+		if (typeof(i.onComplete) == 'function') {
+			i.onComplete(d.body.innerHTML);
+		}
+		}
+	}
+	
+var formSubmit = function (form) {
+  var file = $("#file")
+  var filename = file.val().split('/').pop().split('\\').pop()
+  if (filename === "") {
+    alert("Please, choose a file first")
+    return false	}
+ 
+  
+  var action = "/rpc?method=documents.create&id=documents.create"
+  action = action + "&st=" + getQueryVariable("st")
+  form.action=action
+  var request={"method":"documents.create",
+   "params": {
+     "document": {
+       "displayName": filename,
+       "parentId": parentSpaceId,
+       "mimeType":"image/png",
+       "fileName": filename
+     }
+   },
+   "id":"documents.create"
+  }
+  // add request payload to the form
+  $('#request').val(JSON.stringify(request))
+  var f = $("#file").val()
+  return AIM.submit(form, {'onStart' : startUpload, 'onComplete' : completeUpload})
+}
+var app = {}
+var isOwner = false;
+var parentSpaceId = null;
+
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+            return decodeURIComponent(pair[1]);
+        }
+    }
+    console.log('Query variable %s not found', variable);
+}
+var startUpload = function () {
+  $("#upload").val("Loading...").attr("disabled",true)
+}
+var completeUpload = function (res) {
+  $("#upload").val("Upload").attr("disabled",false)
+  res = res.replace(/<\/?[^>]+>/gi, '') // strip html tags
+	res = eval("(" + res + ")"); //turn text into json object
+
+  buildItem(res.result.entry)
+  adjustHeight()
+}
+
+// gets the data and calls build for container
+var initialize = function() {
+  app.list = $("#list")
+  osapi.context.get().execute(function(response){
+    parentSpaceId = response.contextId
+
+    osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
+      // console.log(response);
+      build(response.list);
+    });
+  });
+};
+
+var adjustHeight = function() {
+  gadgets.window.adjustHeight();
+}
+
+// build the container with gadgets
+var build = function(documents){
+  console.log(documents)
+
+  if(documents.length == 0){
+    app.list.text("No resources were found in this space!");
+  }
+
+  for (var i = 0; i < documents.length; i++) {
+    var doc = documents[i];
+    buildItem(doc)
+  }
+
+  // resize the gadget
+  gadgets.window.adjustHeight();
+
+  // 2 seconds
+  setTimeout(adjustHeight,2000);
+  // 5 seconds
+  setTimeout(adjustHeight,5000);
+};
+buildItem = function (doc) {
+  var mimetype = "application/png";
+
+  var doc_id = 'document_'+doc.id;
+  var doc_el = $("<div id='"+doc_id+"'></div>");
+  doc_el.attr('class','doc');
+  var doc_name = $('<div class="title"></div>');
+  doc_name.text(doc.displayName);
+  doc_name.append(" - " + doc.updated.replace("T"," ").replace(/.....$/,""))
+  doc_el.append(doc_name)
+
+  // description block
+  // var doc_desc = $('<div class="desc"></div>')
+  // var desc = (doc.description && doc.description.length != 0) ? doc.description.slice(0,150)+"..." : "";
+  // doc_desc.html(desc);
+  // doc_el.append(doc_desc)
+
+  // send button
+  var choose = $("<button type='button'>Select</button>");
+  choose.click(closure(doc.id,mimetype))
+  doc_el.append(choose)
+
+  app.list.prepend(doc_el);
+}
+
+var closure = function(par1,par2) {
+  var tmp1 = par1;
+  var tmp2 = par2;
+  return function(i){
+    sendId(tmp1,tmp2);
+  }
+}
+function sendId(id,mimetype) {
+  // send data to openapp
+	gadgets.openapp.publish({
+		event: "select",
+		type: "json",
+		message: {
+			id: id,
+			mimetype: mimetype
+		}
+	});
+}
+var holder = document.getElementById('holder'),
+    tests = {
+      filereader: typeof FileReader != 'undefined',
+      dnd: 'draggable' in document.createElement('span'),
+      formdata: !!window.FormData,
+      progress: "upload" in new XMLHttpRequest
+    }, 
+    support = {
+      filereader: document.getElementById('filereader'),
+      formdata: document.getElementById('formdata'),
+      progress: document.getElementById('progress')
+    },
+    acceptedTypes = {
+      'image/png': true,
+      'image/jpeg': true,
+      'image/gif': true,
+	  'document/txt':true,
+	  'document/pdf':true,
+    },
+    progress = document.getElementById('uploadprogress'),
+    fileupload = document.getElementById('upload');
+
+"filereader formdata progress".split(' ').forEach(function (api) {
+  if (tests[api] === false) {
+    support[api].className = 'fail';
+  } else {
+    support[api].className = 'hidden';
+  }
+});
+	
+function previewfile(file) {
+  if (tests.filereader === true && acceptedTypes[file.type] === true) {
+    var reader = new FileReader();
+    reader.onload = function (event) {
+      var image = new Image();
+      image.src = event.target.result;
+      image.width = 100;
+	  image.height = 100;
+      holder.appendChild(image);
+    };
+
+    reader.readAsDataURL(file);
+  }  else {
+    holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
+    console.log(file);
+  }
+}
+function readfiles(files) {
+    var formData = tests.formdata ? new FormData() : null;
+    for (var i = 0; i < files.length; i++) {
+      if (tests.formdata) formData.append('file', files[i]);
+      previewfile(files[i]);
+    
+
+    if (tests.formdata) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST","files[i]",true);
+      xhr.onload = function() {
+    progress.value = progress.innerHTML = 100;	
+  };}
+
+      if (tests.progress) {
+        xhr.upload.onprogress = function (event) {
+          if (event.lengthComputable) {
+            var complete = (event.loaded / event.total * 100 | 0);
+            progress.value = progress.innerHTML = complete;
+          }
+        }
+      }
+
+      xhr.send(formData);
+    }
+}
+if (tests.dnd) { 
+  holder.ondragover = function () { this.className = 'hover'; return false; };
+  holder.ondragend = function () { this.className = ''; return false; };
+  holder.ondrop = function (e) {
+    this.className = '';
+    e.preventDefault();
+    readfiles(e.dataTransfer.files);
+	alert("voilà");
+//return AIM.uploading(form,{'onstart':startUpload,'onComlete':completeUpload}) 
+ }
+} else {
+  fileupload.className = 'hidden';
+  fileupload.querySelector('input').onchange = function () {
+    readfiles(this.files);
+  };
+}
+
+
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+  ]]></Content>
+</Module>
