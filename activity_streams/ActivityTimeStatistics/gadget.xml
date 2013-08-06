@@ -167,6 +167,7 @@ function init()
 gadgets.util.registerOnLoadHandler(init);
 
 </script>
+<p> Temporal statistics about the space container, based on the first 10 000 activities retrieved. </p>
 <div id="form">
   <form id="time" action="">
     <fieldset id="parameters">

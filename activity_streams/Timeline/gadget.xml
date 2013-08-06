@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Timeline"
+                author_email="aubry.cholleton@epfl.ch"
+                author="Aubry Cholleton"
+                description="Displays a timeline of the context activity during the last week.">
+    <Require feature="opensocial-0.9"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+<style> 
+body {
+  background-color: transparent;
+  color:#666;
+  margin-top:10px
+} 
+</style>
+
+<script class="include" language="javascript" type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
+<script type="text/javascript">
+
+
+function createTimeline(response) {
+  var date = new Date;
+  activities = response.entry;
+  actions = ["add", "update", "join", "remove"];
+  actions_past = {"add" : "added", "update" : "updated", "join" : "joined", "remove" : "removed"};
+
+  for(var i = 0; i < activities.length ; i++) {
+    if ($.inArray(activities[i].verb, actions) != -1) {
+      $('#timeline').append("<div id='item"+i+"'>");
+      date = new Date(activities[i].published);
+      $('#timeline').append(date.toString() + " : ");
+      $('#timeline').append(formatItemName(activities[i].object, activities[i].target, activities[i].verb, actions_past));
+      $('#timeline').append("</div>");
+    }
+  }
+  gadgets.window.adjustHeight();
+}
+
+function formatItemName(object, target, verb, actions) {
+  var thisSpace = "this space";
+  var hasBeen = " has been ";
+  var has = " has ";
+  var to = " to ";
+  var from = " from ";
+
+  // Check whether the current context is the 
+  // target or the object of the activity.
+  var objectId=object.id.match(/[0-9]+$/g)[0];
+  var targetId = -1;
+  if (target != undefined) {
+    targetId=target.id.match(/[0-9]+$/g)[0];
+  }
+
+
+  var isObject = false;
+  if (objectId == gcontextId) {
+    isObject = true;
+  } else if (targetId == gcontextId) {
+    isObject = false;
+  } else {
+    return "This activity is unrelated to this space.";
+  }
+
+  switch(verb)
+  {
+  case "add":
+    if(isObject) {
+      return thisSpace.charAt(0).toUpperCase()+hasBeen+actions["add"]+to+target.displayName+".";
+    } else {
+      return target.displayName+hasBeen+actions["add"]+to+thisSpace+".";
+    }
+  case "update":
+    if(isObject) {
+      return thisSpace.charAt(0).toUpperCase()+hasBeen+actions["update"]+".";
+    }
+    break;
+  case "join":
+    if(!isObject) {
+      return object.displayName+has+actions["join"]+" "+thisSpace+".";
+    }
+    break;
+  case "remove":
+    if(!isObject) {
+      return object.displayName+hasBeen+actions["remove"]+from+thisSpace+".";
+    }
+    break;
+  default:
+    return "Unexpected activity.";
+  }
+}
+
+
+function loadActivities(){
+  var today = new Date();
+  var lastWeek = new Date(today.getFullYear(), today.getMonth()-2, today.getDate() - 7);
+  osapi.activitystreams.get({contextId: window.gcontextId, contextType: window.gcontextType, updatedSince:lastWeek.toISOString()}).execute(function(response){
+    createTimeline(response);
+  });
+}
+
+function findContext(){
+  osapi.context.get().execute(function(context){
+    gcontextId = context.contextId;
+    gcontextType = context.contextType;
+    loadActivities();
+  });
+}
+
+
+gadgets.util.registerOnLoadHandler(findContext);
+
+</script>
+<h1>Timeline</h1>
+<div id="timeline"></div>
+]]></Content>
+</Module>
