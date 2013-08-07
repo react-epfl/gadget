@@ -149,7 +149,7 @@ function onContextFound(response){
 
 function loadActivities(id, type){
   var batch = osapi.newBatch();
-  batch.add('activities', osapi.activitystreams.get({contextId: id, contextType: type}));
+  batch.add('activities', osapi.activitystreams.get({contextId: id, contextType: type, ext: "true"}));
   batch.execute(onActivitiesLoaded);
 }
 

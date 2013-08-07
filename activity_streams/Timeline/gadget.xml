@@ -26,7 +26,6 @@ function createTimeline(response) {
   activities = response.entry;
   actions = ["add", "update", "join", "remove"];
   actions_past = {"add" : "added", "update" : "updated", "join" : "joined", "remove" : "removed"};
-
   for(var i = 0; i < activities.length ; i++) {
     if ($.inArray(activities[i].verb, actions) != -1) {
       $('#timeline').append("<div id='item"+i+"'>");
@@ -48,12 +47,14 @@ function formatItemName(object, target, verb, actions) {
 
   // Check whether the current context is the 
   // target or the object of the activity.
-  var objectId=object.id.match(/[0-9]+$/g)[0];
+  var objectId = -1;
+  if (object.id != undefined) {
+    objectId=object.id.match(/[0-9]+$/g)[0];
+  }
   var targetId = -1;
   if (target != undefined) {
     targetId=target.id.match(/[0-9]+$/g)[0];
   }
-
 
   var isObject = false;
   if (objectId == gcontextId) {
@@ -68,13 +69,13 @@ function formatItemName(object, target, verb, actions) {
   {
   case "add":
     if(isObject) {
-      return thisSpace.charAt(0).toUpperCase()+hasBeen+actions["add"]+to+target.displayName+".";
+      return thisSpace.charAt(0).toUpperCase()+thisSpace.slice(1)+hasBeen+actions["add"]+to+target.displayName+".";
     } else {
-      return target.displayName+hasBeen+actions["add"]+to+thisSpace+".";
+      return object.id+hasBeen+actions["add"]+to+thisSpace+".";
     }
   case "update":
     if(isObject) {
-      return thisSpace.charAt(0).toUpperCase()+hasBeen+actions["update"]+".";
+      return thisSpace.charAt(0).toUpperCase()+thisSpace.slice(1)+hasBeen+actions["update"]+".";
     }
     break;
   case "join":
@@ -84,7 +85,7 @@ function formatItemName(object, target, verb, actions) {
     break;
   case "remove":
     if(!isObject) {
-      return object.displayName+hasBeen+actions["remove"]+from+thisSpace+".";
+      return object.type+hasBeen+actions["remove"]+from+thisSpace+".";
     }
     break;
   default:
@@ -96,7 +97,7 @@ function formatItemName(object, target, verb, actions) {
 function loadActivities(){
   var today = new Date();
   var lastWeek = new Date(today.getFullYear(), today.getMonth()-2, today.getDate() - 7);
-  osapi.activitystreams.get({contextId: window.gcontextId, contextType: window.gcontextType, updatedSince:lastWeek.toISOString()}).execute(function(response){
+  osapi.activitystreams.get({contextId: window.gcontextId, contextType: window.gcontextType, updatedSince:lastWeek.toISOString(),  sortOrder:"descending"}).execute(function(response){
     createTimeline(response);
   });
 }
