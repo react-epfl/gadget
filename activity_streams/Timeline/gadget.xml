@@ -50,6 +50,8 @@ function formatItemName(object, target, verb, actions) {
   var objectId = -1;
   if (object.id != undefined) {
     objectId=object.id.match(/[0-9]+$/g)[0];
+  } else {
+    object.id = "Deleted object";
   }
   var targetId = -1;
   if (target != undefined) {
@@ -85,7 +87,7 @@ function formatItemName(object, target, verb, actions) {
     break;
   case "remove":
     if(!isObject) {
-      return object.type+hasBeen+actions["remove"]+from+thisSpace+".";
+      return object.id+hasBeen+actions["remove"]+from+thisSpace+".";
     }
     break;
   default:
