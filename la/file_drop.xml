@@ -8,7 +8,7 @@
     <Require feature="dynamic-height" />
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
-<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.css" type="text/css">
+<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
 
 <style type="text/css">
   body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
