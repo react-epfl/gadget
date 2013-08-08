@@ -109,6 +109,7 @@ var initialize = function() {
     });
   });
   dropListener();
+  gadgets.window.adjustHeight();
 };
 
 var adjustHeight = function() {
