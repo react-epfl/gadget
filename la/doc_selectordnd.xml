@@ -44,23 +44,24 @@ progress:after {  content: '%'; }
 </style>
 
 <div id="container">
-  <article>
-  <p id="upload" class="hidden"></p>
-  <p id="filereader"></p>
-  <p id="formdata"></p><form id="form" method="post" enctype = "multipart/form-data" onsubmit="formSubmit(this);" >
-    <input id="request" type="hidden" name="request"></input>
-    <input id="file" type="file" name="file"></input>
-    <input id="upload" type="submit" value="Upload"></input> <div id="holder"> or drag file here 
-  </div>  
-  </form>
-  <p id="progress"></p>
-  <p>Upload progress: <br> <progress id="uploadprogress" min="0" max="100" value="0">0</progress></p>
-</article>
+	<article>
+			<p id="upload" class="hidden"></p>
+			<p id="filereader"></p>
+			<p id="formdata"></p>
+		<form id="form" method="post" enctype = "multipart/form-data" onsubmit="formSubmit(this);" >
+			<input id="request" type="hidden" name="request"></input>
+			<input id="file" type="file" name="file"></input>
+			<input id="upload" type="submit" value="Upload"></input> 
+			<div id="holder"> or drag file here </div>
+			<input id="fileDragName"><input id="fileDragType">	
+		</form>
+			<p id="progress"></p>
+			<p>Upload progress: <br> <progress id="uploadprogress" min="0" max="100" value="0">0</progress></p>
+	</article>
   
-  <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources existing in a space</div>
-  <div id="list"></div>
-
-  </div>
+	<div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources existing in a space</div>
+	<div id="list"></div>
+</div>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
 
@@ -77,9 +78,8 @@ AIM = {
 		var d = document.createElement('DIV');
 		d.innerHTML = '<iframe style="display:none" src="about:blank" id="'+n+'" name="'+n+'" ></iframe>';
 		document.body.appendChild(d);
-
 		var i = document.getElementById(n);
-    var iframe = $("#" + n)
+        var iframe = $("#" + n)
 		iframe.load(function(e){
 			AIM.loaded(n);
 		});
@@ -102,6 +102,7 @@ AIM = {
 			return true;
 		}
 	},
+	
 	loaded : function(id) {
 		var i = document.getElementById(id);
 		if (i.contentDocument) {
@@ -114,37 +115,34 @@ AIM = {
 		if (d.location.href == "about:blank") {
 			return;
 		}
-
 		if (typeof(i.onComplete) == 'function') {
 			i.onComplete(d.body.innerHTML);
 		}
 		}
 	}
-	
 var formSubmit = function (form) {
   var file = $("#file")
   var filename = file.val().split('/').pop().split('\\').pop()
   if (filename === "") {
     alert("Please, choose a file first")
-    return false	}
- 
-  
+    return false}
+	 
   var action = "/rpc?method=documents.create&id=documents.create"
   action = action + "&st=" + getQueryVariable("st")
   form.action=action
   var request={"method":"documents.create",
-   "params": {
-     "document": {
-       "displayName": filename,
-       "parentId": parentSpaceId,
-       "mimeType":"image/png",
-       "fileName": filename
-     }
-   },
-   "id":"documents.create"
-  }
+             "params": {
+						"document": {
+										"displayName": filename,
+										"parentId": parentSpaceId,
+										"mimeType":"image/png",
+										"fileName": filename
+									}
+						},
+				"id":"documents.create"
+				}
   // add request payload to the form
-  $('#request').val(JSON.stringify(request))
+  $('#request').val(JSON.stringify(request)) 
   var f = $("#file").val()
   return AIM.submit(form, {'onStart' : startUpload, 'onComplete' : completeUpload})
 }
@@ -159,7 +157,7 @@ function getQueryVariable(variable) {
         var pair = vars[i].split('=');
         if (decodeURIComponent(pair[0]) == variable) {
             return decodeURIComponent(pair[1]);
-        }
+     }
     }
     console.log('Query variable %s not found', variable);
 }
@@ -170,24 +168,20 @@ var completeUpload = function (res) {
   $("#upload").val("Upload").attr("disabled",false)
   res = res.replace(/<\/?[^>]+>/gi, '') // strip html tags
 	res = eval("(" + res + ")"); //turn text into json object
-
   buildItem(res.result.entry)
   adjustHeight()
 }
-
-// gets the data and calls build for container
+// gets the data and calls build for container (ressources)
 var initialize = function() {
   app.list = $("#list")
   osapi.context.get().execute(function(response){
     parentSpaceId = response.contextId
-
     osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
       // console.log(response);
       build(response.list);
     });
   });
 };
-
 var adjustHeight = function() {
   gadgets.window.adjustHeight();
 }
@@ -215,7 +209,6 @@ var build = function(documents){
 };
 buildItem = function (doc) {
   var mimetype = "application/png";
-
   var doc_id = 'document_'+doc.id;
   var doc_el = $("<div id='"+doc_id+"'></div>");
   doc_el.attr('class','doc');
@@ -277,15 +270,15 @@ var holder = document.getElementById('holder'),
     },
     progress = document.getElementById('uploadprogress'),
     fileupload = document.getElementById('upload');
+	fileupload = document.getElementById('holder');
 
-"filereader formdata progress".split(' ').forEach(function (api) {
+	"filereader formdata progress".split(' ').forEach(function (api) {
   if (tests[api] === false) {
     support[api].className = 'fail';
   } else {
     support[api].className = 'hidden';
   }
 });
-	
 function previewfile(file) {
   if (tests.filereader === true && acceptedTypes[file.type] === true) {
     var reader = new FileReader();
@@ -294,13 +287,17 @@ function previewfile(file) {
       image.src = event.target.result;
       image.width = 100;
 	  image.height = 100;
-      holder.appendChild(image);
-    };
+      //holder.appendChild(image); //on n'affiche pas l'image dans le cadre du drop
+	document.getElementById('fileDragName').value = file.name
+	document.getElementById('fileDragType').value = file.type   
+   };
 
     reader.readAsDataURL(file);
   }  else {
-    holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');
-    console.log(file);
+    //holder.innerHTML += '<p>Uploaded ' + file.name + ' ' + (file.size ? (file.size/1024|0) + 'K' : '');// on n'affiche pas le nom du fichier 
+   console.log(file);
+  document.getElementById('fileDragName').value = file.name
+  document.getElementById('fileDragType').value = file.type
   }
 }
 function readfiles(files) {
@@ -312,7 +309,7 @@ function readfiles(files) {
 
     if (tests.formdata) {
       var xhr = new XMLHttpRequest();
-      xhr.open("POST","files[i]",true);
+      xhr.open("POST","",true);
       xhr.onload = function() {
     progress.value = progress.innerHTML = 100;	
   };}
@@ -336,10 +333,19 @@ if (tests.dnd) {
     this.className = '';
     e.preventDefault();
     readfiles(e.dataTransfer.files);
+	
+	// added yesterday 
+	var formsubmit2 = function(form) {
+	var file2= $("#holder")
+	var filename2 = file2.val().split('/').pop().split('\\').pop()
+	if (filename === "") {
+	alert ("plesae drag and drop a file")
+	return false}
+	}
 	alert("voilà");
-//return AIM.uploading(form,{'onstart':startUpload,'onComlete':completeUpload}) 
  }
-} else {
+} 
+else{
   fileupload.className = 'hidden';
   fileupload.querySelector('input').onchange = function () {
     readfiles(this.files);
