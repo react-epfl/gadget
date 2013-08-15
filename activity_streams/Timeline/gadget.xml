@@ -24,21 +24,21 @@ body {
 function createTimeline(response) {
   var date = new Date;
   activities = response.entry;
-  actions = ["add", "update", "join", "remove"];
-  actions_past = {"add" : "added", "update" : "updated", "join" : "joined", "remove" : "removed"};
+  actions = ["add", "update", "join", "remove", "delete"];
+  actions_past = {"add" : "added", "update" : "updated", "join" : "joined", "delete" : "deleted"};
   for(var i = 0; i < activities.length ; i++) {
     if ($.inArray(activities[i].verb, actions) != -1) {
       $('#timeline').append("<div id='item"+i+"'>");
       date = new Date(activities[i].published);
       $('#timeline').append(date.toString() + " : ");
-      $('#timeline').append(formatItemName(activities[i].object, activities[i].target, activities[i].verb, actions_past));
+      $('#timeline').append(formatItemName(activities[i].object, activities[i].target, activities[i].actor, activities[i].verb, actions_past));
       $('#timeline').append("</div>");
     }
   }
   gadgets.window.adjustHeight();
 }
 
-function formatItemName(object, target, verb, actions) {
+function formatItemName(object, target, actor, verb, actions) {
   var thisSpace = "this space";
   var hasBeen = " has been ";
   var has = " has ";
@@ -49,13 +49,13 @@ function formatItemName(object, target, verb, actions) {
   // target or the object of the activity.
   var objectId = -1;
   if (object.id != undefined) {
-    objectId=object.id.match(/[0-9]+$/g)[0];
+    objectId=object.id.split('/').pop();
   } else {
     object.id = "Deleted object";
   }
   var targetId = -1;
   if (target != undefined) {
-    targetId=target.id.match(/[0-9]+$/g)[0];
+    targetId=target.id.split('/').pop();
   }
 
   var isObject = false;
@@ -81,13 +81,13 @@ function formatItemName(object, target, verb, actions) {
     }
     break;
   case "join":
-    if(!isObject) {
-      return object.displayName+has+actions["join"]+" "+thisSpace+".";
+    if(isObject) {
+      return actor.displayName+has+actions["join"]+" "+thisSpace+".";
     }
     break;
-  case "remove":
+  case "delete":
     if(!isObject) {
-      return object.id+hasBeen+actions["remove"]+from+thisSpace+".";
+      return object.id+hasBeen+actions["delete"]+from+thisSpace+".";
     }
     break;
   default:
@@ -98,7 +98,7 @@ function formatItemName(object, target, verb, actions) {
 
 function loadActivities(){
   var today = new Date();
-  var lastWeek = new Date(today.getFullYear(), today.getMonth()-2, today.getDate() - 7);
+  var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
   osapi.activitystreams.get({contextId: window.gcontextId, contextType: window.gcontextType, updatedSince:lastWeek.toISOString(),  sortOrder:"descending"}).execute(function(response){
     createTimeline(response);
   });
