@@ -81,6 +81,7 @@ function formatItemName(object, target, actor, verb, actions) {
     } else {
       sentence += object.id+hasBeen+actions["add"]+to+thisSpace;
     }
+    break;
   case "update":
     if(isObject) {
       sentence += thisSpace.charAt(0).toUpperCase()+thisSpace.slice(1)+hasBeen+actions["update"];

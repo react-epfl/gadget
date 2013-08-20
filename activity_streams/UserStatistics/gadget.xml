@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-<ModulePrefs title="Time Statistics for activities"
+<ModulePrefs title="User Statistics"
                 author_email="aubry.cholleton@epfl.ch"
                 author="Aubry Cholleton"
-                description="Displays activity statistics (activity versus day/hour) in a graph.">
+                description="Displays activity statistics (activity versus day/hour) about the Viewer in a graph.">
     <Require feature="opensocial-0.9"/>
     <Require feature="osapi"/>
     <Require feature="dynamic-height"/>
@@ -20,7 +20,7 @@ body {
 
 </style>
 <link rel="stylesheet" type="text/css" href="../../libs/jqplot/jquery.jqplot.min.css" />
-<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" href="../../libs/jquery-ui/jquery-ui.css" />
 
 <script class="include" language="javascript" type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
 <script class="include" language="javascript" type="text/javascript" src="../../libs/jquery-ui/jquery-ui.js"></script>
@@ -144,31 +144,30 @@ function displayActions(actions, max_length){
 }
 
 function onContextFound(response){
-  loadActivities(response.context.contextId, response.context.contextType);
+  loadActivities(response.context.id, "@user");
 }
 
 function loadActivities(id, type){
   var batch = osapi.newBatch();
-  batch.add('activities', osapi.activitystreams.get({contextId: id, contextType: type, count:500, sortOrder:"descending", ext: true}));
+  batch.add('activities', osapi.activitystreams.get({contextId: id, contextType: type, ext: "true"}));
   batch.execute(onActivitiesLoaded);
 }
 
-function findContext(){
+function findViewer(){
   var batch = osapi.newBatch();
-  batch.add('context', osapi.context.get());
+  batch.add('context', osapi.people.getOwner());
   batch.execute(onContextFound);    
 }
 
 function init()
 {
-  gadgets.window.adjustHeight();
-  findContext(); 
+  findViewer(); 
 }
 
 gadgets.util.registerOnLoadHandler(init);
 
 </script>
-<p> Temporal statistics about the space container, based on the last 500 activities retrieved. </p>
+<p> User statistics, based on the first 10 000 activities retrieved. </p>
 <div id="form">
   <form id="time" action="">
     <fieldset id="parameters">
@@ -201,6 +200,6 @@ gadgets.util.registerOnLoadHandler(init);
     </fieldset>
   </form>
 </div>
-<div id="graph">Loading, this can take some time ...</div>
+<div id="graph"></div>
 ]]></Content>
 </Module>
