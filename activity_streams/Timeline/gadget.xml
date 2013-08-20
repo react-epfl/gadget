@@ -18,7 +18,10 @@ body {
 </style>
 
 <script class="include" language="javascript" type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
+<script class="include" language="javascript" type="text/javascript" src="../../libs/moment/moment.min.js"></script>
 <script type="text/javascript">
+moment().format();
+
 
 
 function createTimeline(response) {
@@ -30,7 +33,7 @@ function createTimeline(response) {
     if ($.inArray(activities[i].verb, actions) != -1) {
       $('#timeline').append("<div id='item"+i+"'>");
       date = new Date(activities[i].published);
-      $('#timeline').append(date.toString() + " : ");
+      $('#timeline').append(moment(date).fromNow() + ", ");
       $('#timeline').append(formatItemName(activities[i].object, activities[i].target, activities[i].actor, activities[i].verb, actions_past));
       $('#timeline').append("</div>");
     }
@@ -45,6 +48,7 @@ function formatItemName(object, target, actor, verb, actions) {
   var to = " to ";
   var from = " from ";
 
+
   // Check whether the current context is the 
   // target or the object of the activity.
   var objectId = -1;
@@ -58,6 +62,7 @@ function formatItemName(object, target, actor, verb, actions) {
     targetId=target.id.split('/').pop();
   }
 
+  var name = "unknown object"
   var isObject = false;
   if (objectId == gcontextId) {
     isObject = true;
@@ -67,39 +72,43 @@ function formatItemName(object, target, actor, verb, actions) {
     return "This activity is unrelated to this space.";
   }
 
+  var sentence = ""
   switch(verb)
   {
   case "add":
     if(isObject) {
-      return thisSpace.charAt(0).toUpperCase()+thisSpace.slice(1)+hasBeen+actions["add"]+to+target.displayName+".";
+      sentence += thisSpace.charAt(0).toUpperCase()+thisSpace.slice(1)+hasBeen+actions["add"]+to+target.displayName;
     } else {
-      return object.id+hasBeen+actions["add"]+to+thisSpace+".";
+      sentence += object.id+hasBeen+actions["add"]+to+thisSpace;
     }
   case "update":
     if(isObject) {
-      return thisSpace.charAt(0).toUpperCase()+thisSpace.slice(1)+hasBeen+actions["update"]+".";
+      sentence += thisSpace.charAt(0).toUpperCase()+thisSpace.slice(1)+hasBeen+actions["update"];
     }
     break;
   case "join":
     if(isObject) {
-      return actor.displayName+has+actions["join"]+" "+thisSpace+".";
+      sentence += actor.displayName+has+actions["join"]+" "+thisSpace;
     }
     break;
   case "delete":
     if(!isObject) {
-      return object.id+hasBeen+actions["delete"]+from+thisSpace+".";
+      sentence += object.id+hasBeen+actions["delete"]+from+thisSpace;
     }
     break;
   default:
-    return "Unexpected activity.";
+    sentence += "Unexpected activity.";
   }
+
+  sentence += " by "+actor.displayName+".";
+  return sentence;
 }
 
 
 function loadActivities(){
   var today = new Date();
   var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
-  osapi.activitystreams.get({contextId: window.gcontextId, contextType: window.gcontextType, updatedSince:lastWeek.toISOString(),  sortOrder:"descending"}).execute(function(response){
+  osapi.activitystreams.get({contextId: window.gcontextId, contextType: window.gcontextType, updatedSince:lastWeek.toISOString(), sortOrder: "descending"}).execute(function(response){
     createTimeline(response);
   });
 }
