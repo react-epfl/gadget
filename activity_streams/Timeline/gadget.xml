@@ -9,7 +9,7 @@
     <Require feature="dynamic-height"/>
 </ModulePrefs>
 <Content type="html"><![CDATA[
-<style> 
+<style>
 body {
   background-color: transparent;
   color:#666;
@@ -22,7 +22,7 @@ body {
   padding: 0px;
   background-color: #EFF1F2;
   border-radius: 10px;
-  box-shadow: -1px 2px 5px 1px rgba(0, 0, 0, 0.7); 
+  box-shadow: -1px 2px 5px 1px rgba(0, 0, 0, 0.7);
 }
 
 .item > .moment {
@@ -43,216 +43,336 @@ body {
   margin: 8px;
   padding-bottom: 10px;
 }
-.act_content {
+
+.item > .core > .content {
   margin: 8px 8px 8px 80px;
   padding: 10px;
   background-color: #FCFCFC;
   border-radius: 10px;
 }
+
 .clear {
   clear: both;
   height: 0; overflow: hidden;
 }
 </style>
 
-<script class="include" language="javascript" type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
-<script class="include" language="javascript" type="text/javascript" src="../../libs/moment/moment.min.js"></script>
+<!-- Should be better to load it dynamically and check that it is not already defined -->
+<script type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="../../libs/moment/moment.min.js"></script>
 <script type="text/javascript">
-moment().format();
-var lastUpdate = moment();
+// New namespace (prevent conflicts with the rest of the page)
+(function(){
+
+  var lastUpdate;
+  var gcontextId;
+  var gcontextType;
+  var viewerId=0;
+
+  moment().format();
+  gadgets.util.registerOnLoadHandler(findContext);
 
 
+  function findContext() {
+    var batch = osapi.newBatch();
+    batch.add('context', osapi.context.get());
+    batch.add('viewer', osapi.people.getOwner());
+    batch.execute(function(response){
 
-function createTimeline(response) {
+      gcontextId = response.context.contextId;
+      gcontextType = response.context.contextType;
 
-  updateTimeline(response);
+      viewerId = response.viewer.id;
 
-  setTimeout(function () {
-gadgets.window.adjustHeight();
+      loadActivities();
+    });
+  }
+
+  function loadActivities() {
+    osapi.activitystreams.get({
+      contextId: gcontextId,
+      contextType: gcontextType,
+      count:7,
+      sortOrder: "descending"
+    }).execute(
+    function(response){
+      lastUpdate = moment();
+      initTimeline(response);
+    });
+  }
+
+  function updateActivities() {
+    osapi.activitystreams.get({
+      contextId: gcontextId,
+      contextType: gcontextType,
+      updatedSince: lastUpdate.format(),
+      count:7,
+      sortOrder: "descending"
+    }).execute(
+    function(response){
+      lastUpdate = moment();
+      updateTimeline(response);
+    });
+  }
+
+  function initTimeline(response) {
+
+    updateTimeline(response);
+
+    // For some reasons the height is not adjusted properly without this delay ...
+    setTimeout(function(){
+      gadgets.window.adjustHeight();
     }, 500);
 
-  var timer = setInterval(updateActivities, 4000);
+    var timer = setInterval(updateActivities, 4000);
+  }
 
-  //updateActivities();
-  
+  function updateTimeline(response) {
+    var activities = response.entry;
+    var actionVerbs = ["add", "update", "join", "remove", "delete"];
 
-}
+    for(var i = (activities.length-1); i >= 0; i--) {
+      var isVerbValid = ($.inArray(activities[i].verb, actionVerbs) != -1);
+      if (isVerbValid) {
+        var currentActivity = new Activity(activities[i]);
 
-function updateTimeline(acts) {
-  var content = null;
-  var date = new Date;
-  activities = acts.entry;
-  actions = ["add", "update", "join", "remove", "delete"];
-  //Faire la boucle à l'envers et faire des prepend à chaque itération
-  for(var i = (activities.length-1); i >= 0 ; i--) {
-    if ($.inArray(activities[i].verb, actions) != -1) {
-      date = new Date(activities[i].published);
-      var item = "<div class='item' id='item"+i+"'>"
-        + "<div class = 'moment'> "
-        + moment(date).fromNow()
-        + "</div>"
-        + "<div class='core'>";
-      image = getActivityImage(activities[i]);
-      if(image) {
-        item += "<img src = '"+getActivityImage(activities[i])+"' class='thumb' / >";
+        var item = "<div class='item' id='item"+i+"'>";
+
+        var timeFromNow = moment(currentActivity.published).fromNow();
+        item += "<div class = 'moment'> "
+          + timeFromNow
+          + "</div>";
+
+        item += "<div class='core'>";
+
+        var image = currentActivity.getImage();
+        if(image) {
+          item += "<img src = '"+image+"' class='thumb' / >";
+        }
+
+        var descriptiveSentence = currentActivity.getDescriptiveSentence();
+        item += "<div class = 'sentence'> "
+          + descriptiveSentence
+          + "</div>";
+
+        var content = currentActivity.object.getContent();
+        if(content) {
+          item +="<div class = 'content'>"
+            +content
+            +"</div>";
+        }
+
+        item += "</div>"; // core
+        item += "<div class='clear'></div>"; // prevent the floating picture to go out of the box.
+        item += "</div>"; // item
+
+        if($('.item').length >= 7) {
+          $('.item').last().fadeOut("slow", function() { $(this).remove(); });
+        }
+        $('#timeline').prepend($(item).fadeIn("slow"));
       }
-      item += "<div class = 'sentence'> "
-        + activitySentence(activities[i])
-        + "</div>";
-
-      content = getObjectContent(activities[i].object);
-      if(content) {
-        item +="<div class = 'act_content'>"
-          +content
-          +"</div>";
-      }
-
-      item += "</div>"
-          +"<div class='clear'></div></div>";
-      if($('.item').length >= 7) {
-        $('.item').last().fadeOut("slow", function() { $(this).remove(); });
-      }
-      $('#timeline').prepend($(item).fadeIn("slow"));
-      gadgets.window.adjustHeight();
     }
-  }
-  gadgets.window.adjustHeight();
-}
-
-function activitySentence(activity) {
-
-  var sentence = "";
-  var displayName = getObjectDisplayName(activity.actor);
-  sentence += buildObjectLink(displayName.charAt(0).toUpperCase() + displayName.slice(1), activity.actor);
-  sentence += " "+getActivityVerb(activity);
-  if (activity.verb != "add" || activity.object.objectType != "Comment")
-    sentence += " "+buildObjectLink(getObjectDisplayName(activity.object), activity.object);
-  if(activity.target) {
-    if(activity.verb == "delete")
-      sentence += " from";
-    else if (activity.verb == "add" && activity.object.objectType == "Comment")
-      sentence += " on";
-    else
-      sentence += " to";
-      sentence += " "+buildObjectLink(getObjectDisplayName(activity.target), activity.target)+".";
-  } else
-    sentence += ".";
-  
-  return sentence;
-}
-
-function getActivityVerb(activity) {
-  var actions_past = {"add" : "added", "update" : "updated", "join" : "joined", "delete" : "deleted"};
-
-  if(activity.verb == "add" && activity.object.objectType == "Comment")
-    return "commented";
-  var verb = actions_past[activity.verb];
-  if(verb)
-    return verb;
-  return "did something with"
-}
-
-function getObjectDisplayName(object){
-  if (object.id == undefined)
-    return "a deleted object";
-
-  if (isObjectContext(object.id))
-    return "this "+object.objectType.toLowerCase();
-
-  if (object.id.split('/').pop() == window.viewerId) {
-    if (object.objectType == "User")
-      return "you";
-    else if(object.objectType == "Space")
-      return "your space"
+    gadgets.window.adjustHeight();
   }
 
-  if (object.displayName)
-    return object.displayName;
+  function Activity(content) {
 
-  if (object.objectType)
-    return "a "+object.objectType.toLowerCase();
-  
-  return "something"
-}
+    $.extend(this, content);
 
-function buildObjectLink(name, object){
-  if (object.url)
-    return "<a href='"+object.url+"' target='_top'>"+name+"</a>";
-  else
-    return name;
-}
+    this.actor = new ActivityObject(content.actor);
+    this.object = new ActivityObject(content.object);
+    if (content.target)
+      this.target = new ActivityObject(content.target);
 
-function getObjectContent(object){
-  if (object.content)
-    return object.content;
-  else
-    return null;
-}
+    this.getDescriptiveSentence = function() {
+      var sentence = "";
 
-function getActivityImage(activity){
-  if(activity.image)
-    return activity.image.url;
-  if(activity.object.image)
-    return activity.object.image.url;
-  if(activity.actor.image)
-    return activity.actor.image.url;
-  if(activity.target && activity.target.image)
-    return activity.target.image.url;
-  if(activity.generator && activity.generator.image)
-    return activity.generator.image.url;
-  return null;
+      var displayName = this.actor.getContextualDisplayName();
+      var capitalizedDisplayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      sentence += this.actor.getLink(capitalizedDisplayName);
 
-}
+      sentence += " "+this.getVerb();
 
-function isObjectContext(objectIri) {
-  var objectId = -1;
-  if (objectIri != undefined) {
-    objectId=objectIri.split('/').pop();
-  } else {
-    return false;
+      if (!this.isComment()) {
+        var objectDisplayName = this.object.getContextualDisplayName();
+        sentence += " "+this.object.getLink(objectDisplayName);
+      } else {
+        // No need to display a link to the object when it is a Comment (comments have no url).
+      }
+
+      if(this.hasTarget()) {
+        if(this.verb == "delete") {
+          sentence += " from";
+        }
+        else if (this.isComment()) {
+          sentence += " on";
+        }
+        else {
+          sentence += " to";
+        }
+
+        var targetDisplayName = this.target.getContextualDisplayName();
+        sentence += " "+this.target.getLink(targetDisplayName)+".";
+      } else {
+        sentence += ".";
+      }
+      
+      return sentence;
+    }
+
+    this.getVerb = function() {
+      var actionVerbsPreteritForm = {
+        "add" : "added",
+        "update" : "updated",
+        "join" : "joined",
+        "delete" : "deleted"
+      };
+
+      if(this.isComment) {
+        return "commented";
+      }
+
+      var verb = actionVerbsPreteritForm[this.verb];
+      if(verb) {
+        return verb;
+      } else {
+        return "did something with"
+      }
+    }
+
+    this.getImage = function() {
+      if(this.icon && this.icon.url) {
+        return this.icon.url;
+      }
+      else if(this.object.hasImage()) {
+        return this.object.getImage();
+      }
+      else if(this.actor.hasImage()) {
+        return this.actor.getImage();
+      }
+      else if(this.hasTarget() && this.target.hasImage()) {
+        return this.target.getImage();
+      }
+      else if(this.generator && this.generator.hasImage()) {
+        return this.generator.getImage();
+      }
+      else {
+        return null;
+      }
+    }
+
+    this.isComment = function() {
+      if (this.verb == "add" &&
+        this.object.isComment)
+        return true;
+      else
+        return false;
+    }
+
+    this.hasTarget = function() {
+      if (this.target)
+        return true;
+      else
+        return false;
+    }
+
   }
 
-  if (objectId == gcontextId) {
-    return true;
-  } else {
-    return false;
+  function ActivityObject(content) {
+
+    $.extend(this, content);
+
+    this.getContextualDisplayName = function() {
+      if (this.id == undefined) {
+        return "a deleted object";
+      }
+      else if (this.isContext()) {
+        return "this "+this.objectType.toLowerCase();
+      }
+      // If the objects points to the viewer
+      else if (this.isViewer()) {
+        return "you";
+      }
+      else if (this.displayName) {
+        return this.displayName;
+      }
+      else if (this.objectType) {
+        return "a "+this.objectType.toLowerCase();
+      }
+      else {
+        return "something";
+      }
+    }
+
+    this.getLink = function(name) {
+      if (this.url) {
+        return "<a href='"+this.url+"' target='_top'>"+name+"</a>";
+      }
+      else {
+        return name;
+      }
+    }
+
+    this.getImage = function() {
+      if (this.hasImage()) {
+        return this.image.url;
+      }
+    }
+
+    this.getContent = function() {
+      if (this.content) {
+        return this.content;
+      }
+      else {
+        return null;
+      }
+    }
+
+    this.getGraaspId = function() {
+      // TODO : Also check that the object actually is a graasp object
+      if (this.id) {
+        return this.id.split('/').pop();
+      }
+      else {
+        return 0;
+      }
+    }
+
+    this.isViewer = function() {
+      var graaspId = this.getGraaspId();
+      if(graaspId && graaspId == viewerId && this.objectType == "User") {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    this.isContext = function() {
+      var graaspId = this.getGraaspId();
+      if(graaspId && graaspId == viewerId && graaspId == gcontextId) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    this.isComment = function() {
+      return (this.objectType == "Comment");
+    }
+
+    this.hasImage = function() {
+      return (this.image && this.image.url);
+    }
+
   }
-}
-
-function updateActivities(){
-  var today = new Date();
-  var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate()-7);
-  osapi.activitystreams.get({contextId: window.gcontextId, contextType: window.gcontextType, updatedSince:window.lastUpdate.format(), count:7, sortOrder: "descending"}).execute(function(response){
-    lastUpdate = moment();
-    updateTimeline(response);
-  });
-}
-
-
-function loadActivities(){
-  osapi.activitystreams.get({contextId: window.gcontextId, contextType: window.gcontextType, count:7, sortOrder: "descending"}).execute(function(response){
-    lastUpdate = moment();
-    createTimeline(response);
-  });
-}
-
-function findContext(){
-  var batch = osapi.newBatch();
-  batch.add('context', osapi.context.get());
-  batch.add('viewer', osapi.people.getViewer());
-  batch.execute(function(response){
-    gcontextId = response.context.contextId;
-    gcontextType = response.context.contextType;
-    viewerId = response.viewer.id;
-    loadActivities();
-  });
-}
-
-
-gadgets.util.registerOnLoadHandler(findContext);
+})();
 
 </script>
+
 <h1>Live space stream</h1>
 <div id="timeline"></div>
+
 ]]></Content>
 </Module>
