@@ -64,10 +64,14 @@ body {
 // New namespace (prevent conflicts with the rest of the page)
 (function(){
 
-  var lastUpdate;
-  var gcontextId;
-  var gcontextType;
-  var viewerId=0;
+  // page context singleton
+  var context = {
+    id : 0,
+    type : "",
+    viewer : {
+      id : 0
+    }
+  }
 
   moment().format();
   gadgets.util.registerOnLoadHandler(findContext);
@@ -79,10 +83,10 @@ body {
     batch.add('viewer', osapi.people.getOwner());
     batch.execute(function(response){
 
-      gcontextId = response.context.contextId;
-      gcontextType = response.context.contextType;
+      context.id = response.context.contextId;
+      context.type = response.context.contextType;
 
-      viewerId = response.viewer.id;
+      context.viewer.id = response.viewer.id;
 
       loadActivities();
     });
@@ -90,8 +94,8 @@ body {
 
   function loadActivities() {
     osapi.activitystreams.get({
-      contextId: gcontextId,
-      contextType: gcontextType,
+      contextId: context.id,
+      contextType: context.type,
       count:7,
       sortOrder: "descending"
     }).execute(
@@ -103,8 +107,8 @@ body {
 
   function updateActivities() {
     osapi.activitystreams.get({
-      contextId: gcontextId,
-      contextType: gcontextType,
+      contextId: context.id,
+      contextType: context.type,
       updatedSince: lastUpdate.format(),
       count:7,
       sortOrder: "descending"
@@ -134,7 +138,7 @@ body {
     for(var i = (activities.length-1); i >= 0; i--) {
       var isVerbValid = ($.inArray(activities[i].verb, actionVerbs) != -1);
       if (isVerbValid) {
-        var currentActivity = new Activity(activities[i]);
+        var currentActivity = new Activity(activities[i], context);
 
         var item = "<div class='item' id='item"+i+"'>";
 
@@ -175,14 +179,16 @@ body {
     gadgets.window.adjustHeight();
   }
 
-  function Activity(content) {
+  function Activity(content, context) {
 
     $.extend(this, content);
 
-    this.actor = new ActivityObject(content.actor);
-    this.object = new ActivityObject(content.object);
+    this.context = context;
+
+    this.actor = new ActivityObject(content.actor, context);
+    this.object = new ActivityObject(content.object, context);
     if (content.target)
-      this.target = new ActivityObject(content.target);
+      this.target = new ActivityObject(content.target, context);
 
     this.getDescriptiveSentence = function() {
       var sentence = "";
@@ -278,9 +284,11 @@ body {
 
   }
 
-  function ActivityObject(content) {
+  function ActivityObject(content, context) {
 
     $.extend(this, content);
+
+    this.context = context;
 
     this.getContextualDisplayName = function() {
       if (this.id == undefined) {
@@ -340,7 +348,7 @@ body {
 
     this.isViewer = function() {
       var graaspId = this.getGraaspId();
-      if(graaspId && graaspId == viewerId && this.objectType == "User") {
+      if(graaspId && graaspId == this.context.viewer.id && this.objectType == "User") {
         return true;
       }
       else {
@@ -350,7 +358,7 @@ body {
 
     this.isContext = function() {
       var graaspId = this.getGraaspId();
-      if(graaspId && graaspId == viewerId && graaspId == gcontextId) {
+      if(graaspId && graaspId == this.context.id && this.objectType == this.context.type) {
         return true;
       }
       else {
