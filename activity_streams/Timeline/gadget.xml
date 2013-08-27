@@ -228,7 +228,7 @@ body {
         "delete" : "deleted"
       };
 
-      if(this.isComment) {
+      if(this.isComment()) {
         return "commented";
       }
 
@@ -263,7 +263,7 @@ body {
 
     this.isComment = function() {
       if (this.verb == "add" &&
-        this.object.isComment)
+        this.object.isComment())
         return true;
       else
         return false;
