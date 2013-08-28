@@ -359,7 +359,12 @@ body {
 
     this.isContext = function() {
       var graaspId = this.getGraaspId();
-      if(graaspId && graaspId == this.context.id && this.objectType == this.context.type) {
+      
+      // In graasp context type is @user or @space
+      // it has to be transformed to User or Space
+      var uncapitalizedContextType = context.type.slice(1);
+      var contextType = uncapitalizedContextType.charAt(0).toUpperCase() + uncapitalizedContextType.slice(1);
+      if(graaspId && graaspId == this.context.id && this.objectType == contextType) {
         return true;
       }
       else {
