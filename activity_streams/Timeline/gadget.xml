@@ -56,10 +56,12 @@ body {
   height: 0; overflow: hidden;
 }
 </style>
-
-<!-- Should be better to load it dynamically and check that it is not already defined -->
+<script type="text/javascript" src="../../libs/minified_libs_timeline.js"></script>
+<!-- Unmerged files : -->
+<!--
 <script type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="../../libs/moment/moment.min.js"></script>
+-->
 <script type="text/javascript">
 // New namespace (prevent conflicts with the rest of the page)
 (function(){
@@ -73,7 +75,6 @@ body {
     }
   }
 
-  moment().format();
   gadgets.util.registerOnLoadHandler(findContext);
 
 
