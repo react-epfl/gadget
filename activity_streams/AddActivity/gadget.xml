@@ -11,6 +11,9 @@
 <Content type="html"><![CDATA[
 <style> 
 body {
+  color:#666;
+  font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+  margin-top:10px;
   background-color: transparent;
 }
 </style>
@@ -52,16 +55,31 @@ gadgets.window.adjustHeight();
     osapi.activitystreams.create(params).execute(function(response){
       $("#activity").append("<br/>New activity created successfully ! New ID : "+response.id);
       gadgets.window.adjustHeight();
-    });  
-  });  
-    
-
+    });
+  });
 }
 
 
 function init()
 {
-  addActivity(); 
+  findContext(); 
+}
+
+
+function findContext() {
+  var batch = osapi.newBatch();
+  batch.add('context', osapi.context.get());
+  batch.add('viewer', osapi.people.getOwner());
+  batch.execute(function(response){
+
+    $("#object_id").val(response.context.contextId);
+    var uncapitalizedContextType = response.context.contextType.slice(1);
+    var contextType = uncapitalizedContextType.charAt(0).toUpperCase() + uncapitalizedContextType.slice(1);
+    $("#object_type").val(contextType)
+    $("#actor_id").val(response.viewer.id);
+
+    addActivity();
+  });
 }
 
 gadgets.util.registerOnLoadHandler(init);
@@ -84,17 +102,17 @@ gadgets.util.registerOnLoadHandler(init);
     <fieldset id="actor">
       <legend>Actor</legend>
       <label for="actorid">Id : </label>
-      <input type="number" name="actor_id" id="actor_id" min="1" max="999999" value="887">
+      <input type="number" name="actor_id" id="actor_id" min="1" max="999999">
     </fieldset>
 
     <fieldset id="object">
       <legend>Object</legend>
       <label for="objectid">Id : </label>
-      <input type="number" name="object_id" id="object_id" min="1" max="999999" value="1279">
+      <input type="number" name="object_id" id="object_id" min="1" max="999999">
       <label for="objecttype">Type </label>
       <select name="object_type" id="object_type">
         <option value="User">User</option>
-        <option value="Space"  selected="selected">Space</option>
+        <option value="Space">Space</option>
         <option value="Asset">Asset</option>
         <option value="Link">Link</option>
         <option value="Rating">Rating</option>
