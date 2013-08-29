@@ -14,7 +14,7 @@ body {
   background-color: transparent;
   color:#666;
   font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
-  margin-top:10px
+  margin-top:10px;
 } 
 </style>
 <link rel="stylesheet" type="text/css" href="../../libs/jqplot/jquery.jqplot.min.css" />
@@ -41,14 +41,17 @@ var context = {
   id : 0,
   type : ""
 }
-var graph = new Graph("graph");
+var graph = new Graph("graphTime", "graphUser");
 
 
-function Graph(parentId) {
-  this.parentId = parentId;
+function Graph(parentIdTime, parentIdUser) {
+  this.parentIdTime = parentIdTime;
+  this.parentIdUser = parentIdUser;
 
   this.currentData = null;
-  this.currentCounter = [];
+  this.currentCounterTime = [];
+  this.currentCounterUser = [];
+  this.people = [];
 
   this.timeScale = "day";
   this.from = moment().day(-7);
@@ -63,14 +66,15 @@ function Graph(parentId) {
     if(response)
       this.currentData = response;
 
-    $("#"+parentId).empty();
+    $("#"+parentIdUser).empty();
+    $("#"+parentIdTime).empty();
     this.updateCounter();
     this.render();
   }
 
   this.updateCounter = function() {
     if (this.timeScale == "day")
-      this.currentCounter = [
+      this.currentCounterTime = [
         ["Sunday", 0],
         ["Monday", 0],
         ["Tuesday", 0],
@@ -79,23 +83,39 @@ function Graph(parentId) {
         ["Friday", 0],
         ["Saturday", 0]];
     else {
-      this.currentCounter = Array(24);
+      this.currentCounterTime = Array(24);
       for (var i=0; i<24; i++) {
-        this.currentCounter[i] = [(i+1)+"h", 0];
+        this.currentCounterTime[i] = [(i+1)+"h", 0];
       }
     }
 
+    this.currentCounterUser = [];
+    this.people = [];
     var activities = this.currentData.activities.entry;
 
+    var displayUsers = true;
+    if (this.actionType == "access") {
+        displayUsers = false;
+    }
 
     for(var i = 0; i < activities.length; i++) {
       if (activities[i].verb == this.actionType) {
         var date = moment(activities[i].published);
         if(date >= this.from && date <= this.to) {
+          if(displayUsers) {
+            id = $.inArray(activities[i].actor.id, this.people);
+            if (id == -1) {
+              this.people.push(activities[i].actor.id);
+              id = this.currentCounterUser.push([activities[i].actor.displayName, 0]) - 1;
+            }
+            this.currentCounterUser[id][1] += 1;
+          }
+
+
           if (this.timeScale == "day") {
-            this.currentCounter[date.format("d")][1] += 1;
+            this.currentCounterTime[date.format("d")][1] += 1;
           } else {
-            this.currentCounter[date.format("H")-1][1] += 1;
+            this.currentCounterTime[date.format("H")-1][1] += 1;
           }
         }
       }
@@ -103,7 +123,7 @@ function Graph(parentId) {
   }
 
   this.render = function() {
-    $.jqplot('graph', [this.currentCounter], {
+    $.jqplot(parentIdTime, [this.currentCounterTime], {
       title: 'Number of '+ this.displayAction() +' per '+ this.timeScale,
       series:[{renderer:$.jqplot.BarRenderer}],
       axesDefaults: {
@@ -126,6 +146,33 @@ function Graph(parentId) {
         }
       }
     });
+    if (this.actionType != "access") {
+      $.jqplot(parentIdUser, [this.currentCounterUser], {
+        title: 'Number of '+ this.displayAction() +' per user',
+        series:[{renderer:$.jqplot.BarRenderer}],
+        axesDefaults: {
+          tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+          tickOptions: {
+            fontSize: '10pt'
+          },
+          labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+        },
+        axes: {
+          xaxis: {
+            renderer: $.jqplot.CategoryAxisRenderer,
+            label: "User",
+            tickOptions: {
+              angle: -30,
+            }
+          },
+          yaxis: {
+            label:'Number of '+ this.displayAction()
+          }
+        }
+      });
+    } else {
+      $("#"+parentIdUser).append("Visits are anonymized ...");
+    }
   }
 
   this.displayAction = function() {
@@ -181,7 +228,7 @@ function loadActivities() {
     contextId: context.id,
     contextType: context.type,
     count:500,
-    fields:"verb,published",
+    fields:"actor,verb,published",
     sortOrder:"descending",
     updatedSince:graph.from.format(),
     filterBy:"verb",
@@ -241,6 +288,7 @@ gadgets.util.registerOnLoadHandler(init);
     </fieldset>
   </form>
 </div>
-<div id="graph">Loading, this can take some time ...</div>
+<div id="graphTime">Loading, this can take some time ...</div>
+<div id="graphUser">Loading, this can take some time ...</div>
 ]]></Content>
 </Module>
