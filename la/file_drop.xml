@@ -1,237 +1,336 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
   <ModulePrefs title="File Drop"
-                author_email="na.li@epfl.ch"
-                author="Na Li"
-                description="This widget allows users to drag and drop files into a space. It currently only works in Graasp.">
+               author="Maroua Ben Ghenia" 
+			   email ="benghenaia.maroua@gmail.com"
+                description="This widget allows users to drag and drop files into a space, show previews when putting the mouse in the thumbnail, or by clicking 
+				on show previews button, it also gives information about who added the file to the space and when.">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
-<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
+
+  <link rel="shortcut icon" href="http://vandelaydesign.com/favicon.ico">
+  <link rel="icon" href="http://vandelaydesign.com/favicon.ico">
+  <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" media="all" href="css/default.css">
+  <link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
+
 <style type="text/css">
-  body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size:15px;overflow: hidden;} // les ressources 
-  .doc {
-    margin: 5px 5px;
-    background-color: #EEE;
-    border-top: 1px solid #AAA;
-    position: relative;
-    min-height: 20px;
-	position: relative;
+
+.thumbnail img{
+border: 1px dashed white;
+margin: 0 50px 50px 0;
+}
+
+.thumbnail:hover{
+background-color: red;
+}
+
+.thumbnail:hover img{
+border: 1px solid green;
+}
+
+.thumbnail span{
+position: absolute;
+padding: 5px;
+height : 300px;
+width:300px;
+color: black;
+}
+
+.thumbnail span img{
+border-width: 0;
+padding: 2px;
+}
+
+.thumbnail:hover span{ /*CSS for enlarged image*/
+visibility: visible;
+top: 0;
+left: 230px; /*position where enlarged image should offset horizontally */
+z-index: 50;
+}
+
+body { overflow:hidden; }
+
+.gadgets-gadget{ width: 50%; }
+
+#holder {background-image: url("graasp.png"); font-weight: 200; font-height:200; text-align: center; border: 3px dashed #555;
+border-radius: 7px; cursor: default; color:#555; width: 100px; min-height: 100px; margin:1em 0;}
+
+#holder.hover {border: 5px dashed #0c0; }
+
+#holder img { display: block; margin:10px auto; }
+
+#holder p { margin: 10px; font-size: 14px; }
+ 
+.title {
+padding: 1px 1px;
+	}
+
+.doc {
+margin: 0px 0px;
+padding: 0px 0px;
+color: #333; 
+background-color:white;
+border-top: 1px solid #AAA;
+position: relative;
+min-height: 5px;
     }
-  .gadgets-gadget{width: 100%;}
-  .title {margin: 5px 5px; color: #333; text-indent: 1px;
-    background-color: #EEE;
-    border-top: 1px solid #AAA; 
-    padding: 1px 1px;
+	
+.gadget-title {
+font-size: 16px;
+text-indent: 5px;
+padding-top: 0px;
+position: relative;
+display: inline-block;
   }
-  .gadget-title {
-  font-size: 16px;
-    text-indent: 5px;
-    padding-top: 5px;
-    position: relative;
-    display: inline-block;
+
+.content {
+margin-top:5px;
+font-size:12px;
+text-indent:10px;
   }
-  .content {
-    margin-top:5px;
-    font-size:12px;
-    text-indent:10px;
+
+#container {
+    //background-color:white;
+    //border-radius:10px;
+    //padding:20px;
   }
-  #container {
-    background-color:white;
-    border-radius:20px;
-    padding:50px;
-  }
-  .preview_button {
-    display: inline-block;
-    margin: 5px;
-  }
-  thumbnail {
-    display: inline-block;
-    color: #333; 
-    background-color: #EEE;
-    margin: 2px 5px;
-    width: 30px;
-    padding: 5px;
-    position: absolute;
-    left: 0;
+  
+.preview_button {
+display: inline-block;
+margin: 5px;
   }
 </style> 
- 
+
 <form method="post" action="/" class="dropzone" id="file-dropzone" enctype = "multipart/form-data">
-   <input id="request" type="hidden" name="request"></input>
+	<div id="w" class="container center">
+		<h2 class="text-center"><em>File Drop Widget</em></h2>
+		<p> you can see this space's resources <a href="https://graasp.epfl.ch/#item=space_4486" target="_blank">here</a></p>
+		<hr>
+		<br><br>
+		<div id="holder"></div>
+		<center>   
+			<a href="#modalwin" data-toggle="modal" class="btn btn-large">Show Preview</a>
+		</center>
+		<div id="modalwin" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<header class="modal-header">
+				<a href="#" class="close" data-dismiss="modal">x</a>
+				<h3> The preview </h3>
+			</header>
+      
+			<div class="modal-body">
+			<p>You should show preview here </p>
+			</div>
+		</div>
+		<input id="request" type="hidden" name="request"></input>
 </form>
- 
-<div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources existing in this space</div>
-    <div id="list">
-</div>
-  
+
+<div id="ress" style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;"><h3>Resources existing in this space</h3></div>
+	<div id="list">
+	</div>
 <div id="container"></div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/bootstrap.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/modals.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
-
 <script type="text/javascript">
+
 var app = {containerUrl: "", contextId: "", showingPreview: false,rootUrl: "http://graasp.epfl.ch/gadget/prod/res_download/"}
 var isOwner = false;
 var parentSpaceId = null;
 var dwd = false;
 
+function addUser(doc_id, app){
+	osapi.people.getOwner({contextId: app.contextId}).execute(function(getOwner){
+		var item = $('#'+doc_id);
+		item.append("&nbsp;" + getOwner.displayName+"&nbsp")
+	                                                                            }
+															 );
+                             }
+
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
     var vars = query.split('&');
-    for (var i = 0; i < vars.length; i++) {					
-		var pair = vars[i].split('=');
-		if (decodeURIComponent(pair[0]) == variable) {
-			return decodeURIComponent(pair[1])       }
-	                                       }
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+			return decodeURIComponent(pair[1]);	
+		                                             }
+	                                      } 
 	console.log('Query variable %s not found', variable);
-	                                 }
-									
+	                                }
+
 // Bind listener to dropzone, and upload the dropped file
 function dropListener(){ 
   Dropzone.options.fileDropzone = {
-	init: function() {
-		this.on("addedfile", function(file) {
-			var filename = file.name;
-            var action = "/rpc?method=documents.create&id=documents.create"
-            action = action + "&st=" + getQueryVariable("st")
-	        this.options.url = action;
-		    var request={"method":"documents.create",
-						 "params": {
-									"document": {"displayName": filename,
-												 "parentId": parentSpaceId,
-												 "mimeType":"image/png",
-                                                 "fileName": filename
-			                                    }
-			                       },
-			             "id":"documents.create"
-                        }
-// add request payload to the form
-            $('#request').val(JSON.stringify(request));
-	        dwd = true;                     }
-	           )  
-				     } 
-                                  };
-  dwd = false;
-                       }
-		
-// gets the data and calls build for container
+    init: function() {
+	this.on("addedfile", function(file) {
+        var filename = file.name;
+        var action = "/rpc?method=documents.create&id=documents.create"
+        action = action + "&st=" + getQueryVariable("st")
+	    this.options.url = action;
+		var request={"method":"documents.create",
+          "params": {
+            "document": {
+              "displayName": filename,
+              "parentId": parentSpaceId,
+              "mimeType":"image/png",
+              "fileName": filename
+			            }
+                    },
+          "id":"documents.create"
+                    }
+        // add request payload to the form
+        $('#request').val(JSON.stringify(request));
+	dwd = true;
+                                         }
+	       )
+		           }             
+				                  };
+ dwd = false; 
+                          }  
+
 var initialize = function() {
   app.list = $("#list")
   osapi.context.get().execute(function(response){
-      parentSpaceId = response.contextId
-	  app.containerUrl = response.containerUrl;
-      app.contextId = response.contextId;
-      osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
-	      //console.log(response);
-	      build(response.list);
-	                                                                                                                    }
-		                                                                                             );
-                                                }
-							 );
+	parentSpaceId = response.contextId
+	app.containerUrl = response.containerUrl;
+	app.contextId = response.contextId;
+	osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
+		build(response.list);	
+	                                                                                                                  }
+																									);
+	                                            });
   dropListener(); 
-							};
+
+ };
 
 var adjustHeight = function() {
   gadgets.window.adjustHeight();
-  if (dwd == true) {
-    dwd = false ;
-    //refresh the page automatically
-    window.location.reload() 
-                   }  
+  if (dwd == true){
+	dwd = false ;
+//refresh the page automatically
+	window.location.reload() 
+                  }  
                               }
-  
-//Shows or hides previews. By default previews are not showed. 
+//Shows or hides previews. 
+
 var changePreviewMode = function() {
     app.showingPreview = !app.showingPreview;
 	initialize();
-                                   }
+                                    }
+
 
 // Checks if the document is a webpage Bookmark
 var isBookmark = function(doc) { 
-  var isBookmark = false;
-  if (typeof doc.documentEntity !== "undefined") {
-    var docEntity = doc.documentEntity;
-    var firstSeven = docEntity.substring(0,7);
-    if (firstSeven === "http://") {
-      isBookmark = true;
-                                  }
-                                                 }
-    return isBookmark;
+	var isBookmark = false;
+    if (typeof doc.documentEntity !== "undefined") {
+		var docEntity = doc.documentEntity;
+		var firstSeven = docEntity.substring(0,7);
+		if (firstSeven === "http://") {
+			isBookmark = true;
+									  }
+                                                    }
+    return isBookmark; 
                                }
+
+var owner = function () {
+	osapi.people.getOwner({contextId: app.contextId}).execute(function(getOwner){
+	doc_name.append("&nbsp;" + getOwner.displayName+"&nbsp")
+                                                                                 });
+						};
+
 // build the container with gadgets
 var build = function(documents){
-	var container = $('#container');
-	container.empty();
-	var header = $("<div id='gadget_header'></div>");
-	var title = $("<div class='gadget-title'></div>");
+var container = $('#container');
+container.empty();
+var header = $("<div id='gadget_header'></div>");
+var title = $("<div class='gadget-title'></div>");
+if(documents.length == 0){
+  app.list.text("No resources were found in this space!");
+                         }
+container.append(header);
+for (var i = 0; i < documents.length; i++) {
+  var doc = documents[i] ;
+  var doc_id = 'document_'+doc.id;  
+  var doc_el = $("<div id='"+doc_id+"'></div>");
+  doc_el.attr('class','doc');
 
-   //the preview button
-	var preview = $("<div class='preview_button' id='preview_button'></div>");
-	var button_text = "Show previews";
-	if (app.showingPreview == true) {
-		button_text = "Hide previews";
-                                    }
-  
-	var preview_button = $("<button type='button' onclick='changePreviewMode()'>"+button_text+"</button>");
-	preview.append(preview_button);
-	header.append(preview);
-	if(documents.length == 0){
-		app.list.text("No resources were found in this space!");
-							 }
-   
-	container.append(header);
-	for (var i = 0; i < documents.length; i++) { 
-		var doc = documents[i];
-		var doc_el = $("<div id='"+doc_id+"'></div>");
-		var doc_id = 'document_'+doc.id;
-		doc_el.attr('class','doc');
-		
-		//thumbnail
-		var thumb_id = 'asset_' + doc.objectId + '_thumb_image';
-		var thumb_el = $("<div class='thumbnail'></div>");
-		var thumbnail = $("<img id='"+thumb_id+"' src='"+doc.thumbnailUrl+"' style='width: 28px; height: 36px;'>");
-		thumb_el.append(thumbnail);
-		doc_el.append(thumb_el);
-		
-		//Showing the previews
-		var doc_body = $('<div class="content"></div>');
-		if (app.showingPreview == true) {
-			var preview_el = $("<div class='preview'></div>");
-		
-			//show embedded documents 
-			if (typeof doc.documentEntity !== "undefined") {
-				if (!isBookmark(doc)) {
-				doc_body.html(doc.documentEntity);
-				                      } 
-				else {
-					var site_preview_url = app.containerUrl + "/item4a/picture/full/asset/" + doc.id;
-					var preview_img = $("<img alt='Resource Preview' src='"+ site_preview_url +"' width='63%'></img>");
-					preview_el.append(preview_img);
-					doc_body.append(preview_el);
-					 }
-                                                           } 
-			// show a preview of the attachment
-			if (typeof doc.attachment !== "undefined") {
-				var preview_path = app.containerUrl + "/attachment/" + doc.attachment.objectId;
-				var preview_img = $("<img alt='Resource Preview' src='"+ preview_path +"' width='63%'></img>");
-				preview_el.append(preview_img);
-				doc_body.append(preview_el);
-													   }
-										}
-		doc_el.append(doc_body);
-		container.append(doc_el);
-											   }
+// document name
+var doc_name = $('<div class="title" id="' + app.contextId + '"></div>');
+var asset_url = doc.profileUrl;
+var doc_name_link = $("<a href ='"+asset_url+"' target='_blank'></a>");
+doc_name.append(doc_name_link); 
+var doc_body = $('<div class="content"></div>');
+d = doc.updated.replace("T"," ").replace(/.....$/,"")
+doc_name.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+ +d+"&nbsp;")
+ 
+addUser(doc_id, app);
+doc_name_link.text(doc.displayName);
+doc_el.append(doc_name);
+	
+var preview = $("<div class='preview_button' id='preview_button'></div>");
+var button_text = "Show previews";
+
+if (app.showingPreview == true) {
+	button_text = "Hide previews";
+                                }
+var preview_button = $("<button type='button' onclick='changePreviewMode()'>"+button_text+"</button><br>");
+preview.append(preview_button);
+header.append(preview);
+doc_name.append(preview_button);
+ 		
+//thumbnail
+var thumb_id = 'asset_' + doc.objectId + '_thumb_image';
+var thumb_el = $("<div class='thumbnail' style='width:30px; height:40px;'></div>");
+var thumbnail = $("<img id='"+thumb_id+"' src='"+doc.thumbnailUrl+"' style='width: 28px; height: 36px;'/><span><img src='"+doc.thumbnailUrl+"' style='width:500px;height:350px;'/></span>");
+thumb_el.append(thumbnail);
+doc_el.append(thumb_el);
+	
+//Showing the previews
+var doc_body = $('<div class="content"></div>');
+if (app.showingPreview == true) {
+   var preview_el = $("<div class='preview'></div>");  
+ 
+//show embedded documents 
+	if (typeof doc.documentEntity !== "undefined") {
+        if (!isBookmark(doc)) {
+			doc_body.html(doc.documentEntity);
+             } else {
+			var site_preview_url = app.containerUrl + "/item4a/picture/full/asset/" + doc.id;
+			var preview_img = $("<img alt='Resource Preview' src='"+ site_preview_url +"' width='63%'></img>");
+			preview_el.append(preview_img);	  
+			doc_body.append(preview_el);
+					}
+													} 
+// show a preview of the attachment
+if (typeof doc.attachment !== "undefined") {
+	var preview_path = app.containerUrl + "/attachment/" + doc.attachment.objectId;
+	var preview_img = $("<img alt='Resource Preview' src='"+ preview_path +"' width='63%'></img>");
+	preview_el.append(preview_img);
+    doc_body.append(preview_el);
+                                            }
+                                   }
+  doc_el.append(doc_body);
+  container.append(doc_el);
+	}
+	
 // resize the gadget
-gadgets.window.adjustHeight();
-  
-// 2 seconds
-setTimeout(adjustHeight,2000);
+    gadgets.window.adjustHeight();
+// 2 seconds 
+   setTimeout(adjustHeight,2000);
 // 5 seconds
-setTimeout(adjustHeight,5000);
+  setTimeout(adjustHeight,5000);
 };
+
 </script>
 <script type="text/javascript">
 gadgets.util.registerOnLoadHandler(initialize);
