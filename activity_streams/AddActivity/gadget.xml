@@ -18,15 +18,15 @@ body {
 }
 </style>
 
-<script class="include" language="javascript" type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-
+<script type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
 <script type="text/javascript">
 
-
-
 function addActivity(){
-gadgets.window.adjustHeight();
-  $(".button").click(function() {  
+
+  gadgets.window.adjustHeight();
+
+  $(".button").click(function() {
+
     var params = {
       userId: '@viewer',
       groupId: '@self',
@@ -36,17 +36,21 @@ gadgets.window.adjustHeight();
     };
 
     if($("#set_details").is(':checked')) {
-      if($("[name=content]").val()) {
-        params.activity.content = $("[name=content]").val();
+      var content = $("[name=content]").val();
+      if(content) {
+        params.activity.content = content;
       }
-      if($("[name=title]").val()) {
-        params.activity.title = $("[name=title]").val();
+      var title = $("[name=title]").val();
+      if(title) {
+        params.activity.title = title;
       }
-      if($("[name=url]").val()) {
-        params.activity.url = $("[name=url]").val();
+      var url = $("[name=url]").val();
+      if(url) {
+        params.activity.url = url;
       }
-      if($("[name=icon]").val()) {
-        params.activity.icon = $("[name=icon]").val();
+      var icon = $("[name=icon]").val();
+      if(icon) {
+        params.activity.icon = icon;
       }
     }
 
@@ -95,38 +99,55 @@ gadgets.window.adjustHeight();
         createCustomObject(params.activity.target, "target");
       }
     }
+
     alert("Summary of the activity you are about to create : \n"+JSON.stringify(params.activity, null, 4));
 
     
     osapi.activitystreams.create(params).execute(function(response){
-      $("#activity").append("<br/>New activity created successfully ! New ID : "+response.id);
+      if(response.id) {
+        $("#activity").append("<br/>-New activity created successfully ! New ID : "+response.id);
+      } else {
+        $("#activity").append("<br/>-Something went wrong ! Check that you specified at least an IRI for every non-Graasp object.");
+      }
       gadgets.window.adjustHeight();
     });
   });
 }
 
 function createCustomObject(container, formName) {
-  if ($("[name="+formName+"_iri_custom]").val()) {
-    container.id = $("[name="+formName+"_iri_custom]").val();
+  var iri = $("[name="+formName+"_iri_custom]").val();
+  if (iri) {
+    container.id = iri;
   }
-  if ($("[name="+formName+"_name_custom]").val()) {
-    container.name = $("[name="+formName+"_name_custom]").val();
+  var name = $("[name="+formName+"_name_custom]").val();
+  if (name) {
+    container.name = name;
   }
-  if ($("[name="+formName+"_type_custom]").val()) {
-    container.objectType = $("[name="+formName+"_type_custom]").val();
+
+  var type = $("[name="+formName+"_type_custom]").val();
+  if (type) {
+    container.objectType = type;
   }
-  if ($("[name="+formName+"_url_custom]").val()) {
-    container.url = $("[name="+formName+"_url_custom]").val();
+
+  var url = $("[name="+formName+"_url_custom]").val();
+  if (url) {
+    container.url = url;
   }
-  if ($("[name="+formName+"_summary_custom]").val()) {
-    container.summary = $("[name="+formName+"_summary_custom]").val();
+
+  var summary = $("[name="+formName+"_summary_custom]").val();
+  if (summary) {
+    container.summary = summary;
   }
-  if ($("[name="+formName+"_content_custom]").val()) {
-    container.content = $("[name="+formName+"_content_custom]").val();
+
+  var content = $("[name="+formName+"_content_custom]").val();
+  if (content) {
+    container.content = content;
   }
-  if ($("[name="+formName+"_image_custom]").val()) {
+
+  var image = $("[name="+formName+"_image_custom]").val();
+  if (image) {
     container.image = {
-      url : $("[name="+formName+"_image_custom]").val()
+      url : image
     };
   }
 }
@@ -146,6 +167,7 @@ function findContext() {
   batch.execute(function(response){
 
     $("#object_id").val(response.context.contextId);
+
     var uncapitalizedContextType = response.context.contextType.slice(1);
     var contextType = uncapitalizedContextType.charAt(0).toUpperCase() + uncapitalizedContextType.slice(1);
     $("#object_type").val(contextType)
@@ -224,11 +246,11 @@ gadgets.util.registerOnLoadHandler(init);
     <select name="verb" id="verb">
       <option value="access">Visit</option>
       <option value="add">Add</option>
-      <option value="update">Update</option>
+      <option value="update" selected="selected">Update</option>
       <option value="invite">Invite</option>
       <option value="invite-remind">Send invitation reminder</option>
       <option value="request-join">Join request</option>
-      <option value="join"  selected="selected">Join</option>
+      <option value="join">Join</option>
       <option value="remove">Remove</option>
       <option value="delete">Delete</option>
     </select><br />
@@ -394,6 +416,6 @@ gadgets.util.registerOnLoadHandler(init);
     <input type="button" name="submit" class="button" id="create" value="Create activity !" />
   </form>
 </div>
-<div id="activity"></div>
+<div id="activity">History :</div>
 ]]></Content>
 </Module>

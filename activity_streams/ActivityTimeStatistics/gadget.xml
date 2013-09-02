@@ -20,10 +20,6 @@ body {
 <link rel="stylesheet" type="text/css" href="../../libs/jqplot/jquery.jqplot.min.css" />
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 
-
-<script type="text/javascript" src="../../libs/minified_libs_stats.js"></script>
-<!-- Unmerged files : -->
-<!--
 <script type="text/javascript" src="../../libs/moment/moment.min.js"></script>
 <script type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
 <script type="text/javascript" src="../../libs/jquery-ui/jquery-ui.js"></script>
@@ -34,7 +30,7 @@ body {
 <script type="text/javascript" src="../../libs/jqplot/jqplot.categoryAxisRenderer.min.js"></script>
 <script type="text/javascript" src="../../libs/jqplot/jqplot.barRenderer.min.js"></script>
 <script type="text/javascript" src="../../libs/jqplot/jqplot.canvasAxisLabelRenderer.min.js"></script>
--->
+
 <script type="text/javascript">
 
 var context = {
@@ -263,8 +259,8 @@ gadgets.util.registerOnLoadHandler(init);
       <legend>Parameters</legend>
       <label for="actions">Actions :</label>
       <select name="action" id="action" class="new_request">
-        <option value="access" selected="selected">Visit</option>
-        <option value="add">Add</option>
+        <option value="access">Visit</option>
+        <option value="add" selected="selected">Add</option>
         <option value="update">Update</option>
         <option value="invite">Invite</option>
         <option value="invite-remind">Send invitation reminder</option>
