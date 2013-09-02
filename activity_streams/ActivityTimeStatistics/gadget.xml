@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Time Statistics for activities"
+                author_email="aubry.cholleton@epfl.ch"
+                author="Aubry Cholleton"
+                description="Displays activity statistics (activity versus day/hour) in a graph.">
+    <Require feature="opensocial-0.9"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+<style> 
+body {
+  background-color: transparent;
+  color:#666;
+  font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+  margin-top:10px;
+} 
+</style>
+<link rel="stylesheet" type="text/css" href="http://graasp.epfl.ch/gadget/libs/jqplot/jquery.jqplot.min.css" />
+<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/moment/moment.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.barRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.canvasAxisLabelRenderer.min.js"></script>
+
+<script type="text/javascript">
+
+var context = {
+  id : 0,
+  type : ""
+}
+var graph = new Graph("graphTime", "graphUser");
+
+
+function Graph(parentIdTime, parentIdUser) {
+  this.parentIdTime = parentIdTime;
+  this.parentIdUser = parentIdUser;
+
+  this.currentData = null;
+  this.currentCounterTime = [];
+  this.currentCounterUser = [];
+  this.people = [];
+
+  this.timeScale = "day";
+  this.from = moment().day(-7);
+  this.to = moment();
+  this.actionType = "access";
+
+  this.update = function(from, to, action, timeScale, response) {
+    this.from = from;
+    this.to = to;
+    this.actionType = action;
+    this.timeScale = timeScale;
+    if(response)
+      this.currentData = response;
+
+    $("#"+parentIdUser).empty();
+    $("#"+parentIdTime).empty();
+    this.updateCounter();
+    this.render();
+  }
+
+  this.updateCounter = function() {
+    if (this.timeScale == "day")
+      this.currentCounterTime = [
+        ["Sunday", 0],
+        ["Monday", 0],
+        ["Tuesday", 0],
+        ["Wednesday", 0],
+        ["Thursday", 0],
+        ["Friday", 0],
+        ["Saturday", 0]];
+    else {
+      this.currentCounterTime = Array(24);
+      for (var i=0; i<24; i++) {
+        this.currentCounterTime[i] = [(i+1)+"h", 0];
+      }
+    }
+
+    this.currentCounterUser = [];
+    this.people = [];
+    var activities = this.currentData.activities.entry;
+
+    var displayUsers = true;
+    if (this.actionType == "access") {
+        displayUsers = false;
+    }
+
+    for(var i = 0; i < activities.length; i++) {
+      if (activities[i].verb == this.actionType) {
+        var date = moment(activities[i].published);
+        //alert(date.format()+"      "+this.to.format());
+        if(date.isAfter(this.from) && date.isBefore(this.to)) {
+          if(displayUsers) {
+            id = $.inArray(activities[i].actor.id, this.people);
+            if (id == -1) {
+              this.people.push(activities[i].actor.id);
+              id = this.currentCounterUser.push([activities[i].actor.displayName, 0]) - 1;
+            }
+            this.currentCounterUser[id][1] += 1;
+          }
+
+
+          if (this.timeScale == "day") {
+            this.currentCounterTime[date.format("d")][1] += 1;
+          } else {
+            this.currentCounterTime[date.format("H")-1][1] += 1;
+          }
+        }
+      }
+    }
+  }
+
+  this.render = function() {
+    $.jqplot(parentIdTime, [this.currentCounterTime], {
+      title: 'Number of '+ this.displayAction() +' per '+ this.timeScale,
+      series:[{renderer:$.jqplot.BarRenderer}],
+      axesDefaults: {
+        tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+        tickOptions: {
+          fontSize: '10pt'
+        },
+        labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+      },
+      axes: {
+        xaxis: {
+          renderer: $.jqplot.CategoryAxisRenderer,
+          label: this.timeScale.charAt(0).toUpperCase() + this.timeScale.slice(1),
+          tickOptions: {
+            angle: -30,
+          }
+        },
+        yaxis: {
+          label:'Number of '+ this.displayAction()
+        }
+      }
+    });
+    if (this.actionType != "access") {
+      $.jqplot(parentIdUser, [this.currentCounterUser], {
+        title: 'Number of '+ this.displayAction() +' per user',
+        series:[{renderer:$.jqplot.BarRenderer}],
+        axesDefaults: {
+          tickRenderer: $.jqplot.CanvasAxisTickRenderer ,
+          tickOptions: {
+            fontSize: '10pt'
+          },
+          labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+        },
+        axes: {
+          xaxis: {
+            renderer: $.jqplot.CategoryAxisRenderer,
+            label: "User",
+            tickOptions: {
+              angle: -30,
+            }
+          },
+          yaxis: {
+            label:'Number of '+ this.displayAction()
+          }
+        }
+      });
+    } else {
+      $("#"+parentIdUser).append("Visits are anonymized ...");
+    }
+  }
+
+  this.displayAction = function() {
+    if (!this.actionType) return "nothing";
+    var actionToDisplay = new Array(9);
+    actionToDisplay["access"] = "visits";
+    actionToDisplay["add"] = "additions";
+    actionToDisplay["update"] = "updates";
+    actionToDisplay["invite"] = "invitations";
+    actionToDisplay["invite-remind"] = "invitation reminders";
+    actionToDisplay["request-join"] = "join requests";
+    actionToDisplay["join"] = "joins";
+    actionToDisplay["remove"] = "removals";
+    actionToDisplay["delete"] = "deletions";
+
+    var displayName = actionToDisplay[this.actionType];
+    if (displayName)
+      return displayName;
+    else
+      return "unknown";
+  }
+}
+
+
+function init(){
+  $("#to").datepicker();
+  $("#from").datepicker();
+  $('#to').datepicker({ dateFormat: 'mm/dd/yy' }).val(graph.to.format("MM/DD/YYYY"));
+  $('#from').datepicker({ dateFormat: 'mm/dd/yy' }).val(graph.from.format("MM/DD/YYYY"));
+
+  gadgets.window.adjustHeight();
+
+  findContext();
+  
+}
+
+function onActivitiesLoaded(response) {
+
+  graph.update(
+    moment($("#from").datepicker({ dateFormat: 'mm/dd/yy' }).val()).startOf('day'),
+    moment($("#to").datepicker({ dateFormat: 'mm/dd/yy' }).val()).endOf('day'),
+    $("#action").val(),
+    $("#time_scale").val(),
+    response);
+
+  gadgets.window.adjustHeight();
+
+}
+
+function loadActivities() {
+  var batch = osapi.newBatch();
+  batch.add('activities', osapi.activitystreams.get({
+    contextId: context.id,
+    contextType: context.type,
+    count:500,
+    fields:"actor,verb,published",
+    sortOrder:"descending",
+    updatedSince:graph.from.format(),
+    filterBy:"verb",
+    filterOp:"equals",
+    filterValue:$('#action').val(),
+    ext: true
+  }));
+  batch.execute(onActivitiesLoaded);
+}
+
+function findContext() {
+  var batch = osapi.newBatch();
+  batch.add('context', osapi.context.get());
+  batch.execute(function(response){
+    context.id = response.context.contextId;
+    context.type = response.context.contextType;
+
+    $(".dynamic").change(function() {onActivitiesLoaded(null);});
+    $(".new_request").change(loadActivities);
+    loadActivities();
+  });    
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+</script>
+<p> Temporal statistics about the space container, based on the last 500 activities retrieved. </p>
+<div id="form">
+  <form id="time" action="">
+    <fieldset id="parameters">
+      <legend>Parameters</legend>
+      <label for="actions">Actions :</label>
+      <select name="action" id="action" class="new_request">
+        <option value="access">Visit</option>
+        <option value="add" selected="selected">Add</option>
+        <option value="update">Update</option>
+        <option value="invite">Invite</option>
+        <option value="invite-remind">Send invitation reminder</option>
+        <option value="request-join">Join request</option>
+        <option value="join">Join</option>
+        <option value="remove">Remove</option>
+        <option value="delete">Delete</option>
+      </select>
+      <br />
+      <label for="time_scale">Time scale :</label>
+      <select name="time_scale" class="dynamic" id="time_scale">
+        <option value="day" selected="selected">Day</option>
+        <option value="hour">Hour</option>
+      </select>
+    </fieldset>
+    <fieldset id="time_window">
+      <legend>Time window </legend>
+      <label for="from">From </label>
+      <input type="text" name="from" class="new_request" id="from" >
+      <label for="to"> to </label>
+      <input type="text" name="to" class="dynamic" id="to" >
+    </fieldset>
+  </form>
+</div>
+<div id="graphTime">Loading, this can take some time ...</div>
+<div id="graphUser">Loading, this can take some time ...</div>
+]]></Content>
+</Module>
