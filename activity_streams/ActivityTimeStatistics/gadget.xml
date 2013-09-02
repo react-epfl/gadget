@@ -17,19 +17,19 @@ body {
   margin-top:10px;
 } 
 </style>
-<link rel="stylesheet" type="text/css" href="../../libs/jqplot/jquery.jqplot.min.css" />
+<link rel="stylesheet" type="text/css" href="http://graasp.epfl.ch/gadget/libs/jqplot/jquery.jqplot.min.css" />
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 
-<script type="text/javascript" src="../../libs/moment/moment.min.js"></script>
-<script type="text/javascript" src="../../libs/jquery-1.8.0.min.js"></script>
-<script type="text/javascript" src="../../libs/jquery-ui/jquery-ui.js"></script>
-<script type="text/javascript" src="../../libs/jqplot/jquery.jqplot.min.js"></script>
-<script type="text/javascript" src="../../libs/jqplot/jqplot.dateAxisRenderer.min.js"></script>
-<script type="text/javascript" src="../../libs/jqplot/jqplot.canvasTextRenderer.min.js"></script>
-<script type="text/javascript" src="../../libs/jqplot/jqplot.canvasAxisTickRenderer.min.js"></script>
-<script type="text/javascript" src="../../libs/jqplot/jqplot.categoryAxisRenderer.min.js"></script>
-<script type="text/javascript" src="../../libs/jqplot/jqplot.barRenderer.min.js"></script>
-<script type="text/javascript" src="../../libs/jqplot/jqplot.canvasAxisLabelRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/moment/moment.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.barRenderer.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jqplot/jqplot.canvasAxisLabelRenderer.min.js"></script>
 
 <script type="text/javascript">
 
