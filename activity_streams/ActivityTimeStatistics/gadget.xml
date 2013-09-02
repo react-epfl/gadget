@@ -101,7 +101,8 @@ function Graph(parentIdTime, parentIdUser) {
     for(var i = 0; i < activities.length; i++) {
       if (activities[i].verb == this.actionType) {
         var date = moment(activities[i].published);
-        if(date >= this.from && date <= this.to) {
+        //alert(date.format()+"      "+this.to.format());
+        if(date.isAfter(this.from) && date.isBefore(this.to)) {
           if(displayUsers) {
             id = $.inArray(activities[i].actor.id, this.people);
             if (id == -1) {
@@ -200,8 +201,8 @@ function Graph(parentIdTime, parentIdUser) {
 function init(){
   $("#to").datepicker();
   $("#from").datepicker();
-  $('#to').val(graph.to.format("MM/DD/YY"));
-  $('#from').val(graph.from.format("MM/DD/YY"));
+  $('#to').datepicker({ dateFormat: 'mm/dd/yy' }).val(graph.to.format("MM/DD/YYYY"));
+  $('#from').datepicker({ dateFormat: 'mm/dd/yy' }).val(graph.from.format("MM/DD/YYYY"));
 
   gadgets.window.adjustHeight();
 
@@ -212,8 +213,8 @@ function init(){
 function onActivitiesLoaded(response) {
 
   graph.update(
-    moment($("#from").val()).startOf('day'),
-    moment($("#to").val()).endOf('day'),
+    moment($("#from").datepicker({ dateFormat: 'mm/dd/yy' }).val()).startOf('day'),
+    moment($("#to").datepicker({ dateFormat: 'mm/dd/yy' }).val()).endOf('day'),
     $("#action").val(),
     $("#time_scale").val(),
     response);
