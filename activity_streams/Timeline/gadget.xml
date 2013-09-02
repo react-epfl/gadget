@@ -81,7 +81,7 @@ body {
   function findContext() {
     var batch = osapi.newBatch();
     batch.add('context', osapi.context.get());
-    batch.add('viewer', osapi.people.getOwner());
+    batch.add('viewer', osapi.people.getViewer());
     batch.execute(function(response){
 
       context.id = response.context.contextId;
