@@ -16,230 +16,260 @@ body {
   margin-top:10px;
   background-color: transparent;
 }
+#dialog-confirm,
+#dialog {
+  font-size: 70%;
+}
 </style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css" />
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
 <script type="text/javascript">
+(function(){
 
-function addActivity(){
+  function addActivity(){
 
-  gadgets.window.adjustHeight();
+    gadgets.window.adjustHeight();
 
-  $(".button").click(function() {
+    $(".button").click(function() {
 
-    var params = {
-      userId: '@viewer',
-      groupId: '@self',
-      activity: {
-        verb: $("#verb").val(),
-      }
-    };
-
-    if($("#set_details").is(':checked')) {
-      var content = $("[name=content]").val();
-      if(content) {
-        params.activity.content = content;
-      }
-      var title = $("[name=title]").val();
-      if(title) {
-        params.activity.title = title;
-      }
-      var url = $("[name=url]").val();
-      if(url) {
-        params.activity.url = url;
-      }
-      var icon = $("[name=icon]").val();
-      if(icon) {
-        params.activity.icon = icon;
-      }
-    }
-
-    if($("input[name=generator_origin]:radio:checked").val() == "graasp") {
-      params.activity.generator = {
-        id: $("#generator_id").val(),
-        objectType: $("#generator_type").val(),
-        graasp_object: "true"
+      var params = {
+        userId: '@viewer',
+        groupId: '@self',
+        activity: {
+          verb: $("#verb").val(),
+        }
       };
-    } else {
-      params.activity.generator = {};
-      createCustomObject(params.activity.generator, "generator");
-    }
 
-    if($("input[name=object_origin]:radio:checked").val() == "graasp") {
-      params.activity.object = {
-        id: $("#object_id").val(),
-        objectType: $("#object_type").val(),
-        graasp_object: "true"
-      };
-    } else {
-      params.activity.object = {};
-      createCustomObject(params.activity.object, "object");
-    }
+      if ($("#set_details").is(':checked')) {
+        var content = $("[name=content]").val();
+        if (content) {
+          params.activity.content = content;
+        }
+        var title = $("[name=title]").val();
+        if (title) {
+          params.activity.title = title;
+        }
+        var url = $("[name=url]").val();
+        if (url) {
+          params.activity.url = url;
+        }
+        var icon = $("[name=icon]").val();
+        if (icon) {
+          params.activity.icon = icon;
+        }
+      }
 
-    if($("input[name=actor_origin]:radio:checked").val() == "graasp") {
-      params.activity.actor = {
-        id: $("#actor_id").val(),
-        objectType: "User",
-        graasp_object: "true"
-      };
-    } else {
-      params.activity.actor = {};
-      createCustomObject(params.activity.actor, "actor");
-    }
-
-    if($("#use_target").is(':checked')) {
-      if($("input[name=target_origin]:radio:checked").val() == "graasp") {
-        params.activity.target = {
-          id: $("#target_id").val(),
-          objectType: $("#target_type").val(),
+      if ($("input[name=generator_origin]:radio:checked").val() === "graasp") {
+        params.activity.generator = {
+          id: $("#generator_id").val(),
+          objectType: $("#generator_type").val(),
           graasp_object: "true"
         };
       } else {
-        params.activity.target = {};
-        createCustomObject(params.activity.target, "target");
+        params.activity.generator = {};
+        createCustomObject(params.activity.generator, "generator");
       }
+
+      if ($("input[name=object_origin]:radio:checked").val() === "graasp") {
+        params.activity.object = {
+          id: $("#object_id").val(),
+          objectType: $("#object_type").val(),
+          graasp_object: "true"
+        };
+      } else {
+        params.activity.object = {};
+        createCustomObject(params.activity.object, "object");
+      }
+
+      if ($("input[name=actor_origin]:radio:checked").val() === "graasp") {
+        params.activity.actor = {
+          id: $("#actor_id").val(),
+          objectType: "User",
+          graasp_object: "true"
+        };
+      } else {
+        params.activity.actor = {};
+        createCustomObject(params.activity.actor, "actor");
+      }
+
+      if ($("#use_target").is(':checked')) {
+        if ($("input[name=target_origin]:radio:checked").val() === "graasp") {
+          params.activity.target = {
+            id: $("#target_id").val(),
+            objectType: $("#target_type").val(),
+            graasp_object: "true"
+          };
+        } else {
+          params.activity.target = {};
+          createCustomObject(params.activity.target, "target");
+        }
+      }
+
+      $("#future-activity").html("<pre>"+JSON.stringify(params.activity, null, 2)+"</pre>");
+
+      $(function() {
+        $("#dialog-confirm").dialog({
+          resizable: true,
+          modal: true,
+          height: 400,
+          width: 400,
+          buttons: {
+            "Publish this activity": function() {
+              osapi.activitystreams.create(params).execute(function(response){
+                if (response.id) {
+                  $("#activity").append("<br/>-New activity created successfully. New ID : "+
+                    response.id);
+                } else {
+                  $("#activity").append("<br/>-Something went wrong."+
+                    "Check that you specified at least an IRI for every non-Graasp object.");
+                }
+                gadgets.window.adjustHeight();
+              });
+              $(this).dialog("close");
+            },
+            Cancel: function() {
+              $(this).dialog("close");
+            }
+          }
+        });
+      });
+    });
+  }
+
+  function createCustomObject(container, formName) {
+    var iri = $("[name="+formName+"_iri_custom]").val();
+    if (iri) {
+      container.id = iri;
+    }
+    var name = $("[name="+formName+"_name_custom]").val();
+    if (name) {
+      container.name = name;
     }
 
-    alert("Summary of the activity you are about to create : \n"+JSON.stringify(params.activity, null, 4));
+    var type = $("[name="+formName+"_type_custom]").val();
+    if (type) {
+      container.objectType = type;
+    }
 
-    
-    osapi.activitystreams.create(params).execute(function(response){
-      if(response.id) {
-        $("#activity").append("<br/>-New activity created successfully ! New ID : "+response.id);
-      } else {
-        $("#activity").append("<br/>-Something went wrong ! Check that you specified at least an IRI for every non-Graasp object.");
-      }
-      gadgets.window.adjustHeight();
-    });
-  });
-}
+    var url = $("[name="+formName+"_url_custom]").val();
+    if (url) {
+      container.url = url;
+    }
 
-function createCustomObject(container, formName) {
-  var iri = $("[name="+formName+"_iri_custom]").val();
-  if (iri) {
-    container.id = iri;
-  }
-  var name = $("[name="+formName+"_name_custom]").val();
-  if (name) {
-    container.name = name;
-  }
+    var summary = $("[name="+formName+"_summary_custom]").val();
+    if (summary) {
+      container.summary = summary;
+    }
 
-  var type = $("[name="+formName+"_type_custom]").val();
-  if (type) {
-    container.objectType = type;
-  }
+    var content = $("[name="+formName+"_content_custom]").val();
+    if (content) {
+      container.content = content;
+    }
 
-  var url = $("[name="+formName+"_url_custom]").val();
-  if (url) {
-    container.url = url;
+    var image = $("[name="+formName+"_image_custom]").val();
+    if (image) {
+      container.image = {
+        url : image
+      };
+    }
   }
 
-  var summary = $("[name="+formName+"_summary_custom]").val();
-  if (summary) {
-    container.summary = summary;
+
+  function init() {
+    findContext(); 
   }
 
-  var content = $("[name="+formName+"_content_custom]").val();
-  if (content) {
-    container.content = content;
+
+  function findContext() {
+    var batch = osapi.newBatch();
+    batch.add('context', osapi.context.get());
+    batch.add('viewer', osapi.people.getOwner());
+    batch.add('app', osapi.apps.get({contextId:"@self"}));
+    batch.execute(function(response){
+
+      $("#object_id").val(response.context.contextId);
+
+      var uncapitalizedContextType = response.context.contextType.slice(1);
+      var contextType = uncapitalizedContextType.charAt(0).toUpperCase() + uncapitalizedContextType.slice(1);
+      $("#object_type").val(contextType)
+      $("#actor_id").val(response.viewer.id);
+      $("#generator_id").val(response.app.id);
+
+      $("input[name=generator_origin]:radio").change(function(){
+        if ($("input[name=generator_origin]:radio:checked").val() === "graasp") {
+          $("#graasp_generator").show();
+          $("#custom_generator").hide();
+        } else {
+          $("#graasp_generator").hide();
+          $("#custom_generator").show();
+        }
+        gadgets.window.adjustHeight();
+      });
+      $("input[name=actor_origin]:radio").change(function(){
+        if ($("input[name=actor_origin]:radio:checked").val() === "graasp") {
+          $("#graasp_actor").show();
+          $("#custom_actor").hide();
+        } else {
+          $("#graasp_actor").hide();
+          $("#custom_actor").show();
+        }
+        gadgets.window.adjustHeight();
+      });
+      $("input[name=object_origin]:radio").change(function(){
+        if ($("input[name=object_origin]:radio:checked").val() === "graasp") {
+          $("#graasp_object").show();
+          $("#custom_object").hide();
+        } else {
+          $("#graasp_object").hide();
+          $("#custom_object").show();
+        }
+        gadgets.window.adjustHeight();
+      });
+      $("input[name=target_origin]:radio").change(function(){
+        if ($("input[name=target_origin]:radio:checked").val() === "graasp") {
+          $("#graasp_target").show();
+          $("#custom_target").hide();
+        } else {
+          $("#graasp_target").hide();
+          $("#custom_target").show();
+        }
+        gadgets.window.adjustHeight();
+      });
+
+      $("#use_target").change(function(){
+        if ($("#use_target").attr('checked')){
+          $("#target").show();
+        } else {
+          $("#target").hide();
+        }
+        gadgets.window.adjustHeight();
+      });
+
+      $("#set_details").change(function(){
+        if ($("#set_details").attr('checked')){
+          $("#details").show();
+        } else {
+          $("#details").hide();
+        }
+        gadgets.window.adjustHeight();
+      });
+
+      addActivity();
+    });
   }
 
-  var image = $("[name="+formName+"_image_custom]").val();
-  if (image) {
-    container.image = {
-      url : image
-    };
-  }
-}
-
-
-function init()
-{
-  findContext(); 
-}
-
-
-function findContext() {
-  var batch = osapi.newBatch();
-  batch.add('context', osapi.context.get());
-  batch.add('viewer', osapi.people.getOwner());
-  batch.add('app', osapi.apps.get({contextId:"@self"}));
-  batch.execute(function(response){
-
-    $("#object_id").val(response.context.contextId);
-
-    var uncapitalizedContextType = response.context.contextType.slice(1);
-    var contextType = uncapitalizedContextType.charAt(0).toUpperCase() + uncapitalizedContextType.slice(1);
-    $("#object_type").val(contextType)
-    $("#actor_id").val(response.viewer.id);
-    $("#generator_id").val(response.app.id);
-
-    $("input[name=generator_origin]:radio").change(function(){
-      if($("input[name=generator_origin]:radio:checked").val() == "graasp") {
-        $("#graasp_generator").show();
-        $("#custom_generator").hide();
-      } else {
-        $("#graasp_generator").hide();
-        $("#custom_generator").show();
-      }
-      gadgets.window.adjustHeight();
-    });
-    $("input[name=actor_origin]:radio").change(function(){
-      if($("input[name=actor_origin]:radio:checked").val() == "graasp") {
-        $("#graasp_actor").show();
-        $("#custom_actor").hide();
-      } else {
-        $("#graasp_actor").hide();
-        $("#custom_actor").show();
-      }
-      gadgets.window.adjustHeight();
-    });
-    $("input[name=object_origin]:radio").change(function(){
-      if($("input[name=object_origin]:radio:checked").val() == "graasp") {
-        $("#graasp_object").show();
-        $("#custom_object").hide();
-      } else {
-        $("#graasp_object").hide();
-        $("#custom_object").show();
-      }
-      gadgets.window.adjustHeight();
-    });
-    $("input[name=target_origin]:radio").change(function(){
-      if($("input[name=target_origin]:radio:checked").val() == "graasp") {
-        $("#graasp_target").show();
-        $("#custom_target").hide();
-      } else {
-        $("#graasp_target").hide();
-        $("#custom_target").show();
-      }
-      gadgets.window.adjustHeight();
-    });
-
-    $("#use_target").change(function(){
-      if($("#use_target").attr('checked')){
-        $("#target").show();
-      } else {
-        $("#target").hide();
-      }
-      gadgets.window.adjustHeight();
-    });
-
-    $("#set_details").change(function(){
-      if($("#set_details").attr('checked')){
-        $("#details").show();
-      } else {
-        $("#details").hide();
-      }
-      gadgets.window.adjustHeight();
-    });
-
-    addActivity();
-  });
-}
-
-gadgets.util.registerOnLoadHandler(init);
-
+  gadgets.util.registerOnLoadHandler(init);
+})();
 </script>
+<div id="dialog-confirm" title="Publish the Activity?" style="display: none;">
+  <p>
+    <span class="ui-icon ui-icon-alert" style="float: left; margin: 0 7px 20px 0;"></span>
+    The following activity will be recorded. Are you sure?
+    <div id="future-activity"></div>
+  </p>
+</div>
 <div id="form">
   <form id="add" action="">
     <label for="verb">Verb :</label>
@@ -413,7 +443,7 @@ gadgets.util.registerOnLoadHandler(init);
         <input type="text" name="target_image_custom"><br />
       </div>
     </fieldset>
-    <input type="button" name="submit" class="button" id="create" value="Create activity !" />
+    <input type="button" name="submit" class="button" id="create" value="Create activity" />
   </form>
 </div>
 <div id="activity">History :</div>

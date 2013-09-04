@@ -56,8 +56,8 @@ body {
   height: 0; overflow: hidden;
 }
 </style>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/moment/moment.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
 <script type="text/javascript">
 // New namespace (prevent conflicts with the rest of the page)
 (function(){
@@ -132,7 +132,7 @@ body {
     var activities = response.entry;
     var actionVerbs = ["add", "update", "join", "remove", "delete"];
 
-    for(var i = (activities.length-1); i >= 0; i--) {
+    for (var i = (activities.length-1); i >= 0; i--) {
       var isVerbValid = ($.inArray(activities[i].verb, actionVerbs) != -1);
       if (isVerbValid) {
         var currentActivity = new Activity(activities[i], context);
@@ -147,7 +147,7 @@ body {
         item += "<div class='core'>";
 
         var image = currentActivity.getImage();
-        if(image) {
+        if (image) {
           item += "<img src = '"+image+"' class='thumb' / >";
         }
 
@@ -156,8 +156,8 @@ body {
           + descriptiveSentence
           + "</div>";
 
-        var content = currentActivity.object.getContent();
-        if(content) {
+        var content = currentActivity.object.content;
+        if (content) {
           item +="<div class = 'content'>"
             +content
             +"</div>";
@@ -167,7 +167,7 @@ body {
         item += "<div class='clear'></div>"; // prevent the floating picture to go out of the box.
         item += "</div>"; // item
 
-        if($('.item').length >= 7) {
+        if ($('.item').length >= 7) {
           $('.item').last().fadeOut("slow", function() { $(this).remove(); });
         }
         $('#timeline').prepend($(item).fadeIn("slow"));
@@ -184,8 +184,9 @@ body {
 
     this.actor = new ActivityObject(content.actor, context);
     this.object = new ActivityObject(content.object, context);
-    if (content.target)
+    if (content.target) {
       this.target = new ActivityObject(content.target, context);
+    }
 
     this.getDescriptiveSentence = function() {
       var sentence = "";
@@ -203,14 +204,12 @@ body {
         // No need to display a link to the object when it is a Comment (comments have no url).
       }
 
-      if(this.hasTarget()) {
-        if(this.verb == "delete") {
+      if (this.hasTarget()) {
+        if (this.verb == "delete") {
           sentence += " from";
-        }
-        else if (this.isComment()) {
+        } else if (this.isComment()) {
           sentence += " on";
-        }
-        else {
+        } else {
           sentence += " to";
         }
 
@@ -231,7 +230,7 @@ body {
         "delete" : "deleted"
       };
 
-      if(this.isComment()) {
+      if (this.isComment()) {
         return "commented";
       }
 
@@ -244,39 +243,27 @@ body {
     }
 
     this.getImage = function() {
-      if(this.icon && this.icon.url) {
+      if (this.icon && this.icon.url) {
         return this.icon.url;
-      }
-      else if(this.object.hasImage()) {
+      } else if (this.object.hasImage()) {
         return this.object.getImage();
-      }
-      else if(this.actor.hasImage()) {
+      } else if (this.actor.hasImage()) {
         return this.actor.getImage();
-      }
-      else if(this.hasTarget() && this.target.hasImage()) {
+      } else if (this.hasTarget() && this.target.hasImage()) {
         return this.target.getImage();
-      }
-      else if(this.generator && this.generator.hasImage()) {
+      } else if (this.generator && this.generator.hasImage()) {
         return this.generator.getImage();
-      }
-      else {
+      } else {
         return null;
       }
     }
 
     this.isComment = function() {
-      if (this.verb == "add" &&
-        this.object.isComment())
-        return true;
-      else
-        return false;
+      return (this.verb == "add" && this.object.isComment());
     }
 
     this.hasTarget = function() {
-      if (this.target)
-        return true;
-      else
-        return false;
+      return (this.target);
     }
 
   }
@@ -290,21 +277,15 @@ body {
     this.getContextualDisplayName = function() {
       if (this.id == undefined) {
         return "a deleted object";
-      }
-      else if (this.isContext()) {
+      } else if (this.isContext()) {
         return "this "+this.objectType.toLowerCase();
-      }
-      // If the objects points to the viewer
-      else if (this.isViewer()) {
+      } else if (this.isViewer()) { // If the objects points to the viewer
         return "you";
-      }
-      else if (this.displayName) {
+      } else if (this.displayName) {
         return this.displayName;
-      }
-      else if (this.objectType) {
+      } else if (this.objectType) {
         return "a "+this.objectType.toLowerCase();
-      }
-      else {
+      } else {
         return "something";
       }
     }
@@ -312,45 +293,23 @@ body {
     this.getLink = function(name) {
       if (this.url) {
         return "<a href='"+this.url+"' target='_top'>"+name+"</a>";
-      }
-      else {
+      } else {
         return name;
       }
     }
 
     this.getImage = function() {
-      if (this.hasImage()) {
-        return this.image.url;
-      }
-    }
-
-    this.getContent = function() {
-      if (this.content) {
-        return this.content;
-      }
-      else {
-        return null;
-      }
+      return (this.hasImage()) ? this.image.url : null;
     }
 
     this.getGraaspId = function() {
       // TODO : Also check that the object actually is a graasp object
-      if (this.id) {
-        return this.id.split('/').pop();
-      }
-      else {
-        return 0;
-      }
+      return (this.id) ? this.id.split('/').pop() : 0;
     }
 
     this.isViewer = function() {
       var graaspId = this.getGraaspId();
-      if(graaspId && graaspId == this.context.viewer.id && this.objectType == "User") {
-        return true;
-      }
-      else {
-        return false;
-      }
+      return (graaspId && graaspId == this.context.viewer.id && this.objectType == "User");
     }
 
     this.isContext = function() {
@@ -359,13 +318,9 @@ body {
       // In graasp context type is @user or @space
       // it has to be transformed to User or Space
       var uncapitalizedContextType = context.type.slice(1);
-      var contextType = uncapitalizedContextType.charAt(0).toUpperCase() + uncapitalizedContextType.slice(1);
-      if(graaspId && graaspId == this.context.id && this.objectType == contextType) {
-        return true;
-      }
-      else {
-        return false;
-      }
+      var contextType = uncapitalizedContextType.charAt(0).toUpperCase() +
+        uncapitalizedContextType.slice(1);
+      return (graaspId && graaspId == this.context.id && this.objectType == contextType);
     }
 
     this.isComment = function() {
@@ -375,10 +330,8 @@ body {
     this.hasImage = function() {
       return (this.image && this.image.url);
     }
-
   }
 })();
-
 </script>
 
 <h1>Live space stream</h1>
