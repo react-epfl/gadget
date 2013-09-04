@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Add activity"
+                author_email="aubry.cholleton@epfl.ch"
+                author="Aubry Cholleton"
+                description="Add a new activity from a gadget">
+    <Require feature="opensocial-0.9"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+<style> 
+body {
+  color:#666;
+  font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+  margin-top:10px;
+  background-color: transparent;
+}
+</style>
+
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+<script type="text/javascript">
+
+function addActivity(){
+
+  gadgets.window.adjustHeight();
+
+  $(".button").click(function() {
+
+    var params = {
+      userId: '@viewer',
+      groupId: '@self',
+      activity: {
+        verb: $("#verb").val(),
+      }
+    };
+
+    if($("#set_details").is(':checked')) {
+      var content = $("[name=content]").val();
+      if(content) {
+        params.activity.content = content;
+      }
+      var title = $("[name=title]").val();
+      if(title) {
+        params.activity.title = title;
+      }
+      var url = $("[name=url]").val();
+      if(url) {
+        params.activity.url = url;
+      }
+      var icon = $("[name=icon]").val();
+      if(icon) {
+        params.activity.icon = icon;
+      }
+    }
+
+    if($("input[name=generator_origin]:radio:checked").val() == "graasp") {
+      params.activity.generator = {
+        id: $("#generator_id").val(),
+        objectType: $("#generator_type").val(),
+        graasp_object: "true"
+      };
+    } else {
+      params.activity.generator = {};
+      createCustomObject(params.activity.generator, "generator");
+    }
+
+    if($("input[name=object_origin]:radio:checked").val() == "graasp") {
+      params.activity.object = {
+        id: $("#object_id").val(),
+        objectType: $("#object_type").val(),
+        graasp_object: "true"
+      };
+    } else {
+      params.activity.object = {};
+      createCustomObject(params.activity.object, "object");
+    }
+
+    if($("input[name=actor_origin]:radio:checked").val() == "graasp") {
+      params.activity.actor = {
+        id: $("#actor_id").val(),
+        objectType: "User",
+        graasp_object: "true"
+      };
+    } else {
+      params.activity.actor = {};
+      createCustomObject(params.activity.actor, "actor");
+    }
+
+    if($("#use_target").is(':checked')) {
+      if($("input[name=target_origin]:radio:checked").val() == "graasp") {
+        params.activity.target = {
+          id: $("#target_id").val(),
+          objectType: $("#target_type").val(),
+          graasp_object: "true"
+        };
+      } else {
+        params.activity.target = {};
+        createCustomObject(params.activity.target, "target");
+      }
+    }
+
+    alert("Summary of the activity you are about to create : \n"+JSON.stringify(params.activity, null, 4));
+
+    
+    osapi.activitystreams.create(params).execute(function(response){
+      if(response.id) {
+        $("#activity").append("<br/>-New activity created successfully ! New ID : "+response.id);
+      } else {
+        $("#activity").append("<br/>-Something went wrong ! Check that you specified at least an IRI for every non-Graasp object.");
+      }
+      gadgets.window.adjustHeight();
+    });
+  });
+}
+
+function createCustomObject(container, formName) {
+  var iri = $("[name="+formName+"_iri_custom]").val();
+  if (iri) {
+    container.id = iri;
+  }
+  var name = $("[name="+formName+"_name_custom]").val();
+  if (name) {
+    container.name = name;
+  }
+
+  var type = $("[name="+formName+"_type_custom]").val();
+  if (type) {
+    container.objectType = type;
+  }
+
+  var url = $("[name="+formName+"_url_custom]").val();
+  if (url) {
+    container.url = url;
+  }
+
+  var summary = $("[name="+formName+"_summary_custom]").val();
+  if (summary) {
+    container.summary = summary;
+  }
+
+  var content = $("[name="+formName+"_content_custom]").val();
+  if (content) {
+    container.content = content;
+  }
+
+  var image = $("[name="+formName+"_image_custom]").val();
+  if (image) {
+    container.image = {
+      url : image
+    };
+  }
+}
+
+
+function init()
+{
+  findContext(); 
+}
+
+
+function findContext() {
+  var batch = osapi.newBatch();
+  batch.add('context', osapi.context.get());
+  batch.add('viewer', osapi.people.getOwner());
+  batch.add('app', osapi.apps.get({contextId:"@self"}));
+  batch.execute(function(response){
+
+    $("#object_id").val(response.context.contextId);
+
+    var uncapitalizedContextType = response.context.contextType.slice(1);
+    var contextType = uncapitalizedContextType.charAt(0).toUpperCase() + uncapitalizedContextType.slice(1);
+    $("#object_type").val(contextType)
+    $("#actor_id").val(response.viewer.id);
+    $("#generator_id").val(response.app.id);
+
+    $("input[name=generator_origin]:radio").change(function(){
+      if($("input[name=generator_origin]:radio:checked").val() == "graasp") {
+        $("#graasp_generator").show();
+        $("#custom_generator").hide();
+      } else {
+        $("#graasp_generator").hide();
+        $("#custom_generator").show();
+      }
+      gadgets.window.adjustHeight();
+    });
+    $("input[name=actor_origin]:radio").change(function(){
+      if($("input[name=actor_origin]:radio:checked").val() == "graasp") {
+        $("#graasp_actor").show();
+        $("#custom_actor").hide();
+      } else {
+        $("#graasp_actor").hide();
+        $("#custom_actor").show();
+      }
+      gadgets.window.adjustHeight();
+    });
+    $("input[name=object_origin]:radio").change(function(){
+      if($("input[name=object_origin]:radio:checked").val() == "graasp") {
+        $("#graasp_object").show();
+        $("#custom_object").hide();
+      } else {
+        $("#graasp_object").hide();
+        $("#custom_object").show();
+      }
+      gadgets.window.adjustHeight();
+    });
+    $("input[name=target_origin]:radio").change(function(){
+      if($("input[name=target_origin]:radio:checked").val() == "graasp") {
+        $("#graasp_target").show();
+        $("#custom_target").hide();
+      } else {
+        $("#graasp_target").hide();
+        $("#custom_target").show();
+      }
+      gadgets.window.adjustHeight();
+    });
+
+    $("#use_target").change(function(){
+      if($("#use_target").attr('checked')){
+        $("#target").show();
+      } else {
+        $("#target").hide();
+      }
+      gadgets.window.adjustHeight();
+    });
+
+    $("#set_details").change(function(){
+      if($("#set_details").attr('checked')){
+        $("#details").show();
+      } else {
+        $("#details").hide();
+      }
+      gadgets.window.adjustHeight();
+    });
+
+    addActivity();
+  });
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+</script>
+<div id="form">
+  <form id="add" action="">
+    <label for="verb">Verb :</label>
+    <select name="verb" id="verb">
+      <option value="access">Visit</option>
+      <option value="add">Add</option>
+      <option value="update" selected="selected">Update</option>
+      <option value="invite">Invite</option>
+      <option value="invite-remind">Send invitation reminder</option>
+      <option value="request-join">Join request</option>
+      <option value="join">Join</option>
+      <option value="remove">Remove</option>
+      <option value="delete">Delete</option>
+    </select><br />
+    <label for="set_details">Set details ? </label>
+    <input type="checkbox" name="set_details" id="set_details"/><br />
+    <fieldset id="details" style="display:none">
+      <legend>Details</legend>
+      <label for="url">Url : </label>
+      <input type="text" name="url"><br />
+      <label for="title">Title : </label>
+      <input type="text" name="title"><br />
+      <label for="content">Content : </label>
+      <input type="text" name="content"><br />
+      <label for="icon">Icon URL : </label>
+      <input type="text" name="icon"><br />
+    </fieldset>
+
+    <fieldset id="generator">
+      <legend>Generator</legend>
+      <label for="generator_origin">Origin of the generator : </label><br />
+      <input type="radio" name="generator_origin" value="graasp" checked> Graasp Generator<br />
+      <input type="radio" name="generator_origin" value="custom"> Custom Generator<br />
+      <div id="graasp_generator">
+        <label for="generator_id">Id : </label>
+        <input type="number" name="generator_id" id="generator_id" min="1" max="999999"><br />
+        <label for="generator_type">Type </label>
+        <select name="generator_type" id="generator_type">
+          <option value="User">User</option>
+          <option value="Space">Space</option>
+          <option value="Asset">Asset</option>
+          <option value="Link">Link</option>
+          <option value="Rating">Rating</option>
+          <option value="Tagging">Tagging</option>
+          <option value="Comment">Comment</option>
+          <option value="Widget" selected>Widget</option>
+          <option value="Favorite">Favorite</option>
+        </select><br />
+      </div>
+      <div id="custom_generator" style="display: none">
+        <label for="generator_iri_custom">IRI : </label>
+        <input type="text" name="generator_iri_custom"><br />
+        <label for="generator_name_custom">Name : </label>
+        <input type="text" name="generator_name_custom"><br />
+        <label for="generator_type_custom">Type : </label>
+        <input type="text" name="generator_type_custom"><br />
+        <label for="generator_url_custom">Url : </label>
+        <input type="text" name="generator_url_custom"><br />
+        <label for="generator_summary_custom">Summary : </label>
+        <input type="text" name="generator_summary_custom"><br />
+        <label for="generator_content_custom">Content : </label>
+        <input type="text" name="generator_content_custom"><br />
+        <label for="generator_image_custom">Image URL : </label>
+        <input type="text" name="generator_image_custom"><br />
+      </div>
+    </fieldset>
+
+    <fieldset id="actor">
+    <legend>Actor</legend>
+    <label for="actor_origin">Origin of the actor : </label><br />
+      <input type="radio" name="actor_origin" value="graasp" checked> Graasp Actor<br />
+      <input type="radio" name="actor_origin" value="custom"> Custom Actor<br />
+      <div id="graasp_actor">
+        <label for="actor_id">Id : </label>
+        <input type="number" name="actor_id" id="actor_id" min="1" max="999999"><br />
+      </div>
+      <div id="custom_actor"  style="display: none">
+        <label for="actor_iri_custom">IRI : </label>
+        <input type="text" name="actor_iri_custom"><br />
+        <label for="actor_name_custom">Name : </label>
+        <input type="text" name="actor_name_custom"><br />
+        <label for="actor_type_custom">Type : </label>
+        <input type="text" name="actor_type_custom"><br />
+        <label for="actor_url_custom">Url : </label>
+        <input type="text" name="actor_url_custom"><br />
+        <label for="actor_summary_custom">Summary : </label>
+        <input type="text" name="actor_summary_custom"><br />
+        <label for="actor_content_custom">Content : </label>
+        <input type="text" name="actor_content_custom"><br />
+        <label for="actor_image_custom">Image URL : </label>
+        <input type="text" name="actor_image_custom"><br />
+      </div>
+    </fieldset>
+
+    <fieldset id="object">
+      <legend>Object</legend>
+      <label for="object_origin">Origin of the object : </label><br />
+      <input type="radio" name="object_origin" value="graasp" checked> Graasp Object<br />
+      <input type="radio" name="object_origin" value="custom"> Custom Object<br />
+      <div id="graasp_object">
+        <label for="object_id">Id : </label>
+        <input type="number" name="object_id" id="object_id" min="1" max="999999"><br />
+        <label for="object_type">Type </label>
+        <select name="object_type" id="object_type">
+          <option value="User">User</option>
+          <option value="Space">Space</option>
+          <option value="Asset">Asset</option>
+          <option value="Link">Link</option>
+          <option value="Rating">Rating</option>
+          <option value="Tagging">Tagging</option>
+          <option value="Comment">Comment</option>
+          <option value="Widget">Widget</option>
+          <option value="Favorite">Favorite</option>
+        </select><br />
+      </div>
+      <div id="custom_object"  style="display: none">
+        <label for="object_iri_custom">IRI : </label>
+        <input type="text" name="object_iri_custom"><br />
+        <label for="object_name_custom">Name : </label>
+        <input type="text" name="object_name_custom"><br />
+        <label for="object_type_custom">Type : </label>
+        <input type="text" name="object_type_custom"><br />
+        <label for="object_url_custom">Url : </label>
+        <input type="text" name="object_url_custom"><br />
+        <label for="object_summary_custom">Summary : </label>
+        <input type="text" name="object_summary_custom"><br />
+        <label for="object_content_custom">Content : </label>
+        <input type="text" name="object_content_custom"><br />
+        <label for="object_image_custom">Image URL : </label>
+        <input type="text" name="object_image_custom"><br />
+      </div>
+    </fieldset>
+
+    <label for="use_target">Use target ? </label>
+    <input type="checkbox" name="use_target" id="use_target"/><br />
+    <fieldset id="target" style="display: none">
+      <legend>Target</legend>
+      <label for="target_origin">Origin of the object : </label><br />
+      <input type="radio" name="target_origin" value="graasp" checked> Graasp Target<br />
+      <input type="radio" name="target_origin" value="custom"> Custom Target<br />
+      <div id="graasp_target">
+        <label for="target_id">Id : </label>
+        <input type="number" name="target_id" id="target_id" min="1" max="999999"><br />
+        <label for="target_type">Type </label>
+        <select name="target_type" id="target_type">
+          <option value="User" selected="selected">User</option>
+          <option value="Space">Space</option>
+          <option value="Asset">Asset</option>
+          <option value="Link">Link</option>
+          <option value="Rating">Rating</option>
+          <option value="Tagging">Tagging</option>
+          <option value="Comment">Comment</option>
+          <option value="Widget">Widget</option>
+          <option value="Favorite">Favorite</option>
+        </select><br />
+      </div>
+      <div id="custom_target"  style="display: none">
+        <label for="target_iri_custom">IRI : </label>
+        <input type="text" name="target_iri_custom"><br />
+        <label for="target_name_custom">Name : </label>
+        <input type="text" name="target_name_custom"><br />
+        <label for="target_type_custom">Type : </label>
+        <input type="text" name="target_type_csutom"><br />
+        <label for="target_url_custom">Url : </label>
+        <input type="text" name="target_url_custom"><br />
+        <label for="target_summary_custom">Summary : </label>
+        <input type="text" name="target_summary_custom"><br />
+        <label for="target_content_custom">Content : </label>
+        <input type="text" name="target_content_custom"><br />
+        <label for="target_image_custom">Image URL : </label>
+        <input type="text" name="target_image_custom"><br />
+      </div>
+    </fieldset>
+    <input type="button" name="submit" class="button" id="create" value="Create activity !" />
+  </form>
+</div>
+<div id="activity">History :</div>
+]]></Content>
+</Module>

@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Live activity stream"
+                author_email="aubry.cholleton@epfl.ch"
+                author="Aubry Cholleton"
+                description="Displays a live activity stream of the current Space">
+    <Require feature="opensocial-0.9"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+<style>
+body {
+  background-color: transparent;
+  color:#666;
+  margin-top:10px
+  font-family: "Helvetica Neue", arial, sans-serif;
+}
+
+.item {
+  margin: 15px;
+  padding: 0px;
+  background-color: #EFF1F2;
+  border-radius: 10px;
+  box-shadow: -1px 2px 5px 1px rgba(0, 0, 0, 0.7);
+}
+
+.item > .moment {
+  padding: 5px;
+  background-color: #DFE3E6;
+  border-radius: 10px 10px 0px 0px;
+  font-weight:bold;
+}
+
+.item > .core > .thumb {
+  float: left;
+  margin: 8px;
+  display: block;
+  width: 40px;
+}
+
+.item > .core > .sentence {
+  margin: 8px;
+  padding-bottom: 10px;
+}
+
+.item > .core > .content {
+  margin: 8px 8px 8px 80px;
+  padding: 10px;
+  background-color: #FCFCFC;
+  border-radius: 10px;
+}
+
+.clear {
+  clear: both;
+  height: 0; overflow: hidden;
+}
+</style>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/moment/moment.min.js"></script>
+<script type="text/javascript">
+// New namespace (prevent conflicts with the rest of the page)
+(function(){
+
+  // page context singleton
+  var context = {
+    id : 0,
+    type : "",
+    viewer : {
+      id : 0
+    }
+  }
+
+  gadgets.util.registerOnLoadHandler(findContext);
+
+
+  function findContext() {
+    var batch = osapi.newBatch();
+    batch.add('context', osapi.context.get());
+    batch.add('viewer', osapi.people.getViewer());
+    batch.execute(function(response){
+
+      context.id = response.context.contextId;
+      context.type = response.context.contextType;
+
+      context.viewer.id = response.viewer.id;
+
+      loadActivities();
+    });
+  }
+
+  function loadActivities() {
+    osapi.activitystreams.get({
+      contextId: context.id,
+      contextType: context.type,
+      count:7,
+      sortOrder: "descending"
+    }).execute(
+    function(response){
+      lastUpdate = moment();
+      initTimeline(response);
+    });
+  }
+
+  function updateActivities() {
+    osapi.activitystreams.get({
+      contextId: context.id,
+      contextType: context.type,
+      updatedSince: lastUpdate.format(),
+      count:7,
+      sortOrder: "descending"
+    }).execute(
+    function(response){
+      lastUpdate = moment();
+      updateTimeline(response);
+    });
+  }
+
+  function initTimeline(response) {
+
+    updateTimeline(response);
+
+    // For some reasons the height is not adjusted properly without this delay ...
+    setTimeout(function(){
+      gadgets.window.adjustHeight();
+    }, 500);
+
+    var timer = setInterval(updateActivities, 4000);
+  }
+
+  function updateTimeline(response) {
+    var activities = response.entry;
+    var actionVerbs = ["add", "update", "join", "remove", "delete"];
+
+    for(var i = (activities.length-1); i >= 0; i--) {
+      var isVerbValid = ($.inArray(activities[i].verb, actionVerbs) != -1);
+      if (isVerbValid) {
+        var currentActivity = new Activity(activities[i], context);
+
+        var item = "<div class='item' id='item"+i+"'>";
+
+        var timeFromNow = moment(currentActivity.published).fromNow();
+        item += "<div class = 'moment'> "
+          + timeFromNow
+          + "</div>";
+
+        item += "<div class='core'>";
+
+        var image = currentActivity.getImage();
+        if(image) {
+          item += "<img src = '"+image+"' class='thumb' / >";
+        }
+
+        var descriptiveSentence = currentActivity.getDescriptiveSentence();
+        item += "<div class = 'sentence'> "
+          + descriptiveSentence
+          + "</div>";
+
+        var content = currentActivity.object.getContent();
+        if(content) {
+          item +="<div class = 'content'>"
+            +content
+            +"</div>";
+        }
+
+        item += "</div>"; // core
+        item += "<div class='clear'></div>"; // prevent the floating picture to go out of the box.
+        item += "</div>"; // item
+
+        if($('.item').length >= 7) {
+          $('.item').last().fadeOut("slow", function() { $(this).remove(); });
+        }
+        $('#timeline').prepend($(item).fadeIn("slow"));
+      }
+    }
+    gadgets.window.adjustHeight();
+  }
+
+  function Activity(content, context) {
+
+    $.extend(this, content);
+
+    this.context = context;
+
+    this.actor = new ActivityObject(content.actor, context);
+    this.object = new ActivityObject(content.object, context);
+    if (content.target)
+      this.target = new ActivityObject(content.target, context);
+
+    this.getDescriptiveSentence = function() {
+      var sentence = "";
+
+      var displayName = this.actor.getContextualDisplayName();
+      var capitalizedDisplayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      sentence += this.actor.getLink(capitalizedDisplayName);
+
+      sentence += " "+this.getVerb();
+
+      if (!this.isComment()) {
+        var objectDisplayName = this.object.getContextualDisplayName();
+        sentence += " "+this.object.getLink(objectDisplayName);
+      } else {
+        // No need to display a link to the object when it is a Comment (comments have no url).
+      }
+
+      if(this.hasTarget()) {
+        if(this.verb == "delete") {
+          sentence += " from";
+        }
+        else if (this.isComment()) {
+          sentence += " on";
+        }
+        else {
+          sentence += " to";
+        }
+
+        var targetDisplayName = this.target.getContextualDisplayName();
+        sentence += " "+this.target.getLink(targetDisplayName)+".";
+      } else {
+        sentence += ".";
+      }
+      
+      return sentence;
+    }
+
+    this.getVerb = function() {
+      var actionVerbsPreteritForm = {
+        "add" : "added",
+        "update" : "updated",
+        "join" : "joined",
+        "delete" : "deleted"
+      };
+
+      if(this.isComment()) {
+        return "commented";
+      }
+
+      var verb = actionVerbsPreteritForm[this.verb];
+      if(verb) {
+        return verb;
+      } else {
+        return "did something with"
+      }
+    }
+
+    this.getImage = function() {
+      if(this.icon && this.icon.url) {
+        return this.icon.url;
+      }
+      else if(this.object.hasImage()) {
+        return this.object.getImage();
+      }
+      else if(this.actor.hasImage()) {
+        return this.actor.getImage();
+      }
+      else if(this.hasTarget() && this.target.hasImage()) {
+        return this.target.getImage();
+      }
+      else if(this.generator && this.generator.hasImage()) {
+        return this.generator.getImage();
+      }
+      else {
+        return null;
+      }
+    }
+
+    this.isComment = function() {
+      if (this.verb == "add" &&
+        this.object.isComment())
+        return true;
+      else
+        return false;
+    }
+
+    this.hasTarget = function() {
+      if (this.target)
+        return true;
+      else
+        return false;
+    }
+
+  }
+
+  function ActivityObject(content, context) {
+
+    $.extend(this, content);
+
+    this.context = context;
+
+    this.getContextualDisplayName = function() {
+      if (this.id == undefined) {
+        return "a deleted object";
+      }
+      else if (this.isContext()) {
+        return "this "+this.objectType.toLowerCase();
+      }
+      // If the objects points to the viewer
+      else if (this.isViewer()) {
+        return "you";
+      }
+      else if (this.displayName) {
+        return this.displayName;
+      }
+      else if (this.objectType) {
+        return "a "+this.objectType.toLowerCase();
+      }
+      else {
+        return "something";
+      }
+    }
+
+    this.getLink = function(name) {
+      if (this.url) {
+        return "<a href='"+this.url+"' target='_top'>"+name+"</a>";
+      }
+      else {
+        return name;
+      }
+    }
+
+    this.getImage = function() {
+      if (this.hasImage()) {
+        return this.image.url;
+      }
+    }
+
+    this.getContent = function() {
+      if (this.content) {
+        return this.content;
+      }
+      else {
+        return null;
+      }
+    }
+
+    this.getGraaspId = function() {
+      // TODO : Also check that the object actually is a graasp object
+      if (this.id) {
+        return this.id.split('/').pop();
+      }
+      else {
+        return 0;
+      }
+    }
+
+    this.isViewer = function() {
+      var graaspId = this.getGraaspId();
+      if(graaspId && graaspId == this.context.viewer.id && this.objectType == "User") {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    this.isContext = function() {
+      var graaspId = this.getGraaspId();
+      
+      // In graasp context type is @user or @space
+      // it has to be transformed to User or Space
+      var uncapitalizedContextType = context.type.slice(1);
+      var contextType = uncapitalizedContextType.charAt(0).toUpperCase() + uncapitalizedContextType.slice(1);
+      if(graaspId && graaspId == this.context.id && this.objectType == contextType) {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }
+
+    this.isComment = function() {
+      return (this.objectType == "Comment");
+    }
+
+    this.hasImage = function() {
+      return (this.image && this.image.url);
+    }
+
+  }
+})();
+
+</script>
+
+<h1>Live space stream</h1>
+<div id="timeline"></div>
+
+]]></Content>
+</Module>
