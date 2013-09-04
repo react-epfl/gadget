@@ -7,14 +7,17 @@
   </ModulePrefs>
   <Content type="html"><![CDATA[
 
-<button id="button">Button</button>
+Enter a URL with an image: <br />
+for example: <a href="http://tinyurl.com/m9wbmf9" target="_blank">http://tinyurl.com/m9wbmf9</a>
+<br />
+<input id="image" type="text" value="http://tinyurl.com/m9wbmf9"></input>
+<br />
+<button id="button">Send out</button>
 
-<script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAArYowhPTyKQn7tayyo_1sixT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS_b5dYAqSj_axhktZy0hCXbg1lLA"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
 
 <script type="text/javascript">
-
-google.load("jquery", "1.4.2");
 
 var isOwner = false;
 var moduleId = 0;
@@ -24,18 +27,17 @@ var initialize = function() {
 };
 
 var onClick = function() {
-  
+  var url = $("#image").val()
   // send data
-  	gadgets.openapp.publish({
-			event: "select",
-			type: "json",
-			message: {
-				name: "Evgeny",
-				lastname: "Bogdanov"
-			}
-		});
-	
-  
+    gadgets.openapp.publish({
+      event: "select",
+      type: "json",
+      message: {
+        url: url
+      }
+    });
+
+
 };
 
 
