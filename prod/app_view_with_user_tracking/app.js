@@ -38,8 +38,7 @@ var initialize = function() {
     app.owner = data.owner
     var appdata = data.appdata // .settings
     var apps = data.apps // .list
-    var subspaces = data.spaces.list  //subspaces of the current space
-
+    var subspaces = remove_hidden_spaces(data.spaces.list)  //subspaces of the current space
 
     // add space title
     var currentSpace = data.currentSpace
@@ -160,6 +159,13 @@ var build_tabs = function(subspaces) {
   center.append(ils_phases);
 }
 
+// remove the hidden spaces from the subspaces array
+var remove_hidden_spaces = function(subspaces) {
+  var visible_spaces = _.filter(subspaces, function(item) {
+    return item.visibilityLevel != "Myself";
+  });
+  return visible_spaces;
+}
 
 // identify which user is using this url
 var identifyUser = function() {
