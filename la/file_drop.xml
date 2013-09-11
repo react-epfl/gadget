@@ -8,7 +8,8 @@
     <Require feature="dynamic-height" />
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
-<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
+<link rel="stylesheet" href="http://128.178.5.141/libs/dropzone/css/dropzone.css" type="text/css">
+<link rel="stylesheet" href="http://128.178.5.141/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 
 <style type="text/css">
   body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
@@ -38,13 +39,13 @@
   <form method="post" action="/" class="dropzone" id="file-dropzone" enctype = "multipart/form-data">
     <input id="request" type="hidden" name="request"></input>
   </form>
-  <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources existing in a space</div>
+  <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources in the space</div>
   <div id="list"></div>
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
+<script type="text/javascript" src="http://128.178.5.141/libs/dropzone/dropzone.min.js"></script>
 
 <script type="text/javascript">
 var app = {}
@@ -78,15 +79,17 @@ function dropListener(){
     init: function() {
       this.on("addedfile", function(file) { 
         var filename = file.name;
+        var file_type = file.type;
         var action = "/rpc?method=documents.create&id=documents.create"
         action = action + "&st=" + getQueryVariable("st")
         this.options.url = action;
+        
         var request={"method":"documents.create",
           "params": {
             "document": {
               "displayName": filename,
               "parentId": parentSpaceId,
-              "mimeType":"image/png",
+              "mimeType": file_type,
               "fileName": filename
             }
           },
@@ -94,6 +97,12 @@ function dropListener(){
         }
         // add request payload to the form
         $('#request').val(JSON.stringify(request));
+      });
+      this.on("success", function(file, response) {
+        if(response.result.entry != null) {
+          buildItem(response.result.entry);
+          adjustHeight();
+        }
       });
     }
   };
@@ -139,21 +148,20 @@ var build = function(documents){
 };
 
 buildItem = function (doc) {
-  var mimetype = "application/png";
 
   var doc_id = 'document_'+doc.id;
   var doc_el = $("<div id='"+doc_id+"'></div>");
   doc_el.attr('class','doc');
 
-  var doc_name = $('<div class="title"></div>');
-  doc_name.text(doc.displayName);
-  doc_name.append(" - " + doc.updated.replace("T"," ").replace(/.....$/,""))
-  doc_el.append(doc_name)
+  //var downloadUrl = doc.attachment.url;
+  //var download_link = $("<a href='"+downloadUrl+"' target='_blank' style='display:inline-block; vertical-align:middle'></a>");
 
-  // send button
-  var choose = $("<button type='button'>Select</button>");
-  choose.click(closure(doc.id,mimetype))
-  doc_el.append(choose)
+  var doc_name = $('<div class="title"></div>');
+  //download_link.text(doc.displayName);
+  //doc_name.append(download_link);
+  doc_name.text(doc.displayName);
+  doc_name.append(" - " + doc.updated.replace("T"," ").replace(/.....$/,""));
+  doc_el.append(doc_name);
 
   app.list.prepend(doc_el);
 }
