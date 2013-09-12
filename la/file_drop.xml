@@ -3,7 +3,7 @@
   <ModulePrefs title="File Drop"
                 author_email="na.li@epfl.ch"
                 author="Na Li"
-                description="This widget allows users to drag and drop files into a space. It currently only works in Graasp.">
+                description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
