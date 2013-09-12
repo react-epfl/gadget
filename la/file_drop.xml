@@ -3,22 +3,17 @@
   <ModulePrefs title="File Drop"
                 author_email="na.li@epfl.ch"
                 author="Na Li"
-                description="This widget allows users to drag and drop files into a space. It currently only works in Graasp.">
+                description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 <link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
+<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 
 <style type="text/css">
   body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
   .gadgets-gadget{width: 100%;}
-  .doc {margin: 5px 0px;position:relative;}
-  .title {margin: 5px 0px; color: #333; text-indent: 10px;
-    background-color: #EEE;
-    border-top: 1px solid #AAA;
-    padding: 1px 3px;
-  }
   .content {
     margin-top: 5px;
     font-size: 12px;
@@ -29,8 +24,27 @@
     border-radius:5px;
     padding:5px;
   }
-  .desc{
-    margin-left:10px;
+  .doc_list {
+    margin-left: 5px;
+  }
+  .list_title {
+    font-size: 16px;
+    text-indent: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    position: relative;
+    font-weight: bold;
+  }
+  .msg {
+    margin-left: 10px;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  a {
+    color: #000000;
+  }
+  a:visited {
+    color: #000000;
   }
 </style>
 
@@ -38,8 +52,9 @@
   <form method="post" action="/" class="dropzone" id="file-dropzone" enctype = "multipart/form-data">
     <input id="request" type="hidden" name="request"></input>
   </form>
-  <div style="font-size:16px;text-indent:10px;padding-top:5px;position:relative;">Resources existing in a space</div>
-  <div id="list"></div>
+  <div class="list_title">Resources in the space</div>
+  <table class="table table-hover doc_list"><tbody id="list"></tbody></table>
+  <div id = "msg" class="msg"><div>
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
@@ -47,7 +62,7 @@
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
 
 <script type="text/javascript">
-var app = {}
+var app = {};
 var isOwner = false;
 var parentSpaceId = null;
 
@@ -63,30 +78,23 @@ function getQueryVariable(variable) {
     console.log('Query variable %s not found', variable);
 }
 
-var completeUpload = function (res) {
-  $("#upload").val("Upload").attr("disabled",false)
-  res = res.replace(/<\/?[^>]+>/gi, '') // strip html tags
-  res = eval("(" + res + ")"); //turn text into json object
-
-  buildItem(res.result.entry)
-  adjustHeight()
-}
-
 // Bind listener to dropzone, and upload the dropped file
 function dropListener(){
   Dropzone.options.fileDropzone = {
     init: function() {
       this.on("addedfile", function(file) { 
         var filename = file.name;
+        var file_type = file.type;
         var action = "/rpc?method=documents.create&id=documents.create"
         action = action + "&st=" + getQueryVariable("st")
         this.options.url = action;
+        
         var request={"method":"documents.create",
           "params": {
             "document": {
               "displayName": filename,
               "parentId": parentSpaceId,
-              "mimeType":"image/png",
+              "mimeType": file_type,
               "fileName": filename
             }
           },
@@ -95,13 +103,20 @@ function dropListener(){
         // add request payload to the form
         $('#request').val(JSON.stringify(request));
       });
+      this.on("success", function(file, response) {
+        if (response.result.entry != null) {
+          buildItem(response.result.entry);
+          $('#msg').text("");
+          adjustHeight();
+        }
+      });
     }
   };
 }
 
 // gets the data and calls build for container
 var initialize = function() {
-  app.list = $("#list")
+  app.list = $("#list");
   osapi.context.get().execute(function(response){
     parentSpaceId = response.contextId
     osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
@@ -117,16 +132,14 @@ var adjustHeight = function() {
 }
 
 // build the container with gadgets
-var build = function(documents){
-  console.log(documents)
-
-  if(documents.length == 0){
-    app.list.text("No resources were found in this space!");
+var build = function(documents) {
+  if (documents.length == 0) {
+    $('#msg').text("No resources were found in this space!");
   }
 
   for (var i = 0; i < documents.length; i++) {
     var doc = documents[i];
-    buildItem(doc)
+    buildItem(doc);
   }
 
   // resize the gadget
@@ -139,45 +152,26 @@ var build = function(documents){
 };
 
 buildItem = function (doc) {
-  var mimetype = "application/png";
-
   var doc_id = 'document_'+doc.id;
-  var doc_el = $("<div id='"+doc_id+"'></div>");
-  doc_el.attr('class','doc');
+  var doc_el = $("<tr id='"+doc_id+"'></tr>");
 
-  var doc_name = $('<div class="title"></div>');
-  doc_name.text(doc.displayName);
-  doc_name.append(" - " + doc.updated.replace("T"," ").replace(/.....$/,""))
-  doc_el.append(doc_name)
+  var doc_name = $('<td id="doc_name"></td>');
+  var download_link = $("<a target='_blank'></a>");
+  if (doc.attachment != null) {
+    var downloadUrl = doc.attachment.url;
+    download_link.attr("href",downloadUrl);
+    
+  }
+  download_link.text(doc.displayName);
+  doc_name.append(download_link);
+  doc_el.append(doc_name);
 
-  // send button
-  var choose = $("<button type='button'>Select</button>");
-  choose.click(closure(doc.id,mimetype))
-  doc_el.append(choose)
+  var update_time = $('<td id = "update_time"></td>');
+  update_time.text(doc.updated.replace("T"," ").replace(/.....$/,""));
+  doc_el.append(update_time);
 
   app.list.prepend(doc_el);
 }
-
-var closure = function(par1,par2) {
-  var tmp1 = par1;
-  var tmp2 = par2;
-  return function(i){
-    sendId(tmp1,tmp2);
-  }
-}
-
-function sendId(id,mimetype) {
-  // send data to openapp
-  gadgets.openapp.publish({
-    event: "select",
-    type: "json",
-    message: {
-      id: id,
-      mimetype: mimetype
-    }
-  });
-}
-
 </script>
 
 <script type="text/javascript">
