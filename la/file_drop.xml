@@ -104,7 +104,7 @@ function dropListener(){
         $('#request').val(JSON.stringify(request));
       });
       this.on("success", function(file, response) {
-        if(response.result.entry != null) {
+        if (response.result.entry != null) {
           buildItem(response.result.entry);
           $('#msg').text("");
           adjustHeight();
@@ -133,7 +133,7 @@ var adjustHeight = function() {
 
 // build the container with gadgets
 var build = function(documents) {
-  if(documents.length == 0){
+  if (documents.length == 0) {
     $('#msg').text("No resources were found in this space!");
   }
 
@@ -157,7 +157,7 @@ buildItem = function (doc) {
 
   var doc_name = $('<td id="doc_name"></td>');
   var download_link = $("<a target='_blank'></a>");
-  if(doc.attachment != null) {
+  if (doc.attachment != null) {
     var downloadUrl = doc.attachment.url;
     download_link.attr("href",downloadUrl);
     
