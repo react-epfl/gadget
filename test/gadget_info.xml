@@ -72,6 +72,7 @@
         osapi.spaces.get({contextId: data.context.contextId}).execute(function(space){
           console.log(space)
           $('#osapi_spaces').append("<br />").append("Space Name: "+space.displayName);
+          $('#osapi_spaces').append("<br />").append("Space Description: "+space.description);
           $('#osapi_spaces').append("<br />").append("Space Parent Id (Course): "+space.parentId);
         });
       } else {
