@@ -80,6 +80,18 @@ function Graph(parentIdTime) {
         this.currentCounterTime[id][1] += 1;
       }
     }
+
+    // We fill the missing days with 0s
+    var minDate=new Date(Math.min.apply(null,this.dates));
+    var now = new Date(Date.now());
+	for (var d = minDate; d < now; d.setDate(d.getDate() + 1)) {
+		id = $.inArray(d.setHours(0,0,0,0), this.dates);
+		if (id == -1) {
+			var da = new Date(d);
+			this.currentCounterTime.push([da, 0]);
+    	}
+	}
+
     console.log(this.currentCounterTime);
     this.data.addRows(this.currentCounterTime);
   }
