@@ -64,6 +64,7 @@ function Graph(parentIdTime) {
 
   this.updateCounter = function() {
 
+  	this.init();
     this.currentCounterTime = [];
     this.dates = [];
     var activities = this.currentData.activities.entry;
@@ -163,7 +164,6 @@ function findContext() {
     console.log("CALLBACK TRIGGERED");
     context.id = response.context.contextId;
     context.type = response.context.contextType;
-    graph.init();
     //$(".dynamic").change(function() {onActivitiesLoaded(null);});
     $(".new_request").change(loadActivities);
     loadActivities();
