@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Dynamic activity timeline"
+                author_email="aubry.cholleton@epfl.ch"
+                author="Aubry Cholleton"
+                description="Displays activity statistics (activity versus day) in a dynamic graph.">
+    <Require feature="opensocial-0.9"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+<style> 
+body {
+  background-color: transparent;
+  color:#666;
+  font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+  margin-top:10px;
+}
+
+#graphTime {
+  height : 400px;
+}
+</style>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+<script src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+var context = {
+  id : 0,
+  type : ""
+}
+  
+var graph = new Graph("graphTime");
+
+
+function Graph(parentIdTime) {
+  this.data;
+
+  this.parentIdTime = parentIdTime;
+
+  this.currentData = null;
+  this.currentCounterTime = [];
+  this.people = [];
+
+  this.actionType = "access";
+
+  this.init = function() {
+    console.log("GRAPH INIT TRIGGERED");
+    this.data = new google.visualization.DataTable();
+    this.data.addColumn('date', 'Date');
+    this.data.addColumn('number', 'Activities');
+  }
+  this.update = function(action, response) {
+    this.actionType = action;
+    if(response)
+      this.currentData = response;
+    $("#"+parentIdTime).empty();
+    this.updateCounter();
+    this.render();
+  }
+
+  this.updateCounter = function() {
+
+    this.currentCounterTime = [];
+    this.dates = [];
+    var activities = this.currentData.activities.entry;
+
+
+    for(var i = 0; i < activities.length; i++) {
+      if (activities[i].verb == this.actionType) {
+        var date = moment(activities[i].published);
+        id = $.inArray(date.toDate().setHours(0,0,0,0), this.dates);
+        if (id == -1) {
+          this.dates.push(date.toDate().setHours(0,0,0,0));
+          id = this.currentCounterTime.push([date.toDate(), 0]) - 1;
+        }
+        this.currentCounterTime[id][1] += 1;
+      }
+    }
+    console.log(this.currentCounterTime);
+    this.data.addRows(this.currentCounterTime);
+  }
+
+  this.render = function() {
+    //alert(JSON.stringify(this.data, null, 2));
+    var annotatedtimeline = new google.visualization.AnnotatedTimeLine(document.getElementById('graphTime'));
+    annotatedtimeline.draw(this.data, {'displayAnnotations': false});
+  }
+
+  this.displayAction = function() {
+    if (!this.actionType) return "nothing";
+    var actionToDisplay = new Array(9);
+    actionToDisplay["access"] = "visits";
+    actionToDisplay["add"] = "additions";
+    actionToDisplay["update"] = "updates";
+    actionToDisplay["invite"] = "invitations";
+    actionToDisplay["invite-remind"] = "invitation reminders";
+    actionToDisplay["request-join"] = "join requests";
+    actionToDisplay["join"] = "joins";
+    actionToDisplay["remove"] = "removals";
+    actionToDisplay["delete"] = "deletions";
+
+    var displayName = actionToDisplay[this.actionType];
+    if (displayName)
+      return displayName;
+    else
+      return "unknown";
+  }
+}
+
+
+function init(){
+  gadgets.window.adjustHeight();
+  google.load('visualization', '1.0', {'packages':['corechart', 'AnnotatedTimeLine']});
+  google.setOnLoadCallback(findContext);
+}
+
+function onActivitiesLoaded(response) {
+
+  graph.update(
+    $("#action").val(),
+    response);
+
+  gadgets.window.adjustHeight();
+
+}
+
+function loadActivities() {
+  var batch = osapi.newBatch();
+  batch.add('activities', osapi.activitystreams.get({
+    contextId: context.id,
+    contextType: context.type,
+    count:500,
+    fields:"actor,verb,published",
+    sortOrder:"descending",
+    filterBy:"verb",
+    filterOp:"equals",
+    filterValue:$('#action').val(),
+    ext: true
+  }));
+  batch.execute(onActivitiesLoaded);
+}
+
+function findContext() {
+  var batch = osapi.newBatch();
+  batch.add('context', osapi.context.get());
+  batch.execute(function(response){
+    console.log("CALLBACK TRIGGERED");
+    context.id = response.context.contextId;
+    context.type = response.context.contextType;
+    graph.init();
+    //$(".dynamic").change(function() {onActivitiesLoaded(null);});
+    $(".new_request").change(loadActivities);
+    loadActivities();
+  });    
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+</script>
+<p> Temporal statistics about the space container, based on the last 500 activities retrieved. </p>
+<div id="form">
+  <form id="time" action="">
+    <fieldset id="parameters">
+      <legend>Parameters</legend>
+      <label for="actions">Actions :</label>
+      <select name="action" id="action" class="new_request">
+        <option value="access" selected="selected">Visit</option>
+        <option value="add">Add</option>
+        <option value="update">Update</option>
+        <option value="invite">Invite</option>
+        <option value="invite-remind">Send invitation reminder</option>
+        <option value="request-join">Join request</option>
+        <option value="join">Join</option>
+        <option value="remove">Remove</option>
+        <option value="delete">Delete</option>
+      </select>
+    </fieldset>
+  </form>
+</div>
+<div id="graphTime">Loading, this can take some time ...</div>
+]]></Content>
+</Module>
