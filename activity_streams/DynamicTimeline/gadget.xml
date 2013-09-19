@@ -100,6 +100,7 @@ function Graph(parentIdTime) {
   this.render = function() {
     //alert(JSON.stringify(this.data, null, 2));
     var annotatedtimeline = new google.visualization.AnnotatedTimeLine(document.getElementById('graphTime'));
+    google.visualization.events.addListener(annotatedtimeline, 'ready', gadgets.window.adjustHeight());
     annotatedtimeline.draw(this.data, {'displayAnnotations': false});
   }
 
@@ -137,7 +138,7 @@ function onActivitiesLoaded(response) {
     $("#action").val(),
     response);
 
-  gadgets.window.adjustHeight();
+  
 
 }
 
