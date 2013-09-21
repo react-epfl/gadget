@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Annotated visits timeline"
+                author_email="aubry.cholleton@epfl.ch"
+                author="Aubry Cholleton"
+                description="Displays the number of visits of the space annotated with events in this space.">
+    <Require feature="opensocial-0.9"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+<style> 
+body {
+  background-color: transparent;
+  color:#666;
+  font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+  margin-top:10px;
+}
+
+#graphTime {
+  height : 400px;
+}
+</style>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.1.0/moment.min.js"></script>
+<script src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+
+var context = {
+  id : 0,
+  type : "",
+  viewer : {
+     id : 0
+  }
+}
+  
+var graph = new Graph("graphTime");
+
+function Graph(parentIdTime) {
+  this.data;
+
+  this.parentIdTime = parentIdTime;
+
+  this.currentData = null;
+  this.currentCounterTime = [];
+  this.people = [];
+
+  this.actionType = "access";
+
+  this.init = function() {
+    this.data = new google.visualization.DataTable();
+    this.data.addColumn('date', 'Date');
+    this.data.addColumn('number', 'Number of visits');
+    this.data.addColumn('string', 'text1');
+  }
+  this.update = function(action, response) {
+    this.actionType = action;
+    if (response)
+      this.currentData = response;
+    $("#"+parentIdTime).empty();
+    this.updateCounter();
+    this.render();
+  }
+
+  this.updateCounter = function() {
+
+    this.init();
+    this.currentCounterTime = [];
+    this.dates = [];
+    var activities = this.currentData.activities.entry;
+
+
+    for(var i = 0; i < activities.length; i++) {
+      var date = moment(activities[i].published);
+      id = $.inArray(date.toDate().setHours(0,0,0,0), this.dates);
+      if (id == -1) {
+        this.dates.push(date.toDate().setHours(0,0,0,0));
+        id = this.currentCounterTime.push([date.toDate(), 0, null]) - 1;
+      }
+      if (activities[i].verb == "access") {
+        this.currentCounterTime[id][1] += 1;
+      } else {
+        var requested_events = $("#event_type input:checkbox:checked").map(function(){
+          return $(this).val();
+        }).get();
+        if ($.inArray(activities[i].verb, requested_events) != -1) {
+          var activity = new Activity(activities[i], context);
+          this.currentCounterTime[id][2] = activity.getDescriptiveSentence();
+        }
+      }
+    }
+
+    // The API only returns entries for the days which actually contain at least one activity
+    // We fill the missing days with 0s otherwise the value will appear as an interpolation
+    var minDate=new Date(Math.min.apply(null,this.dates));
+    var now = new Date(Date.now());
+    for (var d = minDate; d < now; d.setDate(d.getDate() + 1)) {
+      id = $.inArray(d.setHours(0,0,0,0), this.dates);
+      if (id == -1) {
+        var da = new Date(d);
+        this.currentCounterTime.push([da, 0, null]);
+      }
+    }
+
+    this.data.addRows(this.currentCounterTime);
+  }
+
+  this.render = function() {
+    var annotatedtimeline = new google.visualization.AnnotatedTimeLine(
+      document.getElementById('graphTime')
+    );
+
+    google.visualization.events.addListener(
+      annotatedtimeline,
+      'ready',
+      gadgets.window.adjustHeight()
+    );
+
+    annotatedtimeline.draw(this.data, {'displayAnnotations': true, 'allowHtml' : true});
+  }
+
+  this.displayAction = function() {
+    if (!this.actionType) return "nothing";
+    var actionToDisplay = new Array(9);
+    actionToDisplay["access"] = "visits";
+    actionToDisplay["add"] = "additions";
+    actionToDisplay["update"] = "updates";
+    actionToDisplay["invite"] = "invitations";
+    actionToDisplay["invite-remind"] = "invitation reminders";
+    actionToDisplay["request-join"] = "join requests";
+    actionToDisplay["join"] = "joins";
+    actionToDisplay["remove"] = "removals";
+    actionToDisplay["delete"] = "deletions";
+
+    var displayName = actionToDisplay[this.actionType];
+    if (displayName)
+      return displayName;
+    else
+      return "unknown";
+  }
+}
+
+function Activity(content, context) {
+
+    $.extend(this, content);
+
+    this.context = context;
+
+    this.actor = new ActivityObject(content.actor, context);
+    this.object = new ActivityObject(content.object, context);
+    if (content.target) {
+      this.target = new ActivityObject(content.target, context);
+    }
+
+    this.getDescriptiveSentence = function() {
+      var sentence = "";
+
+      var displayName = this.actor.getContextualDisplayName();
+      var capitalizedDisplayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+      sentence += this.actor.getLink(capitalizedDisplayName);
+
+      sentence += " "+this.getVerb();
+
+      if (!this.isComment()) {
+        var objectDisplayName = this.object.getContextualDisplayName();
+        sentence += " "+this.object.getLink(objectDisplayName);
+      } else {
+        // No need to display a link to the object when it is a Comment (comments have no url).
+      }
+
+      if (this.hasTarget()) {
+        if (this.verb == "delete") {
+          sentence += " from";
+        } else if (this.isComment()) {
+          sentence += " on";
+        } else {
+          sentence += " to";
+        }
+
+        var targetDisplayName = this.target.getContextualDisplayName();
+        sentence += " "+this.target.getLink(targetDisplayName)+".";
+      } else {
+        sentence += ".";
+      }
+      
+      return sentence;
+    }
+
+    this.getVerb = function() {
+      var actionVerbsPreteritForm = {
+        "add" : "added",
+        "update" : "updated",
+        "join" : "joined",
+        "delete" : "deleted"
+      };
+
+      if (this.isComment()) {
+        return "commented";
+      }
+
+      var verb = actionVerbsPreteritForm[this.verb];
+      if(verb) {
+        return verb;
+      } else {
+        return "did something with"
+      }
+    }
+
+    this.getImage = function() {
+      if (this.icon && this.icon.url) {
+        return this.icon.url;
+      } else if (this.object.hasImage()) {
+        return this.object.getImage();
+      } else if (this.actor.hasImage()) {
+        return this.actor.getImage();
+      } else if (this.hasTarget() && this.target.hasImage()) {
+        return this.target.getImage();
+      } else if (this.generator && this.generator.hasImage()) {
+        return this.generator.getImage();
+      } else {
+        return null;
+      }
+    }
+
+    this.isComment = function() {
+      return (this.verb == "add" && this.object.isComment());
+    }
+
+    this.hasTarget = function() {
+      return (this.target);
+    }
+
+  }
+
+  function ActivityObject(content, context) {
+
+    $.extend(this, content);
+
+    this.context = context;
+
+    this.getContextualDisplayName = function() {
+      if (this.id == undefined) {
+        return "a deleted object";
+      } else if (this.isContext()) {
+        return "this "+this.objectType.toLowerCase();
+      } else if (this.isViewer()) { // If the objects points to the viewer
+        return "you";
+      } else if (this.displayName) {
+        return this.displayName;
+      } else if (this.objectType) {
+        return "a "+this.objectType.toLowerCase();
+      } else {
+        return "something";
+      }
+    }
+
+    this.getLink = function(name) {
+      if (this.url) {
+        return "<a href='"+this.url+"' target='_top'>"+name+"</a>";
+      } else {
+        return name;
+      }
+    }
+
+    this.getImage = function() {
+      return (this.hasImage()) ? this.image.url : null;
+    }
+
+    this.getGraaspId = function() {
+      // TODO : Also check that the object actually is a graasp object
+      return (this.id) ? this.id.split('/').pop() : 0;
+    }
+
+    this.isViewer = function() {
+      var graaspId = this.getGraaspId();
+      return (graaspId && graaspId == this.context.viewer.id && this.objectType == "User");
+    }
+
+    this.isContext = function() {
+      var graaspId = this.getGraaspId();
+      
+      // In graasp context type is @user or @space
+      // it has to be transformed to User or Space
+      var uncapitalizedContextType = context.type.slice(1);
+      var contextType = uncapitalizedContextType.charAt(0).toUpperCase() +
+        uncapitalizedContextType.slice(1);
+      return (graaspId && graaspId == this.context.id && this.objectType == contextType);
+    }
+
+    this.isComment = function() {
+      return (this.objectType == "Comment");
+    }
+
+    this.hasImage = function() {
+      return (this.image && this.image.url);
+    }
+}
+
+function init(){
+  gadgets.window.adjustHeight();
+  google.load('visualization', '1.0', {'packages':['corechart', 'AnnotatedTimeLine']});
+  google.setOnLoadCallback(findContext);
+}
+
+function onActivitiesLoaded(response) {
+
+  graph.update(
+    $("#action").val(),
+    response);
+
+}
+
+function loadActivities() {
+  var batch = osapi.newBatch();
+  batch.add('activities', osapi.activitystreams.get({
+    contextId: context.id,
+    contextType: context.type,
+    count:500,
+    sortOrder:"descending",
+    ext: true
+  }));
+  batch.execute(onActivitiesLoaded);
+}
+
+function findContext() {
+  var batch = osapi.newBatch();
+  batch.add('context', osapi.context.get());
+  batch.add('viewer', osapi.people.getViewer());
+  batch.execute(function(response){
+    context.id = response.context.contextId;
+    context.type = response.context.contextType;
+    context.viewer.id = response.viewer.id;
+    $(".dynamic").change(function() {onActivitiesLoaded(null);});
+    loadActivities();
+  });    
+}
+
+gadgets.util.registerOnLoadHandler(init);
+
+</script>
+<p>Number of visits in the current space, annotated with the events that occurred in this space.</p>
+<form>
+<form id="add" action="">
+  <fieldset id="event_type">
+    <label for="event_type">Display the following events : </label><br />
+    <input type="checkbox" name="event_type" class="dynamic" value="add" checked> Additions &nbsp;
+    <input type="checkbox" name="event_type" class="dynamic" value="update" checked> Updates &nbsp;
+    <input type="checkbox" name="event_type" class="dynamic" value="join" checked> New users &nbsp;
+    <input type="checkbox" name="event_type" class="dynamic" value="delete" checked> Deletions &nbsp;
+  </fieldset>
+</form>
+<div id="graphTime">Loading, this can take some time ...</div>
+]]></Content>
+</Module>
