@@ -81,13 +81,19 @@ function Graph(parentIdTime) {
       }
       if (activities[i].verb == "access") {
         this.currentCounterTime[id][1] += 1;
-      } else {
+      } 
+    }
+
+    for(var i = 0; i < activities.length; i++) {
+      var date = moment(activities[i].published);
+      id = $.inArray(date.toDate().setHours(0,0,0,0), this.dates);
+      if(activities[i].verb != "access") {
         var requested_events = $("#event_type input:checkbox:checked").map(function(){
           return $(this).val();
         }).get();
         if ($.inArray(activities[i].verb, requested_events) != -1) {
           var activity = new Activity(activities[i], context);
-          this.currentCounterTime[id][2] = activity.getDescriptiveSentence();
+          this.currentCounterTime.push([date.toDate(), this.currentCounterTime[id][1], activity.getDescriptiveSentence()]);
         }
       }
     }
@@ -118,7 +124,11 @@ function Graph(parentIdTime) {
       gadgets.window.adjustHeight()
     );
 
-    annotatedtimeline.draw(this.data, {'displayAnnotations': true, 'allowHtml' : true});
+    annotatedtimeline.draw(this.data, {
+      'displayAnnotations': true, 
+      'allowHtml' : true, 
+      'displayAnnotationsFilter' : true
+    });
   }
 
   this.displayAction = function() {
