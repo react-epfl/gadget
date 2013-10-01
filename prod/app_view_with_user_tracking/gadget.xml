@@ -9,8 +9,9 @@
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
-<link href="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/app.css" rel="stylesheet" type="text/css">
+
 <link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
+<link href="http://localhost/prod/app_view_with_user_tracking/app.css" rel="stylesheet" type="text/css">
 
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
@@ -47,11 +48,16 @@
       <div class="tab-content" id="ils_phases"></div>
     </div>
     <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" href="#toolbox">Toolbox</a>
+      <a class="accordion-toggle" data-toggle="collapse" href="#toolbox">Tools</a>
     </div>
     <div id="toolbox" class="accordion-body collapse">
       <div id="tools" class="accordion-inner"></div>
     </div>
+    <div id="toolbar" class="navbar-fixed-bottom">
+      <div id="tools_test">Tools</div>
+      <div id="panel_test">panel</div>
+    </div>
+
   </div>
 
   <div class="modal hide fade" id="login_popup" data-keyboard="false" data-backdrop="static">
@@ -76,7 +82,9 @@
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery.cookie.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/underscore-min.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/app.js"></script>
+<!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/app.js"></script> -->
+<script type="text/javascript" src="http://localhost/prod/app_view_with_user_tracking/app.js"></script>
+
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/data.js"></script>
 
 

@@ -230,3 +230,17 @@ body{
 .modal-backdrop{
   background-color: rgba(0, 0, 0, 0.5);
 }
+#tools_test{
+  background-color: #000000;
+  height: 30px;
+  color: #ffffff;
+  text-align: center;
+  padding-top: 10px;
+}
+#panel_test{
+  display: none;
+}
+#toolbar{
+  z-index: 1030;
+  bottom: 0;
+}

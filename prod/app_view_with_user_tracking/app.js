@@ -26,7 +26,14 @@ var initialize = function() {
   shindig.Gadget.prototype.getContent=function(A){
     shindig.callAsyncAndJoin(["getMainContent"],function(B){A(B.join(""))},this)
   }
-  
+
+    $("#tools_test").click(function() {
+      if ($("#panel_test").style.display == 'none') {
+        $("#panel_test").show();
+      } else {
+        $("#panel_test").hide();
+      }
+    })
   //getting the user's settings
   getData(function (data) {
     app.viewer = data.viewer // .displayName
