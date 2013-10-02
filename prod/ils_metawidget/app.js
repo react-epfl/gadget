@@ -27,13 +27,19 @@ var initialize = function() {
     shindig.callAsyncAndJoin(["getMainContent"],function(B){A(B.join(""))},this)
   }
 
-    $("#tools_test").click(function() {
-      if ($("#panel_test").style.display == 'none') {
-        $("#panel_test").show();
-      } else {
-        $("#panel_test").hide();
-      }
-    })
+  $("#tools_title").click(function() {
+    var tools_panel = document.getElementById("tools_content");
+    if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
+      $("#tools_content").show();
+      $("#arrow_down").show();
+      $("#arrow_up").hide();
+    } else {
+      $("#tools_content").hide();
+      $("#arrow_down").hide();
+      $("#arrow_up").show();
+    }
+  });
+
   //getting the user's settings
   getData(function (data) {
     app.viewer = data.viewer // .displayName
@@ -85,7 +91,7 @@ var initialize = function() {
     // refresh order of apps based on current spaces from the app
     refreshAppsList(app)
 
-    buildSkeleton($("#tools"),app);
+    buildSkeleton($("#tools_content"),app);
 
     $("#help_button").click(function(){
       $('#popup').show()
@@ -306,16 +312,6 @@ var adjustHeight = function () {
 }
 
 var buildSkeleton = function (container,app_json) {
-  // var tools = $("#tools")
-    // , context = app.context
-    // , viewer = app.viewer
-
-  // // warning message when no apps exist
-  // if (app.list.length == 0) {
-  //   $("#tools").append($('<span style="margin-left:20px">No apps exist in this space</span>'))
-  //   return
-  // }
-
   // build first drop_here block
   var fakeGadget = $('<div id="fake_gadget" appId="0"></div>')
     .append($('<div class="drop_here"></div>'))

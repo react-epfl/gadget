@@ -47,15 +47,9 @@
       <ul class="nav nav-tabs" id="ils_cycle"></ul>
       <div class="tab-content" id="ils_phases"></div>
     </div>
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse" href="#toolbox">Tools</a>
-    </div>
-    <div id="toolbox" class="accordion-body collapse">
-      <div id="tools" class="accordion-inner"></div>
-    </div>
     <div id="toolbar" class="navbar-fixed-bottom">
-      <div id="tools_test">Tools</div>
-      <div id="panel_test">panel</div>
+      <div id="tools_title"><img id="arrow_down" src="arrow_down.png"><img id="arrow_up" src="arrow_up.png"> Tools</div>
+      <div id="tools_content"></div>
     </div>
 
   </div>
