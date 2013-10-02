@@ -11,7 +11,7 @@
 
 
 <link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
-<link href="http://localhost/prod/app_view_with_user_tracking/app.css" rel="stylesheet" type="text/css">
+<link href="http://localhost/prod/ils_metawidget/app.css" rel="stylesheet" type="text/css">
 
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
@@ -51,7 +51,6 @@
       <div id="tools_title"><img id="arrow_down" src="arrow_down.png"><img id="arrow_up" src="arrow_up.png"> Tools</div>
       <div id="tools_content"></div>
     </div>
-
   </div>
 
   <div class="modal hide fade" id="login_popup" data-keyboard="false" data-backdrop="static">
@@ -77,7 +76,7 @@
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/underscore-min.js"></script>
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
 <!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/app.js"></script> -->
-<script type="text/javascript" src="http://localhost/prod/app_view_with_user_tracking/app.js"></script>
+<script type="text/javascript" src="http://localhost/prod/ils_metawidget/app.js"></script>
 
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/app_view_with_user_tracking/data.js"></script>
 

@@ -27,6 +27,7 @@ var initialize = function() {
     shindig.callAsyncAndJoin(["getMainContent"],function(B){A(B.join(""))},this)
   }
 
+  // make toolbar togglable
   $("#tools_title").click(function() {
     var tools_panel = document.getElementById("tools_content");
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
