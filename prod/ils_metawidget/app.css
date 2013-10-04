@@ -3,6 +3,9 @@ body{
   font-family: "Helvetica Neue", arial, sans-serif;
   font-size: 13px;
 }
+html{
+  overflow: hidden;
+}
 .sprite{
   background: url("http://graasp.epfl.ch/gadget/test/grid_view/sprite.png") no-repeat top left;
   display: inline-block;
@@ -141,6 +144,8 @@ body{
   height:100%;
   background-color:white;
   border-radius:5px;
+  padding-top: 10px;
+  padding-bottom: 60px;
 }
 
 .button{
@@ -211,7 +216,6 @@ body{
 }
 #banner{
   height: 60px;
-  padding-top: 60px;
 }
 #hello_msg{
   float:right;
@@ -242,11 +246,21 @@ body{
 #tools_content{
   display: none;
   padding-top: 10px;
+  overflow: scroll;
+  max-height: 455px;
 }
 #toolbar{
-  z-index: 1030;
   bottom: 0;
+  background-color: #ffffff;
 }
 #arrow_down{
   display: none;
+}
+#main_block{
+  position: absolute;
+  bottom: 80px;
+  top: 40px;
+  left: 50%;
+  margin-left: -470px;
+  overflow-y: scroll;
 }
