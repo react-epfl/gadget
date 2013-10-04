@@ -27,7 +27,7 @@
   </div>
 </div>
 
-<div class="container">
+<div id="main_block" class="container">
   <div id="container" onmouseover="adjustHeight();">
     <div id="not_owner" style="display:none">You are not a space owner. Your changes to apps arrangement will not be saved.</div>
     <div id="popup" style="display:none">
@@ -47,27 +47,28 @@
       <ul class="nav nav-tabs" id="ils_cycle"></ul>
       <div class="tab-content" id="ils_phases"></div>
     </div>
-    <div id="toolbar" class="navbar-fixed-bottom">
-      <div id="tools_title"><img id="arrow_down" src="arrow_down.png"><img id="arrow_up" src="arrow_up.png"> Tools</div>
-      <div id="tools_content"></div>
-    </div>
-  </div>
+  </div> <!-- /container -->
+</div>
 
-  <div class="modal hide fade" id="login_popup" data-keyboard="false" data-backdrop="static">
-    <div class="modal-header">
-      <h3>Please enter your name</h3>
-    </div>
-    <div class="modal-body" id="popup_body">
-      <div id="error_msg" class="alert fade in hide alert-error">  
-        Please enter a valid name! 
-      </div> 
-      <input type="text" id="user_name">
-    </div>
-    <div class="modal-footer" id="popup_footer">
-      <button type="button" class="btn btn-primary" id="ok_btn">Ok</button>
-    </div>
+<div id="toolbar" class="navbar-fixed-bottom">
+  <div id="tools_title"><img id="arrow_down" src="arrow_down.png"><img id="arrow_up" src="arrow_up.png"> Tools</div>
+  <div id="tools_content"></div>
+</div>
+
+<div class="modal hide fade" id="login_popup" data-keyboard="false" data-backdrop="static">
+  <div class="modal-header">
+    <h3>Please enter your name</h3>
   </div>
-</div> <!-- /container -->
+  <div class="modal-body" id="popup_body">
+    <div id="error_msg" class="alert fade in hide alert-error">  
+      Please enter a valid name! 
+    </div> 
+    <input type="text" id="user_name">
+  </div>
+  <div class="modal-footer" id="popup_footer">
+    <button type="button" class="btn btn-primary" id="ok_btn">Ok</button>
+  </div>
+</div>
 
 
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
