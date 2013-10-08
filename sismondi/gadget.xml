@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Sismondi App" 
+                author_email="wissam.halimi@epfl.ch" 
+                author="Wissam Halimi" 
+                description="Gadget that sketches satellites' trajectories using positions' coordinates. Data is retrieved from the NASA website."
+                width="500"
+                height="500"
+                thumbnail="http://iamac115.epfl.ch/sismondi_webserver/satellite.png"
+                screenshot="http://iamac115.epfl.ch/sismondi_webserver/satellite.png">
+    <Require feature="osapi" />
+    <Require feature="dynamic-height" />
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<style type="text/css">
+</style>
+  
+<div id="graphs">
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+
+<script type="text/javascript" src="http://iamac115.epfl.ch/sismondi_webserver/dygraph-combined.js"></script>
+
+<script type="text/javascript">
+
+  function buildGraph(data){
+	alert(data[1]);
+   var x = data.x;
+   var y = data.y;
+	var name = data.name;
+   var graph = $("<div id='hi'></div>")
+   graph.appendTo(('#graphs'));
+   var me = "YOUHOU";
+   var title = $("<div id='wissam'></div>").text(me);
+		title.appendTo(graph);
+
+	
+  }
+  var data = 
+    [
+      {
+        x: [-2,0,0,1,1,2],
+        y: [0,-4,4,-3.46,3.46,0],
+        name:"Ellipse"
+      }
+    ]
+    
+</script>
+
+<script type="text/javascript">
+var isOwner = false;
+
+// gets the data and calls build for container
+var initialize = function() {
+  
+  buildGraph(data); 
+  gadgets.window.adjustHeight();
+};
+
+</script>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+
+  ]]></Content>
+</Module>
