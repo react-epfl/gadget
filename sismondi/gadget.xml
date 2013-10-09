@@ -16,8 +16,8 @@
 <style type="text/css">
 </style>
   
-<div id="graphs">
-</div>
+<div id="graphs"></div>
+<div id="graphdiv"></div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
@@ -27,26 +27,51 @@
 <script type="text/javascript">
 
   function buildGraph(data){
-	alert(data[1]);
-   var x = data.x;
-   var y = data.y;
-	var name = data.name;
+
+g = new Dygraph(
+
+    // containing div
+    document.getElementById("graphdiv"),
+
+    // CSV or path to a CSV file.
+    				 "X,Z\n" +
+					"0,5\n" +
+					"0.5,4.9\n" +
+					"1,4.8\n" +
+					"1.5,4.4\n" +
+					"2,3.5\n" +
+					"2.5,2.5\n" +
+					"3,0\n"+
+					"2.5,-2.5\n" +
+					"2,-3.5\n" +
+					"1.5,-4.4\n" +
+					"1, -4.8\n" +
+					"0,-5\n"
+  );
+
+
+	//alert(data);
+   var x = data1.x;
+   var y = data1.y;
+	//alert(data1.x[0]);
+   var name = data1.name;
    var graph = $("<div id='hi'></div>")
    graph.appendTo(('#graphs'));
    var me = "YOUHOU";
-   var title = $("<div id='wissam'></div>").text(me);
+   var title = $("<div id='wissam'></div>").text(data);
 		title.appendTo(graph);
 
 	
   }
-  var data = 
-    [
+
+var data1 = 
       {
         x: [-2,0,0,1,1,2],
         y: [0,-4,4,-3.46,3.46,0],
         name:"Ellipse"
       }
-    ]
+
+var data = "HELLO";
     
 </script>
 
