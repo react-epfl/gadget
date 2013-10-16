@@ -35,14 +35,14 @@ var initialize = function() {
       $("#tools_content").show();
       $("#arrow_down").show();
       $("#arrow_up").hide();
-      if(app.list != []) {
+      if(app.list.length > 0) {
         main_block.style.bottom = "500px";
       }
     } else {
       $("#tools_content").hide();
       $("#arrow_down").hide();
       $("#arrow_up").show();
-      if(app.list != []) {
+      if(app.list.length > 0) {
         main_block.style.bottom = "40px";
       }
     }
