@@ -144,8 +144,6 @@ html{
   height:100%;
   background-color:white;
   border-radius:5px;
-  padding-top: 10px;
-  padding-bottom: 60px;
 }
 
 .button{
@@ -258,9 +256,9 @@ html{
 }
 #main_block{
   position: absolute;
-  bottom: 80px;
+  bottom: 40px;
   top: 40px;
   left: 50%;
   margin-left: -470px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
