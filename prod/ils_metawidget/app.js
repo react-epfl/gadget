@@ -30,14 +30,21 @@ var initialize = function() {
   // make toolbar togglable
   $("#tools_title").click(function() {
     var tools_panel = document.getElementById("tools_content");
+    var main_block = document.getElementById("main_block");
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
       $("#tools_content").show();
       $("#arrow_down").show();
       $("#arrow_up").hide();
+      if(apps.list != []) {
+        main_block.style.bottom = "500px";
+      }
     } else {
       $("#tools_content").hide();
       $("#arrow_down").hide();
       $("#arrow_up").show();
+      if(apps.list != []) {
+        main_block.style.bottom = "40px";
+      }
     }
   });
 
