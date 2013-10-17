@@ -170,7 +170,7 @@ var data1 =
         name:"Ellipse"
       }
 
-var data = "HELLO";
+var data = "";
     
 </script>
 
