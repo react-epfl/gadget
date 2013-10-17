@@ -42,7 +42,7 @@
 
 	//GET
 	//var request = "http://iamac115.epfl.ch/abc.txt";
-	alert("here");
+	//alert("here");
 	osapi.http.get({
 		url: "http://iamac115.epfl.ch/abc.txt",
 		'format': "text"
