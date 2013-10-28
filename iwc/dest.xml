@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Destination widget" author="Evgeny Bogdanov" author_email="evgeny.bogdanov@epfl.ch" description="Test of iwc with drag and drop" height="500">
+    <Require feature="opensocial-0.9" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<style>
+.container {
+  padding: 0 20px;
+}
+.block {
+  height: 80px;
+  border: 1px solid #f00;
+  padding: 10px;
+}
+.dragme {
+  cursor: move;
+}
+</style>
+
+<div class="container">
+<h1>Destination widget</h1>
+<h2>IWC as event</h2>
+<div id="data" class="block"></div>
+<h2>IWC as drag and drop</h2>
+<div id="droparea" class="block"></div>
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/iwc.min.js"></script>
+
+<script type="text/javascript">
+
+var initialize = function() {
+
+  // ------------
+  // IWC code
+  // ------------
+
+  // start listenning on events
+  iwc.connect(function (envelope, message) {
+    var url = message.url
+
+    var item = $("<img src='" + url + "'/>");
+    item.appendTo($("#data"));
+
+    return true;
+  })
+
+  // ------------
+  // Drag and drop code
+  // ------------
+
+  iwc.droppable('droparea', {
+    drop: function (data) {
+      $("#droparea").append($("<img src='" + data + "'/>"))
+      console.log("drop")
+    },
+    dragover: function () {
+      console.log("dragover")
+    }
+  })
+};
+
+var onEvent = function (envelope, message) {
+    var url = message.url
+
+    var item = $("<img src='" + url + "'/>");
+    item.appendTo($("#data"));
+
+    return true;
+
+};
+
+
+</script>
+
+<style>
+</style>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+  ]]></Content>
+</Module>

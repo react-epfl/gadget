@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Source widget" author="Evgeny Bogdanov" author_email="evgeny.bogdanov@epfl.ch" description="Test of iwc with drag and drop" height="500">
+    <Require feature="opensocial-0.9" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+
+<style>
+.container {
+  padding: 0 20px;
+}
+.block {
+  height: 80px;
+  border: 1px solid #f00;
+  padding: 10px;
+}
+.dragme {
+  cursor: move;
+}
+</style>
+
+<div class="container">
+<h1>Source widget</h1>
+<h2>IWC as event</h2>
+<div class="block">
+Enter a URL with an image: <br />
+for example: <a href="http://tinyurl.com/m9wbmf9" target="_blank">http://tinyurl.com/m9wbmf9</a>
+<br />
+<input id="image" type="text" value="http://tinyurl.com/m9wbmf9"></input>
+<br />
+<button id="button">Send out</button>
+</div>
+<h2>IWC as drag and drop</h2>
+<div class="block"><img id="dragme" src="http://iamac71.epfl.ch/gadget/iwc/dragme.png" draggable="true" class="dragme"></div>
+</div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/iwc.min.js"></script>
+
+<script type="text/javascript">
+
+var initialize = function() {
+  // ------------
+  // IWC code
+  // ------------
+
+  // process events received
+  var onEvent = function (envelope, message) {
+    var text = message.text
+
+    $("<span>" + text + "</span>")
+      .appendTo($("#data"));
+  };
+
+  // start listenning on events
+  iwc.connect(onEvent);
+
+  // ------------
+  // Drag and drop code
+  // ------------
+
+  iwc.droppable('droparea', {
+    drop: function (data) {
+      $("#droparea").append($("<img src='" + data + "'/>"))
+      console.log("drop")
+    },
+    dragover: function () {
+      console.log("dragover")
+    }
+  })
+
+};
+
+var onClick = function() {
+  var url = $("#image").val()
+  // send data
+    gadgets.openapp.publish({
+      event: "select",
+      type: "json",
+      message: {
+        url: url
+      }
+    });
+
+
+};
+
+
+
+</script>
+
+<style>
+</style>
+
+<script type="text/javascript">
+gadgets.util.registerOnLoadHandler(initialize);
+</script>
+
+  ]]></Content>
+</Module>
