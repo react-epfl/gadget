@@ -35,7 +35,7 @@
 
   <h2>IWC as drag and drop</h2>
   <div class="block">
-    <img id="dragme" src="http://iamac71.epfl.ch/gadget/iwc/dragme.png" draggable="true" class="dragme">
+    <img id="dragme" src="http://graasp.epfl.ch/gadget/iwc/dragme.png" draggable="true" class="dragme">
   </div>
 </div>
 
