@@ -14,9 +14,6 @@
   border: 1px solid #f00;
   padding: 10px;
 }
-.dragme {
-  cursor: move;
-}
 img {
   height: 60px;
   margin: 0 5px;
@@ -24,11 +21,13 @@ img {
 </style>
 
 <div class="container">
-<h1>Destination widget</h1>
-<h2>IWC as event</h2>
-<div id="data" class="block"></div>
-<h2>IWC as drag and drop</h2>
-<div id="droparea" class="block"></div>
+  <h1>Destination widget</h1>
+
+  <h2>IWC as event</h2>
+  <div id="data" class="block"></div>
+
+  <h2>IWC as drag and drop</h2>
+  <div id="droparea" class="block"></div>
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>

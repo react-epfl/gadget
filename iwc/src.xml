@@ -20,18 +20,23 @@
 </style>
 
 <div class="container">
-<h1>Source widget</h1>
-<h2>IWC as event</h2>
-<div class="block">
-Enter a URL with an image: <br />
-(i.e., <a href="http://tinyurl.com/m9wbmf9" target="_blank">http://tinyurl.com/m9wbmf9</a>)
-<br />
-<input id="image" type="text" value="http://tinyurl.com/m9wbmf9"></input>
-<br />
-<button id="button">Send out</button>
-</div>
-<h2>IWC as drag and drop</h2>
-<div class="block"><img id="dragme" src="http://iamac71.epfl.ch/gadget/iwc/dragme.png" draggable="true" class="dragme"></div>
+  <h1>Source widget</h1>
+
+  <h2>IWC as event</h2>
+  <div class="block">
+    Enter a URL with an image:
+    <br />
+    (i.e., <a href="http://tinyurl.com/m9wbmf9" target="_blank">http://tinyurl.com/m9wbmf9</a>)
+    <br />
+    <input id="image" type="text" value="http://tinyurl.com/m9wbmf9"></input>
+    <br />
+    <button id="button">Send out</button>
+  </div>
+
+  <h2>IWC as drag and drop</h2>
+  <div class="block">
+    <img id="dragme" src="http://iamac71.epfl.ch/gadget/iwc/dragme.png" draggable="true" class="dragme">
+  </div>
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
