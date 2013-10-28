@@ -10,7 +10,7 @@
   padding: 0 20px;
 }
 .block {
-  height: 80px;
+  min-height: 80px;
   border: 1px solid #f00;
   padding: 10px;
 }
@@ -24,7 +24,7 @@
 <h2>IWC as event</h2>
 <div class="block">
 Enter a URL with an image: <br />
-for example: <a href="http://tinyurl.com/m9wbmf9" target="_blank">http://tinyurl.com/m9wbmf9</a>
+(i.e., <a href="http://tinyurl.com/m9wbmf9" target="_blank">http://tinyurl.com/m9wbmf9</a>)
 <br />
 <input id="image" type="text" value="http://tinyurl.com/m9wbmf9"></input>
 <br />
@@ -40,57 +40,39 @@ for example: <a href="http://tinyurl.com/m9wbmf9" target="_blank">http://tinyurl
 <script type="text/javascript">
 
 var initialize = function() {
+
   // ------------
   // IWC code
   // ------------
 
-  // process events received
-  var onEvent = function (envelope, message) {
-    var text = message.text
-
-    $("<span>" + text + "</span>")
-      .appendTo($("#data"));
-  };
-
-  // start listenning on events
-  iwc.connect(onEvent);
-
-  // ------------
-  // Drag and drop code
-  // ------------
-
-  iwc.droppable('droparea', {
-    drop: function (data) {
-      $("#droparea").append($("<img src='" + data + "'/>"))
-      console.log("drop")
-    },
-    dragover: function () {
-      console.log("dragover")
-    }
-  })
-
-};
-
-var onClick = function() {
-  var url = $("#image").val()
-  // send data
-    gadgets.openapp.publish({
+  $("#button").click(function () {
+    var url = $("#image").val()
+    // send data
+    iwc.publish({
       event: "select",
       type: "json",
       message: {
         url: url
       }
     });
+  })
 
+  // ------------
+  // Drag and drop code
+  // ------------
+
+  iwc.draggable('dragme', {
+    // dragstart should return the data that you want to transfer
+    dragstart: function (drag) {
+      console.log("dragstart")
+      var data = drag.getAttribute('src')
+      return data
+    }
+  })
 
 };
 
-
-
 </script>
-
-<style>
-</style>
 
 <script type="text/javascript">
 gadgets.util.registerOnLoadHandler(initialize);

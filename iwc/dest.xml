@@ -10,12 +10,16 @@
   padding: 0 20px;
 }
 .block {
-  height: 80px;
+  min-height: 80px;
   border: 1px solid #f00;
   padding: 10px;
 }
 .dragme {
   cursor: move;
+}
+img {
+  height: 60px;
+  margin: 0 5px;
 }
 </style>
 
@@ -63,21 +67,7 @@ var initialize = function() {
   })
 };
 
-var onEvent = function (envelope, message) {
-    var url = message.url
-
-    var item = $("<img src='" + url + "'/>");
-    item.appendTo($("#data"));
-
-    return true;
-
-};
-
-
 </script>
-
-<style>
-</style>
 
 <script type="text/javascript">
 gadgets.util.registerOnLoadHandler(initialize);
