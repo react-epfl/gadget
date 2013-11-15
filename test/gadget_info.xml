@@ -19,8 +19,8 @@
 -->
 <Module>
   <ModulePrefs title="Gadgets statistics"
-              author_email="evgeny.bogdanov@epfl.ch" 
-              author="Evgeny Bogdanov" 
+              author_email="evgeny.bogdanov@epfl.ch"
+              author="Evgeny Bogdanov"
               description="Shows viewer, owner and context where gadget lives"
               width="500"
               height="500">
@@ -36,15 +36,17 @@
  /**
   * Request for friend information.
   */
-  function getData() {  
+  function getData() {
     // 3 requests in one
     var batch = osapi.newBatch();
     batch.add('viewer', osapi.people.getViewer());
     batch.add('owner', osapi.people.getOwner());
     if (osapi.context) { // only for spaces extended container
       batch.add('context', osapi.context.get());
+      console.log("Context API is defined")
     } else {
-      batch.add('context', osapi.people.getOwner());    
+      batch.add('context', osapi.people.getOwner());
+      console.log("No Context API is defined")
     }
     batch.execute(function(data){
       // Widget viewer
@@ -56,13 +58,12 @@
       contextType = "@user"
       if (osapi.context) { // only for spaces extended container
         contextId = data.context.contextId
-        contextType = data.context.contextType      
+        contextType = data.context.contextType
       }
-   
+
       // Widget context (id and type)
       $('#id').append(contextId);
       $('#type').append(contextType);
-      
       // check osapi.people.get
       osapi.people.get({userId: data.viewer.id}).execute(function(user){
         $('#osapi_people').append("<br />").append(user.displayName);
@@ -77,7 +78,7 @@
         });
       } else {
         $('#osapi_spaces').append("No spaces supported in this container");
-        }
+      }
 
       if (osapi.apps) {
         // check osapi.apps.get
@@ -90,19 +91,23 @@
         $('#osapi_apps').append("No apps API is supported in this containers");
       }
     })
-    
+
   };
 
   // console.log(gadgets);
   gadgets.util.registerOnLoadHandler(getData);
   </script>
-  <div id="viewer"><b>Viewer:</b> </div>
-  <div id="owner"><b>Owner:</b> </div>
+  <div id="viewer"><b>osapi.people.getViewer():</b> </div>
+  <div id="owner"><b>osapi.people.getOwner():</b> </div>
+  <br />
+  <span><b> osapi.context.get()</b></span>
   <div id="id"><b>Context Id:</b> </div>
   <div id="type"><b>Context Type:</b> </div>
   <br />
   <div id="osapi_people"><b>osapi.people.get({userId: viewerId}):</b> </div><br />
+  <span><b>Get info about one space with id = contextId</b></span>
   <div id="osapi_spaces"><b>osapi.spaces.get({contextId: contextId}):</b> </div><br />
+  <span><b> Get info about the current app</b> </span>
   <div id="osapi_apps"><b>osapi.apps.get({contextId: "@self"}):</b> </div>
   ]]>
   </Content>
