@@ -86,17 +86,6 @@ var initialize = function() {
     })
     // -----------------------
 
-    appdata = appdata[app.contextId]
-    if (appdata) {
-      app.data = JSON.parse(appdata.settings)
-
-      app.order = app.data.order || []
-      app.sizes = app.data.sizes || {}
-      app.sizeType = app.data.sizeType || "px" // px or % to calculate the size
-    }
-    // set AppSize
-    $('#select_button').val(app.sizeType)
-    // refresh order of apps based on current spaces from the app
     refreshAppsList(app)
 
     buildSkeleton($("#tools_content"),app);
