@@ -23,7 +23,7 @@
               author="Evgeny Bogdanov"
               description="Shows viewer, owner and context where gadget lives"
               width="500"
-              height="500">
+              height="800">
       <Require feature="opensocial" />
       <Require feature="osapi" />
     </ModulePrefs>
@@ -90,6 +90,22 @@
       } else {
         $('#osapi_apps').append("No apps API is supported in this containers");
       }
+
+      if (osapi.apps) {
+        // check osapi.apps.get
+        osapi.apps.get({contextId: contextId, contextType: contextType}).execute(function(apps){
+          console.log(apps)
+          apps = apps.list
+          $('#osapi_apps_list').append("<br />").append("Number of apps: "+apps.length);
+          if (apps.length > 0) {
+            $('#osapi_apps_list').append("<br />").append("apps[0] Name: "+apps[0].displayName);
+            $('#osapi_apps_list').append("<br />").append("apps[0] Url: "+apps[0].appUrl);
+          }
+        });
+      } else {
+        $('#osapi_apps').append("No apps API is supported in this containers");
+      }
+
     })
 
   };
@@ -108,7 +124,9 @@
   <span><b>Get info about one space with id = contextId</b></span>
   <div id="osapi_spaces"><b>osapi.spaces.get({contextId: contextId}):</b> </div><br />
   <span><b> Get info about the current app</b> </span>
-  <div id="osapi_apps"><b>osapi.apps.get({contextId: "@self"}):</b> </div>
+  <div id="osapi_apps"><b>osapi.apps.get({contextId: "@self"}):</b> </div><br />
+  <span><b> List of apps in the space</b> </span>
+  <div id="osapi_apps_list"><b>osapi.apps.get({contextId: spaceId, contextType: "@space"}):</b> </div>
   ]]>
   </Content>
 </Module>
