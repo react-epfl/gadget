@@ -109,7 +109,7 @@ var initialize = function() {
     // 10 seconds
     setTimeout(adjustHeight,10000);
   });
-  
+
 };
 
 // build tabs for inquiry learning phases
@@ -120,11 +120,11 @@ var build_tabs = function(subspaces) {
   _.each(subspaces, function(item) {
     var ils_tab = $("<li></li>");
     var tab_link = $("<a></a>").text(item.displayName);
-    tab_link.attr("href", "#" + item.displayName);
+    tab_link.attr("href", "#" + item.displayName.replace(' ','_'));
     ils_tab.append(tab_link);
     ils_cycle_tabs.append(ils_tab);
     var phase = $("<div></div>").addClass("tab-pane");
-    phase.attr("id", item.displayName);
+    phase.attr("id", item.displayName.replace(' ','_'));
     var phase_description = $("<div></div>").append(item.description);
     phase.append(phase_description);
     var phase_content = $("<div></div>");
@@ -132,10 +132,10 @@ var build_tabs = function(subspaces) {
     phase.append(phase_content);
     ils_phases.append(phase);
     getDataById(item.id, function (data) {
-      
+
       var json = {};
       json.contextId = "s_" + item.id;
-      
+
       json.hash = {};
       json.sizeType = "px";
       json.order = [];
@@ -217,7 +217,7 @@ var updateUserActions = function(user_name) {
   user_actions.last_access = current_time;
   user_hash[user_name] = JSON.stringify(user_actions);
   osapi.appdata.update(
-    { userId: app.contextId, 
+    { userId: app.contextId,
       data: user_hash
     }).execute(function() {})
 }
@@ -355,7 +355,7 @@ var buildSkeleton = function (container,app_json) {
         $(".window_placeholder").removeClass("active")
         // save new width
         var appId = ui.element.attr('appId')
-        
+
         rebuildSizes(ui.element.parent())
         save(app)
       }
@@ -411,7 +411,7 @@ var buildGadget = function (id, app_json) {
   var gadget = app_json.hash[id]
 
   // get secure token for each widget from osapi.apps request
-  var gadgetParams = 
+  var gadgetParams =
     { specUrl: gadget.appUrl
     , height: '400px'
     , appId: id
