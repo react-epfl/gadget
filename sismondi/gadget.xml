@@ -15,40 +15,41 @@
 
 <style type="text/css">
 </style>
-  
+ 
 <div id="graphs"></div>
 <div id="graphdiv"></div>
 <div id="container" style="width:100%; height:400px;"></div>
 <button id="button">Get number of selected points</button>
-
+<button id="buttonn">Get 2D coordinates</button>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
-
-<!-- <script type="text/javascript" src="http://iamac115.epfl.ch/sismondi_webserver/dygraph-combined.js"></script> -->
 
 <script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
 
 <script type="text/javascript">
+
+  function startDownload(){
+  var url='http://iamac115.epfl.ch/Sismondi/satellite2d.txt';  
+  window.open(url,'Download');
+  }
 
   function buildGraph(data){
 
   //GET
-  osapi.http.get({
-    href: "http://iamac115.epfl.ch/Sismondi/test.txt",
-    'format': "text"
-    }).execute(function(result) {
-      alert("here2");
-      
-          if (!result.error) {
-            alert('success!');
-            alert(result.content);
-            }
-            else{
-            alert("Not working" + result.content.message);
-            }
-          });
+  //osapi.http.get({
+  //  href: "http://iamac115.epfl.ch/Sismondi/test.txt",
+  //  'format': "text"
+  //  }).execute(function(result) {
+  //    alert("here2");
+  //    
+    //      if (!result.error) {
+      //      alert('success!');
+      //      alert(result.content);
+      //      }
+      //      else{
+      //      alert("Not working" + result.content.message);
+      //      }
+      //    }); 
 
   $('#container').highcharts({
               chart: {
@@ -131,7 +132,20 @@
     var chart = $('#container').highcharts();
       var selectedPoints = chart.getSelectedPoints();
       alert ('You selected '+ selectedPoints.length +' points');
-      alert(selectedPoints.toString());
+      //alert(selectedPoints.valueOf());
+    });
+
+    //Get data of selected points
+    $('#buttonn').click(function(event) {
+    //var chart = $('#container').highcharts();
+    //chart.infoBox && (chart.infoBox = chart.infoBox.destroy());
+    //var selectedPOint = chart.getSelectedPoints();
+    //var r = chart.renderer;
+    //if(selectedPoint.length){
+    //chart.infoBox = r.g();
+    //r.rect()
+    //}  
+    setTimeout("startDownload()",0); //starts download after 5 seconds
     });
   }
 
@@ -151,6 +165,5 @@ var initialize = function() {
 gadgets.util.registerOnLoadHandler(initialize);
 </script>
 
-
-  ]]></Content>
+]]></Content>
 </Module>
