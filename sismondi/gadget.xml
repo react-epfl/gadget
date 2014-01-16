@@ -106,7 +106,7 @@
                       },
                       tooltip: {
                           headerFormat: '<b>{series.name}</b><br>',
-                          pointFormat: '{point.x} km, {point.y} km, {point.z} hr'
+                          pointFormat: '{point.x} km, {point.y} km'
                       }
                   }
               },
