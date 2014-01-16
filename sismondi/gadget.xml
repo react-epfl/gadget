@@ -19,45 +19,44 @@
 <div id="graphs"></div>
 <div id="graphdiv"></div>
 <div id="container" style="width:100%; height:400px;"></div>
-<button id="button">Get number of selected points</button>
-<button id="buttonn">Get 2D coordinates</button>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-
 <script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://iamac115.epfl.ch/Sismondi/exporting.js"></script>
 
 <script type="text/javascript">
 
-  function startDownload(){
-  var url='http://iamac115.epfl.ch/Sismondi/satellite2d.txt';  
-  window.open(url,'Download');
+  var numbers;
+
+  function getCoordinates(){
+  //GET
+  osapi.http.get({
+    href: "http://iamac115.epfl.ch/Sismondi/plot.txt",
+    'format': "text"
+    }).execute(function(result) {
+          if (!result.error) {
+            numbers = eval("("+result.content+")");
+            buildGraph(data);
+            }
+            else{
+            alert("Not working" + result.content.message + "\n Displaying default ellipse");
+            numbers = [[-0.5,4.9,1], [-0.5,-4.9,1],[-1,4.8,1], [-1.5,4.4,1], [-2,3.5,1],
+                      [-2.5,2.5,1], [-3,0,1], [-2.5,-2.5,1], [-2,-3.5,1], [-1.5,-4.4,1],
+                      [-1, -4.8,1], [0,-5,1], [0,5,1], [0.5,4.9,1], [0.5,-4.9,1], [1,4.8,1], [1.5,4.4,1], [2,3.5,1],
+                      [2.5,2.5,1], [3,0,1], [2.5,-2.5,1], [2,-3.5,1], [1.5,-4.4,1],
+                      [1, -4.8,1], [0,-5,1]];
+            }
+          });
   }
 
   function buildGraph(data){
-
-  //GET
-  //osapi.http.get({
-  //  href: "http://iamac115.epfl.ch/Sismondi/test.txt",
-  //  'format': "text"
-  //  }).execute(function(result) {
-  //    alert("here2");
-  //    
-    //      if (!result.error) {
-      //      alert('success!');
-      //      alert(result.content);
-      //      }
-      //      else{
-      //      alert("Not working" + result.content.message);
-      //      }
-      //    }); 
-
   $('#container').highcharts({
               chart: {
                   type: 'scatter',
                   zoomType: 'xyz'
               },
               title: {
-                  text: 'Ellipse scatter'
+                  text: 'Satellite Vicking Trajectory'
               },
               subtitle: {
                   text: 'Source: NASA 2013'
@@ -112,41 +111,17 @@
                   }
               },
               series: [{
-                  name: 'Ellipse',
+                  name: 'Position Points',
                   color: 'rgba(223, 83, 83, .5)',
-                  data: [[-0.5,4.9,1], [-0.5,-4.9,1],[-1,4.8,1], [-1.5,4.4,1], [-2,3.5,1],
-                      [-2.5,2.5,1], [-3,0,1], [-2.5,-2.5,1], [-2,-3.5,1], [-1.5,-4.4,1],
-                      [-1, -4.8,1], [0,-5,1], [0,5,1], [0.5,4.9,1], [0.5,-4.9,1], [1,4.8,1], [1.5,4.4,1], [2,3.5,1],
-                      [2.5,2.5,1], [3,0,1], [2.5,-2.5,1], [2,-3.5,1], [1.5,-4.4,1],
-                      [1, -4.8,1], [0,-5,1]]
+                  data: numbers
 
               }]
           });
 
-   var graph = $("<div id='hi'></div>")
+   var graph = $("<div id='hi'></div>");
    graph.appendTo(('#graphs'));
    var title = $("<div id='wissam'></div>").text(data);
-    title.appendTo(graph);
-    
-    $('#button').click(function() {
-    var chart = $('#container').highcharts();
-      var selectedPoints = chart.getSelectedPoints();
-      alert ('You selected '+ selectedPoints.length +' points');
-      //alert(selectedPoints.valueOf());
-    });
-
-    //Get data of selected points
-    $('#buttonn').click(function(event) {
-    //var chart = $('#container').highcharts();
-    //chart.infoBox && (chart.infoBox = chart.infoBox.destroy());
-    //var selectedPOint = chart.getSelectedPoints();
-    //var r = chart.renderer;
-    //if(selectedPoint.length){
-    //chart.infoBox = r.g();
-    //r.rect()
-    //}  
-    setTimeout("startDownload()",0); //starts download after 5 seconds
-    });
+   title.appendTo(graph);
   }
 
 var data = "";
@@ -155,8 +130,7 @@ var data = "";
 <script type="text/javascript">
 // gets the data and calls build for container
 var initialize = function() {
-  
-  buildGraph(data); 
+  getCoordinates();
   gadgets.window.adjustHeight();
 };
 </script>
@@ -165,5 +139,5 @@ var initialize = function() {
 gadgets.util.registerOnLoadHandler(initialize);
 </script>
 
-]]></Content>
+  ]]></Content>
 </Module>
