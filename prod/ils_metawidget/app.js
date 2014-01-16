@@ -88,7 +88,7 @@ var initialize = function() {
 
     refreshAppsList(app)
 
-    buildSkeleton($("#tools_content"),app);
+    buildSkeleton($("#tools_content"),app, false);
 
     $("#help_button").click(function(){
       $('#popup').show()
@@ -152,7 +152,7 @@ var build_tabs = function(subspaces) {
       }
 
       refreshAppsList(json);
-      buildSkeleton(phase_content,json);
+      buildSkeleton(phase_content,json, true);
 
     });
   });
@@ -308,7 +308,7 @@ var adjustHeight = function () {
   gadgets.window.adjustHeight();
 }
 
-var buildSkeleton = function (container,app_json) {
+var buildSkeleton = function (container,app_json, is_center) {
   // build first drop_here block
   var fakeGadget = $('<div id="fake_gadget" appId="0"></div>')
     .append($('<div class="drop_here"></div>'))
@@ -316,7 +316,7 @@ var buildSkeleton = function (container,app_json) {
 
   // build apps
   _.each(app_json.order, function (id) {
-    buildWindow(id, container, app_json)
+    buildWindow(id, container, app_json, is_center)
   })
   // resize width of apps
   resizeAllApps()
@@ -380,14 +380,14 @@ var buildSkeleton = function (container,app_json) {
         var prevPos = (prevId == 0) ? 0 : (_.indexOf(app_json.order, prevId)+1)
         app_json.order.splice(prevPos, 0, curId)
         // build gadget content again (iframe is lost for some reason)
-        buildGadget(curId, app_json)
+        buildGadget(curId, app_json, is_center)
         // save new position
         save()
       }
     })
 }
 
-var buildWindow = function (id, parent, app_json) {
+var buildWindow = function (id, parent, app_json, is_center) {
   var gadget = app_json.hash[id]
 
   // build placeholder
@@ -402,21 +402,29 @@ var buildWindow = function (id, parent, app_json) {
 
   var gadget_el = $("<div></div>").attr('id', 'gadget-chrome-'+id)
   blk.append(gadget_el)
-  buildGadget(id, app_json)
+  buildGadget(id, app_json, is_center)
 
   blk.append($('<div class="window_placeholder"></div>'));
   blk.append($('<div class="drop_here"></div>'));
 }
-var buildGadget = function (id, app_json) {
+
+// is_center indicates if the gadget is in the center or at the bottom tool bar
+var buildGadget = function (id, app_json, is_center) {
   var gadget = app_json.hash[id]
 
   // get secure token for each widget from osapi.apps request
   var gadgetParams =
     { specUrl: gadget.appUrl
-    , height: '400px'
     , appId: id
     , secureToken: gadget.token
     }
+  // for gadgets in the center, set the height as 980px
+  // for gadgets at the bottom tool bar, set height as 400px
+  if(is_center){
+    gadgetParams['height'] = '980px';
+  }else{
+    gadgetParams['height'] = '400px';
+  }
   var gadgetEl = shindig.container.createGadget(gadgetParams)
   // if no token specified, make it anonymous by removing secureToken
   if (!gadget.token) {
@@ -430,7 +438,12 @@ var buildGadget = function (id, app_json) {
     .addClass('gadget')
 
   $('#gadget-chrome-'+id).replaceWith(gadget_el)
-
+  // for gadgets in the center, set the width as 900px
+  // for gadgets at the bottom tool bar, use the default width 300px
+  if(is_center){
+    $('#gadget-chrome-'+id).css('width', '900px');
+  }
+  
   shindig.container.setView("home");
   shindig.container.renderGadget(gadgetEl);
 }
