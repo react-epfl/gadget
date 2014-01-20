@@ -6,8 +6,8 @@
                 description="Gadget that sketches satellites' trajectories using positions' coordinates. Data is retrieved from the NASA website."
                 width="500"
                 height="500"
-                thumbnail="http://iamac115.epfl.ch/Sismondi/satellite.png"
-                screenshot="http://iamac115.epfl.ch/Sismondi/satellite.png">
+                thumbnail="http://graasp.epfl.ch/gadget/prod/sismondi/satellite.png"
+                screenshot="http://graasp.epfl.ch/gadget/prod/sismondi/satellite.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -25,7 +25,7 @@
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://iamac115.epfl.ch/Sismondi/exporting.js"></script>
+<script src="http://graasp.epfl.ch/gadget/libs/exporting.js"></script>
 
 <script type="text/javascript">
 
@@ -36,7 +36,7 @@
   function getCoordinates(){
   //GET coordinates for viking
   osapi.http.get({
-    href: "http://iamac115.epfl.ch/Sismondi/plot_satellite.txt",
+    href: "http://graasp.epfl.ch/gadget/prod/sismondi/plot_satellite.txt",
     'format': "text"
     }).execute(function(result) {
           if (!result.error) {
@@ -55,7 +55,7 @@
 
    //GET coordinates for comet
    osapi.http.get({
-    href: "http://iamac115.epfl.ch/Sismondi/plot_comet.txt",
+    href: "http://graasp.epfl.ch/gadget/prod/sismondi/plot_comet.txt",
     'format': "text"
     }).execute(function(result) {
           if (!result.error) {
@@ -74,7 +74,7 @@
 
   //GET coordinates for moon
   osapi.http.get({
-    href: "http://iamac115.epfl.ch/Sismondi/plot_moon.txt",
+    href: "http://graasp.epfl.ch/gadget/prod/sismondi/plot_moon.txt",
     'format': "text"
     }).execute(function(result) {
           if (!result.error) {
