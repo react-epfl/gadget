@@ -1,0 +1,4 @@
+How to compile and run JAVA files
+
+javac HelloWorld.java 	to compile
+java HelloWorld 		to run the executable
