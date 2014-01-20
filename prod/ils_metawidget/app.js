@@ -421,7 +421,11 @@ var buildGadget = function (id, app_json, is_center) {
   // for gadgets in the center, set the height as 980px
   // for gadgets at the bottom tool bar, set height as 400px
   if(is_center){
-    gadgetParams['height'] = '980px';
+    var gadget_height = getGadgetHeight(gadget.appUrl);
+    if(gadget_height)
+      gadgetParams['height'] = gadget_height;
+    else
+      gadgetParams['height'] = '400px';
   }else{
     gadgetParams['height'] = '400px';
   }
@@ -437,15 +441,50 @@ var buildGadget = function (id, app_json, is_center) {
     .attr('appId', id)
     .addClass('gadget')
 
+
   $('#gadget-chrome-'+id).replaceWith(gadget_el)
   // for gadgets in the center, set the width as 900px
   // for gadgets at the bottom tool bar, use the default width 300px
   if(is_center){
     $('#gadget-chrome-'+id).css('width', '900px');
   }
-  
+
+
   shindig.container.setView("home");
   shindig.container.renderGadget(gadgetEl);
+}
+
+// get the height of gadget before rendering it
+var getGadgetHeight = function(gadgetUrl){
+  var xhr = new XMLHttpRequest();
+  var shindig_context = {
+    "view": "canvas",
+    "container": "default"
+  }
+  var shindig_gadgets = new Array();
+  shindig_gadgets[0] = {
+    "url": gadgetUrl,
+    "moduleId": 0
+  }
+  var shindig_data = {
+    "context": shindig_context,
+    "gadgets": shindig_gadgets
+  }
+  str_data = JSON.stringify(shindig_data);
+
+  xhr.open( "POST", "http://shindig.epfl.ch:80/gadgets/metadata?st=0:0:0:0:0:0:0", false );
+  // for testing at development machine, use the following url.
+  // xhr.open( "POST", "http://localhost:8080/gadgets/metadata?st=0:0:0:0:0:0:0", false );
+  xhr.setRequestHeader("Content-type", "application/json");
+  xhr.setRequestHeader("Accept", "application/json");
+  xhr.send(str_data);
+
+  var shindig_response = JSON.parse(xhr.responseText);
+  var h_gadget = shindig_response['gadgets'][0]['height'];
+  if(h_gadget)
+    return h_gadget;
+  else
+    return null;
 }
 
 // notHumanAct - save that is not initiated by a human
