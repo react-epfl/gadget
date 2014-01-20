@@ -418,12 +418,13 @@ var buildGadget = function (id, app_json, is_center) {
     , appId: id
     , secureToken: gadget.token
     }
-  // for gadgets in the center, set the height as 980px
+  // for gadgets in the center, use the height of the gadgets themselves
   // for gadgets at the bottom tool bar, set height as 400px
+  var gadget_size = {};
   if(is_center){
-    var gadget_height = getGadgetHeight(gadget.appUrl);
-    if(gadget_height)
-      gadgetParams['height'] = gadget_height;
+    gadget_size = getGadgetSize(gadget.appUrl);
+    if(gadget_size['gadgetHeight'] != "")
+      gadgetParams['height'] = gadget_size['gadgetHeight'];
     else
       gadgetParams['height'] = '400px';
   }else{
@@ -439,23 +440,26 @@ var buildGadget = function (id, app_json, is_center) {
   var gadget_el = $('<div><div>')
     .attr('id', 'gadget-chrome-'+id)
     .attr('appId', id)
-    .addClass('gadget')
+    .addClass('gadget');
 
+  $('#gadget-chrome-'+id).replaceWith(gadget_el);
 
-  $('#gadget-chrome-'+id).replaceWith(gadget_el)
-  // for gadgets in the center, set the width as 900px
+  // for gadgets in the center, if the width is not empty and less than 900, use the original width
+  // otherwise, use 900px
   // for gadgets at the bottom tool bar, use the default width 300px
   if(is_center){
-    $('#gadget-chrome-'+id).css('width', '900px');
+    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 900))
+      $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 20 + 'px');
+    else
+      $('#gadget-chrome-'+id).css('width', '900px');
   }
-
 
   shindig.container.setView("home");
   shindig.container.renderGadget(gadgetEl);
 }
 
-// get the height of gadget before rendering it
-var getGadgetHeight = function(gadgetUrl){
+// get the size of gadget before rendering it
+var getGadgetSize = function(gadgetUrl){
   var xhr = new XMLHttpRequest();
   var shindig_context = {
     "view": "canvas",
@@ -480,11 +484,13 @@ var getGadgetHeight = function(gadgetUrl){
   xhr.send(str_data);
 
   var shindig_response = JSON.parse(xhr.responseText);
-  var h_gadget = shindig_response['gadgets'][0]['height'];
-  if(h_gadget)
-    return h_gadget;
-  else
-    return null;
+  var h_gadget = shindig_response['gadgets'][0]['height']?shindig_response['gadgets'][0]['height']:"";
+  var w_gadget = shindig_response['gadgets'][0]['width']?shindig_response['gadgets'][0]['width']:"";
+  var s_gadget = {
+    gadgetHeight: h_gadget,
+    gadgetWidth: w_gadget,
+  }
+  return s_gadget;
 }
 
 // notHumanAct - save that is not initiated by a human
