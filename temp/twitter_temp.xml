@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Twitter Widget" 
+                author_email="wissam.halimi@epfl.ch" 
+                author="Wissam Halimi" 
+                description="Gadget that dispalys tweets for specific hashtag"
+                width="400"
+                height="600"
+                thumbnail="http://graasp.epfl.ch/gadget/prod/twitter/thumbnail.png"
+                screenshot="http://graasp.epfl.ch/gadget/prod/twitter/thumbnail.png">
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+<a class="twitter-timeline" href="https://twitter.com/search?q=%23socialmedia" data-widget-id="430278919577559040">Tweets about "#socialmedia"</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+  ]]></Content>
+</Module>
