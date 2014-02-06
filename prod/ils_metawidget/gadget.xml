@@ -7,21 +7,21 @@
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
     
-    <Locale messages="http://ask4research.info/golab/gadget/prod/message_bundles/ALL_ALL.xml"/>
-    <Locale lang="fr" messages="http://ask4research.info/golab/gadget/prod/message_bundles/fr_ALL.xml"/> 
-    <Locale lang="de" messages="http://ask4research.info/golab/gadget/prod/message_bundles/de_ALL.xml"/>
-    <Locale lang="es" messages="http://ask4research.info/golab/gadget/prod/message_bundles/es_ALL.xml"/> 
-    <Locale lang="ru" messages="http://ask4research.info/golab/gadget/prod/message_bundles/ru_ALL.xml"/> 
-    <Locale lang="th" messages="http://ask4research.info/golab/gadget/prod/message_bundles/th_ALL.xml"/> 
-    <Locale lang="ar" messages="http://ask4research.info/golab/gadget/prod/message_bundles/ar_ALL.xml"/> 
-    <Locale lang="it" messages="http://ask4research.info/golab/gadget/prod/message_bundles/it_ALL.xml"/> 
+    <Locale messages="http://graasp.epfl.ch/gadget/prod/message_bundles/ALL_ALL.xml"/>
+    <Locale lang="fr" messages="http://graasp.epfl.ch/gadget/prod/message_bundles/fr_ALL.xml"/> 
+    <Locale lang="de" messages="http://graasp.epfl.ch/gadget/prod/message_bundles/de_ALL.xml"/>
+    <Locale lang="es" messages="http://graasp.epfl.ch/gadget/prod/message_bundles/es_ALL.xml"/> 
+    <Locale lang="ru" messages="http://graasp.epfl.ch/gadget/prod/message_bundles/ru_ALL.xml"/> 
+    <Locale lang="th" messages="http://graasp.epfl.ch/gadget/prod/message_bundles/th_ALL.xml"/> 
+    <Locale lang="ar" messages="http://graasp.epfl.ch/gadget/prod/message_bundles/ar_ALL.xml"/> 
+    <Locale lang="it" messages="http://graasp.epfl.ch/gadget/prod/message_bundles/it_ALL.xml"/> 
     
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
 
-<link rel="stylesheet" href="http://ask4research.info/golab/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
-<link href="http://ask4research.info/golab/gadget/prod/ils_metawidget/app.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
+<link href="http://graasp.epfl.ch/gadget/prod/ils_metawidget/app.css" rel="stylesheet" type="text/css">
 
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-inner">
@@ -81,13 +81,13 @@
 </div>
 
 
-<script type="text/javascript" src="http://ask4research.info/golab/gadget/libs/jquery-1.8.0.min.js"></script>
-<script type="text/javascript" src="http://ask4research.info/golab/gadget/libs/jquery-ui-1.8.23.custom.min.js"></script>
-<script type="text/javascript" src="http://ask4research.info/golab/gadget/libs/jquery.cookie.js"></script>
-<script type="text/javascript" src="http://ask4research.info/golab/gadget/libs/underscore-min.js"></script>
-<script type="text/javascript" src="http://ask4research.info/golab/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="http://ask4research.info/golab/gadget/prod/ils_metawidget/app.js"></script>
-<script type="text/javascript" src="http://ask4research.info/golab/gadget/prod/ils_metawidget/data.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-ui-1.8.23.custom.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery.cookie.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/underscore-min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/app.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/data.js"></script>
 
 
 <script type="text/javascript">
