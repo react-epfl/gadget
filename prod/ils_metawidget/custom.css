@@ -9,7 +9,7 @@
 font-family: EuphemiaUCAS;
 font-style:normal;
 font-weight:normal;
-src: url("http://ask4research.info/golab/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf");
+src: url("http://graasp.epfl.ch/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf");
 }
 
 @font-face
@@ -17,7 +17,7 @@ src: url("http://ask4research.info/golab/gadget/prod/fonts/Euphemia-UCAS/Euphemi
 font-family: EuphemiaUCAS;
 font-style:italic;
 font-weight:normal;
-src: url("http://ask4research.info/golab/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Italic_2.6.6.ttf");
+src: url("http://graasp.epfl.ch/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Italic_2.6.6.ttf");
 }
 
 @font-face
@@ -25,7 +25,7 @@ src: url("http://ask4research.info/golab/gadget/prod/fonts/Euphemia-UCAS/Euphemi
 font-family: EuphemiaUCAS;
 font-style:oblique;
 font-weight:bold;
-src: url("http://ask4research.info/golab/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Bold_2.6.6.ttf");
+src: url("http://graasp.epfl.ch/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Bold_2.6.6.ttf");
 }
 
 /* Sticky footer styles
