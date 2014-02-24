@@ -81,7 +81,6 @@ var initialize = function() {
     //Check if there are available apps
     if (app.list.length>0)
     {
-        toggle_toolbar(); // Display the toolbar
         // build a hash containing {id, app} pairs from the space
         app.hash = {};
         app.sizeType = "px"; // px or % to calculate the size
@@ -96,7 +95,9 @@ var initialize = function() {
 
         buildSkeleton($("#tools_content"),app, false);
     } else {
-        // What to do when there re no apps       
+        // What to do when there re no apps  
+        toggle_toolbar(); // Display the toolbar
+     
     }
     $("#help_button").click(function(){
       $('#popup').show();
@@ -131,7 +132,7 @@ var initialize = function() {
 
 // toggle toolbar 
 var toggle_toolbar = function () {
-    $('#toolbar').show();
+    $('#toolbar').hide();
 };
 
 
