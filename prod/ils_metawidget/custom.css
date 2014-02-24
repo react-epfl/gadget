@@ -1,0 +1,374 @@
+/**** New UI Customization CERTH ****
+ ------------------------------------ 
+ ****			Start			 **** /
+
+/*Default font style*/
+
+@font-face
+{
+font-family: EuphemiaUCAS;
+font-style:normal;
+font-weight:normal;
+src: url("http://ask4research.info/golab/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf");
+}
+
+@font-face
+{
+font-family: EuphemiaUCAS;
+font-style:italic;
+font-weight:normal;
+src: url("http://ask4research.info/golab/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Italic_2.6.6.ttf");
+}
+
+@font-face
+{
+font-family: EuphemiaUCAS;
+font-style:oblique;
+font-weight:bold;
+src: url("http://ask4research.info/golab/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Bold_2.6.6.ttf");
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html,
+body {
+  height: 100%;
+  font-size: 18px;
+  overflow: hidden;
+}
+
+html,
+html *,
+body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: EuphemiaUCAS !important;
+}
+
+/* Wrapper for page content to push down footer */
+#wrap {
+  min-height: 100%;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto -60px;
+  /* Pad bottom by footer height */
+  padding: 0 0 60px;
+  overflow: hidden;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 5px;
+  left: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  position: relative;
+  max-width:1024px;
+}
+
+/* Set the fixed height of the footer here */
+#footer {
+  background-color: #88e2f9;
+  border: 1px solid #88e2f9;
+}
+
+p {
+	text-align: justify;
+}
+
+#footer > p{
+	margin: 0 auto;
+	color:#136ab0;
+	text-align: center;
+	font-weight: bold;
+	vertical-align:middle;
+	line-height: 2.5em;
+}
+
+.dark{
+	color:#136ab0;
+}
+
+.strong{
+	font-weight:bold;
+}
+
+#ils_cycle {
+	top: 0px;
+	color:#000;
+        -webkit-transition: background 0.5s linear;
+        -moz-transition: background 0.5s linear;
+        -ms-transition: background 0.5s linear;
+        -o-transition: background 0.5s linear;
+        transition: background 0.1s linear;
+    padding: 0px;
+}
+
+
+.customTop ul{
+	padding:0px 0px 0px 15px;
+	border-bottom: 0px solid #dddddd;
+}
+
+
+.customHeight {
+	height: 55px;
+}
+
+#customBarWrapper {
+	margin: 0 auto;
+	max-width: 1024px;
+}
+
+
+.fixedCustomTop
+{
+	top: 0px;
+	position:fixed;
+}
+
+.customTop {
+	  /*  background-color:#dedede;*/
+  	background-clip: padding-box;
+    background-color: #21C4F5;
+    border-bottom: 10px solid rgba(255, 255, 255, 0.5);
+    border-top: 0 none;
+    color: #FFFFFF;
+    margin-left: -300%;
+    padding-left: 300%;
+    padding-right: 195%;
+    width: 600%;
+    z-index: 1000;
+}
+
+#myCustomBar{
+	z-index: 1000;
+	height: 50px;
+	padding: 0 40px;
+
+}
+
+#title {
+	margin:0px;
+	padding:0px;
+	line-height:50px;
+}
+
+#hello_msg {
+	color: #136AB0;
+    background-color: transparent;
+    line-height:50px;
+    margin:0px;
+}
+
+#toolbar{
+	background-color: #88e2f9;
+}
+
+#tools_title{
+	color:#136ab0;
+	background-color: transparent;    
+	font-size: 16px;
+    height: 40px;
+    padding-top: 12px;
+    text-align: center;
+}
+
+#main_block{
+	top:0px;
+	bottom:0px;
+}
+
+.customTop * {
+	border-color: rgba(0, 0, 0, 0) !important;	
+	border-width: 0 0 1px 1px !important;
+
+}
+
+.customTop li > a{
+	    color: white;
+}
+
+
+.customTop li.active{
+	background-color: #1A56A1;
+}
+
+.customTop li.active > a{
+	color:white!important;
+	background-color: #1A56A1!important;
+}
+
+.customTop li.active:hover{
+	background-color: #1A56A1;
+}
+.customTop li.active > a:hover{
+	color:white;
+	background-color: #1A56A1;
+}
+
+.customTop li:hover {
+	background-color: #1b99d4;
+}
+
+.customTop li> a:hover{
+	color:white;
+	background-color: #1b99d4;
+}
+
+hr {border:1px solid black;}
+
+.page-header {
+	border:0pc solid black;
+	margin-top:0px;
+}
+.tab-pane{
+	padding-top:2em;
+}
+
+.centered {
+	text-align:center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#wrap > .container {
+  padding: 50px 40px 0;
+  overflow-x: hidden;
+}
+.container .credit {
+  margin: 20px 0;
+}
+
+#footer > .container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+.navbar-brand{
+	padding:10px;
+}
+
+.logoimage {width:40px;
+height: 40px;
+}
+
+#login_popup{
+	left:0px;
+	width:auto;
+	top:20%;
+}
+
+.modal-dialog {
+    width: 400px;
+}
+
+@media (max-width: 767px) {
+
+}
+
+@media (min-width: 768px) {
+.customSize li{
+	font-size: 1.2em!important;
+}
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+	
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+ }
+@media (min-width: 1200px) {
+}
+
+
+/* Overrides Bootstrap Toolbar */
+/*
+   custom.css
+   Responsive Prototype
+   
+   Created by Alexandros Trichos on 2013-12-16.
+   Copyright 2013 Alexandros Trichos. All rights reserved.
+*/
+.navbar-header {
+	margin-left: 0;
+	line-height: 2.5em;
+	float:left;
+}
+
+.navbar-default > a{
+	line-height: 2.5em;
+	margin-right: 2em;
+	float: right;
+
+}
+
+
+.navbar-default {
+    background-color: #76d6ff;
+    border-color: #76d6ff;
+}
+.navbar-default .navbar-brand {
+    color: #ffffff;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: red;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #ffffff;
+}
+.navbar-default .navbar-nav > .active > a, 
+.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #ffffff;
+    background-color: #1A56A1;
+}
+.navbar-default .navbar-nav > .open > a, 
+.navbar-default .navbar-nav > .open > a:hover, 
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #ffffff;
+    background-color: #1A56A1;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+.navbar-default .navbar-nav > .open > a .caret, 
+.navbar-default .navbar-nav > .open > a:hover .caret, 
+.navbar-default .navbar-nav > .open > a:focus .caret {
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+.navbar-default .navbar-toggle {
+    border-color: #1A56A1;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: red;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffffff;
+}
+
+
+/**** New UI Customization CERTH ****
+ ------------------------------------ 
+ ****			End				 **** /
