@@ -6,6 +6,16 @@
                 description="This functional skin takes all apps from a space and shows them in a grid layout that can be adapted to user's needs. It asks for the user name when the user loads the page, and saves the user actions through appdata. At the moment, it works only in Graasp - http://graasp.epfl.ch">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
+    
+    <Locale messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ALL_ALL.xml"/>
+    <Locale lang="fr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/fr_ALL.xml"/> 
+    <Locale lang="de" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/de_ALL.xml"/>
+    <Locale lang="es" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/es_ALL.xml"/> 
+    <Locale lang="ru" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ru_ALL.xml"/> 
+    <Locale lang="th" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/th_ALL.xml"/> 
+    <Locale lang="ar" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ar_ALL.xml"/> 
+    <Locale lang="it" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/it_ALL.xml"/> 
+    
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
@@ -29,18 +39,18 @@
 
 <div id="main_block" class="container">
   <div id="container" onmouseover="adjustHeight();">
-    <div id="not_owner" style="display:none">You are not a space owner. Your changes to apps arrangement will not be saved.</div>
+    <div id="not_owner" style="display:none">__MSG_not_space_owner__</div>
     <div id="popup" style="display:none">
-      <div><b>App size</b>: fixed or relative (apps resize automatically when window is resized)</div>
-      <div><b>Drag&Drop an app</b> to change the order</div>
-      <div><b>Resize an app</b> by dragging its right border</div>
-      <span class="button" onclick="$('#popup').hide()">Close</span>
+     <div><b>__MSG_app_size__</b>__MSG_fixed_or_relative_resize__</div>
+     <div><b>__MSG_drag_and_drop_an_app__</b>__MSG_to_change_the_order__</div>
+     <div><b>__MSG_resize_an_app__</b>__MSG_by_dragging_its_right_border__</div>
+     <span class="button" onclick="$('#popup').hide()">__MSG_close__</span>
     </div>
     <div id = "banner">
       <span id = "title"></span>
     </div>
     <div id = "description_block">
-      <span>Description</span>
+      <span>__MSG_description__</span>
       <span id = "description"></span>
     </div>
     <div id="center">
@@ -51,22 +61,22 @@
 </div>
 
 <div id="toolbar" class="navbar-fixed-bottom">
-  <div id="tools_title"><img id="arrow_down" src="arrow_down.png"><img id="arrow_up" src="arrow_up.png"> Tools</div>
+  <div id="tools_title"><img id="arrow_down" src="arrow_down.png"><img id="arrow_up" src="arrow_up.png"> __MSG_tools__</div>
   <div id="tools_content"></div>
 </div>
 
 <div class="modal hide fade" id="login_popup" data-keyboard="false" data-backdrop="static">
   <div class="modal-header">
-    <h3>Please enter your name</h3>
+    <h3>__MSG_please_enter_your_name__</h3>
   </div>
   <div class="modal-body" id="popup_body">
     <div id="error_msg" class="alert fade in hide alert-error">  
-      Please enter a valid name! 
+      __MSG_please_enter_a_valid_name__
     </div> 
     <input type="text" id="user_name">
   </div>
   <div class="modal-footer" id="popup_footer">
-    <button type="button" class="btn btn-primary" id="ok_btn">Ok</button>
+    <button type="button" class="btn btn-primary" id="ok_btn">__MSG_ok__</button>
   </div>
 </div>
 
