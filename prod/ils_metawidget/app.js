@@ -413,8 +413,9 @@ var buildWindow = function (id, parent, app_json, is_center) {
 // is_center indicates if the gadget is in the center or at the bottom tool bar
 var buildGadget = function (id, app_json, is_center) {
   var gadget = app_json.hash[id];
-  var lang = gadgets.Prefs().getLang(); //get the language
-  var country = gadgets.Prefs().getCountry(); //and the country
+  var prefs = new gadgets.Prefs();
+  var lang = prefs.getLang(); //get the language
+  var country = prefs.getCountry(); //and the country
   shindig.container.setLanguage(lang); // set the language to shingig
   shindig.container.setCountry(country); // and the country
 
