@@ -4,6 +4,7 @@ var app = { context: "", viewerName: ""
           , data: { view: "" }
           , root_url: "http://graasp.epfl.ch/gadget/prod/ils_metawidget/"
           , user_name: ""
+          , prefs: new gadgets.Prefs()
           }
 
 // gets the data and calls build for container
@@ -179,11 +180,10 @@ var remove_hidden_spaces = function(subspaces) {
 
 // identify which user is using this url
 var identifyUser = function() {
-   var prefs = new gadgets.Prefs();
   // check if the cookie exists, if not, set the cookie
   if ($.cookie('graasp_user')) {
     app.user_name = $.cookie('graasp_user');
-    $('#hello_msg').text(prefs.getMsg("hello") + " " + app.user_name + "!");
+    $('#hello_msg').text(app.prefs.getMsg("hello") + " " + app.user_name + "!");
     updateUserActions(app.user_name);
   } else {
     $('#login_popup').modal('show');
@@ -199,7 +199,6 @@ var identifyUser = function() {
 
 // save user's name in appData and display user name on the page
 var saveUserName = function() {
-	var prefs = new gadgets.Prefs();
   app.user_name = $('#user_name').val();
   if (!app.user_name || /^\s*$/.test(app.user_name) || 0 === app.user_name.length) {
     $("#error_msg").show();
@@ -207,7 +206,7 @@ var saveUserName = function() {
     updateUserActions(app.user_name);
     $.cookie('graasp_user', app.user_name, { expires: 1 });
     $('#login_popup').modal('hide');
-    $('#hello_msg').text(prefs.getMsg("hello") + " " + app.user_name + "!");
+    $('#hello_msg').text(app.prefs.getMsg("hello") + " " + app.user_name + "!");
   }
 }
 
@@ -413,8 +412,8 @@ var buildWindow = function (id, parent, app_json, is_center) {
 // is_center indicates if the gadget is in the center or at the bottom tool bar
 var buildGadget = function (id, app_json, is_center) {
   var gadget = app_json.hash[id];
-  var lang = gadgets.Prefs().getLang(); //get the language
-  var country = gadgets.Prefs().getCountry(); //and the country
+  var lang = app.prefs.getLang(); //get the language
+  var country = app.prefs.getCountry(); //and the country
   shindig.container.setLanguage(lang); // set the language to shingig
   shindig.container.setCountry(country); // and the country
 
