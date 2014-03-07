@@ -62,11 +62,13 @@ var initialize = function() {
     var apps = data.apps; // .list
     var subspaces = remove_hidden_spaces(data.spaces.list);  //subspaces of the current space
 
-    // add space title
+    // add space title and description
     var currentSpace = data.currentSpace;
     if (currentSpace) {
       $("#title").append(currentSpace.displayName);
-      $("#description").append(currentSpace.description);
+      if (currentSpace.description !="" ){ // when there is a valid description
+        $("#description").append(currentSpace.description);
+      }
     }
 
     // current viewer is the owner, then show management block
@@ -77,23 +79,31 @@ var initialize = function() {
     // --- apps from space ---
     app.list = apps.list;
 
-    // build a hash containing {id, app} pairs from the space
-    app.hash = {};
-    app.sizeType = "px"; // px or % to calculate the size
-    app.order = []; // list of app ids
-    app.sizes = {}; // hash or app sizes {id: size, id: size}
-    _.each(apps.list, function (item) {
-      app.hash[item.id] = item;
-    })
-    // -----------------------
 
-    refreshAppsList(app);
+    //Check if there are available apps
+    if (app.list.length>0)
+    {
+        // build a hash containing {id, app} pairs from the space
+        app.hash = {};
+        app.sizeType = "px"; // px or % to calculate the size
+        app.order = []; // list of app ids
+        app.sizes = {}; // hash or app sizes {id: size, id: size}
+        _.each(apps.list, function (item) {
+        app.hash[item.id] = item;
+        });
+        // -----------------------
 
-    buildSkeleton($("#tools_content"),app, false);
+        refreshAppsList(app);
 
+        buildSkeleton($("#tools_content"),app, false);
+    } else {
+        // What to do when there re no apps  
+        toggle_toolbar(); // Display the toolbar
+    }
     $("#help_button").click(function(){
       $('#popup').show();
-    })
+    });
+
 
     // build tabs for inquiry learning phases
     build_tabs(subspaces);
@@ -109,9 +119,24 @@ var initialize = function() {
     setTimeout(adjustHeight,3000);
     // 10 seconds
     setTimeout(adjustHeight,10000);
+    
+        
+    try{
+            applyNewLayout();
+        }catch(err){
+            console.log("Couldn't apply new layout!");
+        }
+
+    
   });
 
 };
+
+// toggle toolbar 
+var toggle_toolbar = function () {
+    $('#toolbar').hide();
+};
+
 
 // build tabs for inquiry learning phases
 var build_tabs = function(subspaces) {
@@ -146,10 +171,10 @@ var build_tabs = function(subspaces) {
       });
       var appdata = data.appdata[json.contextId];
       if (appdata) {
-        json.data = JSON.parse(appdata.settings)
-        json.order = json.data.order || []
-        json.sizes = json.data.sizes || {}
-        json.sizeType = json.data.sizeType || "px" // px or % to calculate the size
+        json.data = JSON.parse(appdata.settings);
+        json.order = json.data.order || [];
+        json.sizes = json.data.sizes || {};
+        json.sizeType = json.data.sizeType || "px"; // px or % to calculate the size
       }
 
       refreshAppsList(json);
@@ -168,7 +193,7 @@ var build_tabs = function(subspaces) {
   });
   center.append(ils_cycle_tabs);
   center.append(ils_phases);
-}
+};
 
 // remove the hidden spaces from the subspaces array
 var remove_hidden_spaces = function(subspaces) {
@@ -176,7 +201,7 @@ var remove_hidden_spaces = function(subspaces) {
     return item.visibilityLevel != "Myself";
   });
   return visible_spaces;
-}
+};
 
 // identify which user is using this url
 var identifyUser = function() {
@@ -190,12 +215,12 @@ var identifyUser = function() {
     $('#user_name').keyup(function(){
       if (event.keyCode === 13) {
         saveUserName();
-      }})
+      }});
     $('#ok_btn').click(function(){
       saveUserName();
     });
   }
-}
+};
 
 // save user's name in appData and display user name on the page
 var saveUserName = function() {
@@ -208,7 +233,7 @@ var saveUserName = function() {
     $('#login_popup').modal('hide');
     $('#hello_msg').text(app.prefs.getMsg("hello") + " " + app.user_name + "!");
   }
-}
+};
 
 // update user's last access time in appData
 var updateUserActions = function(user_name) {
@@ -493,7 +518,7 @@ var getGadgetSize = function(gadgetUrl){
   var w_gadget = shindig_response['gadgets'][0]['width']?shindig_response['gadgets'][0]['width']:"";
   var s_gadget = {
     gadgetHeight: h_gadget,
-    gadgetWidth: w_gadget,
+    gadgetWidth: w_gadget
   }
   return s_gadget;
 }
