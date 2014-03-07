@@ -79,6 +79,7 @@ var initialize = function() {
     // --- apps from space ---
     app.list = apps.list;
 
+
     //Check if there are available apps
     if (app.list.length>0)
     {
@@ -98,11 +99,11 @@ var initialize = function() {
     } else {
         // What to do when there re no apps  
         toggle_toolbar(); // Display the toolbar
-     
     }
     $("#help_button").click(function(){
       $('#popup').show();
     });
+
 
     // build tabs for inquiry learning phases
     build_tabs(subspaces);
