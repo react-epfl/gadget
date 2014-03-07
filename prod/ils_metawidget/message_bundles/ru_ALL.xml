@@ -1,25 +1,10 @@
 <messagebundle>
    <msg name="hello"> Здравствуйте </msg>
-<<<<<<< HEAD
-   <msg name="not_space_owner"> Вы не являетесь владельцем пространство. Изменения в Службы договоренности не будут сохранены. </msg>
-=======
    <msg name="not_space_owner"> Вы не являетесь владельцем спейса. Ваши изменения в размещение приложений не будут сохранены. </msg>
->>>>>>> master
    <msg name="description"> Описание </msg>
    <msg name="close"> Закрыть </msg>
    <msg name="tools"> Инструменты </msg>
    <msg name="please_enter_your_name"> Пожалуйста, введите ваше имя </msg>
-<<<<<<< HEAD
-   <msg name="please_enter_a_valid_name"> Пожалуйста, введите Ваше имя! </msg>
-   <msg name="ok"> Хорошо </msg>
-   <msg name="app_size"> размер приложения </msg>
-   <msg name="fixed_or_relative_resize">: фиксированная или относительная (приложения изменить размер автоматически при изменении размеров окна) </msg>
-   <msg name="drag_and_drop_an_app"> Перетаскивание приложение </msg>
-   <msg name="to_change_the_order"> изменить порядок </msg>
-   <msg name="resize_an_app"> Изменение размера приложение </msg>
-   <msg name="by_dragging_its_right_border">, перетаскивая его правую границу </msg>
-</messagebundle>
-=======
    <msg name="please_enter_a_valid_name"> Пожалуйста, введите подходящее имя! </msg>
    <msg name="ok"> Ok </msg>
    <msg name="app_size"> Размер приложения </msg>
@@ -29,4 +14,3 @@
    <msg name="resize_an_app"> Измените размера приложение </msg>
    <msg name="by_dragging_its_right_border"> перетаскивая его правую границу </msg>
 </messagebundle>
->>>>>>> master
