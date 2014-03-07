@@ -5,7 +5,6 @@
 // Dynamically add classes and format content
 var applyNewLayout= function  () {
    $("#ils_phases img").attr("width","").addClass("img-responsive centered"); //Format Images
-   //$("#ils_phases .tab-pane:first").addClass("active"); 
    $("#ils_phases .tab-pane").addClass("fade"); //Add Fade effect to tabs
    $("#ils_phases .tab-pane:first").addClass("in"); //Fade the tab in
    $("#ils_cycle").wrap("<div id='customTopWrapper' class='customTop'></div>");
@@ -31,22 +30,10 @@ function stickyBar() {
     var faux = $('#fauxContainer'); //gets the faux container
     var fauxOffset=faux.offset().top;
     var customBarHeight = customBar.outerHeight(); //gets the height of info bar
-    
-    // DEBUG START
-    
+
     test = fauxOffset;
     test2 = fauxOffset - customBarHeight+2;
-   
-    //console.log(" Menu initial offset: " + myNavMenuDataTop + "\n" +
-    //            " Menu Height: " + myNavMenuHeight + "\n" +
-    //            " Menu current offset " + myNavMenuOffset + "\n"+
-    //            " Top Bar Height: " + customBarHeight + "\n" +
-    //            " Scrolling: " + windowScrollTop + "\n" +
-    //            " test: " + test + "\n" +
-    //            " test2: " + test2);
-     
-    // DEBUG END
-    
+
     if ((test2<=0) && (test>=0)){ //when menu reaches right under top bar push the bar up
         customBar.css({top:test2});
     }
@@ -58,14 +45,12 @@ function stickyBar() {
     
     if (!myNavMenu.attr('data-top')) { // set the data-top attribute to menu when not existing (initial top offset)
         if (myNavMenu.hasClass('fixedCustomTop')) return;
-         var offset = myNavMenu.offset();
+        var offset = myNavMenu.offset();
         myNavMenu.attr('data-top', offset.top);
     }
     
     if ((test <= 0) && (!myNavMenu.hasClass('fixedCustomTop'))) //attach the sticky bar when it has reached to the top
         {
-         //console.error("Attached!");
-         //myNavMenu.addClass('navbar-fixed-top');
          myNavMenu.addClass('fixedCustomTop');
          faux.addClass('customHeight');
          myNavMenu.bind('click', function (e) {
@@ -76,9 +61,7 @@ function stickyBar() {
     else   if ((test > 0) && (myNavMenu.hasClass('fixedCustomTop'))) // detach the sticky bar when not at the top
         
     {
-        //console.warn("Detached!");
-        //myNavMenu.removeClass('navbar-fixed-top');
-        myNavMenu.removeClass('fixedCustomTop'); 
+        myNavMenu.removeClass('fixedCustomTop');
         faux.removeClass('customHeight');
         myNavMenu.unbind('click');
         }
