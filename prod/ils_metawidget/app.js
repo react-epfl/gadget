@@ -69,6 +69,9 @@ var initialize = function() {
       if (currentSpace.description !="" ){ // when there is a valid description
         $("#description").append(currentSpace.description);
       }
+      else {
+          $("#description_block").remove(); // remove the description block when there is no valid description
+      }
     }
 
     // current viewer is the owner, then show management block
