@@ -260,7 +260,7 @@ html{
 #main_block{
   position: absolute;
   bottom: 40px;
-  top: 40px;
+  top: 0px;
   overflow-y: auto;
   width: 100%;
 }
