@@ -62,7 +62,6 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   left: 0px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 1em;
   position: relative;
   max-width:1024px;
 }
@@ -175,11 +174,6 @@ p {
     text-align: center;
 }
 
-#main_block{
-	top:0px;
-	bottom:0px;
-}
-
 .customTop * {
 	border-color: rgba(0, 0, 0, 0) !important;	
 	border-width: 0 0 1px 1px !important;
@@ -223,6 +217,7 @@ hr {border:1px solid black;}
 	border:0pc solid black;
 	margin-top:0px;
 }
+
 .tab-pane{
 	padding-top:2em;
 }

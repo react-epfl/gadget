@@ -33,14 +33,17 @@ var initialize = function() {
     var tools_panel = document.getElementById("tools_content");
     var main_block = document.getElementById("main_block");
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
-      $("#tools_content").show();
+      $("#tools_content").animate({ height: "toggle"}, "slow",function() { //added slide effect
+        // Animation complete fuction
+          if(app.list.length > 0) {
+              main_block.style.bottom = "495px";
+          }
+      });
       $("#arrow_down").show();
       $("#arrow_up").hide();
-      if(app.list.length > 0) {
-        main_block.style.bottom = "500px";
-      }
+
     } else {
-      $("#tools_content").hide();
+      $("#tools_content").animate({ height: "toggle"}, "slow"); //added slide effect
       $("#arrow_down").hide();
       $("#arrow_up").show();
       if(app.list.length > 0) {
@@ -68,6 +71,9 @@ var initialize = function() {
       $("#title").append(currentSpace.displayName);
       if (currentSpace.description !="" ){ // when there is a valid description
         $("#description").append(currentSpace.description);
+      }
+      else { //when there is not a valid description
+        $("#description_block").hide(); // remove the description block
       }
     }
 
@@ -98,7 +104,7 @@ var initialize = function() {
         buildSkeleton($("#tools_content"),app, false);
     } else {
         // What to do when there re no apps  
-        toggle_toolbar(); // Display the toolbar
+        toggle_toolbar(); // Hide the toolbar
     }
     $("#help_button").click(function(){
       $('#popup').show();
@@ -134,7 +140,8 @@ var initialize = function() {
 
 // toggle toolbar 
 var toggle_toolbar = function () {
-    $('#toolbar').hide();
+    $('#toolbar').hide(); //remove toolbar
+    $("#main_block").css('bottom','0px'); //extend main block
 };
 
 
