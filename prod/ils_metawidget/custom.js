@@ -4,7 +4,6 @@
  
 // Dynamically add classes and format content
 var applyNewLayout= function  () {
-   $("#ils_phases img").addClass("img-responsive centered"); //Format Images
    $("#ils_phases .tab-pane").addClass("fade"); //Add Fade effect to tabs
    $("#ils_phases .tab-pane:first").addClass("in"); //Fade the tab in
    $("#ils_cycle").wrap("<div id='customTopWrapper' class='customTop'></div>");
