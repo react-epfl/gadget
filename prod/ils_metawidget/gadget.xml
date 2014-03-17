@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Apps view with user tracking"
+  <ModulePrefs title="ILS Metawidget"
                 author_email="na.li@epfl.ch"
                 author="Evgeny Bogdanov, Na Li"
-                description="This functional skin takes all apps from a space and shows them in a grid layout that can be adapted to user's needs. It asks for the user name when the user loads the page, and saves the user actions through appdata. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+                description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://graasp.epfl.ch">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
     
@@ -15,7 +15,8 @@
     <Locale lang="th" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/th_ALL.xml"/>
     <Locale lang="ar" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ar_ALL.xml"/>
     <Locale lang="it" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/it_ALL.xml"/>
-    
+    <Locale lang="gr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/gr_ALL.xml"/>
+    <Locale lang="ee" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ee_ALL.xml"/>
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
@@ -65,12 +66,6 @@ if (osapi.people.getViewer) {
 <div id="main_block" class="container">
   <div id="container" onmouseover="adjustHeight();">
     <div id="not_owner" style="display:none">__MSG_not_space_owner__</div>
-    <div id="popup" style="display:none">
-      <div><b>__MSG_app_size__</b>__MSG_fixed_or_relative_resize__</div>
-      <div><b>__MSG_drag_and_drop_an_app__</b>__MSG_to_change_the_order__</div>
-      <div><b>__MSG_resize_an_app__</b>__MSG_by_dragging_its_right_border__</div>
-      <span class="button" onclick="$('#popup').hide()">__MSG_close__</span>
-    </div>
     <div id = "description_block">
       <span id = "description"></span>
     </div>

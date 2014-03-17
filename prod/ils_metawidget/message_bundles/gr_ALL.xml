@@ -1,0 +1,9 @@
+<messagebundle>
+  <msg name="hello">Γεια σας</msg>
+  <msg name="not_space_owner">Δεν έχετε δικαίωμα ιδιοκτησίας στο χώρο αυτό. Οι αλλαγές στη διαρρύθμιση των εφαρμογών δε θα αποθηκευτούν.</msg>
+  <msg name="description">Περιγραφή</msg>
+  <msg name="tools">Εργαλεία</msg>
+  <msg name="please_enter_your_name">Παρακαλώ εισάγετε το όνομά σας</msg>
+  <msg name="please_enter_a_valid_name"> Παρακαλώ εισάγετε ένα έγκυρο όνομα!</msg>
+  <msg name="ok">Οκ</msg>
+</messagebundle>

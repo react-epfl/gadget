@@ -2,15 +2,8 @@
    <msg name="hello">Bonjour</msg> 
    <msg name="not_space_owner">Vous n'êtes pas le propriétaire de l'espace. Les modifications apportées ne seront pas sauvegardés.</msg> 
    <msg name="description">Description</msg> 
-   <msg name="close">Fermer</msg> 
    <msg name="tools">Outils</msg> 
    <msg name="please_enter_your_name">Entre ton nom s'il te plaît</msg> 
    <msg name="please_enter_a_valid_name">Entre un nom valide s'il te plaît</msg> 
-   <msg name="ok">Ok</msg> 
-   <msg name="app_size"> taille de l'application</msg> 
-   <msg name="fixed_or_relative_resize">: fixe ou relative (les applications sont automatiquement redimensionnées lorsque la fenêtre est redimensionnée)</msg>
-   <msg name="drag_and_drop_an_app"> Glisser et déposer une application </msg>
-   <msg name="to_change_the_order"> pour modifier l'ordre </msg> 
-   <msg name="resize_an_app"> Redimensionner une application</msg> 
-   <msg name="by_dragging_its_right_border"> en faisant glisser son bord droit</msg> 
+   <msg name="ok">Ok</msg>
 </messagebundle>
