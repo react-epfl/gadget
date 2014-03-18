@@ -1,9 +1,9 @@
 <messagebundle>
-  <msg name="hello">Hello</msg>
-  <msg name="not_space_owner">You are not a space owner. Your changes to apps arrangement will not be saved.</msg>
-  <msg name="description">Description</msg>
-  <msg name="tools">Tools</msg>
-  <msg name="please_enter_your_name">Please enter your name</msg>
-  <msg name="please_enter_a_valid_name"> Please enter a valid name!</msg>
-  <msg name="ok">Ok</msg>
+  <msg name="hello">Tere</msg>
+  <msg name="not_space_owner">Sa ei ole selle äpi omanik. Sinu tehtud muudatusi ja äpi seadistusi ei salvestata.</msg>
+  <msg name="description">Kirjeldus</msg>
+  <msg name="tools">Vahendid</msg>
+  <msg name="please_enter_your_name">Palun sisesta oma nimi.</msg>
+  <msg name="please_enter_a_valid_name">Palun sisesta õige nimi!</msg>
+  <msg name="ok">Korras</msg>
 </messagebundle>
