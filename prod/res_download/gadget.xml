@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Resource Download View" 
-      author="Andrii Vozniuk" 
-      author_email="andrii.vozniuk@epfl.ch" 
+  <ModulePrefs title="Resource Download View"
+      author="Andrii Vozniuk"
+      author_email="andrii.vozniuk@epfl.ch"
       description="This functional skin, when added to a space, allows to view and download
        resources from the space. At the moment, it works only in Graasp - http://graasp.epfl.ch">
     <Require feature="osapi" />
@@ -27,7 +27,7 @@
   }
   .doc {
     margin: 5px 5px;
-    color: #333; 
+    color: #333;
     background-color: #EEE;
     border-top: 1px solid #AAA;
     position: relative;
@@ -36,7 +36,7 @@
 
   .thumbnail {
     display: inline-block;
-    color: #333; 
+    color: #333;
     background-color: #EEE;
     margin: 2px 5px;
     width: 30px;
@@ -75,7 +75,7 @@
     display: inline-block;
     margin: 5px;
   }
-  
+
   .content {
     margin-top: 5px;
     font-size: 12px;
@@ -91,15 +91,15 @@
     margin-left:10px;
   }
 </style>
-  
+
 <div id="container">
-  
+
 </div>
 
 <script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
 <!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
 
-<script type="text/javascript"> 
+<script type="text/javascript">
 var isOwner = false;
 
 var app = {containerUrl: "", contextId: "", showingPreview: false, rootUrl: "http://graasp.epfl.ch/gadget/prod/res_download/"}
@@ -122,7 +122,7 @@ var adjustHeight = function() {
   gadgets.window.adjustHeight();
 }
 
-//Shows or hides previews. By default previews are not showed. 
+//Shows or hides previews. By default previews are not showed.
 var changePreviewMode = function() {
     app.showingPreview = !app.showingPreview;
     initialize();
@@ -144,7 +144,7 @@ var isBookmark = function(doc) {
 
 // build the container with gadgets
 var build = function(documents){
-  
+
   var container = $('#container');
   container.empty();
 
@@ -178,7 +178,7 @@ var build = function(documents){
 
   for (var i = 0; i < documents.length; i++) {
     var doc = documents[i];
-    
+
     var doc_id = 'document_'+doc.id;
     var doc_el = $("<div id='"+doc_id+"'></div>");
     doc_el.attr('class','doc');
@@ -186,18 +186,19 @@ var build = function(documents){
     //thumbnail
     var thumb_id = 'asset_' + doc.objectId + '_thumb_image';
     var thumb_el = $("<div class='thumbnail'></div>");
-    var thumbnail = $("<img id='"+thumb_id+"' src='"+doc.thumbnailUrl+"' style='width: 28px; height: 36px;'>");
+    var thumbURL = app.containerUrl + doc.thumbnailUrl;
+    var thumbnail = $("<img id='"+thumb_id+"' src='"+ thumbURL +"' style='width: 28px; height: 36px;'>");
     thumb_el.append(thumbnail);
     doc_el.append(thumb_el);
 
     //document name, downloads the attachment on click
     var doc_name = $('<div class="title"></div>');
-    
+
     var asset_url = doc.profileUrl;
     var doc_name_link = $("<a href='"+asset_url+"' target='_blank'></a>");
     doc_name.append(doc_name_link);
     doc_name_link.text(doc.displayName);
-    
+
     doc_el.append(doc_name);
 
     //Download icon and a 'Download' link if the resource is an attachment
@@ -210,7 +211,7 @@ var build = function(documents){
       var img_link = $("<a href='"+downloadUrl+"' target='_blank'></a>");
       img_link.append(download_img);
       download_el.append(img_link);
-      
+
       var download_link = $("<a href='"+downloadUrl+"' target='_blank' style='display:inline-block; vertical-align:middle'>Download</a>");
       download_el.append(download_link);
       doc_el.append(download_el);
@@ -224,7 +225,7 @@ var build = function(documents){
     if (app.showingPreview == true) {
       var preview_el = $("<div class='preview'></div>");
 
-      //show embedded documents 
+      //show embedded documents
       if (typeof doc.documentEntity !== "undefined") {
         if (!isBookmark(doc)) {
           doc_body.html(doc.documentEntity);
@@ -238,7 +239,7 @@ var build = function(documents){
 
       // show a preview of the attachment
       if (typeof doc.attachment !== "undefined") {
-        var preview_path = app.containerUrl + "/attachment/" + doc.attachment.objectId;
+        var preview_path = app.containerUrl + "/attachment/" + doc.attachment.id;
         var preview_img = $("<img alt='Resource Preview' src='"+ preview_path +"' width='63%'></img>");
         preview_el.append(preview_img);
         doc_body.append(preview_el);
