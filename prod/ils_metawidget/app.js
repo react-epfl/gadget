@@ -205,7 +205,7 @@ var build_tabs = function(subspaces) {
 // remove the hidden spaces from the subspaces array
 var remove_hidden_spaces = function(subspaces) {
   var visible_spaces = _.filter(subspaces, function(item) {
-    return item.visibilityLevel != "Myself";
+    return item.visibilityLevel != "hidden";
   });
   return visible_spaces;
 };
