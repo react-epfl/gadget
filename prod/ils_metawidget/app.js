@@ -5,7 +5,7 @@ var app = { context: "", viewerName: ""
           , root_url: "http://graasp.epfl.ch/gadget/prod/ils_metawidget/"
           , user_name: ""
           , prefs: new gadgets.Prefs()
-          }
+}
 
 // gets the data and calls build for container
 var initialize = function() {
@@ -166,6 +166,8 @@ var build_tabs = function(subspaces) {
     ils_phases.append(phase);
     getDataById(item.id, function (data) {
 
+      var app_ids_in_description=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
+
       var json = {};
       json.contextId = "s_" + item.id;
 
@@ -174,7 +176,13 @@ var build_tabs = function(subspaces) {
       json.order = [];
       json.sizes = {};
       _.each(data.apps.list, function (elem){
-        json.hash[elem.id] = elem;
+        if (app_ids_in_description.indexOf(elem.id)==-1) //if the id of this widget is not found in the description
+        {
+          json.hash[elem.id] = elem; //add the widget to the widget list to be rendered
+        }
+          else{
+            //to be implemented
+        }
       });
       var appdata = data.appdata[json.contextId];
       if (appdata) {
@@ -513,7 +521,10 @@ var getGadgetSize = function(gadgetUrl){
   }
   str_data = JSON.stringify(shindig_data);
 
-  xhr.open( "POST", "http://shindig.epfl.ch:80/gadgets/metadata?st=0:0:0:0:0:0:0", false );
+  var host_url=window.location.host.toString(); //Gets the current host and uses it to switch between development and production in the following URL
+
+  xhr.open( "POST", "http://"+host_url+":80/gadgets/metadata?st=0:0:0:0:0:0:0", false );
+
   // for testing at development machine, use the following url.
   // xhr.open( "POST", "http://localhost:8080/gadgets/metadata?st=0:0:0:0:0:0:0", false );
   xhr.setRequestHeader("Content-type", "application/json");
