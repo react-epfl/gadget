@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="HY.P.A.T.I.A"
+	 	title_url="http://hypatia.iasa.gr/en/4.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+hypathia4@gmail.com"
+	 	description="You will make use of a histogram to plot or summarize your set of masses of the Z0 boson, or any other quantity shown in the tabs of the histogram pane. A histogram is just a way of displaying how many times a certain value of a certain measured variable occurred. The width or RMS of the histogram is connected via the Heisenberg uncertainty principle to the lifetime of the short-lived particle."
+	 	height="980"
+	 	screenshot=""
+	 	thumbnail="">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="HYPATIA" type="application/x-java-applet;version=1.6" width="870" height="980" archive="HypatiaApplet.jar, AbsoluteLayout.jar, jas-aida.jar, jas-aida-dev.jar, jas-freehep-base.jar, jas-freehep-hep.jar, jas-jas-plotter.jar" code="Hypatia.HypatiaApplet" pluginspage="http://java.com/download/" codebase="http://hypatia.iasa.gr/applet" layout="full" classloader_cache="false" languagefile="language_en">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>
