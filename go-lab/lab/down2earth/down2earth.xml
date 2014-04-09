@@ -1,0 +1,44 @@
+<Module>
+	 <ModulePrefs title="down2EARTH"
+	 	title_url="http://education.down2earth.eu/"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+down2earth@gmail.com"
+	 	description="Our Earth gathers about 100 tonnes of extra terrestrial material every day. Most of this material enters the atmosphere as tiny dust particles and burns up as meteors.
+
+However, some of this material is a lot larger and can pose a greater threat to the Earth.
+Through this website, students can study the threat posed by asteroids and comets. The Impact Calculator program can be accessed through this website, and has been specially designed for student use.
+
+Using the Impact Calculator, students can create a virtual impact on Earth by changing the size, speed and composition of an approaching asteroid or comet. A selection of worksheets gives students the opportunity to learn more about asteroids and comets - their detection, orbits, deflection/destruction and the possibility of impacts - and the study of meteorites.
+
+Down2Earth uses a mix of resources, some new and some adapted from various other sources. Down2Earth is run by the Faulkes Telescope Project, supported by the National Museum of Wales and the Science Technology Facilities Council (STFC)."
+	 	height="720"
+	 	screenshot="down2earth.png"
+	 	thumbnail="">
+	 	<Require feature="opensocial-0.9" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			var srcString = "http://education.down2earth.eu/";
+			var width = "920";
+			var height = "720";
+			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
+			gadgets.window.adjustHeight(); //so app resizes itself based on content
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

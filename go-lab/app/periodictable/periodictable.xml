@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Periodic table" author_email="mpalmer@gmail.com" description="Periodic Table of the Elements" height="500">
+	<Require feature="opensocial-0.9" />
+    <Optional feature="openapp" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+
+<style>
+html, body {
+	font-family: Trebuchet MS;
+	font-size: 13px;	
+}
+input {
+	font-family: Trebuchet MS;
+	font-size: 13px;
+	border: 1px solid grey;
+}
+.element {
+	WIDTH: 1.8em;
+	HEIGHT: 3em;
+}
+.element a {
+	text-decoration: none;
+	color: black;
+}
+
+.element:hover {
+	border: 1px solid green;
+}
+.element.selected:hover {
+	border: 1px solid orange;
+}
+.element.selected {
+	border: 1px solid red;
+}
+
+table {
+   width: 100%;
+   border: 0p;
+   font-size: smaller;
+}
+.info {
+   background: #EEEEEE;
+   white-space: nowrap;
+}
+
+.info_value {
+	background: white;
+	height: 1.5em;
+	border: 1px solid grey;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#info_element {
+	width: 10em;
+}
+
+#info_weight {
+	width: 6em; //8
+}
+#info_deg {
+	width: 10em; //20
+}
+
+#info_elec {
+	width: 10em; //12
+}
+#info_iso {
+	width: 2em; //2
+}
+
+#info_orb {
+	width: 4em; //4
+}
+#info_grav {
+	width: 4em; //4
+}
+
+#info_who {
+	width: 23em;
+}
+
+.row {
+	text-align: right;
+	font-style: italic;
+}
+
+.solid {
+	background: #CCCC99;
+}
+
+.liquid {
+	background: #99FFFF;
+}
+
+.gas {
+	background: #FFFF66; 
+}
+
+.synth {
+	background: #C0C0C0;
+}
+
+.elementNr {
+	font-size: x-small;
+	display: block;
+}
+td {
+  text-align: center;
+  border: 1px solid white;
+}
+
+th {
+	font-style: italic;
+	font-weight: normal;
+	border: 1px solid white;
+}
+
+th.label {
+	WIDTH=320;
+	HEIGHT=24;
+	font-family: Arial,Helvetica;
+	font-weight: bold;
+	font-style:normal;
+}
+</style>
+
+<script>
+//**********  Copyright (C) 1997 DrossLLP  ***********
+// dross@well.com  DreamWave: http://www.dreamwv.com 
+//****************************************************
+
+// Adapted By DrossLLP from the work of Tim Helvey: tdhelvey@netusa1.net
+// at URL: http://www.netusa1.net/~tdhelvey/
+
+
+var elements = {};
+var labels2names = {};
+var regEl = function(label,elem,state,num,wgt,elec,orb,melt,boil,who,grav,iso) {
+  elements[num] = {label:label,elem:elem,state:state,num:num,wgt:wgt,elec:elec,orb:orb,melt:melt,boil:boil,who:who,grav:grav,iso:iso};
+  labels2names[label] = num;
+}
+
+regEl('H','Hydrogen','gas', '1','1.0079','1','1s1','-259.14','-252.87','Cavendish 1766','0.070','3');
+regEl('He','Helium','gas', '2','4.0026','2','1s2','-272C@26ATM','-268.6','Janssen 1868','0.1785','5');
+regEl('Li','Lithium','solid', '3','6.94','2,1','2s1','180.54','1347','Arfvedson 1817','0.534','5');
+regEl('Be','Beryllium','solid', '4','9.01218','2,2','2s2','1278','2970','Vauquelin 1798','1.848','6');
+regEl('B','Boron','solid', '5','10.81','2,3','2p1','2300','2550','Gay-Lussac & Thenard; Davy 1808','2.87','6');
+regEl('C','Carbon','solid', '6','12.011','2,4','2p2','3500','4827','(Prehistoric)','1.8-3.5','7');
+regEl('N','Nitrogen','gas', '7','14.0067','2,5','2p3','-209.9','-195.8','Rutherford 1772','0.808','8');
+regEl('O','Oxygen','gas', '8','15.9994','2,6','2p4','-218.4','-183.0','Preistley 1774','1.14','8');
+regEl('F','Flourine','gas', '9','18.998403','2,7','2p5','-219.62','-188.14','Moissan 1886','1.108','6');
+regEl('Ne','Neon','gas', '10','20.17','2,8','2p6','-248.6','-246.1','Ramsay & Travers 1898','0.89990','8');
+regEl('Na','Sodium','solid', '11','22.98977','2,8,1','3s1','97.8','882.9','Davy 1807','0.971','7');
+regEl('Mg','Magnesium','solid', '12','24.305','2,8,2','3s2','638.8','1090','Black 1775','1.738','8');
+regEl('Al','Aluminum','solid', '13','26.98154','2,8,3','3p1','660.37','2467','Wohler 1827','2.6989','8');
+regEl('Si','Silicon','solid', '14','28.0855','2,8,4','3p2','1410','2355','Berzelius 1824','2.33','8');
+regEl('P','Phosphorous','solid', '15','30.97376','2,8,5','3p3','44.1','280','Brand 1669','1.82','7');
+regEl('S','Sulfur','solid', '16','32.06','2,8,6','3p4','112.8','444.6','(Prehistoric)','2.07','10');
+regEl('Cl','Chlorine','gas', '17','35.453','2,8,7','3p5','-100.98','-34.6','Scheele 1774','1.56','11');
+regEl('Ar','Argon','gas', '18','39.948','2,8,8','3p6','-189.3','-186','Rayleigh & Ramsay 1894','1.7837','8');
+regEl('K','Potassium','solid', '19','39.0983','2,8,8,1','4s1','63.65','774','Davy 1807','0.862','10');
+regEl('Ca','Calcium','solid', '20','40.08','2,8,8,2','4s2','839','1484.4','Davy 1808','1.55','14');
+regEl('Sc','Scandium','solid', '21','44.9559','2,8,9,2','3d1','1539','2832','Nilson 1879','2.989','15');
+regEl('Ti','Titanium','solid', '22','47.90','2,8,10,2','3d2','1660','3287','Gregor 1791','4.55','9');
+regEl('V','Vanadium','solid', '23','50.9415','2,8,11,2','3d3','1890±10','3380','del Rio 1901','6.11','9');
+regEl('Cr','Chromium','solid', '24','51.996','2,8,13,1','3d5','1857','2672','Vauquelin 1797','7.18-7.20','9');
+regEl('Mn','Manganese','solid', '25','54.9380','2,8,13,2','3d5','1245','1962','Gahn, Scheele & Bergman 1774','7.21-7.44','11');
+regEl('Fe','Iron','solid', '26','55.847','2,8,14,2','3d6','1535','2750','(Prehistoric)','7.894','10');
+regEl('Co','Cobalt','solid', '27','58.9332','2,8,15,2','3d7','1495','2870','Brandt c.1735','8.9','14');
+regEl('Ni','Nickel','solid', '28','58.71','2,8,16,2','3d8','1453','2732','Cronstedt 1751','8.902','11');
+regEl('Cu','Copper','solid', '29','63.546','2,8,18,1','3d10','1083','2567','(Prehistoric)','8.96','11');
+regEl('Zn','Zinc','solid', '30','65.38','2,8,18,2','3d10','419.58','907','(Prehistoric)','7.113','15');
+regEl('Ga','Gallium','solid', '31','69.735','2,8,18,3','4p1','29.78','2403','Boisbaudran 1875','5.904','14');
+regEl('Ge','Germanium','solid', '32','72.59','2,8,18,4','4p2','937.4','2830','Winkler 1886','5.323','17');
+regEl('As','Arsenic','solid', '33','74.9216','2,8,18,5','4p3','81@28ATM','Sublimes@613','Albertus Magnus 1250?','5.73','14');
+regEl('Se','Selenium','solid', '34','78.96','2,8,18,6','4p4','217','684.9','Berzelius 1817','4.79 gray','20');
+regEl('Br','Bromine','liquid', '35','79.904','2,8,18,7','4p5','-7.2','58.78','Balard 1826','3.12','19');
+regEl('Kr','Krypton','gas', '36','83.80','2,8,18,8','4p6','-157.2','-153.4','Ramsay & Travers 1898','3.733','23');
+regEl('Rb','Rubidium','solid', '37','85.467','2,8,18,8,1','5s1','38.89','688','Bunsen & Kirchoff 1861','1.532','20');
+regEl('Sr','Strontium','solid', '38','87.62','2,8,18,8,2','5s2','769','1384','Davy 1808','2.54','18');
+regEl('Y','Yttrium','solid', '39','88.9059','2,8,18,9,2','4d1','1523','3337','Gadolin 1794','4.457','21');
+regEl('Zr','Zirconium','solid', '40','91.22','2,8,18,10,2','4d2','1852±2','4377','Klaproth 1789','6.506','20');
+regEl('Nb','Niobium','solid', '41','92.9064','2,8,18,13,1','4d4','2468±10','4927','Hatchett 1801','8.57','24');
+regEl('Mo','Molybdenum','solid', '42','95.94','2,8,18,13,1','4d5','2617','4612','Scheele 1778','10.22','20');
+regEl('Tc','Technetium','synth', '43','98.9062','2,8,18,14,1','4d6','2200±50','4877','Perrier & Segre 1937','11.50','23');
+regEl('Ru','Ruthenium','solid', '44','101.07','2,8,18,15,1','4d7','2250','3900','Klaus 1844','12.44','16');
+regEl('Rh','Rhodium','solid', '45','102.9055','2,8,18,16,1','4d8','1966±3','3727','Wollaston 1803','12.41','20');
+regEl('Pd','Palladium','solid', '46','106.4','2,8,18,18','4d10','1552','2927','Wollaston 1803','12.02','21');
+regEl('Ag','Silver','solid', '47','107.868','2,8,18,18,1','4d10','961.93','2212','(Prehistoric)','10.5','27');
+regEl('Cd','Cadmium','solid', '48','112.41','2,8,18,18,2','4d10','320.9','765','Stromeyer 1817','8.65','22');
+regEl('In','Indium','solid', '49','114.82','2,8,18,18,3','5p1','156.61','2000±10','Riech & Richter 1863','7.31','34');
+regEl('Sn','Tin','solid', '50','118.69','2,8,18,18,4','5p2','231.9','2270','(Prehistoric)','7.31 white','28');
+regEl('Sb','Antimony','solid', '51','121.75','2,8,18,18,5','5p3','630','1750','(Early historic)','6.61','29');
+regEl('Te','Tellurium','solid', '52','127.60','2,8,18,18,6','5p4','449.5','989.8','von Reichenstein 1782','6.24','29');
+regEl('I','Iodine','solid', '53','126.9045','2,8,18,18,7','5p5','113.5','184@35atm','Cortois 1811','4.93','24');
+regEl('Xe','Xenon','gas', '54','131.30','2,8,18,18,8','5p6','-111.9','-108.1','Ramsay & Travers 1898','3.52','31');
+regEl('Cs','Cesium','solid', '55','132.9054','2,8,18,18,8,1','6s1','28.5','678.4','Bunsen & Kirchoff 1863','1.873','22');
+regEl('Ba','Barium','solid', '56','137.33','2,8,18,18,8,2','6s2','725','1140','Davy 1808','3.5','25');
+regEl('La','Lanthanum','solid', '57','138.9055','2,8,18,18,9,2','5d1','920','3469','Mosander 1839','6.166','19');
+regEl('Hf','Hafnium','solid', '72','178.49','2,8,18,32,10,2','5d2','2150','5400','Coster & von Hevesy 1923','13.31','17');
+regEl('Ta','Tantalum','solid', '73','180.947','2,8,18,32,11,2','5d3','2996','5425±100','Ekeberg 1801','16.654','19');
+regEl('W','Tungsten','solid', '74','183.85','2,8,18,32,12,2','5d4','3410±20','5660','J. & F. d\'Elhuyar 1783','19.3','22' );
+regEl('Re','Rhenium','solid', '75','186.207','2,8,18,32,13,2','5d5','3180','5627','Noddack, Berg & Tacke 1925','21.02','21');
+regEl('Os','Osmium','solid', '76','190.2','2,8,18,32,14,2','5d6','3045','5027','Tennant 1803','22.57','19');
+regEl('Ir','Iridium','solid', '77','192.22','2,8,18,32,15,2','5d7','2410','4527±100','Tennant 1803','22.42','25');
+regEl('Pt','Platinum','solid', '78','195.09','2,8,18,32,17,1','5d9','1772','3827','Ulloa 1735','21.45','32');
+regEl('Au','Gold','solid', '79','196.9665','2,8,18,32,18,1','5d10','1064.43','2807','(Prehistoric)','19.32','21');
+regEl('Hg','Mercury','liquid', '80','200.59','2,8,18,32,18,2','5d10','-38.87','356.58','(Prehistoric)','13.546','26');
+regEl('Tl','Thallium','solid', '81','204.37','2,8,18,32,18,3','6p1','303.5','1457±10C','Crookes 1861','11.85','28');
+regEl('Pb','Lead','solid', '82','207.2','2,8,18,32,18,4','6p2','327.5','1740','(Prehistoric)','11.35','29');
+regEl('Bi','Bismuth','solid', '83','208.9804','2,8,18,32,18,5','6p3','271.3','1560±5C','Geoffroy 1753','9.747','19');
+regEl('Po','Polonium','solid', '84','(209)','2,8,18,32,18,6','6p4','254','962','Curie 1898','9.32','34');
+regEl('At','Astatine','solid', '85','(210)','2,8,18,32,18,7','6p5','302','337','Corson et al. 1940','---','21');
+regEl('Rn','Radon','gas', '86','(222)','2,8,18,32,18,8','6p6','-71','-61.8','Dorn 1900','4.4','20');
+regEl('Fr','Francium','solid', '87','(223)','2,8,18,32,18,8,1','7s1','27','677','Perey 1938','---','21');
+regEl('Ra','Radium','solid', '88','226.0254','2,8,18,32,18,8,2','7s2','700','1737','P. & M. Curie 1898','5.0?','15');
+regEl('Ac','Actinium','solid', '89','(227)','2,8,18,32,18,9,2','6d1','1050','3200±300','Debierne 1899','10.07','11');
+regEl('Rh','Rutherfordium','synth', '104','(261)','2,8,18,32,32,10,2','6d2','N/A','N/A','Lawrence Berkeley Lab-USA / Dubna Lab-Russia 1964','---','---');
+regEl('Db','Dubnium','synth', '105','(262)','2,8,18,32,32,11,2','6d3','N/A','N/A','Lawrence Berkeley Lab-USA / Dubna Lab-Russia 1967','---','---');
+regEl('Sg','Seaborgium','synth', '106','(263)','2,8,18,32,32,12,2','6d4','N/A','N/A','Lawrence Berkeley Lab-USA / Dubna Lab-Russia 1974','---','---');
+regEl('Bh','Bohrium','synth', '107','(262)','2,8,18,32,32,13,2','6d5','N/A','N/A','Armbruster, Münzenber et al. 1981','---','---');
+regEl('Hs','Hassium','synth', '108','(265)','---','---','N/A','N/A','Armbruster, Munzenber et al. 1984','---','---');
+regEl('Mt','Meitnerium','synth', '109','(266)','---','---','N/A','N/A','Armbruster, Munzenber et al. 1982','---','---');
+regEl('Uun','Ununnilium','synth', '110','(269)','---','---','N/A','N/A','Hofmann, Ninov et al. GSI-Germany 1994','---','---');
+regEl('Uuu','Unununium','synth', '111','(272)','---','---','N/A','N/A','Hofmann, Ninov et al. GSI-Germany 1994','---','---');
+regEl('Uub','Ununbium','synth', '112','(277)','---','---','N/A','N/A','Hofmann, Ninov et al. GSI-Germany 1996','---','---');
+regEl('Uut','Ununtrium','synth', '113','---','---','---','N/A','N/A','(not discovered yet)','---','---');
+regEl('Uuq','Ununquadium','synth', '114','---','---','---','N/A','N/A','(not discovered yet)','---','---');
+regEl('Ce','Cerium','solid', '58','140.12','2,8,18,20,8,2','4f2','795','3257','Berzelius & Hisinger; Klaproth 1803','6.771','19');
+regEl('Pr','Praseodymium','solid', '59','140.9077','2,8,18,21,8,2','4f3','935','3127','von Weisbach 1885','6.772','18');
+regEl('Nd','Neodymium','solid', '60','144.24','2,8,18,22,8,2','4f4','1010','3127','von Weisbach 1885','6.80&7.004','16');
+regEl('Pm','Promethium','solid', '61','(145)','2,8,18,23,8,2','4f5','N/A','N/A','Marinsky et al. 1945','---','14');
+regEl('Sm','Samarium','solid', '62','150.4','2,8,18,24,8,2','4f6','1072','1900','Boisbaudran 1879','7.536','17');
+regEl('Eu','Europium','solid', '63','151.96','2,8,18,25,8,2','4f7','822','1597','Demarcay 1896','5.282','21');
+regEl('Gd','Gadolinium','solid', '64','157.25','2,8,18,25,9,2','4f7','1311','3233','Marignac 1880','7.898','17');
+regEl('Tb','Terbium','solid', '65','158.9254','2,8,18,27,8,2','4f9','1360','3041','Mosander 1843','8.234','24');
+regEl('Dy','Dysprosium','solid', '66','162.50','2,8,18,28,8,2','4f10','1412','2562','Boisbaudran 1886','8.540','21');
+regEl('Ho','Holmium','solid', '67','164.9304','2,8,18,29,8,2','4f11','1470','2720','Delafontaine 1878','8.781','29');
+regEl('Er','Erbium','solid', '68','167.26','2,8,18,30,8,2','4f12','1522','2510','Mosander 1843','9.045','16');
+regEl('Tm','Thulium','solid', '69','168.9342','2,8,18,31,8,2','4f13','1545','1727','Cleve 1879','9.314','18');
+regEl('Yb','Ytterbium','solid', '70','173.04','2,8,18,32,8,2','4f14','824','1466','Marignac 1878','6.972','16');
+regEl('Lu','Lutetium','solid', '71','174.96','2,8,18,32,9,2','4f14','1656','3315','Urbain 1907','9.835','22');
+regEl('Th','Thorium','solid', '90','232.0381','2,8,18,32,18,10,2','6d2','1750','4790','Berzelius 1828','11.72','12');
+regEl('Pa','Proactinium','solid', '91','231.0359','2,8,18,32,20,9,2','5f2','1600','N/A','Hahn & Meitner 1917','15.37','14');
+regEl('U','Uranium','solid', '92','238.029','2,8,18,32,21,9,2','5f3','1132','3818','Peligot 1841','-18.95','15');
+regEl('Np','Neptunium','synth', '93','237.0482','2,8,18,32,23,8,2','5f4','640','3902','McMillan & Abelson 1940','20.25','15');
+regEl('Pu','Plutonium','synth', '94','(244)','2,8,18,32,24,8,2','5f6','639.5±2','3235±19','Seaborg et al. 1940','19.84','16');
+regEl('Am','Americium','synth', '95','(243)','2,8,18,32,25,8,2','5f7','994','2607','Seaborg et al. 1944','13.67','13');
+regEl('Cm','Curium','synth', '96','(247)','2,8,18,32,25,9,2','5f7','1340','N/A','Seaborg et al. 1944','13.51','13');
+regEl('Bk','Berkelium','synth', '97','(247)','2,8,18,32,26,9,2','5f8','N/A','N/A','Seaborg et al. 1949','14.00','8');
+regEl('Cf','Californium','synth', '98','(251)','2,8,18,32,28,8,2','5f9','N/A','N/A','Seaborg et al. 1950','---','12');
+regEl('Es','Einsteinium','synth', '99','(254)','2,8,18,32,29,8,2','5f11','N/A','N/A','Ghiorso et al. 1952','---','12');
+regEl('Fm','Fermium','synth', '100','(257)','2,8,18,32,30,8,2','5f12','N/A','N/A','Ghiorso et al. 1953','---','10');
+regEl('Md','Mendelevium','synth', '101','(258)','2,8,18,32,31,8,2','5f13','N/A','N/A','Ghiorso et al. 1955','---','3');
+regEl('No','Nobelium','synth', '102','(259)','2,8,18,32,32,8,2','5f14','N/A','N/A','Ghiorso et al. 1957','---','7');
+regEl('Lr','Lawrencium','synth', '103','(260)','2,8,18,32,32,9,2','5f14','N/A','N/A','Ghiorso et al. 1961','---','20');
+
+
+var ns = {};
+	ns.role = "http://purl.org/role/terms/";
+	ns.dcterms = "http://purl.org/dc/terms/";
+	ns.rdfs = "http://www.w3.org/2000/01/rdf-schema#";
+	ns.rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	ns.pt = "http://www.daml.org/2003/01/periodictable/PeriodicTable#";
+
+
+function fillitin(num)  {
+  var el = elements[num];
+  Box = document.pertab
+  var info_elem = document.getElementById("info_element");
+  info_elem.innerHTML = el.num + " " + el.elem; 
+  info_elem.href = "http://en.wikipedia.org/wiki/"+el.elem; 
+  document.getElementById("info_who").innerHTML = el.who;
+  document.getElementById("info_weight").innerHTML = el.wgt;
+  document.getElementById("info_elec").innerHTML = el.elec;
+  document.getElementById("info_orb").innerHTML = el.orb;
+  document.getElementById("info_deg").innerHTML = el.melt + " | " + el.boil;
+  document.getElementById("info_grav").innerHTML = el.grav;
+  document.getElementById("info_iso").innerHTML = el.iso;  
+}
+
+var currentSelected;
+var selectElement = function(num) {
+  var newSelection = document.getElementById(num);
+  if (newSelection == null) {
+    return;
+  }
+  if (currentSelected != null) {
+     currentSelected.className = currentSelected.className.replace(" selected", "");
+  }
+  fillitin(num);
+  currentSelected = newSelection
+  currentSelected.className = currentSelected.className+" selected";
+}
+
+var sendEvent = function(num) {
+  var el = elements[num];
+  if (el == null) {
+    return;
+  }
+  var md = {};
+  md[ns.rdf+"type"] = ns.pt+"Element";
+  md[ns.rdfs+"seeAlso"] = "http://en.wikipedia.org/wiki/"+el.elem;
+  md[ns.dcterms+"title"]= el.num + " " + el.elem;
+  md[ns.pt+"name"] = el.elem;
+  md[ns.pt+"symbol"] = el.label;
+  md[ns.pt+"atomicNumber"] = el.num;
+  md[ns.pt+"standardState"] = el.state;
+  md[ns.dcterms+"description"] = 'Element: ' + el.elem +
+    '\nAtomic number: ' + el.num +
+    '\nDiscoverer(s): ' + el.who +
+    '\nAtomic Weight: ' + el.wgt +
+    '\nShell: ' + el.elec + 
+    '\nOrbital: ' + el.orbit +
+    '\nMelt&deg;/Boil&deg;: ' + el.melt + " | " + el.boil +
+    '\nSpecific Gravity: ' + el.grav +
+    '\nIsotopes: ' + el.iso;
+  gadgets.openapp.publish({uri: ns.pt+el.label}, md);
+};
+	gadgets.util.registerOnLoadHandler(function() {
+		 var pertab = document.getElementById("pertab");
+		 pertab.onclick = function(e) {
+		   var targ;
+		   if (!e) var e = window.event;
+		   if (e.target) targ = e.target;
+		   else if (e.srcElement) targ = e.srcElement;
+		   if (targ.nodeType == 3) // defeat Safari bug
+		      targ = targ.parentNode;
+		   var el;
+		   do {
+		      if (targ.tagName.toLowerCase() === "td") {
+		        if (targ.className.indexOf("element") !== -1) {
+			  		selectElement(targ.id);
+			  		sendEvent(targ.id);
+			  		return false;
+				}
+		        break;
+		      }
+		      targ = targ.parentNode;
+		   } while(targ !== pertab);
+		 };
+		 gadgets.openapp.connect(function(envelope, message) {
+		    if (envelope.source === window) {
+				return;
+		    }
+		    if (message[ns.rdf+"type"] === ns.pt+"Element") {
+		      selectElement(message[ns.pt+"atomicNumber"]);
+		    } else {
+		       var rdfvalue = message[ns.rdf+"value"];
+		       if (rdfvalue != null) {
+		         for(var num=1;num<=114;num++) {
+		           if (rdfvalue == num || rdfvalue === elements[num].elem || rdfvalue === elements[num].label) {
+			     selectElement(num);
+			     break;
+			   }
+		         }
+		       }
+		    }
+		 });
+	});
+
+
+</script>
+
+<div>
+
+<DIV id="main" ALIGN=CENTER>
+<FORM NAME="pertab"><TABLE CELLSPACING="0" id="pertab">
+<Tr>
+<th COLSPAN="2" class="solid">solid</th>
+<th COLSPAN="2" class="liquid">liquid</th>
+<th COLSPAN="10" class="label info">T H E&nbsp;&nbsp;&nbsp;P E R I O D I C&nbsp;&nbsp;&nbsp;T A B L E</th>
+<th COLSPAN="2" class="gas">gas</th>
+<th COLSPAN="2" class="synth" title="Synthesis">synth</th>
+</TR>
+
+<TR class="info">
+  <TD COLSPAN="18">
+    <label><tt>&nbsp;Element:</tt><a class="info_value" id="info_element" target="_blank"></a>
+    <label><tt>&nbsp;Discoverer:</tt><span class="info_value" id="info_who"></span></label>
+  </TD>
+</TR>
+
+<TR>
+  <TD title="Hydrogen" title="Hydrogen" class='element gas' id='1'><a href="http://en.wikipedia.org/wiki/Hydrogen"><span class="elementNr">1</span>H</a></TD>
+  <TD COLSPAN="16" class="info">
+    <label>&nbsp;<tt title="Atomic Weight">A.Weight:</tt><span class="info_value" id="info_weight"></span></label>
+    <label><tt>&nbsp;Melt|Boil(C):</TT><span class="info_value" id="info_deg"></span></label>
+  </TD>
+  <TD title="Helium" title="Helium" class='element gas' id='2'><a href="http://en.wikipedia.org/wiki/Helium"><span class="elementNr">2</span>He</a></TD>
+</TR>
+
+<TR>
+    <TD title="Lithium" class='element solid' id='3'><a href="http://en.wikipedia.org/wiki/Lithium"><span class="elementNr">3</span>Li</a></TD>
+    <TD title="Beryllium" class='element solid' id='4'><a href="http://en.wikipedia.org/wiki/Beryllium"><span class="elementNr">4</span>Be</a></TD>
+<TD COLSPAN="10" class="info">
+  <label><TT>&nbsp;Shell:</tt><span class="info_value" id="info_elec"></span></label>
+  <label><tt>&nbsp;Isotopes:</tt><span class="info_value" id="info_iso"></label>
+</TD>
+    <TD title="Boron" class='element solid' id='5'><a href="http://en.wikipedia.org/wiki/Boron"><span class="elementNr">5</span>B</a></TD>
+    <TD title="Carbon" class='element solid' id='6'><a href="http://en.wikipedia.org/wiki/Carbon"><span class="elementNr">6</span>C</a></TD>
+    <TD title="Nitrogen" class='element gas' id='7'><a href="http://en.wikipedia.org/wiki/Nitrogen"><span class="elementNr">7</span>N</a></TD>
+    <TD title="Oxygen" class='element gas' id='8'><a href="http://en.wikipedia.org/wiki/Oxygen"><span class="elementNr">8</span>O</a></TD>
+    <TD title="Flourine" class='element gas' id='9'><a href="http://en.wikipedia.org/wiki/Flourine"><span class="elementNr">9</span>F</a></TD>
+    <TD title="Neon" class='element gas' id='10'><a href="http://en.wikipedia.org/wiki/Neon"><span class="elementNr">10</span>Ne</a></TD>
+</TR>
+
+<TR>
+    <TD title="Sodium" class='element solid' id='11'><a href="http://en.wikipedia.org/wiki/Sodium"><span class="elementNr">11</span>Na</a></TD>
+    <TD title="Magnesium" class='element solid' id='12'><a href="http://en.wikipedia.org/wiki/Magnesium"><span class="elementNr">12</span>Mg</a></TD>	
+    <TD COLSPAN="10" class="info">
+      <label>&nbsp;<tt>Orbital:</tt><span class="info_value" id="info_orb"></span></label>
+      <label><tt title="Specific Gravity">&nbsp;S.Gravity:</tt><span class="info_value" id="info_grav"></span></label>
+    </TD>
+    <TD title="Aluminum" class='element solid' id='13'><a href="http://en.wikipedia.org/wiki/Aluminum"><span class="elementNr">13</span>Al</a></TD>
+    <TD title="Silicon" class='element solid' id='14'><a href="http://en.wikipedia.org/wiki/Silicon"><span class="elementNr">14</span>Si</a></TD>
+    <TD title="Phosphorous" class='element solid' id='15'><a href="http://en.wikipedia.org/wiki/Phosphorous"><span class="elementNr">15</span>P</a></TD>
+    <TD title="Sulfur" class='element solid' id='16'><a href="http://en.wikipedia.org/wiki/Sulfur"><span class="elementNr">16</span>S</a></TD>
+    <TD title="Chlorine" class='element gas' id='17'><a href="http://en.wikipedia.org/wiki/Chlorine"><span class="elementNr">17</span>Cl</a></TD>
+    <TD title="Argon" class='element gas' id='18'><a href="http://en.wikipedia.org/wiki/Argon"><span class="elementNr">18</span>Ar</a></TD>
+</TR>
+
+<TR>     	
+    <TD title="Potassium" class='element solid' id='19'><a href="http://en.wikipedia.org/wiki/Potassium"><span class="elementNr">19</span>K</a></TD>
+    <TD title="Calcium" class='element solid' id='20'><a href="http://en.wikipedia.org/wiki/Calcium"><span class="elementNr">20</span>Ca</a></TD>
+    <TD title="Scandium" class='element solid' id='21'><a href="http://en.wikipedia.org/wiki/Scandium"><span class="elementNr">21</span>Sc</a></TD>
+    <TD title="Titanium" class='element solid' id='22'><a href="http://en.wikipedia.org/wiki/Titanium"><span class="elementNr">22</span>Ti</a></TD>
+    <TD title="Vanadium" class='element solid' id='23'><a href="http://en.wikipedia.org/wiki/Vanadium"><span class="elementNr">23</span>V</a></TD>
+    <TD title="Chromium" class='element solid' id='24'><a href="http://en.wikipedia.org/wiki/Chromium"><span class="elementNr">24</span>Cr</a></TD>
+    <TD title="Manganese" class='element solid' id='25'><a href="http://en.wikipedia.org/wiki/Manganese"><span class="elementNr">25</span>Mn</a></TD>
+    <TD title="Iron" class='element solid' id='26'><a href="http://en.wikipedia.org/wiki/Iron"><span class="elementNr">26</span>Fe</a></TD>
+    <TD title="Cobalt" class='element solid' id='27'><a href="http://en.wikipedia.org/wiki/Cobalt"><span class="elementNr">27</span>Co</a></TD>
+    <TD title="Nickel" class='element solid' id='28'><a href="http://en.wikipedia.org/wiki/Nickel"><span class="elementNr">28</span>Ni</a></TD>
+    <TD title="Copper" class='element solid' id='29'><a href="http://en.wikipedia.org/wiki/Copper"><span class="elementNr">29</span>Cu</a></TD>
+    <TD title="Zinc" class='element solid' id='30'><a href="http://en.wikipedia.org/wiki/Zinc"><span class="elementNr">30</span>Zn</a></TD>
+    <TD title="Gallium" class='element solid' id='31'><a href="http://en.wikipedia.org/wiki/Gallium"><span class="elementNr">31</span>Ga</a></TD>
+    <TD title="Germanium" class='element solid' id='32'><a href="http://en.wikipedia.org/wiki/Germanium"><span class="elementNr">32</span>Ge</a></TD>
+    <TD title="Arsenic" class='element solid' id='33'><a href="http://en.wikipedia.org/wiki/Arsenic"><span class="elementNr">33</span>As</a></TD>
+    <TD title="Selenium" class='element solid' id='34'><a href="http://en.wikipedia.org/wiki/Selenium"><span class="elementNr">34</span>Se</a></TD>
+    <TD title="Bromine" class='element liquid' id='35'><a href="http://en.wikipedia.org/wiki/Bromine"><span class="elementNr">35</span>Br</a></TD>
+    <TD title="Krypton" class='element gas' id='36'><a href="http://en.wikipedia.org/wiki/Krypton"><span class="elementNr">36</span>Kr</a></TD>
+</TR>
+
+<TR>
+    <TD title="Rubidium" class='element solid' id='37'><a href="http://en.wikipedia.org/wiki/Rubidium"><span class="elementNr">37</span>Rb</a></TD>
+    <TD title="Strontium" class='element solid' id='38'><a href="http://en.wikipedia.org/wiki/Strontium"><span class="elementNr">38</span>Sr</a></TD>
+    <TD title="Yttrium" class='element solid' id='39'><a href="http://en.wikipedia.org/wiki/Yttrium"><span class="elementNr">39</span>Y</a></TD>
+    <TD title="Zirconium" class='element solid' id='40'><a href="http://en.wikipedia.org/wiki/Zirconium"><span class="elementNr">40</span>Zr</a></TD>
+    <TD title="Niobium" class='element solid' id='41'><a href="http://en.wikipedia.org/wiki/Niobium"><span class="elementNr">41</span>Nb</a></TD>
+    <TD title="Molybdenum" class='element solid' id='42'><a href="http://en.wikipedia.org/wiki/Molybdenum"><span class="elementNr">42</span>Mo</a></TD>
+    <TD title="Technetium" class='element synth' id='43'><a href="http://en.wikipedia.org/wiki/Technetium"><span class="elementNr">43</span>Tc</a></TD>
+    <TD title="Ruthenium" class='element solid' id='44'><a href="http://en.wikipedia.org/wiki/Ruthenium"><span class="elementNr">44</span>Ru</a></TD>
+    <TD title="Rhodium" class='element solid' id='45'><a href="http://en.wikipedia.org/wiki/Rhodium"><span class="elementNr">45</span>Rh</a></TD>
+    <TD title="Palladium" class='element solid' id='46'><a href="http://en.wikipedia.org/wiki/Palladium"><span class="elementNr">46</span>Pd</a></TD>
+    <TD title="Silver" class='element solid' id='47'><a href="http://en.wikipedia.org/wiki/Silver"><span class="elementNr">47</span>Ag</a></TD>
+    <TD title="Cadmium" class='element solid' id='48'><a href="http://en.wikipedia.org/wiki/Cadmium"><span class="elementNr">48</span>Cd</a></TD>
+    <TD title="Indium" class='element solid' id='49'><a href="http://en.wikipedia.org/wiki/Indium"><span class="elementNr">49</span>In</a></TD>
+    <TD title="Tin" class='element solid' id='50'><a href="http://en.wikipedia.org/wiki/Tin"><span class="elementNr">50</span>Sn</a></TD>
+    <TD title="Antimony" class='element solid' id='51'><a href="http://en.wikipedia.org/wiki/Antimony"><span class="elementNr">51</span>Sb</a></TD>
+    <TD title="Tellurium" class='element solid' id='52'><a href="http://en.wikipedia.org/wiki/Tellurium"><span class="elementNr">52</span>Te</a></TD>
+    <TD title="Iodine" class='element solid' id='53'><a href="http://en.wikipedia.org/wiki/Iodine"><span class="elementNr">53</span>I</a></TD>
+    <TD title="Xenon" class='element gas' id='54'><a href="http://en.wikipedia.org/wiki/Xenon"><span class="elementNr">54</span>Xe</a></TD>
+</TR>
+
+<TR>
+    <TD title="Cesium" class='element solid' id='55'><a href="http://en.wikipedia.org/wiki/Cesium"><span class="elementNr">55</span>Cs</a></TD>
+    <TD title="Barium" class='element solid' id='56'><a href="http://en.wikipedia.org/wiki/Barium"><span class="elementNr">56</span>Ba</a></TD>
+    <TD title="Lanthanum" class='element solid' id='57'><a href="http://en.wikipedia.org/wiki/Lanthanum"><span class="elementNr">57</span>La</a></TD>
+    <TD title="Hafnium" class='element solid' id='72'><a href="http://en.wikipedia.org/wiki/Hafnium"><span class="elementNr">72</span>Hf</a></TD>
+    <TD title="Tantalum" class='element solid' id='73'><a href="http://en.wikipedia.org/wiki/Tantalum"><span class="elementNr">73</span>Ta</a></TD>
+    <TD title="Tungsten" class='element solid' id='74'><a href="http://en.wikipedia.org/wiki/Tungsten"><span class="elementNr">74</span>W</a></TD>
+    <TD title="Rhenium" class='element solid' id='75'><a href="http://en.wikipedia.org/wiki/Rhenium"><span class="elementNr">75</span>Re</a></TD>
+    <TD title="Osmium" class='element solid' id='76'><a href="http://en.wikipedia.org/wiki/Osmium"><span class="elementNr">76</span>Os</a></TD>
+    <TD title="Iridium" class='element solid' id='77'><a href="http://en.wikipedia.org/wiki/Iridium"><span class="elementNr">77</span>Ir</a></TD>
+    <TD title="Platinum" class='element solid' id='78'><a href="http://en.wikipedia.org/wiki/Platinum"><span class="elementNr">78</span>Pt</a></TD>
+    <TD title="Gold" class='element solid' id='79'><a href="http://en.wikipedia.org/wiki/Gold"><span class="elementNr">79</span>Au</a></TD>
+    <TD title="Mercury" class='element liquid' id='80'><a href="http://en.wikipedia.org/wiki/Mercury"><span class="elementNr">80</span>Hg</a></TD>
+    <TD title="Thallium" class='element solid' id='81'><a href="http://en.wikipedia.org/wiki/Thallium"><span class="elementNr">81</span>Tl</a></TD>
+    <TD title="Lead" class='element solid' id='82'><a href="http://en.wikipedia.org/wiki/Lead"><span class="elementNr">82</span>Pb</a></TD>
+    <TD title="Bismuth" class='element solid' id='83'><a href="http://en.wikipedia.org/wiki/Bismuth"><span class="elementNr">83</span>Bi</a></TD>
+    <TD title="Polonium" class='element solid' id='84'><a href="http://en.wikipedia.org/wiki/Polonium"><span class="elementNr">84</span>Po</a></TD>
+    <TD title="Astatine" class='element solid' id='85'><a href="http://en.wikipedia.org/wiki/Astatine"><span class="elementNr">85</span>At</a></TD>
+    <TD title="Radon" class='element gas' id='86'><a href="http://en.wikipedia.org/wiki/Radon"><span class="elementNr">86</span>Rn</a></TD>        
+</TR>
+<TR>
+    <TD title="Francium" class='element solid' id='87'><a href="http://en.wikipedia.org/wiki/Francium"><span class="elementNr">87</span>Fr</a></TD>
+    <TD title="Radium" class='element solid' id='88'><a href="http://en.wikipedia.org/wiki/Radium"><span class="elementNr">88</span>Ra</a></TD>
+    <TD title="Actinium" class='element solid' id='89'><a href="http://en.wikipedia.org/wiki/Actinium"><span class="elementNr">89</span>Ac</a></TD>
+    <TD title="Rutherfordium" class='element synth' id='104'><a href="http://en.wikipedia.org/wiki/Rutherfordium"><span class="elementNr">104</span>Rh</a></TD>
+    <TD title="Dubnium" class='element synth' id='105'><a href="http://en.wikipedia.org/wiki/Dubnium"><span class="elementNr">105</span>Db</a></TD>
+    <TD title="Seaborgium" class='element synth' id='106'><a href="http://en.wikipedia.org/wiki/Seaborgium"><span class="elementNr">106</span>Sg</a></TD>
+    <TD title="Bohrium" class='element synth' id='107'><a href="http://en.wikipedia.org/wiki/Bohrium"><span class="elementNr">107</span>Bh</a></TD>
+    <TD title="Hassium" class='element synth' id='108'><a href="http://en.wikipedia.org/wiki/Hassium"><span class="elementNr">108</span>Hs</A></TD>
+    <TD title="Meitnerium" class='element synth' id='109'><a href="http://en.wikipedia.org/wiki/Meitnerium"><span class="elementNr">109</span>Mt</A></TD>
+    <TD title="Ununnilium" class='element synth' id='110'><a href="http://en.wikipedia.org/wiki/Ununnilium"><span class="elementNr">110</span>Uun</A></TD>
+    <TD title="Unununium" class='element synth' id='111'><a href="http://en.wikipedia.org/wiki/Unununium"><span class="elementNr">111</span>Uuu</A></TD>
+    <TD title="Ununbium" class='element synth' id='112'><a href="http://en.wikipedia.org/wiki/Ununbium"><span class="elementNr">112</span>Uub</A></TD>
+    <TD title="Ununtrium" class='element synth' id='113'><a href="http://en.wikipedia.org/wiki/Ununtrium"><span class="elementNr">113</span>Uut</A></TD>
+    <TD title="Ununquadium" class='element synth' id='114'><a href="http://en.wikipedia.org/wiki/Ununquadium"><span class="elementNr">114</span>Uuq</A></TD>
+    <TD COLSPAN="4"></TD>
+</TR>
+
+<TR><TD></TD></TR>
+
+<TR>
+<TD COLSPAN="3" class="row">lanthanons</TD>
+    <TD title="Cerium" class='element solid' id='58'><a href="http://en.wikipedia.org/wiki/Cerium"><span class='elementNr'>58</span>Ce</a></TD>
+    <TD title="Praseodymium" class='element solid' id='59'><a href="http://en.wikipedia.org/wiki/Praseodymium"><span class='elementNr'>59</span>Pr</a></TD>
+    <TD title="Neodymium" class='element solid' id='60'><a href="http://en.wikipedia.org/wiki/Neodymium"><span class='elementNr'>60</span>Nd</a></TD>
+    <TD title="Promethium" class='element solid' id='61'><a href="http://en.wikipedia.org/wiki/Promethium"><span class='elementNr'>61</span>Pm</a></TD>
+    <TD title="Samarium" class='element solid' id='62'><a href="http://en.wikipedia.org/wiki/Samarium"><span class='elementNr'>62</span>Sm</a></TD>
+    <TD title="Europium" class='element solid' id='63'><a href="http://en.wikipedia.org/wiki/Europium"><span class='elementNr'>53</span>Eu</a></TD>
+    <TD title="Gadolinium" class='element solid' id='64'><a href="http://en.wikipedia.org/wiki/Gadolinium"><span class='elementNr'>64</span>Gd</a></TD>
+    <TD title="Terbium" class='element solid' id='65'><a href="http://en.wikipedia.org/wiki/Terbium"><span class='elementNr'>65</span>Tb</a></TD>
+    <TD title="Dysprosium" class='element solid' id='66'><a href="http://en.wikipedia.org/wiki/Dysprosium"><span class='elementNr'>66</span>Dy</a></TD>
+    <TD title="Holmium" class='element solid' id='67'><a href="http://en.wikipedia.org/wiki/Holmium"><span class='elementNr'>67</span>Ho</a></TD>
+    <TD title="Erbium" class='element solid' id='68'><a href="http://en.wikipedia.org/wiki/Erbium"><span class='elementNr'>68</span>Er</a></TD>
+    <TD title="Thulium" class='element solid' id='69'><a href="http://en.wikipedia.org/wiki/Thulium"><span class='elementNr'>69</span>Tm</a></TD>
+    <TD title="Ytterbium" class='element solid' id='70'><a href="http://en.wikipedia.org/wiki/Ytterbium"><span class='elementNr'>70</span>Yb</a></TD>
+    <TD title="Lutetium" class='element solid' id='71'><a href="http://en.wikipedia.org/wiki/Lutetium"><span class='elementNr'>71</span>Lu</a></TD>	
+	<TD class='element'>&nbsp;</TD>        
+</TR>        
+<TR>
+<TD COLSPAN="3" class="row">actinons</TD>
+    <TD title="Thorium" class='element solid' id='90'><a href="http://en.wikipedia.org/wiki/Thorium"><span class='elementNr'>90</span>Th</a></TD>
+    <TD title="Proactinium" class='element solid' id='91'><a href="http://en.wikipedia.org/wiki/Proactinium"><span class='elementNr'>91</span>Pa</a></TD>
+    <TD title="Uranium" class='element solid' id='92'><a href="http://en.wikipedia.org/wiki/Uranium"><span class='elementNr'>92</span>U</a></TD>
+    <TD title="Neptunium" class='element synth' id='93'><a href="http://en.wikipedia.org/wiki/Neptunium"><span class='elementNr'>93</span>Np</a></TD>
+    <TD title="Plutonium" class='element synth' id='94'><a href="http://en.wikipedia.org/wiki/Plutonium"><span class='elementNr'>94</span>Pu</a></TD>
+    <TD title="Americium" class='element synth' id='95'><a href="http://en.wikipedia.org/wiki/Americium"><span class='elementNr'>95</span>Am</a></TD>
+    <TD title="Curium" class='element synth' id='96'><a href="http://en.wikipedia.org/wiki/Curium"><span class='elementNr'>96</span>Cm</a></TD>
+    <TD title="Berkelium" class='element synth' id='97'><a href="http://en.wikipedia.org/wiki/Berkelium"><span class='elementNr'>97</span>Bk</a></TD>
+    <TD title="Californium" class='element synth' id='98'><a href="http://en.wikipedia.org/wiki/Californium"><span class='elementNr'>98</span>Cf</a></TD>
+    <TD title="Einsteinium" class='element synth' id='99'><a href="http://en.wikipedia.org/wiki/Einsteinium"><span class='elementNr'>99</span>Es</a></TD>
+    <TD title="Fermium" class='element synth' id='100'><a href="http://en.wikipedia.org/wiki/Fermium"><span class='elementNr'>100</span>Fm</a></TD>
+    <TD title="Mendelevium" class='element synth' id='101'><a href="http://en.wikipedia.org/wiki/Mendelevium"><span class='elementNr'>101</span>Md</a></TD>
+    <TD title="Nobelium" class='element synth' id='102'><a href="http://en.wikipedia.org/wiki/Nobelium"><span class='elementNr'>102</span>No</a></TD>
+    <TD title="Lawrencium" class='element synth' id='103'><a href="http://en.wikipedia.org/wiki/Lawrencium"><span class='elementNr'>103</span>Lr</a></TD>
+	<TD class='element'>&nbsp;</TD>        
+</TR>
+</TABLE>
+
+
+</FORM>
+</DIV>
+</DIV>
+
+
+  ]]></Content>
+</Module>

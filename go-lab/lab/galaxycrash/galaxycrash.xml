@@ -1,0 +1,34 @@
+<Module>
+	 <ModulePrefs title="Galaxy Crash"
+	 	title_url="http://burro.cwru.edu/JavaLab/GalCrashWeb/"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+galaxycrash@gmail.com"
+	 	description="This is an interactive java applet which allows you to model galaxy collisions on your own computer. With this applet you can study how galaxies collide and merge gravitationally and how the effects of the collision depend on the properties of the galaxies. You can also recreate collisions between real interacting galaxies observed in the sky."
+	 	height="500"
+	 	screenshot=""
+	 	thumbnail="">
+	 	<Require feature="opensocial-0.9" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<applet code="GalCrash" codebase="http://burro.cwru.edu/JavaLab/GalCrash/" width="640" height="500"></applet>';
+			//gadgets.window.adjustHeight(); //so app resizes itself based on content
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

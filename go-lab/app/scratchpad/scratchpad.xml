@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs 
+	title="Scratch Pad" 
+	description="Looking for a scratch pad on your homepage? Here it is.. Write down whatever you want and never worry about saving it.."
+	author="Uday Kumar Pyda - Sunnyvale, CA"
+	author_email="udaysasi+feedback@gmail.com"
+	author_affiliation="UdaySasi"
+	author_link="http://www.udaysasi.com"
+	directory_title="Uday's Scratch Pad"
+	screenshot="http://www.freewebs.com/udaysasi/scratchpadScreenshot.png"
+	thumbnail="http://www.freewebs.com/udaysasi/scratchpadThumbnail.png"	
+>
+	<Require feature="dynamic-height"/>	
+	<!--<Require feature="analytics"/>-->
+	<Require feature="setprefs" />
+	<optional feature="shareable-prefs"/>
+</ModulePrefs>
+
+<UserPref name="content" default_value="This is your personalized scratchpad. Click here to start using it. Write down all you want and never worry about saving it.." datatype="hidden"/>
+<UserPref name="savetime" default_value="-- Never used --" datatype="hidden"/>
+
+<Content type="html"><![CDATA[
+
+<!-- ALm6fM1k7R-dHPmgwFRFlfJjh3_gXlj62qAHnttqJ53TeYzfMDtWbimSiYnxSzb35FrSk9cx2ddfsIRmV7gZjucS9uxxe3KXgw-hJgohfIpneyLMpl359mxHa6rvlYMj_FVZWGQnALygkvc2grZIzd1Z0apRTP80nw== -->
+
+<style type="text/css">
+  a { color:#0000DD;}
+  a:visited { color:#0000DD;}
+</style>
+<script type="text/javascript">
+	//var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	//document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+	var pageTracker = _gat._getTracker("UA-1214589-7");
+	pageTracker._trackPageview();
+</script>
+<script language="Javascript">
+	var prefs__MODULE_ID__ = new _IG_Prefs(__MODULE_ID__);
+	var blankMessage__MODULE_ID__ = 'Click here to use this tool';
+	function paintScratchpad__MODULE_ID__()
+	{		
+		_gel('spanname').innerHTML = convertToHTML__MODULE_ID__(prefs__MODULE_ID__.getString("content"));
+		_gel('savetimediv').innerHTML = 'Last saved on '+prefs__MODULE_ID__.getString("savetime");	
+		_IG_AdjustIFrameHeight();
+	}
+	
+	function makeEditable__MODULE_ID__()
+	{
+		var textObj = _gel('textname');
+		var spanObj = _gel('spanname');
+
+		var str = convertToText__MODULE_ID__(spanObj.innerHTML);
+		if(str==blankMessage__MODULE_ID__)
+			str = '';
+		textObj.value=str;
+		spanObj.style.display = 'none';
+		textObj.style.display = '';
+		textObj.focus();
+		
+		textObj.value += '';
+		_IG_AdjustIFrameHeight();
+	}
+
+	function makeUnEditable__MODULE_ID__()
+	{	
+		var textObj = _gel('textname');
+		var spanObj = _gel('spanname');
+	
+		var str = convertToHTML__MODULE_ID__(textObj.value);
+		if(trim__MODULE_ID__(str)=='')
+			str = blankMessage__MODULE_ID__;
+		
+		textObj.style.display = 'none';
+		spanObj.style.display = '';
+		
+		var dt = new Date();
+		var savetime = dt.toLocaleString();
+		
+		try {
+			prefs__MODULE_ID__.set("content", convertToHTML__MODULE_ID__(textObj.value));
+			prefs__MODULE_ID__.set("savetime", savetime);	
+			spanObj.innerHTML=str;
+			_gel('savetimediv').innerHTML = 'Last saved on '+prefs__MODULE_ID__.getString("savetime");
+		}catch(e) {			
+			_gel('scratchpaderrordiv').innerHTML = '<font style="color:#BB0000">Content not saved as it exceeded allowed limit</font>';
+			_gel('scratchpaderrordiv').style.display = '';
+			setTimeout("javascript:clearErrorDiv__MODULE_ID__();", 5000);
+		}
+		_IG_AdjustIFrameHeight();
+	}
+
+	function convertToHTML__MODULE_ID__(str)
+	{
+		return str.replace(/\n/ig, "<br>");
+	}
+
+	function convertToText__MODULE_ID__(str)
+	{
+		return str.replace(/<br>/ig, "\n");		
+	}
+	
+	function clearErrorDiv__MODULE_ID__()
+	{
+		_gel('scratchpaderrordiv').style.display = 'none';
+		_gel('scratchpaderrordiv').innerHTML = '';
+		_IG_AdjustIFrameHeight();
+	}
+	
+	function trim__MODULE_ID__(str){ return str.replace(/^\s*|\s*$/g,"");}
+	
+_IG_RegisterOnloadHandler(paintScratchpad__MODULE_ID__);
+
+</script>
+
+<font size="-1"><span style="background:#ffffff; font-family: Arial; display:" id="spanname" onclick="javascript:makeEditable__MODULE_ID__();">Loading.. Please wait..</span></font>
+<textarea rows="15" id="textname" style="font-family: Arial; display:none; width:100%; height:100%" onblur="javascript:makeUnEditable__MODULE_ID__();">Loading.. Please wait..</textarea>
+<p>
+<font size="-1"><div id="scratchpaderrordiv" style="font-family: Arial;"></div></font>
+<hr align="center" size="1" width="100%" noshade>
+<font size="-1" color="#999999"><span id="savetimediv" style="font-family: Arial;">Loading..</span></font>&nbsp;&nbsp;<font size="-1" style="font-family: arial,sans-serif"><a href="http://www.freewebs.com/udaysasi/udaysModules.html" target="gadgetspage">My gadgets</a></font>
+]]></Content>
+</Module>
