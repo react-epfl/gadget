@@ -180,9 +180,6 @@ var build_tabs = function(subspaces) {
         {
           json.hash[elem.id] = elem; //add the widget to the widget list to be rendered
         }
-          else{
-            //to be implemented
-        }
       });
       var appdata = data.appdata[json.contextId];
       if (appdata) {
