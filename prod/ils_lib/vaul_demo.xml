@@ -1,0 +1,121 @@
+<Module>
+  <ModulePrefs title="Vault Demo"
+              author_email="na.li@epfl.ch"
+              author="Na Li"
+              description="Shows how to use ils javascript library"
+              width="500"
+              height="800">
+      <Require feature="opensocial" />
+      <Require feature="osapi" />
+    </ModulePrefs>
+ <Content type="html" view="default,canvas,home,profile">
+ <![CDATA[
+ <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+ <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery.cookie.js"></script>
+ <script type="text/javascript" src="../main/ils.js"></script>
+ <script type="text/javascript">
+
+  var getData = function() {
+    // get current user and print it
+    ils.getCurrentUser(function(current_user){
+      console.log("print current user");
+      console.log(current_user);
+      $('#get_current_user').append("Current user nickname: " + current_user);
+    });
+
+    // get the ILS and print it
+    ils.getIls(function(ils_space){
+      console.log(ils_space);
+      $('#get_ils').append("ILS id " + ils_space.id);
+    });
+
+    // get the Vault space and print it
+    ils.getVault(function(vault){
+      console.log(vault);
+      $('#get_vault').append("Vault id " + vault.id);
+    });
+
+    // get all resources in the Vault
+    ils.listVault(function(resources){
+      console.log("resources in the Vault");
+      console.log(resources);
+      $.each(resources, function(index, value) {
+        $('#list_vault').append("<div>" + value.id + " " + value.displayName + "</div>");
+      });
+    });
+
+    // read a resource in the Vault
+    ils.readResource(15339, function(resource){
+      console.log("print the resource");
+      console.log(resource);
+      $('#read_resource').append("resource id and name: " + resource.id + " " + resource.displayName);
+    });
+
+    // get parent space
+    ils.getParent(function(parent){
+      console.log("print parent");
+      console.log(parent);
+      $('#get_parent').append("parent id and name: " + parent.id + " " + parent.displayName);
+    });
+
+    // get parent inquiry phase
+    ils.getParentInquiryPhase(function(phase){
+      console.log("print parent phase");
+      console.log(phase);
+      $('#get_parent_phase').append(phase);
+    });
+
+
+    var example_content = {
+       "concepts": [
+          {
+            "x": 297,
+            "y": 188,
+            "content": "energy",
+            "id": "7f800d79-cd66-2167-724c-6c1cda7abc5e",
+            "type": "ut_tools_conceptmapper_conceptSelector",
+            "colorClass": "ut_tools_conceptmapper_blue"
+          },
+          {
+            "x": 652,
+            "y": 238,
+            "content": "thermodynamic temperature",
+            "id": "a1ad6ace-c722-ffa9-f58e-b4169acdb4e3",
+            "type": "ut_tools_conceptmapper_conceptSelector",
+            "colorClass": "ut_tools_conceptmapper_blue"
+          }
+      ],
+      "relations": [
+        {
+            "source": "7f800d79-cd66-2167-724c-6c1cda7abc5e",
+            "target": "a1ad6ace-c722-ffa9-f58e-b4169acdb4e3",
+            "id": "con_71",
+            "content": "influences"
+        }
+      ]
+    };
+
+    // create a resource in the Vault
+    ils.createResource("test", example_content, function(resource){
+      console.log(resource);
+      $('#create_resource').append("new resource id and content: " + resource.id);
+    });
+
+  }
+
+  // console.log(gadgets);
+  gadgets.util.registerOnLoadHandler(getData);
+
+  </script>
+  <div id="get_current_user"><b>ils.getCurrentUser:</b> </div>
+  <div id="get_ils"><b>ils.getIls:</b> </div>
+  <div id="get_vault"><b>ils.getVault:</b> </div>
+  <div id="list_vault"><b>ils.listVault:</b> </div>
+  <div id="read_resource"><b>ils.readResource:</b> </div>
+  <div id="get_parent"><b>ils.getParent:</b> </div>
+  <div id="get_parent_phase"><b>ils.getParentInquiryPhase:</b> </div>
+  <div id="create_resource"><b>ils.createResource:</b> </div>
+  <br />
+  ]]>
+  </Content>
+</Module>
