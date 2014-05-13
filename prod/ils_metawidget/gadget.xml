@@ -3,7 +3,7 @@
   <ModulePrefs title="ILS Metawidget"
                 author_email="na.li@epfl.ch"
                 author="Evgeny Bogdanov, Na Li"
-                description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+                description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://ask4research.info/golab/">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
     
@@ -29,8 +29,7 @@
 
 head.js ([
 "http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js",
-"http://graasp.epfl.ch/gadget/libs/head.js/head.min.js",
-"http://graasp.epfl.ch/gadget/libs/jquery-ui-1.8.23.custom.min.js",
+"http://graasp.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js",
 "http://graasp.epfl.ch/gadget/libs/jquery.cookie.js",
 "http://graasp.epfl.ch/gadget/libs/underscore-min.js",
 "http://graasp.epfl.ch/gadget/libs/bootstrap3/js/bootstrap.min.js",
@@ -42,15 +41,14 @@ head.js ([
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget/custom.css"],
 function(){
 if (osapi.people.getViewer) {
-  		initialize();
+  		initialize_user();
 	} else {
   		setTimeout(function(){
-   	 		initialize();
+   	 		initialize_user();
   		}, 1000);
 	}
-	
-});
 
+});
 
 </script>
 <div id="main" style="display:none;">
@@ -82,28 +80,17 @@ if (osapi.people.getViewer) {
   <div id="tools_title"><img id="arrow_down" src="arrow_down.png"><img id="arrow_up" src="arrow_up.png"> __MSG_tools__</div>
   <div id="tools_content"></div>
 </div>
-
-<div class="modal fade" id="login_popup" data-keyboard="false" data-backdrop="static" style="display:none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>__MSG_please_enter_your_name__</h3>
-            </div>
-            <div class="modal-body" id="popup_body">
-                <div id="error_msg" class="alert fade in hide alert-danger">  
-                    __MSG_please_enter_a_valid_name__
-                </div> 
-                <input type="text" id="user_name">
-            </div>
-            <div class="modal-footer" id="popup_footer">
-                <button type="button" class="btn btn-primary" id="ok_btn">__MSG_ok__</button>
-            </div>
-        </div>
-    </div>
-</div>
 </div>
 <div id="loader" style="position:relative;top:25%;margin-left:auto;margin-right:auto;width:320px;">
-    <img width="320" id="loader-image" class="centered" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/golab_logo_big.gif">
+    <img width="320" id="loader-image-static" class="centered" style="display:none" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/golab_logo_big_static.gif">
+    <img width="320" id="loader-image" class="centered" style="display:none" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/golab_logo_big.gif">
+    <div id="name_prompt" style="display:none" >
+        <div id="hello_name_text" class="name_prompt_text"><h3>__MSG_hello__!</h3></div>
+        <div id="enter_name_text" class="name_prompt_text"><h3>__MSG_please_enter_your_name__</h3></div>
+        <div id="error_name_text" class="name_prompt_text error" style="display:none"><h3>__MSG_please_enter_a_valid_name__</h3></div>
+        <input type="text" id="user_name" placeholder="__MSG_type_your_name_here__">
+        <button type="button" class="btn btn-primary" id="ok_btn">__MSG_ok__</button>
+    </div>
 </div>
   ]]></Content>
 </Module>

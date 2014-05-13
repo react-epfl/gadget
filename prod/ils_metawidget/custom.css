@@ -6,27 +6,17 @@
 
 @font-face
 {
-font-family: EuphemiaUCAS;
+
+font-family: 'EuphemiaUCAS';
 font-style:normal;
 font-weight:normal;
-src: url("http://graasp.epfl.ch/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf");
+src: local("fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf"), url("fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf");
+
+
+
 }
 
-@font-face
-{
-font-family: EuphemiaUCAS;
-font-style:italic;
-font-weight:normal;
-src: url("http://graasp.epfl.ch/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Italic_2.6.6.ttf");
-}
 
-@font-face
-{
-font-family: EuphemiaUCAS;
-font-style:oblique;
-font-weight:bold;
-src: url("http://graasp.epfl.ch/gadget/prod/fonts/Euphemia-UCAS/Euphemia_UCAS_Bold_2.6.6.ttf");
-}
 
 /* Sticky footer styles
 -------------------------------------------------- */
@@ -34,25 +24,18 @@ html,
 body {
   height: 100%;
   font-size: 18px;
-  overflow: hidden;
+  overflow: visible;
+  overflow-x: hidden!important;
 }
 
 html,
 html *,
 body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: EuphemiaUCAS !important;
+  font-family: "EuphemiaUCAS" !important;
 }
 
 /* Wrapper for page content to push down footer */
-#wrap {
-  min-height: 100%;
-  height: auto;
-  /* Negative indent footer by its height */
-  margin: 0 auto -60px;
-  /* Pad bottom by footer height */
-  padding: 0 0 60px;
-  overflow: hidden;
-}
+
 
 #container {
   width: 100%;
@@ -65,6 +48,8 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
   position: relative;
   max-width:1024px;
 }
+
+
 
 /* Set the fixed height of the footer here */
 #footer {
@@ -91,6 +76,86 @@ p {
 
 .strong{
 	font-weight:bold;
+}
+
+#name_prompt > input {
+    border-color: #00B7CE #00B7CE #00B7CE;
+    border-image: none;
+    border-radius: 30px 0 0 30px;
+    border-style: solid none solid solid;
+    border-width: 12px 0 12px 12px;
+    color: #00B7CE;
+    display: inline-block;
+    font-weight: bold;
+    height: 50px;
+    margin: 0 !important;
+    padding: 5px 10px;
+    width: 80%;
+    float: left;
+}
+
+#name_prompt > button{
+    font-weight:bold ;
+    background-color: rgba(0, 0, 0, 0);
+    border-color: #FAA61A #FAA61A #FAA61A;
+    border-image: none;
+    border-radius: 0 30px 30px 0;
+    border-style: solid solid solid none;
+    border-width: 12px 12px 12px 0;
+    color: #FAA61A;
+    display: inline-block;
+    height: 50px;
+    margin: 0 !important;
+    padding: 1px 0;
+    vertical-align: top;
+    width: 15%;
+    float: left;
+
+}
+
+.name_prompt_text{
+    color: #FAA61A;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#user_name::-webkit-input-placeholder { /* WebKit browsers */
+    font-weight: normal;
+    color: #00B7CE;
+    opacity: 0.5;
+    padding: 0px;
+}
+#user_name:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    font-weight: normal;
+    color: #00B7CE;
+    opacity: 0.5
+}
+#user_name::-moz-placeholder { /* Mozilla Firefox 19+ */
+    font-weight: normal;
+    color: #00B7CE;
+    opacity: 0.5
+}
+#user_name:-ms-input-placeholder { /* Internet Explorer 10+ */
+    font-weight: normal;
+    color: #00B7CE;
+    opacity: 0.5
+}
+
+.name_prompt_text > h3{
+    margin: 0;
+}
+
+#error_name_text{
+    color: red;
+}
+
+#name_prompt>button:hover{
+    background-color: #FAA61A;
+    color: #ffffff;
+}
+
+#name_prompt > input:focus {
+    outline-width: 0;
 }
 
 #ils_cycle {
@@ -125,10 +190,11 @@ p {
 {
 	top: 0px;
 	position:fixed;
+    -webkit-transform: translateZ(0);
+
 }
 
 .customTop {
-	  /*  background-color:#dedede;*/
   	background-clip: padding-box;
     background-color: #21C4F5;
     border-bottom: 10px solid rgba(255, 255, 255, 0.5);
@@ -138,11 +204,10 @@ p {
     padding-left: 300%;
     padding-right: 195%;
     width: 600%;
-    z-index: 1000;
 }
 
 #myCustomBar{
-	z-index: 1000;
+
 	height: 50px;
 	padding: 0 40px;
 
@@ -230,7 +295,7 @@ hr {border:1px solid black;}
 
 #wrap > .container {
   padding: 50px 40px 0;
-  overflow-x: hidden;
+  overflow-y:visible ;
 }
 .container .credit {
   margin: 20px 0;
@@ -362,6 +427,13 @@ height: 40px;
 .navbar-default .navbar-toggle .icon-bar {
     background-color: #ffffff;
 }
+
+
+/* Scrollbar Fix */
+
+
+
+/* Scrollbar Fix */
 
 
 /**** New UI Customization CERTH ****

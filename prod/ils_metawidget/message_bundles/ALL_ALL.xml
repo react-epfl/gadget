@@ -3,7 +3,8 @@
   <msg name="not_space_owner">You are not a space owner. Your changes to apps arrangement will not be saved.</msg>
   <msg name="description">Description</msg>
   <msg name="tools">Tools</msg>
-  <msg name="please_enter_your_name">Please enter your name</msg>
-  <msg name="please_enter_a_valid_name"> Please enter a valid name!</msg>
-  <msg name="ok">Ok</msg>
+  <msg name="please_enter_your_name">Please enter a nickname:</msg>
+  <msg name="please_enter_a_valid_name"> Please enter a valid nickname!</msg>
+  <msg name="type_your_name_here">type your nickname here...</msg>
+  <msg name="ok">Go!</msg>
 </messagebundle>

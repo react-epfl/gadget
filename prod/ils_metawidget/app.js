@@ -7,8 +7,50 @@ var app = { context: "", viewerName: ""
           , prefs: new gadgets.Prefs()
 }
 
+// Identify which user is using this url
+// The ILS is not initialized unless a valid nickname is found
+
+var initialize_user = function(){
+    if ($.cookie('graasp_user')) {
+        app.user_name = $.cookie('graasp_user');
+        animate_logo();
+        updateUserActions(app.user_name);
+        initialize_ils();
+    } else {
+        $('#name_prompt').fadeIn(1500);
+        $('#user_name').keyup(function(event){
+            if (event.keyCode === 13) {
+                if (checkUserName()){
+                    init_actions();
+                }else{
+                    show_error_msg();
+                }
+            }});
+        $('#ok_btn').click(function(){
+            if (checkUserName()){
+                init_actions();
+            }else{
+                show_error_msg();
+            }
+        });
+    }
+
+    //Specifies a series of actions to be taken for initialization
+    var  init_actions=function(){
+        animate_logo();
+        saveUserName();
+        initialize_ils();
+    }
+
+    var show_error_msg=function(){
+        $("#name_prompt").effect("shake");
+        $("#enter_name_text").hide();
+        $("#error_name_text").show();
+    }
+}
+
 // gets the data and calls build for container
-var initialize = function() {
+var initialize_ils = function() {
 
   // This container lays out and renders gadgets itself.
   my.LayoutManager = function() {
@@ -114,9 +156,6 @@ var initialize = function() {
     // build tabs for inquiry learning phases
     build_tabs(subspaces);
 
-    // identify which user is using this url
-    identifyUser();
-
     // We set three timeouts to make sure the apps are loaded to do proper resizing
     // if it take long time, it will be resized when mouse is moved above the app
     // 1 seconds
@@ -125,10 +164,11 @@ var initialize = function() {
     setTimeout(adjustHeight,3000);
     // 10 seconds
     setTimeout(adjustHeight,10000);
-    
+
+      welcome_user();
         
     try{
-            applyNewLayout();
+         applyNewLayout();
         }catch(err){
             console.log("Couldn't apply new layout!");
         }
@@ -215,36 +255,33 @@ var remove_hidden_spaces = function(subspaces) {
   return visible_spaces;
 };
 
+// Displays welcome message to user
+var welcome_user = function(){
+    $('#hello_msg').text(app.prefs.getMsg("hello") + " " + app.user_name + "!");
+};
+
+
 // identify which user is using this url
 var identifyUser = function() {
   // check if the cookie exists, if not, set the cookie
-  if ($.cookie('graasp_user')) {
-    app.user_name = $.cookie('graasp_user');
-    $('#hello_msg').text(app.prefs.getMsg("hello") + " " + app.user_name + "!");
-    updateUserActions(app.user_name);
-  } else {
-    $('#login_popup').modal('show');
-    $('#user_name').keyup(function(){
-      if (event.keyCode === 13) {
-        saveUserName();
-      }});
-    $('#ok_btn').click(function(){
-      saveUserName();
-    });
-  }
+
 };
 
 // save user's name in appData and display user name on the page
 var saveUserName = function() {
-  app.user_name = $('#user_name').val();
-  if (!app.user_name || /^\s*$/.test(app.user_name) || 0 === app.user_name.length) {
-    $("#error_msg").show();
-  } else{
     updateUserActions(app.user_name);
     $.cookie('graasp_user', app.user_name, { expires: 1 });
-    $('#login_popup').modal('hide');
-    $('#hello_msg').text(app.prefs.getMsg("hello") + " " + app.user_name + "!");
-  }
+};
+
+// Validates the entered username
+var checkUserName = function(){
+    app.user_name = $('#user_name').val();
+    if (!app.user_name || /^\s*$/.test(app.user_name) || 0 === app.user_name.length) {
+        return false;
+    }
+    else{
+        return app.user_name;
+    }
 };
 
 // update user's last access time in appData
@@ -560,4 +597,6 @@ var save = function(notHumanAct, app_json){
     })
     .execute(function() {})
 }
+
+
 
