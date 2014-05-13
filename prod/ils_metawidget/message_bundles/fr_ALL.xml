@@ -4,6 +4,7 @@
    <msg name="description">Description</msg> 
    <msg name="tools">Outils</msg> 
    <msg name="please_enter_your_name">Entre ton nom s'il te plaît</msg> 
-   <msg name="please_enter_a_valid_name">Entre un nom valide s'il te plaît</msg> 
-   <msg name="ok">Ok</msg>
+   <msg name="please_enter_a_valid_name">Entre un nom valide s'il te plaît</msg>
+   <msg name="type_your_name_here">tapez votre nom ici...</msg>
+   <msg name="ok">Go!</msg>
 </messagebundle>
