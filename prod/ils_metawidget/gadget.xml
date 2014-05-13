@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
   <ModulePrefs title="ILS Metawidget"
-                author_email="na.li@epfl.ch"
-                author="Evgeny Bogdanov, Na Li"
+                author_email="na.li@epfl.ch, alexandros.trichos@gmail.com"
+                author="Evgeny Bogdanov, Na Li, Alexandros Trichos"
                 description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://ask4research.info/golab/">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
