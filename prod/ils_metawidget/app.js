@@ -260,13 +260,6 @@ var welcome_user = function(){
     $('#hello_msg').text(app.prefs.getMsg("hello") + " " + app.user_name + "!");
 };
 
-
-// identify which user is using this url
-var identifyUser = function() {
-  // check if the cookie exists, if not, set the cookie
-
-};
-
 // save user's name in appData and display user name on the page
 var saveUserName = function() {
     updateUserActions(app.user_name);
