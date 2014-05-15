@@ -290,6 +290,8 @@
     tinymce.init({
             mode : "textareas",
             theme : "modern",
+            plugins: "table",
+            tools: "inserttable",
             oninit: continueEdit,
     });
   }
