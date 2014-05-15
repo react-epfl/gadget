@@ -1,12 +1,13 @@
 <Module>
-	 <ModulePrefs title="HY.P.A.T.I.A"
-	 	title_url="http://hypatia.iasa.gr/en/4.html"
-	 	author="Sten Govaerts"
-	 	author_email="sten.govaerts+hypathia4@gmail.com"
-	 	description="You will make use of a histogram to plot or summarize your set of masses of the Z0 boson, or any other quantity shown in the tabs of the histogram pane. A histogram is just a way of displaying how many times a certain value of a certain measured variable occurred. The width or RMS of the histogram is connected via the Heisenberg uncertainty principle to the lifetime of the short-lived particle."
-	 	height="980"
-	 	screenshot=""
-	 	thumbnail="">
+	 <ModulePrefs title="HYPATIA"
+	 	title_url="http://195.134.89.89/Hypatia_Vaadin-1.0/"
+	 	author="Stelios Vourakis"
+	 	author_email="s.vourakis+hypatia@gmail.com"
+	 	description="The HYPATIA project enables high schools students together with their teachers to study the fundamental particles of matter and their interactions, through examining the graphic visualization/display of the products of particle collisions. These products are events detected by the ATLAS experiment at the world's most powerful particle accelerator, the LHC in the European Particle Research Centre, CERN in Geneva."
+	 	height="800"
+	 	screenshot="hypatia.png"
+	 	thumbnail="hypatia_thumb.png">
+	 	<Require feature="opensocial-0.9" />
 	 </ModulePrefs>
 	 <Content type="html">
 	 <![CDATA[
@@ -19,7 +20,11 @@
 		//load frame
 		function loadFrame()
 		{
-			$('container').innerHTML = '<embed id="HYPATIA" type="application/x-java-applet;version=1.6" width="870" height="980" archive="HypatiaApplet.jar, AbsoluteLayout.jar, jas-aida.jar, jas-aida-dev.jar, jas-freehep-base.jar, jas-freehep-hep.jar, jas-jas-plotter.jar" code="Hypatia.HypatiaApplet" pluginspage="http://java.com/download/" codebase="http://hypatia.iasa.gr/applet" layout="full" classloader_cache="false" languagefile="language_en">';
+			var srcString = "http://195.134.89.89/Hypatia_Vaadin-1.0/";
+			var width = "1200";
+			var height = "800";
+			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
+			gadgets.window.adjustHeight(); //so app resizes itself based on content
 		}
 		
 		gadgets.util.registerOnLoadHandler(loadFrame);
