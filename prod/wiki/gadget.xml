@@ -51,7 +51,7 @@
     margin-right: 17px;
   }
   
-  li{
+  li.button{
     display: inline;
     position: relative;
     right: 35;
