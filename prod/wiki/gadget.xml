@@ -46,6 +46,10 @@
     width: 23%;
     text-align: left;
   }
+
+  #edit{
+    margin-right: 17px;
+  }
   
   li{
     display: inline;
@@ -129,7 +133,7 @@
   changeCurrent(current, current);
   
   var app = {context: "", viewerName: "", data: "", root_url: "http://graasp.epfl.ch/gadget/prod/wiki/"};
-  
+  //var app = {context: "", viewerName: "", data: "", root_url: "http://128.178.5.135/~sten/gadgets/wiki/"};
   
   var saved_text = "";
   
@@ -145,18 +149,18 @@
     //Check runtinymce() to see what happens after it initializes. (continueEdit is called)
     runTinyMCE();
     
-    if(tinyMCE.activeEditor != null)
-      tinyMCE.activeEditor.setContent($("#view").html());
+    if(tinymce.activeEditor != null)
+      tinymce.activeEditor.setContent($("#view").html());
   }
   
   function continueEdit(){
     tinymce.execCommand('mceFocus',false,'text_area');
-    tinyMCE.activeEditor.setContent($("#view").html());
+    tinymce.activeEditor.setContent($("#view").html());
   }
   
   function saving(){
-    saved_text = tinyMCE.activeEditor.getContent({format : 'raw'});
-    tinyMCE.activeEditor.setContent("");
+    saved_text = tinymce.activeEditor.getContent({format : 'raw'});
+    tinymce.activeEditor.setContent("");
     changeCurrentTab(current_tab, "view_tab");
     changeCurrent(current, "view");
     
@@ -280,13 +284,12 @@
       scriptElem.setAttribute('src', scriptURL);
       document.body.appendChild(scriptElem);
   };
-  loadScript(app.root_url+"tinymce/jscripts/tiny_mce/tiny_mce.js");
+  loadScript(app.root_url+"tinymce/tinymce.min.js");
   
   function runTinyMCE(){
-    // console.log(tinyMCE)
-    tinyMCE.init({
+    tinymce.init({
             mode : "textareas",
-            theme : "advanced",
+            theme : "modern",
             oninit: continueEdit,
     });
   }
