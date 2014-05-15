@@ -46,8 +46,12 @@
     width: 23%;
     text-align: left;
   }
+
+  #edit{
+    margin-right: 17px;
+  }
   
-  li{
+  li.button{
     display: inline;
     position: relative;
     right: 35;
@@ -128,8 +132,8 @@
   $("#history").hide();
   changeCurrent(current, current);
   
-  //var app = {context: "", viewerName: "", data: "", root_url: "http://graasp.epfl.ch/gadget/prod/wiki/"};
-  var app = {context: "", viewerName: "", data: "", root_url: "http://dl.dropboxusercontent.com/u/1822736/wiki/"};
+  var app = {context: "", viewerName: "", data: "", root_url: "http://graasp.epfl.ch/gadget/prod/wiki/"};
+  //var app = {context: "", viewerName: "", data: "", root_url: "http://128.178.5.135/~sten/gadgets/wiki/"};
   
   var saved_text = "";
   
@@ -283,8 +287,6 @@
   loadScript(app.root_url+"tinymce/tinymce.min.js");
   
   function runTinyMCE(){
-  console.log(app.root_url+"tinymce/tinymce.min.js");
-     console.log(tinymce)
     tinymce.init({
             mode : "textareas",
             theme : "modern",
