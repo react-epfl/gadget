@@ -17,6 +17,8 @@ var initialize_user = function(){
         updateUserActions(app.user_name);
         initialize_ils();
     } else {
+        $("#loader-image-static").show();
+        $("#loader-image").hide();
         $('#name_prompt').fadeIn(1500);
         $('#user_name').keyup(function(event){
             if (event.keyCode === 13) {

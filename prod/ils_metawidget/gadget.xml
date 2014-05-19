@@ -3,7 +3,7 @@
   <ModulePrefs title="ILS Metawidget"
                 author_email="na.li@epfl.ch, alexandros.trichos@gmail.com"
                 author="Evgeny Bogdanov, Na Li, Alexandros Trichos"
-                description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://ask4research.info/golab/">
+                description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://graasp.epfl.ch/">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
     
@@ -19,9 +19,7 @@
     <Locale lang="ee" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ee_ALL.xml"/>
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/head.js/head.min.js"></script>
 
 <script type="text/javascript">
@@ -34,22 +32,33 @@ head.js ([
 "http://graasp.epfl.ch/gadget/libs/underscore-min.js",
 "http://graasp.epfl.ch/gadget/libs/bootstrap3/js/bootstrap.min.js",
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget/app.js",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget/data.js",
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget/custom.js",
+"http://graasp.epfl.ch/gadget/prod/ils_metawidget/data.js",
 "http://graasp.epfl.ch/gadget/libs/bootstrap3/css/bootstrap.css",
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget/app.css",
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget/custom.css"],
 function(){
 if (osapi.people.getViewer) {
-  		initialize_user();
-	} else {
-  		setTimeout(function(){
-   	 		initialize_user();
-  		}, 1000);
-	}
-
-});
-
+    try{initialize_user(); }
+    catch(err){
+        console.log(err);
+        setTimeout(function(){
+            initialize_user();
+        }, 2000);
+    }
+} else {
+    try{
+        setTimeout(function(){
+            initialize_user();
+        }, 1000);
+    }catch(err){
+        console.log(err);
+        setTimeout(function(){
+            initialize_user();
+        }, 2000);
+    }
+}
+})
 </script>
 <div id="main" style="display:none;">
 <div id="wrap">
@@ -58,7 +67,7 @@ if (osapi.people.getViewer) {
           <div class="navbar-header">
             <a id="title" class="dark strong h3" href="#"></a>
           </div>
-            <a id = "hello_msg" href="" class="navbar-right dark"></a>   
+            <a id = "hello_msg" href="" class="navbar-right dark"></a>
            </div>
 </nav>
 <div id="main_block" class="container">
@@ -82,14 +91,15 @@ if (osapi.people.getViewer) {
 </div>
 </div>
 <div id="loader" style="position:relative;top:25%;margin-left:auto;margin-right:auto;width:320px;">
+    <img width="320" id="loader-image" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/golab_logo_big.gif">
     <img width="320" id="loader-image-static" class="centered" style="display:none" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/golab_logo_big_static.gif">
-    <img width="320" id="loader-image" class="centered" style="display:none" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/golab_logo_big.gif">
+    <div id="greeting_text" class="name_prompt_text" style="display:none"><h3>__MSG_hello__</h3></div>
     <div id="name_prompt" style="display:none" >
         <div id="hello_name_text" class="name_prompt_text"><h3>__MSG_hello__!</h3></div>
         <div id="enter_name_text" class="name_prompt_text"><h3>__MSG_please_enter_your_name__</h3></div>
         <div id="error_name_text" class="name_prompt_text error" style="display:none"><h3>__MSG_please_enter_a_valid_name__</h3></div>
         <input type="text" id="user_name" placeholder="__MSG_type_your_name_here__">
-        <button type="button" class="btn btn-primary" id="ok_btn">__MSG_ok__</button>
+        <button type="button" class="btn btn-primary" id="ok_btn">__MSG_ok__ </button>
     </div>
 </div>
   ]]></Content>
