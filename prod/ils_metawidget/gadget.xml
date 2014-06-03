@@ -3,40 +3,40 @@
   <ModulePrefs title="ILS Metawidget"
                 author_email="na.li@epfl.ch, alexandros.trichos@gmail.com"
                 author="Evgeny Bogdanov, Na Li, Alexandros Trichos"
-                description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://graasp.epfl.ch/">
+                description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://ask4research.info/golab/">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
     
-    <Locale messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ALL_ALL.xml"/>
-    <Locale lang="fr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/fr_ALL.xml"/>
-    <Locale lang="de" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/de_ALL.xml"/>
-    <Locale lang="es" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/es_ALL.xml"/>
-    <Locale lang="ru" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ru_ALL.xml"/>
-    <Locale lang="th" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/th_ALL.xml"/>
-    <Locale lang="ar" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ar_ALL.xml"/>
-    <Locale lang="it" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/it_ALL.xml"/>
-    <Locale lang="gr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/gr_ALL.xml"/>
-    <Locale lang="ee" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget/message_bundles/ee_ALL.xml"/>
+    <Locale messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/ALL_ALL.xml"/>
+    <Locale lang="fr" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/fr_ALL.xml"/>
+    <Locale lang="de" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/de_ALL.xml"/>
+    <Locale lang="es" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/es_ALL.xml"/>
+    <Locale lang="ru" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/ru_ALL.xml"/>
+    <Locale lang="th" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/th_ALL.xml"/>
+    <Locale lang="ar" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/ar_ALL.xml"/>
+    <Locale lang="it" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/it_ALL.xml"/>
+    <Locale lang="gr" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/gr_ALL.xml"/>
+    <Locale lang="ee" messages="http://ask4research.info/golab/gadget/prod/ils_metawidget/message_bundles/ee_ALL.xml"/>
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/head.js/head.min.js"></script>
+<script type="text/javascript" src="http://ask4research.info/golab/gadget/libs/head.js/head.min.js"></script>
 
 <script type="text/javascript">
 //gadgets.util.registerOnLoadHandler(initialize);
 
 head.js ([
-"http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js",
-"http://graasp.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js",
-"http://graasp.epfl.ch/gadget/libs/jquery.cookie.js",
-"http://graasp.epfl.ch/gadget/libs/underscore-min.js",
-"http://graasp.epfl.ch/gadget/libs/bootstrap3/js/bootstrap.min.js",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget/app.js",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget/custom.js",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget/data.js",
-"http://graasp.epfl.ch/gadget/libs/bootstrap3/css/bootstrap.css",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget/app.css",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget/custom.css"],
+"http://ask4research.info/golab/gadget/libs/jquery-1.8.0.min.js",
+"http://ask4research.info/golab/gadget/libs/jquery-ui/jquery-ui.js",
+"http://ask4research.info/golab/gadget/libs/jquery.cookie.js",
+"http://ask4research.info/golab/gadget/libs/underscore-min.js",
+"http://ask4research.info/golab/gadget/libs/bootstrap3/js/bootstrap.min.js",
+"http://ask4research.info/golab/gadget/prod/ils_metawidget/app.js",
+"http://ask4research.info/golab/gadget/prod/ils_metawidget/custom.js",
+"http://ask4research.info/golab/gadget/prod/ils_metawidget/data.js",
+"http://ask4research.info/golab/gadget/libs/bootstrap3/css/bootstrap.css",
+"http://ask4research.info/golab/gadget/prod/ils_metawidget/app.css",
+"http://ask4research.info/golab/gadget/prod/ils_metawidget/custom.css"],
 function(){
 if (osapi.people.getViewer) {
     try{initialize_user(); }
@@ -91,8 +91,8 @@ if (osapi.people.getViewer) {
 </div>
 </div>
 <div id="loader" style="position:relative;top:25%;margin-left:auto;margin-right:auto;width:320px;">
-    <img width="320" id="loader-image" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/golab_logo_big.gif">
-    <img width="320" id="loader-image-static" class="centered" style="display:none" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget/golab_logo_big_static.gif">
+    <img width="320" id="loader-image" src="http://ask4research.info/golab/gadget/prod/ils_metawidget/golab_logo_big.gif">
+    <img width="320" id="loader-image-static" class="centered" style="display:none" src="http://ask4research.info/golab/gadget/prod/ils_metawidget/golab_logo_big_static.gif">
     <div id="greeting_text" class="name_prompt_text" style="display:none"><h3>__MSG_hello__</h3></div>
     <div id="name_prompt" style="display:none" >
         <div id="hello_name_text" class="name_prompt_text"><h3>__MSG_hello__!</h3></div>
