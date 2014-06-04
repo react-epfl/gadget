@@ -108,6 +108,7 @@ p {
     vertical-align: top;
     width: 15%;
     float: left;
+    outline: none;
 
 }
 
@@ -190,6 +191,7 @@ p {
 {
 	top: 0px;
 	position:fixed;
+    z-index: 10;
     -webkit-transform: translateZ(0);
 
 }
@@ -330,7 +332,13 @@ height: 40px;
     width: 400px;
 }
 
+.gadgets-gadget-title-bar {
+    display: none;
+}
 
+.gadgets-gadget-content {
+    border:0px;
+}
 
 /* Overrides Bootstrap Toolbar */
 /*
