@@ -8,12 +8,20 @@
               height="500">
     <Require feature="opensocial-2.5" />
     <Require feature="osapi" />
+    <Require feature="dynamic-height" />
   </ModulePrefs>
 <Content type="html" view="default,canvas,home,profile">
 <![CDATA[
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 
 <script type="text/javascript">
+  function displayContext (el, context) {
+    el.append("<p>");
+    el.append("<br />").append("contextId: "+context.contextId);
+    el.append("<br />").append("contextType: "+context.contextType);
+    el.append("<br />").append("containerUrl: "+context.containerUrl);
+    el.append("</p>");
+  }
   function displaySpace (el, space) {
     el.append("<p>");
     el.append("<br />").append("id: "+space.id);
@@ -89,6 +97,12 @@
     el.append("<br />").append("thumbnailUrl: "+person.thumbnailUrl).append("<img src='"+person.thumbnailUrl+"' />");;
 
     el.append("</p>");
+  }
+
+  function getContext(contId) {
+    osapi.context.get().execute(function(context){
+      displayContext($('#osapi_context'), context);
+    });
   }
 
   function getSpaces () {
@@ -171,6 +185,14 @@
 
   function getPeople () {
     if (osapi.people) {
+      osapi.people.getViewer().execute(function(person){
+        displayPerson($('#osapi_people_viewer'), person);
+      });
+
+      osapi.people.getOwner().execute(function(person){
+        displayPerson($('#osapi_people_owner'), person);
+      });
+
       osapi.people.get({userId: '@viewer'}).execute(function(person){
         displayPerson($('#osapi_people'), person);
       });
@@ -190,6 +212,7 @@
   * Request for friend information.
   */
   function getData() {
+    getContext();
     getSpaces();
     getPeople();
     getDocuments();
@@ -199,6 +222,9 @@
   gadgets.util.registerOnLoadHandler(getData);
   </script>
   <h1>OSAPI test</h1>
+  <h2>Context</h2>
+  <div id="osapi_context">
+  <b>osapi.context.get():</b> </div><br />
   <h2>Spaces</h2>
   <div id="osapi_spaces">
   <b>osapi.spaces.get({contextId: '@owner'}):</b> </div><br />
@@ -209,6 +235,10 @@
   <h2>People</h2>
   <div id="osapi_people">
   <b>osapi.people.get({userId: '@viewer'}):</b> </div><br />
+  <div id="osapi_people_viewer">
+  <b>osapi.people.getViewer():</b> </div><br />
+  <div id="osapi_people_owner">
+  <b>osapi.people.getOwner():</b> </div><br />
   <div id="osapi_people_space_collection">
   <b>osapi.people.get({userId: '@owner', personId: '@space'}):</b> </div><br />
   <h2>Documents</h2>
