@@ -77,66 +77,44 @@ p {
 }
 
 #name_prompt > input {
-    border-color: #00B7CE #00B7CE #00B7CE;
-    border-image: none;
-    border-radius: 30px 0 0 30px;
-    border-style: solid none solid solid;
-    border-width: 12px 0 12px 12px;
-    color: #00B7CE;
-    display: inline-block;
-    font-weight: bold;
-    height: 50px;
-    margin: 0 !important;
-    padding: 5px 10px;
-    width: 80%;
-    float: left;
-}
-
-#name_prompt > button{
-    font-weight:bold ;
-    background-color: rgba(0, 0, 0, 0);
-    border-color: #FAA61A #FAA61A #FAA61A;
-    border-image: none;
-    border-radius: 0 30px 30px 0;
-    border-style: solid solid solid none;
-    border-width: 12px 12px 12px 0;
-    color: #FAA61A;
-    display: inline-block;
-    height: 50px;
-    margin: 0 !important;
-    padding: 1px 0;
-    vertical-align: top;
-    width: 15%;
-    float: left;
-    outline: none;
-
+    border-color: #a2bed3;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 4px;
+    color: #959292;
+    display: block;
+    font-weight: normal;
+    height: 40px;
+    margin: 0 auto !important;
+    padding: 0 0 4px 9px;
+    width: 90%;
 }
 
 .name_prompt_text{
-    color: #FAA61A;
+    color: #1eb8cd;
     margin-bottom: 20px;
     text-align: center;
 }
 
 #user_name::-webkit-input-placeholder { /* WebKit browsers */
     font-weight: normal;
-    color: #00B7CE;
+    color: #959292;
     opacity: 0.5;
     padding: 0px;
 }
 #user_name:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
     font-weight: normal;
-    color: #00B7CE;
+    color: #959292;
     opacity: 0.5
 }
 #user_name::-moz-placeholder { /* Mozilla Firefox 19+ */
     font-weight: normal;
-    color: #00B7CE;
+    color: #959292;
     opacity: 0.5
 }
 #user_name:-ms-input-placeholder { /* Internet Explorer 10+ */
     font-weight: normal;
-    color: #00B7CE;
+    color: #959292;
     opacity: 0.5
 }
 
@@ -146,6 +124,8 @@ p {
 
 #error_name_text{
     color: red;
+    margin-top: 10px;
+    font-size: 16px;
 }
 
 #name_prompt>button:hover{
@@ -199,12 +179,12 @@ p {
 .customTop {
   	background-clip: padding-box;
     background-color: #21C4F5;
-    border-bottom: 10px solid rgba(255, 255, 255, 0.5);
     border-top: 0 none;
     color: #FFFFFF;
     margin-left: -300%;
     padding-left: 300%;
     padding-right: 195%;
+    min-height: 50px;
     width: 600%;
 }
 
@@ -248,8 +228,9 @@ p {
 }
 
 .customTop li > a{
-	    color: white;
+	color: white;
     outline: none;
+    height: 50px;
 }
 
 
@@ -340,6 +321,29 @@ height: 40px;
     border:0px;
 }
 
+iframe{
+    border: 0px solid transparent;
+}
+
+/*Notifications Bar override for offline.js START*/
+
+.offline-ui {
+    border-radius: 0px;
+    font-family: 'EuphemiaUCAS';
+    max-width: 100%;
+    overflow: hidden;
+    padding: 1em;
+    top: 50px;
+    width: 100%;
+    font-size: 14px;
+    height: 50px;
+
+
+}
+
+/*Notifications Bar override for offline.js END*/
+
+
 /* Overrides Bootstrap Toolbar */
 /*
    custom.css
@@ -360,6 +364,8 @@ height: 40px;
 	float: right;
 
 }
+
+
 
 
 .navbar-default {
@@ -450,6 +456,8 @@ height: 40px;
 
 @media (min-width: 1200px) {
 }
+
+
 
 
 /**** New UI Customization CERTH ****
