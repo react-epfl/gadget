@@ -338,7 +338,9 @@ function olsimulation(){
 		olsim=false;
 		if(clsim==true){
 			clsim=false;
-			window.clearInterval(clsimID);
+			if(typeof clsimID !== 'undefined'){
+				window.clearInterval(clsimID);
+			}
 		}
 	}
 }
@@ -371,8 +373,10 @@ function clsimulation(){
 	
 	}
 	else{
-		window.clearInterval(clsimID);
-		clsim=false;
+		if(typeof clsimID !== 'undefined'){
+			window.clearInterval(clsimID);
+			clsim=false;
+		}
 		if(olsim==true){
 			window.clearInterval(olsimID);
 			olsim=false;
@@ -627,7 +631,12 @@ function nlclick(){
 </script>
 
 <style type="text/css">
-	
+	input {
+		width: 43px;
+	}
+	input[type="button"]{
+		width: 60px;
+	}
 	.animation {
 	    /*background: url(../images/boxBottom.jpg); 
 	    background-repeat: no-repeat
@@ -644,8 +653,8 @@ function nlclick(){
 	.box {
 		background-color: #f0eae1;
 		float: left;
-		height: 120 px;
-		width: 144.5 px;
+		height: 120px;
+		width: 144.5px;
 		border: 1px black solid;
 	    margin-right: 10px;
 	    padding: 15px;
@@ -809,8 +818,8 @@ function nlclick(){
 	</table>
 	<table>
 		<tr>
-			<td>Saturation:</td>
-			<td> &plusmn; <input type="text" id="saturation" value="inf" size="2" /></td>
+			<td>Saturation: &plusmn; </td>
+			<td><input type="text" id="saturation" value="inf" size="2" /></td>
 		</tr>
 	</table>
 	<input type="button" value="Strt/Stp" onclick="clsimulation()"/>
