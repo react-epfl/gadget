@@ -16,7 +16,7 @@ var initialize_user = function(){
     if ($.cookie('graasp_user')) {
         app.user_name = $.cookie('graasp_user');
         animate_logo();
-        //updateUserActions(app.user_name);
+        //updateUserActions(app.user_name); //Temporarily Deactivated
         initialize_ils();
     } else {
         $("#loader-image-static").show();
@@ -193,11 +193,11 @@ var build_tabs = function(subspaces) {
   _.each(subspaces, function(item) {
     var ils_tab = $("<li></li>");
     var tab_link = $("<a></a>").text(item.displayName);
-    tab_link.attr("href", "#" + item.displayName.replace(' ','_'));
+    tab_link.attr("href", "#" + item.id);
     ils_tab.append(tab_link);
     ils_cycle_tabs.append(ils_tab);
     var phase = $("<div></div>").addClass("tab-pane");
-    phase.attr("id", item.displayName.replace(' ','_'));
+    phase.attr("id", item.id);
     var phase_description = $("<div></div>").append(item.description);
     phase.append(phase_description);
     var phase_content = $("<div></div>");
@@ -262,7 +262,7 @@ var welcome_user = function(){
 
 // save user's name in appData and display user name on the page
 var saveUserName = function() {
-    //updateUserActions(app.user_name);
+    //updateUserActions(app.user_name); //Temporarily Deactivated
     $.cookie('graasp_user', app.user_name, { expires: 1 });
 };
 
