@@ -19,6 +19,7 @@
 			top: 0px;
 			left: 0px;
 			height: 2em;
+			width: 100%;
 		}
 		#plot {
 			position: absolute;
@@ -27,14 +28,26 @@
 			left: 0px;
 			right: 0px;
 		}
+		a{
+			font-size:12px;
+		}
+		.doc_link{
+			display: block;
+			float: right;
+			padding-top: 5px;
+			padding-right: 15px;
+		}
+		
+
 	</style>
 	<div id="container">
 	<div id="controls">
-		<input type="text" id="input" value="sin(x)*x">
+		<input type="text" id="input" value="Math.sin(x)*x">
 		<input type="button" title="adds a plot of the function" value="plot" onClick="plotter()">
 		<input type="button" title="clear all plots from the graph" value="clear" onClick="clearAll()"> 
 		<input type="button" title="adds a tangent to the last added plot" value="tangent" onClick="addTangent()">
-		<input type="button" title="adds a derivative of the last added plot" value="derivative" onClick="addDerivative()">		
+		<input type="button" title="adds a derivative of the last added plot" value="derivative" onClick="addDerivative()">	
+		<a href="http://jsxgraph.uni-bayreuth.de/wiki/index.php/Mathematical_functions" target="_blank" class="doc_link">How to write a formula &raquo;</a>
 	</div>
 	<div id="plot">
 		<div id="jxgbox" style="width:100%; height:100%;"></div>
