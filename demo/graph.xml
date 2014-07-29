@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Function plotter" author_email="mpalmer@gmail.com" description="Plots mathematical functions using JSXGraph" height="500">
+  <ModulePrefs title="__tool_tittle__" author_email="mpalmer@gmail.com" description="Plots mathematical functions using JSXGraph" height="500">
+	<Locale messages="./plotter_languages/ALL_ALL.xml"/>
+	<Locale lang="es" messages="./plotter_languages/es_ALL.xml"/>
+	<Locale lang="de" messages="./plotter_languages/de_ALL.xml"/>
+	<Locale lang="fr" messages="./plotter_languages/fr_ALL.xml"/>
 	<Require feature="opensocial-0.9" />
     <Optional feature="openapp" />
   </ModulePrefs>
@@ -43,11 +47,11 @@
 	<div id="container">
 	<div id="controls">
 		<input type="text" id="input" value="Math.sin(x)*x">
-		<input type="button" title="adds a plot of the function" value="plot" onClick="plotter()">
-		<input type="button" title="clear all plots from the graph" value="clear" onClick="clearAll()"> 
-		<input type="button" title="adds a tangent to the last added plot" value="tangent" onClick="addTangent()">
-		<input type="button" title="adds a derivative of the last added plot" value="derivative" onClick="addDerivative()">	
-		<a href="http://jsxgraph.uni-bayreuth.de/wiki/index.php/Mathematical_functions" target="_blank" class="doc_link">How to write a formula &raquo;</a>
+		<input type="button" title="__MSG_plot_desc__" value="__MSG_plot_label__" onClick="plotter()">
+		<input type="button" title="__MSG_clear_desc__" value="__MSG_clear_label__" onClick="clearAll()"> 
+		<input type="button" title="__MSG_tangent_desc__" value="__MSG_tangent_label__" onClick="addTangent()">
+		<input type="button" title="__MSG_derivative_desc__" value="__MSG_derivative_label__" onClick="addDerivative()">	
+		<a href="http://jsxgraph.uni-bayreuth.de/wiki/index.php/Mathematical_functions" target="_blank" class="doc_link">__MSG_how_to__</a>
 	</div>
 	<div id="plot">
 		<div id="jxgbox" style="width:100%; height:100%;"></div>
@@ -84,7 +88,7 @@
 		message[ns.rdf+"value"]=txtraw;
 		gadgets.openapp.publish({}, message);
 	  } catch(mesg) {
-	  	alert("Expression:\""+txtraw+"\" could not be understood as a function.");
+	  	alert('__MSG_expression__' + " \"" + txtraw + "\" " + '__MSG_syntax_error__);
 	  }
 	}
 	 
@@ -98,8 +102,8 @@
 	function addTangent() {
 	    if (JXG.isFunction(f)) {
 	        board.suspendUpdate();
-	        var p = board.create('glider',[1,0,curve], {name:'drag me'});
-	        board.create('tangent',[p], {name:'drag me'});
+	        var p = board.create('glider',[1,0,curve], {name:"__MSG_drag_label__"});
+	        board.create('tangent',[p], {name:"__MSG_drag_label__"});
 	        board.unsuspendUpdate();
 	    }
 	}
