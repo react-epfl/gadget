@@ -1,5 +1,6 @@
 <messageblundle>
 	<msg name="tool_title">Function plotter</msg>
+	<msg name="tool_desc">Plots mathematical functions using JSXGraph</msg>
 	<msg name="plot_desc">adds a plot of the function</msg>
 	<msg name="clear_desc">clear all plots from the graph</msg>
 	<msg name="tangent_desc">adds a tangent to the last added plot</msg>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="__tool_tittle__" author_email="mpalmer@gmail.com" description="Plots mathematical functions using JSXGraph" height="500">
+  <ModulePrefs title="__MSG_tool_title__" author_email="mpalmer@gmail.com" description="__MSG_tool_desc__\" height="500">
 	<Locale messages="./plotter_languages/ALL_ALL.xml"/>
 	<Locale lang="es" messages="./plotter_languages/es_ALL.xml"/>
 	<Locale lang="de" messages="./plotter_languages/de_ALL.xml"/>
 	<Locale lang="fr" messages="./plotter_languages/fr_ALL.xml"/>
 	<Require feature="opensocial-0.9" />
+	<Require feature="osapi"/>
     <Optional feature="openapp" />
   </ModulePrefs>
   <Content type="html"><![CDATA[
@@ -88,7 +89,7 @@
 		message[ns.rdf+"value"]=txtraw;
 		gadgets.openapp.publish({}, message);
 	  } catch(mesg) {
-	  	alert('__MSG_expression__' + " \"" + txtraw + "\" " + '__MSG_syntax_error__);
+	  	alert('__MSG_expression__' + " \"" + txtraw + "\" " + '__MSG_syntax_error__');
 	  }
 	}
 	 

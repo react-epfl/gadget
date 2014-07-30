@@ -1,5 +1,6 @@
 <messageblundle>
 	<msg name="tool_title">Ploteador de funciones</msg>
+	<msg name="tool_desc">Traza funciones matemáticas mediante JSXGraph</msg>
 	<msg name="plot_desc">traza la función</msg>
 	<msg name="clear_desc">elimina las funciones trazadas</msg>
 	<msg name="tangent_desc">traza la tangente de la última función dibujada</msg>

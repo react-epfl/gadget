@@ -1,5 +1,6 @@
 <messageblundle>
 	<msg name="tool_title">Functie plotter</msg>
+	<msg name="tool_desc">Tekent wiskundige functies met JSXGraph</msg>
 	<msg name="plot_desc">voeg een plot toe van de functie</msg>
 	<msg name="clear_desc">verwijder alle plots</msg>
 	<msg name="tangent_desc">voeg een raaklijn toe aan de laatst toegevoegde plot</msg>
