@@ -6,7 +6,6 @@
 	<Locale lang="de" messages="./plotter_languages/de_ALL.xml"/>
 	<Locale lang="fr" messages="./plotter_languages/fr_ALL.xml"/>
 	<Require feature="opensocial-0.9" />
-	<Require feature="osapi"/>
     <Optional feature="openapp" />
   </ModulePrefs>
   <Content type="html"><![CDATA[
