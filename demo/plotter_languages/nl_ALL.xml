@@ -1,0 +1,15 @@
+<messageblundle>
+	<msg name="tool_title">Functie plotter</msg>
+	<msg name="plot_desc">voeg een plot toe van de functie</msg>
+	<msg name="clear_desc">verwijder alle plots</msg>
+	<msg name="tangent_desc">voeg een raaklijn toe aan de laatst toegevoegde plot</msg>
+	<msg name="derivative_desc">voeg een afgeleide toe aan de laatst toegevoegde plot</msg>
+	<msg name="plot_label">plot</msg>
+	<msg name="clear_label">verwijder</msg>
+	<msg name="tangent_label">raaklijn</msg>
+	<msg name="derivative_label">afgeleide</msg>
+	<msg name="drag_label">Versleep mij</msg>
+	<msg name="how_to">Hoe schrijf je een functie »</msg>
+	<msg name="expression">De functie</msg>
+	<msg name="syntax_error">is niet verstaanbaar. Bekijk de link "Hoe schrijf ik een functie".</msg>
+</messageblundle>
