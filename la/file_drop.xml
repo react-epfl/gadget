@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
 <link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 
+<!-- Style  configuration -->
 <style type="text/css">
   body{background-color:transparent;font-family: "Helvetica Neue", arial, sans-serif;font-size: 13px;}
   .gadgets-gadget{width: 100%;}
@@ -59,7 +60,11 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+<!-- The dropzone.min.js library has been updated -->
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
+<!-- The ILS library has been included to work with the ILS and the VAULT space -->
+<script type="text/javascript" src="http://graasp.epfl.ch/ils_lib/main/ils.js"></script>
+
 
 <script type="text/javascript">
 var app = {};
@@ -82,27 +87,30 @@ function getQueryVariable(variable) {
 function dropListener(){
   Dropzone.options.fileDropzone = {
     init: function() {
+
       this.on("addedfile", function(file) { 
         var filename = file.name;
         var file_type = file.type;
         var action = "/rpc?method=documents.create&id=documents.create"
         action = action + "&st=" + getQueryVariable("st")
-        this.options.url = action;
-        
+        this.options.url = action;   
+    
         var request={"method":"documents.create",
           "params": {
             "document": {
               "displayName": filename,
-              "parentId": parentSpaceId,
+                "parentId": parentSpaceId,
               "mimeType": file_type,
               "fileName": filename
             }
           },
           "id":"documents.create"
         }
+
         // add request payload to the form
         $('#request').val(JSON.stringify(request));
       });
+
       this.on("success", function(file, response) {
         if (response.result.entry != null) {
           buildItem(response.result.entry);
@@ -116,13 +124,41 @@ function dropListener(){
 
 // gets the data and calls build for container
 var initialize = function() {
-  app.list = $("#list");
-  osapi.context.get().execute(function(response){
-    parentSpaceId = response.contextId
-    osapi.documents.get({contextId: response.contextId, contextType: response.contextType}).execute(function(response){
-      build(response.list);
+    app.list = $("#list");
+    ils.getIls(function(response) {
+
+      if (response !=null && response != undefined && response.error == undefined) {
+        ils.getVault(function(vault) {
+          if (vault !=null && vault != undefined) { //The space is an ILS and there is a VAULT folder
+            // The resource will be retrieved from / store in VAULT
+            parentSpaceId = vault.id;
+            ils.listVault(function(resourceList) {
+              build(resourceList);
+            });
+          } else { //The space is an ILS and there is no VAULT folder
+            // The resource will be retrieved from/stored in the current space
+           osapi.context.get().execute(function(space){
+             parentSpaceId = space.contextId
+             osapi.documents.get({contextId: space.contextId, contextType: space.contextType}).execute(function(spaceResources){
+               build(spaceResources.list);
+             });
+           });
+          }
+        });
+      }else{ // The space is not an ILS            
+        // Currently developed in the same way than an ILS without VAULT folder
+        // TODO: It should be adapted once we decide how to deal with the VAULT spaces in the new GRASP
+        osapi.context.get().execute(function(space){
+          parentSpaceId = space.contextId
+          osapi.documents.get({contextId: space.contextId, contextType: space.contextType}).execute(function(spaceResources){
+            build(spaceResources.list);
+          });
+        });
+      }
+
     });
-  });
+
+  
   dropListener();
   gadgets.window.adjustHeight();
 };
@@ -133,13 +169,14 @@ var adjustHeight = function() {
 
 // build the container with gadgets
 var build = function(documents) {
-  if (documents.length == 0) {
-    $('#msg').text("No resources were found in this space!");
-  }
-
-  for (var i = 0; i < documents.length; i++) {
-    var doc = documents[i];
-    buildItem(doc);
+  console.log(documents);
+  if (documents.length >0) {
+    for (var i = 0; i < documents.length; i++) {
+     var doc = documents[i];
+     buildItem(doc);
+    }
+  }else{
+      $('#msg').text("No resources were found in this space!");
   }
 
   // resize the gadget
