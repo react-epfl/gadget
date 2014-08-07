@@ -1,14 +1,14 @@
 <messageblundle>
 <msg name="tool_title">Traceur de Fonction </msg>
 <msg name="tool_desc">Trace des fonctions mathématiques en utilisant JSXGraph</msg>
-<msg name="plot_desc">dessine la fonction sur le graphe</msg>
-<msg name="clear_desc">efface toutes les fontions sur le graphe</msg>
-<msg name="tangent_desc">ajoute la tangente du dernier graphe ajouté</msg>
-<msg name="derivative_desc">ajoute la dérivée de la dernière fonction ajouté</msg>
-<msg name="plot_label">calculer</msg>
-<msg name="clear_label">effacer</msg>
-<msg name="tangent_label">tangente</msg>
-<msg name="derivative_label">dérivée</msg>
+<msg name="plot_desc">Dessine la fonction sur le graphe</msg>
+<msg name="clear_desc">Efface toutes les fontions sur le graphe</msg>
+<msg name="tangent_desc">Ajoute la tangente du dernier graphe ajouté</msg>
+<msg name="derivative_desc">Ajoute la dérivée de la dernière fonction ajouté</msg>
+<msg name="plot_label">Calculer</msg>
+<msg name="clear_label">Effacer</msg>
+<msg name="tangent_label">Tangente</msg>
+<msg name="derivative_label">Dérivée</msg>
 <msg name="drag_label">Glisse moi</msg>
 <msg name="how_to">Comment écrire une fonction </msg>
 <msg name="expression">L'expression</msg>
