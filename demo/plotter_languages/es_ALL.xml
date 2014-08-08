@@ -1,13 +1,14 @@
 <messageblundle>
 	<msg name="tool_title">Ploteador de funciones</msg>
-	<msg name="plot_desc">traza la función</msg>
-	<msg name="clear_desc">elimina las funciones trazadas</msg>
-	<msg name="tangent_desc">traza la tangente de la última función dibujada</msg>
-	<msg name="derivative_desc">traza la derivada de la última función dibujada</msg>
-	<msg name="plot_label">plotear</msg>
-	<msg name="clear_label">borrar</msg>
-	<msg name="tangent_label">tangente</msg>
-	<msg name="derivative_label">derivada</msg>
+	<msg name="tool_desc">Traza funciones matemáticas mediante JSXGraph</msg>
+	<msg name="plot_desc">Traza la función</msg>
+	<msg name="clear_desc">Elimina las funciones trazadas</msg>
+	<msg name="tangent_desc">Traza la tangente de la última función dibujada</msg>
+	<msg name="derivative_desc">Traza la derivada de la última función dibujada</msg>
+	<msg name="plot_label">Plotear</msg>
+	<msg name="clear_label">Borrar</msg>
+	<msg name="tangent_label">Tangente</msg>
+	<msg name="derivative_label">Derivada</msg>
 	<msg name="drag_label">Desplázame</msg>
 	<msg name="how_to">Cómo escribir una función »</msg>
 	<msg name="expression">La expresión</msg>

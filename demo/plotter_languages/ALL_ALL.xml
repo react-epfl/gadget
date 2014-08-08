@@ -1,13 +1,14 @@
 <messageblundle>
 	<msg name="tool_title">Function plotter</msg>
-	<msg name="plot_desc">adds a plot of the function</msg>
-	<msg name="clear_desc">clear all plots from the graph</msg>
-	<msg name="tangent_desc">adds a tangent to the last added plot</msg>
-	<msg name="derivative_desc">adds a derivative of the last added plot</msg>
-	<msg name="plot_label">plot</msg>
-	<msg name="clear_label">clear</msg>
-	<msg name="tangent_label">tangent</msg>
-	<msg name="derivative_label">derivative</msg>
+	<msg name="tool_desc">Plots mathematical functions using JSXGraph</msg>
+	<msg name="plot_desc">Adds a plot of the function</msg>
+	<msg name="clear_desc">Clear all plots from the graph</msg>
+	<msg name="tangent_desc">Adds a tangent to the last added plot</msg>
+	<msg name="derivative_desc">Adds a derivative of the last added plot</msg>
+	<msg name="plot_label">Plot</msg>
+	<msg name="clear_label">Clear</msg>
+	<msg name="tangent_label">Tangent</msg>
+	<msg name="derivative_label">Derivative</msg>
 	<msg name="drag_label">Drag me</msg>
 	<msg name="how_to">How to write a formula »</msg>
 	<msg name="expression">The expression</msg>
