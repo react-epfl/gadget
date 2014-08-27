@@ -1,0 +1,36 @@
+<Module>
+	 <ModulePrefs title="Long Jump"
+	 	title_url="http://sim01.cti.ac.at/html/longjump/long_jump_simulation1.files/users/pester/longjump.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@gmail.com"
+	 	description="The long jump is from a physical point of view a throw, the jumper has an intiial velocity v0 and an angle α to the horizontal direction and is flying on a parabola curve (with wind resistance). There is a dependence of height y and witdh x of the jump, both are depending from the time parameter t."
+	 	height="800"
+	 	screenshot="longjump-screenshot.png"
+	 	thumbnail="longjump-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			var srcString = "http://sim01.cti.ac.at/html/longjump/long_jump_simulation1.files/users/pester/longjump.html";
+			var width = "1100";
+			var height = "800";
+			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
+			gadgets.window.adjustHeight(); //so app resizes itself based on content
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

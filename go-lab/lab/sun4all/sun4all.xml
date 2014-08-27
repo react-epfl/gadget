@@ -1,0 +1,45 @@
+<Module>
+	 <ModulePrefs title="Sun for All"
+	 	title_url="http://www.mat.uc.pt/sun4all/index.php/en/"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+faulkes@gmail.com"
+	 	description="The project “Sun for all”, funded by Ciência Viva (2005 117/ 18) aims to promote science in general and astronomy in particular, among students. The project rests on the asset of over 30000 Sun images (spectroheliograms) that are kept in the Astronomical Observatory of the University of Coimbra, as a result of a work of over 80 years of daily solar observations that started in 1926. Presently there are about 15000 digitised images that are available to the general public due to another project, also funded by “Ciência Viva”, which was developed from 2002 to 2004. The solar observations collection has an enormous scientific value. Thus, this project aims to make this collection available in a digital way via WWW to Portuguese and foreign students, as well as a set of activities that enables them to use these images, in order to introduce them to the scientific method, having the Sun and its atmosphere as the background."
+	 	height="800"
+	 	screenshot=""
+	 	thumbnail="sun4all-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			//get language
+			var prefs = new gadgets.Prefs();
+			var lang = prefs.getLang();
+			
+			var language = "en";
+			if(lang === 'pt'){
+				language = "pt";
+			}
+
+			var srcString = "http://www.mat.uc.pt/sun4all/index.php/"+language+"/";
+			var width = "1000";
+			var height = "800";
+			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
+			gadgets.window.adjustHeight(); //so app resizes itself based on content
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

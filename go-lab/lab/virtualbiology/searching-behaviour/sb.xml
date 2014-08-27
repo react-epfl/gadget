@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Searching Behaviour"
+	 	title_url="http://virtualbiologylab.org/SearchingBehavior.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="As the name suggests, this model simulates the foraging behavior of two predator species. Predators forage and gain energy from prey while using energy to move.  The model tracks the mean and standard deviation in energy for each species. Prey can be clumped, uniformly or randomly distributed, static, slow, or fast moving. Each predator can have two foraging strategies based on energy levels. Their foraging parameters include: their movement likelihood, speed, and directional shifts. The predator's threshold for shifting strategies is also adjustable."
+	 	height="567"
+	 	screenshot="searching-behaviour-screenshot.png"
+	 	thumbnail="searching-behaviour-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="SearchingBehaviour" type="application/x-java-applet;version=1.6" width="953" height="565" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Foraging.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

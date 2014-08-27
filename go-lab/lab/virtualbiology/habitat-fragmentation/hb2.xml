@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Habitat Fragmentation 2"
+	 	title_url="http://virtualbiologylab.org/HabitatFrag2.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="Habitat Fragmentation 2"
+	 	height="575"
+	 	screenshot="habitat-fragmentation2-screenshot.png"
+	 	thumbnail="habitat-fragmentation-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="HabitatFrag2" type="application/x-java-applet;version=1.6" width="717" height="574" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models2013/" classloader_cache="false" DefaultModel="Dispersal.txt" java_arguments="-Djnlp.packEnabled=true">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

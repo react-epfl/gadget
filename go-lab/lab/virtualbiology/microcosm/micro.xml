@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Microcosm"
+	 	title_url="http://virtualbiologylab.org/Microcosm.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="This model is a simulation which draws upon Gauss' (1934) classic experiments with protists. In this virtual petri dish, you can add bacteria, two species of Paramecium, and a predator. The two Paramecium (P. aurelia &amp; P. bursaria) species compete for resources. One of the species is a better competitor for bacteria, while the other has photosynthetic endosymbionts and can utilize light. Both species are preyed upon by Didinium."
+	 	height="546"
+	 	screenshot="microcosm-screenshot.png"
+	 	thumbnail="microcosm-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="Microcosm" type="application/x-java-applet;version=1.6" width="938" height="544" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Microcosm.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

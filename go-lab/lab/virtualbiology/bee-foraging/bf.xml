@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Bee Foraging"
+	 	title_url="http://virtualbiologylab.org/BeeForaging.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="This model simulates foraging behavior of honeybees. It is designed to illustrate Charnov's (1976) Marginal Value Theorem, which predicts how long an animal should forage in a given patch. The user can modify environmental conditions and the time-per-flower for two different bees. The model reports total nectar collected and the rate of nectar collection."
+	 	height="545"
+	 	screenshot="bee-foraging-screenshot.png"
+	 	thumbnail="bee-foraging-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="BeeForaging" type="application/x-java-applet;version=1.6" width="769" height="543" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="bees.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

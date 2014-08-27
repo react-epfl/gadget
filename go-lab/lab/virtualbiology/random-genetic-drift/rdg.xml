@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Random Genetic Drift"
+	 	title_url="http://virtualbiologylab.org/GeneticDrift.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="This model is an adaptation of the classic experiment conducted by Peter Buri (1956), which documented genetic drift in laboratory populations of Drosophila.   In the model, ten vials (populations) of flies are held at a constant population size and the proportions of a mutant allele are tracked over generations.  The population size and the initial allele proportion can be manipulated."
+	 	height="980"
+	 	screenshot="random-genetic-drift-screenshot.png"
+	 	thumbnail="random-genetic-drift-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="randomGeneticDrift" type="application/x-java-applet;version=1.6" width="786" height="532" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/NewModels/" classloader_cache="false" DefaultModel="GeneticDrift.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

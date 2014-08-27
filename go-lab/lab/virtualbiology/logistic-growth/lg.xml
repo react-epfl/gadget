@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Logistic Growth"
+	 	title_url="http://virtualbiologylab.org/LogisticGrowth.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="This model illustrates resource-limited population growth. Populations have a per-capita growth rate and carrying capacity. Two populations are compared on three graphs: N vs time, dN/dt vs N, and dN/Ndt vs N. Individuals in the populations are viewed in windows, illustrating that even at carrying capacity, there are still births and deaths in the population."
+	 	height="570"
+	 	screenshot="logistic-growth-screenshot.png"
+	 	thumbnail="logistic-growth-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="LogGrowth" type="application/x-java-applet;version=1.6" width="869" height="567" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Logistic_Growth.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>
