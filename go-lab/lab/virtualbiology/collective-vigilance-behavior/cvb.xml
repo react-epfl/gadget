@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Collective Vigilance Behaviour"
+	 	title_url="http://virtualbiologylab.org/Vigilance.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="Many animals are at risk of being eaten by other animals. Such an animal must balance food intake with predation risk. These models simulate Pulliam's (1973) vigilance model, which suggests that feeding in flocks is advantageous. Collective - Foraging juncos can be attacked by a Cooper's Hawk. Foraging rate and duration can be adjusted."
+	 	height="629"
+	 	screenshot="collective-vigilance-behavior-screenshot.png"
+	 	thumbnail="vigilance-behavior-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="CollVigilance" type="application/x-java-applet;version=1.6" width="756" height="627" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Vigilance.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

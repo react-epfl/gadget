@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Estimating Stream Biodiversity"
+	 	title_url="http://virtualbiologylab.org/StreamDiversity.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="This simple model simulates seining a stream for animal life. Sixteen species of  invertebrates wash down the stream. When the seine is open they may get caught and separated into buckets. Counts of individual species, total species and individuals are given to allow calculation of various diversity indices. This model displays the species 'discovery to effort' curve."
+	 	height="555"
+	 	screenshot="stream-diversity-screenshot.png"
+	 	thumbnail="stream-deversity-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="StreamDiv" type="application/x-java-applet;version=1.6" width="776" height="554" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Stream.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

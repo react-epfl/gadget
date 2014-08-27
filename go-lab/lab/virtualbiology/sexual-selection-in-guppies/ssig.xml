@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Sexual Selection in Guppies"
+	 	title_url="http://virtualbiologylab.org/Models/Model_EndlersGuppies.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="This model simulates Endler's 1980 classic experiment on the balance of sexual selection and natural selection. In guppies, females prefer to mate with males that have lots of spots, but those males are more easily seen by predators. You can manipulate strength of female preference and the number of predators."
+	 	height="745"
+	 	screenshot="sexual-selection-in-guppies-screenshot.png"
+	 	thumbnail="sexual-selection-in-guppies-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="SexGuppies" type="application/x-java-applet;version=1.6" width="890" height="743" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Guppies.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

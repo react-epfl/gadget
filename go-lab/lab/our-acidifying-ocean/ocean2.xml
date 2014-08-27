@@ -1,0 +1,68 @@
+<Module>
+	 <ModulePrefs title="Our Acidifying Ocean - Part 2"
+	 	title_url="http://i2i.stanford.edu/AcidOcean/AcidOcean.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+lhcgame@gmail.com"
+	 	description="Explore the chemistry of ocean acidification and its impacts on sea urchin larvae through interactive models, a virtual lab bench, and a microscope measurement tool."
+	 	height="835"
+	 	screenshot="ocean2-1.png"
+	 	thumbnail="ocean-icon.png">
+	 	<Require feature="opensocial-0.9" />
+	 	<Require feature="flash" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+		  // Play .swf file
+		  function displayFlash(){
+		  	//get language
+			var prefs = new gadgets.Prefs();
+			var lang = prefs.getLang();
+			
+			var swf = "co2labbench.swf";
+			if(lang === 'pt'){
+				swf = "co2labbench_PT.swf";
+			}	
+			else if(lang === 'fr'){
+				swf = "co2labbench_FR.swf";
+			}
+			else if(lang === 'de'){
+				swf = "co2labbench_DE.swf";
+			}
+			else if(lang === 'es'){
+				swf = "co2labbench_ES.swf";
+			}
+
+		    var url = "http://i2i.stanford.edu/AcidOcean/"+swf;
+
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", 9, {
+		      	'codebase': 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0',
+				'width': '100%',
+				'height': '100%',
+				'quality': 'high',
+				'pluginspage': 'http://www.macromedia.com/go/getflashplayer',
+				'align': 'TL',
+				'play': 'true',
+				'loop': 'true',
+				'scale': 'showall',
+				'wmode': 'window',
+				'devicefont': 'false',
+				'id': 'carbonlabbench',
+				'bgcolor': '#ffffff',
+				'name': 'co2labbench',
+				'menu': 'true',
+				'allowFullScreen': 'false',
+				'allowScriptAccess': 'sameDomain',
+				'salign': 'tl'
+		    });
+		  }
+
+		  // When gadget first loads, display lhcgame.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
+
+	 <div id="flashcontainer" style="text-align: center;"></div>
+	 ]]>
+	 </Content>
+ </Module>

@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Estimating Plant Biodiversity"
+	 	title_url="http://virtualbiologylab.org/PlantDiversity.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="This model simulates MacArthur &amp; Wilson's 1963 Island Biogeography Equilibrium paper. You can run virtual experiments manipulating the following: island size, distance from mainland, habitat type, and species types (e.g. birds, arthropods, etc.)."
+	 	height="694"
+	 	screenshot="plant-diversity-screenshot.png"
+	 	thumbnail="plant-diversity-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="PlantDiv" type="application/x-java-applet;version=1.6" width="743" height="694" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Est_Diversity.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

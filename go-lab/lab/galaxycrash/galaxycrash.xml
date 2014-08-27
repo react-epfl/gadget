@@ -21,7 +21,6 @@
 		function loadFrame()
 		{
 			$('container').innerHTML = '<applet code="GalCrash" codebase="http://burro.cwru.edu/JavaLab/GalCrash/" width="640" height="500"></applet>';
-			//gadgets.window.adjustHeight(); //so app resizes itself based on content
 		}
 		
 		gadgets.util.registerOnLoadHandler(loadFrame);

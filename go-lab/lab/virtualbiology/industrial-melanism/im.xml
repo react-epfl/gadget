@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Industrial Melanism"
+	 	title_url="http://virtualbiologylab.org/IndustrialMelanism.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="This model simulates the classic example of natural selection on color patterns in peppered moths (Biston betularia). When air pollution is low, lichens cover the trees and the light moths are well camouflaged. When air pollution is high, the trees become dark and the light moths stand out. The simulation takes place just prior to the industrial revolution and proceeds through to modern day."
+	 	height="594"
+	 	screenshot="industrial-melanism-screenshot.png"
+	 	thumbnail="industrial-melanism-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="IndustrialMelanism" type="application/x-java-applet;version=1.6" width="943" height="591" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Moths.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

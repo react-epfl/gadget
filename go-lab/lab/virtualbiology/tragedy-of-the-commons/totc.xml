@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Tragedy of the Commons"
+	 	title_url="http://virtualbiologylab.org/TragedyCommons.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="Garrett Hardin (1968) described how multiple individuals acting in their own interests, while exploiting a common resource, will inevitably overexploit the resource. This model illustrates the concept in a common field where four farmers are grazing cattle. As farmers add cattle beyond the carrying capacity of the pasture, their individual gains increase even as overall milk production goes down. Students can explore how different economic systems affect how many cows a farmer should graze, and they can also privatize the land into four quadrants."
+	 	height="520"
+	 	screenshot="tragedy-of-the-commons-screenshot.png"
+	 	thumbnail="tragedy-of-the-commons-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="Tragedy" type="application/x-java-applet;version=1.6" width="699" height="518" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Tragedy.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>
