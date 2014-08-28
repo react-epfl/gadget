@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="File Drop"
+  <ModulePrefs title="__MSG_tool_title__"
                 author_email="na.li@epfl.ch"
                 author="Na Li"
-                description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.">
+                description="__MSG_tool_desc__">
+    <Locale messages="./file_drop_languages/ALL_ALL.xml"/>
+    <Locale lang="es" messages="./file_drop_languages/es_ALL.xml"/>
+    <Locale lang="de" messages="./file_drop_languages/de_ALL.xml"/>
+    <Locale lang="fr" messages="./file_drop_languages/fr_ALL.xml"/>
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -53,7 +57,7 @@
   <form method="post" action="/" class="dropzone" id="file-dropzone" enctype = "multipart/form-data">
     <input id="request" type="hidden" name="request"></input>
   </form>
-  <div class="list_title">Resources in the space</div>
+  <div class="list_title">__MSG_resources_in_the_space__</div>
   <table class="table table-hover doc_list"><tbody id="list"></tbody></table>
   <div id = "msg" class="msg"><div>
 </div>
@@ -176,7 +180,7 @@ var build = function(documents) {
      buildItem(doc);
     }
   }else{
-      $('#msg').text("No resources were found in this space!");
+      $('#msg').text("__MSG_no_resource_found__");
   }
 
   // resize the gadget

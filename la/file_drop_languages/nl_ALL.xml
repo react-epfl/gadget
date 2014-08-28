@@ -1,0 +1,6 @@
+<messageblundle>
+	<msg name="tool_title">File Drop</msg>
+	<msg name="tool_desc">Met deze applicatie kan je bestanden uploaden naar een space via drag &amp; drop. Er wordt ook een lijst van bestanden in de space getoond. Momenteel werkt deze applicatie enkel in Graasp.</msg>
+	<msg name="resources_in_the_space">Bestanden in een space:</msg>
+	<msg name="no_resource_found">Er werden geen bestanden gevonden in deze space.</msg>
+</messageblundle>
