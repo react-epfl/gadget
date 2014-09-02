@@ -243,7 +243,7 @@ var build = function(documents){
       // show a preview of the attachment
       if (typeof doc.attachment !== "undefined") {
         var preview_path = app.containerUrl + "/attachment/" + doc.attachment.id;
-        var preview_img = $("<img alt='"+"__MSG_resource_preview__"+"' rc='"+ preview_path +"' width='63%'></img>");
+        var preview_img = $("<img alt='"+"__MSG_resource_preview__"+"' src='"+ preview_path +"' width='63%'></img>");
         preview_el.append(preview_img);
         doc_body.append(preview_el);
       }
