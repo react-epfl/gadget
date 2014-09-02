@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Resource Download View"
+  <ModulePrefs title="__MSG_tool_title__"
       author="Andrii Vozniuk"
       author_email="andrii.vozniuk@epfl.ch"
-      description="This functional skin, when added to a space, allows to view and download
-       resources from the space. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+      description="__MSG_tool_desc__">
+    <Locale messages="./res_download_languages/ALL_ALL.xml"/>
+    <Locale lang="es" messages="./plotter_languages/es_ALL.xml"/>
+    <Locale lang="nl" messages="./plotter_languages/nl_ALL.xml"/>
+    <Locale lang="fr" messages="./plotter_languages/fr_ALL.xml"/>
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -150,7 +153,7 @@ var build = function(documents){
 
   var header = $("<div id='gadget_header'></div>");
   var title = $("<div class='gadget-title'></div>");
-  title.text('Resources from the space');
+  title.text("__MSG_resources_from_space__");
   header.append(title);
 
   // add space name to the title
@@ -160,16 +163,16 @@ var build = function(documents){
 
   //the preview button
   var preview = $("<div class='preview_button' id='preview_button'></div>");
-  var button_text = "Show previews";
+  var button_text = "__MSG_show_previews__";
   if (app.showingPreview == true) {
-    button_text = "Hide previews";
+    button_text = "__MSG_hide_previews__";
   }
   var preview_button = $("<button type='button' onclick='changePreviewMode()'>"+button_text+"</button>");
   preview.append(preview_button);
   header.append(preview);
 
   if (documents.length == 0) {
-    container.text("No resource were found in this space!");
+    container.text("__MSG_no_resource__");
   }
 
   container.append(header);
@@ -206,13 +209,13 @@ var build = function(documents){
       var downloadUrl = doc.attachment.url;
       var download_el = $("<div class='download'></div>");
 
-      var download_img = $("<img alt='Download' height='32' width='32' style='margin: 2px 5px; display:inline-block; vertical-align:middle'></img>");
+      var download_img = $("<img alt=__MSG_download__ height='32' width='32' style='margin: 2px 5px; display:inline-block; vertical-align:middle'></img>");
       download_img.attr("src", app.rootUrl + "download.png");
       var img_link = $("<a href='"+downloadUrl+"' target='_blank'></a>");
       img_link.append(download_img);
       download_el.append(img_link);
 
-      var download_link = $("<a href='"+downloadUrl+"' target='_blank' style='display:inline-block; vertical-align:middle'>Download</a>");
+      var download_link = $("<a href='"+downloadUrl+"' target='_blank' style='display:inline-block; vertical-align:middle'>__MSG_download__</a>");
       download_el.append(download_link);
       doc_el.append(download_el);
 
@@ -231,7 +234,7 @@ var build = function(documents){
           doc_body.html(doc.documentEntity);
         } else {
           var site_preview_url = app.containerUrl + "/item4a/picture/full/asset/" + doc.id;
-          var preview_img = $("<img alt='Resource Preview' src='"+ site_preview_url +"' width='63%'></img>");
+          var preview_img = $("<img alt='"+"__MSG_resource_preview__"+"' src='"+ site_preview_url +"' width='63%'></img>");
           preview_el.append(preview_img);
           doc_body.append(preview_el);
         }
@@ -240,7 +243,7 @@ var build = function(documents){
       // show a preview of the attachment
       if (typeof doc.attachment !== "undefined") {
         var preview_path = app.containerUrl + "/attachment/" + doc.attachment.id;
-        var preview_img = $("<img alt='Resource Preview' src='"+ preview_path +"' width='63%'></img>");
+        var preview_img = $("<img alt='"+"__MSG_resource_preview__"+"' rc='"+ preview_path +"' width='63%'></img>");
         preview_el.append(preview_img);
         doc_body.append(preview_el);
       }
@@ -260,7 +263,7 @@ var build = function(documents){
   if(existsDownDoc) {
     var downloadall = $("<div class='downloadall'></div>");
     downloadSpaceUrl = app.containerUrl + '/space/download/' + app.contextId;
-    var download_link = $("<a href='"+downloadSpaceUrl+"' target='_blank'>Download All</a>");
+    var download_link = $("<a href='"+downloadSpaceUrl+"' target='_blank'>"+"__MSG_download_all__"+"</a>");
     downloadall.append(download_link);
     header.append(downloadall);
   }
