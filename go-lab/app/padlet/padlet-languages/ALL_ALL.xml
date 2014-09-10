@@ -1,0 +1,10 @@
+<messageblundle>
+	<msg name="padlet_url_label">Padlet URL</msg>
+	<msg name="padlet_url_placeholder">Enter Padlet wall URL</msg>
+	<msg name="load_padlet_btn">Load Padlet</msg>
+	<msg name="close_message_btn">Close</msg>
+	<msg name="info_message_title">Get your Padlet wall!</msg>
+	<msg name="info_message">You can make a Padlet wall by going to <a href="http://www.padlet.com">Padlet.com</a>, log in and create a wall. Then copy the URL here!</msg>
+	<msg name="error_message_title">Failed to load!</msg>
+	<msg name="error_message">The Padlet URL failed to load. Make sure this is a URL of Padlet Wall and the URL is well-formed...</msg>
+</messageblundle>
