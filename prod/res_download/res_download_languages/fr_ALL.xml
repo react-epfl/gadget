@@ -1,6 +1,4 @@
 <messageblundle>
-	<msg name="tool_title">Resource Download View</msg>
-	<msg name="tool_desc">Cette app permet de visualiser et de télécharger des ressources de l’espace dans lequel elle est ajoutée. Actuellement, elle n’est compatible qu’avec Graasp.</msg>
 	<msg name="resources_from_space">Ressources de l'espace</msg>
 	<msg name="show_previews">Montrer les aperçus</msg>
 	<msg name="hide_previews">Cacher les aperçus</msg>
