@@ -1,6 +1,4 @@
 <messageblundle>
-	<msg name="tool_title">File Drop</msg>
-	<msg name="tool_desc">Esta aplicación permite a los usuarios arrastrar y desplazar ficheros en un espacio. La aplicación también muestra la lista de recursos existentes en el espacio. Actualmente solo funciona en Graasp.</msg>
 	<msg name="resources_in_the_space">Recursos existentes en el espacio:</msg>
 	<msg name="no_resource_found">No hay recursos actualmente en el espacio.</msg>
 </messageblundle>
