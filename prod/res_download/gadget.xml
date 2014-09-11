@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="__MSG_tool_title__"
+  <ModulePrefs title="Resource Download View"
       author="Andrii Vozniuk"
       author_email="andrii.vozniuk@epfl.ch"
-      description="__MSG_tool_desc__">
+      description="This application, when added to a space, allows to view and download resources from the space. At the moment, it works only in Graasp.">
     <Locale messages="./res_download_languages/ALL_ALL.xml"/>
     <Locale lang="es" messages="./plotter_languages/es_ALL.xml"/>
     <Locale lang="nl" messages="./plotter_languages/nl_ALL.xml"/>
