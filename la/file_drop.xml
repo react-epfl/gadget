@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="__MSG_tool_title__"
+  <ModulePrefs title="File Drop"
                 author_email="na.li@epfl.ch"
                 author="Na Li"
-                description="__MSG_tool_desc__">
+                description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.">
     <Locale messages="./file_drop_languages/ALL_ALL.xml"/>
     <Locale lang="es" messages="./file_drop_languages/es_ALL.xml"/>
     <Locale lang="de" messages="./file_drop_languages/de_ALL.xml"/>
