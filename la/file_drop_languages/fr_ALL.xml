@@ -1,6 +1,4 @@
 <messageblundle>
-	<msg name="tool_title">File Drop</msg>
-	<msg name="tool_desc">Ce widget permet de glisser et déposer des fichiers dans un espace. Il affiche également les ressources de cet espace. Pour le moment ne fonctionne qu’avec Graasp.</msg>
 	<msg name="resources_in_the_space">Ressources d’un espace:</msg>
 	<msg name="no_resource_found">Aucune ressource trouvée dans cet espace.</msg>
 </messageblundle>
