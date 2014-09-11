@@ -1,0 +1,10 @@
+<messageblundle>
+	<msg name="view_label">Visualiser</msg>
+	<msg name="edit_label">Editer</msg>
+	<msg name="history_label">Historique</msg>
+	<msg name="save_label">Sauvegarder</msg>
+	<msg name="clear_history_label">Effacer l'historique</msg>
+	<msg name="viewer_name">Nom de l'observateur</msg>
+	<msg name="date">Date</msg>
+	<msg name="clear_history_verification">Voulez-vous vraiment effacer l’historique?</msg>
+</messageblundle>

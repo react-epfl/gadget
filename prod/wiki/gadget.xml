@@ -3,11 +3,15 @@
   <ModulePrefs title="Wiki gadget" 
                 author_email="jad.naoum@epfl.ch" 
                 author="Jad Naoum" 
-                description="Wiki gadget. The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
+                description="The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
                 width="350"
                 height="500"
                 thumbnail="http://graasp.epfl.ch/gadget/prod/wiki/thumbnail.png"
                 screenshot="http://graasp.epfl.ch/gadget/prod/wiki/screenshot.png">
+    <Locale messages="./wiki_languages/ALL_ALL.xml"/>
+    <Locale lang="es" messages="./wiki_languages/es_ALL.xml"/>
+    <Locale lang="de" messages="./wiki_languages/de_ALL.xml"/>
+    <Locale lang="fr" messages="./wiki_languages/fr_ALL.xml"/>
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -100,9 +104,9 @@
 </style>
 <div id = "everything">
 <ul>
-  <li id = "view_tab" class = "button active" onclick = "view()">View</li>
-  <li id = "edit_tab" class = "button" onclick = "edit()">Edit</li>
-  <li id = "history_tab" class = "button" onclick = "history()">History</li>
+  <li id = "view_tab" class = "button active" onclick = "view()">__MSG_view_label__</li>
+  <li id = "edit_tab" class = "button" onclick = "edit()">__MSG_edit_label__</li>
+  <li id = "history_tab" class = "button" onclick = "history()">__MSG_history_label__</li>
 </ul>
 <br />
 
@@ -112,14 +116,14 @@
   <br />
   <textarea id = "text_area"></textarea>
   <br />
-  <input type="button" value ="Save" id = "save_button" onclick = "saving()">
+  <input type="button" value ="__MSG_save_label__" id = "save_button" onclick = "saving()">
 </div>
 
 <div id = "history">
   <br />
   <table id = "table" rules = "rows" frame = "hsides">
   <div id = "arrow"></div>
-  <input type="button" value ="Clear History" id = "clear_button" onclick = "clearHistory()">
+  <input type="button" value ="__MSG_clear_history_label__" id = "clear_button" onclick = "clearHistory()">
 </div>
 </div>
 
@@ -186,7 +190,7 @@
     changeCurrent(current, "history");
     
     //Erasing the old history
-    $("#table").replaceWith("<table id = 'table' rules = 'rows' frame = 'hsides'><tr><th id ='name'>Viewer Name</th><th id='entry'>Entry</th><th id = 'date'>Date</th></tr></table>");
+    $("#table").replaceWith("<table id = 'table' rules = 'rows' frame = 'hsides'><tr><th id ='name'>__MSG_viewer_name__</th><th id='entry'>Entry</th><th id = 'date'>__MSG_date__</th></tr></table>");
     
     // get appdata
     osapi.appdata.get({userId: app.context}).execute(function(data){
@@ -206,7 +210,7 @@
   }
   
   function clearHistory(){
-    if(!confirm("Are you sure you want to clear the history?")){return ""};
+    if(!confirm("__MSG_clear_history_verification__")){return ""};
     saved_text = $("#view").html();
     osapi.appdata['delete']({
       userId: app.context,
@@ -287,12 +291,19 @@
   loadScript(app.root_url+"tinymce/tinymce.min.js");
   
   function runTinyMCE(){
+      var prefs = new gadgets.Prefs();
+      var lang = prefs.getLang();
+      var selected_language = "en_GB";
+      if(lang){
+        selected_language = lang;
+      }
     tinymce.init({
             mode : "textareas",
             theme : "modern",
             plugins: "table",
             tools: "inserttable",
             oninit: continueEdit,
+            language : selected_language
     });
   }
   
