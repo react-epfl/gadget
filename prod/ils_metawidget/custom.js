@@ -43,7 +43,7 @@ function stickyBar() {
     var customBarOffset= customBar.offset().top;
     fauxOffset=faux.offset().top;
     windowScrollTop= $(this).scrollTop();
-    var test = fauxOffset - windowScrollTop + myNavMenuHeight;
+    var test = fauxOffset - windowScrollTop ;
     var test2 = fauxOffset - windowScrollTop - customBarHeight;
 
 
@@ -59,7 +59,6 @@ function stickyBar() {
         {
             attached=true;
                  customBar.hide();
-
                      myNavMenu.addClass("fixedCustomTop");
                      faux.addClass("customHeight");
                      myNavMenu.fadeIn("slow");

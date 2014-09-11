@@ -27,9 +27,30 @@ Down2Earth uses a mix of resources, some new and some adapted from various other
 		//load frame
 		function loadFrame()
 		{
-			var srcString = "http://education.down2earth.eu/";
+			//get language
+			var prefs = new gadgets.Prefs();
+			var lang = prefs.getLang();
+			
+			var language = "English";
+			if(lang === 'de'){
+				language = "German";
+			}
+			else if(lang === 'cy'){
+				language = "Welsh";
+			}
+			else if(lang === 'es'){
+				language = "Spanish";
+			}
+			else if(lang === 'fr'){
+				language = "French";
+			}
+			else if(lang === 'pl'){
+				language = "Polish";
+			}
+
+			var srcString = "http://simulator.down2earth.eu/input.html?lang=" + language;
 			var width = "920";
-			var height = "720";
+			var height = "620";
 			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
 			gadgets.window.adjustHeight(); //so app resizes itself based on content
 		}

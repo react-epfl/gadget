@@ -1,6 +1,4 @@
 <messageblundle>
-	<msg name="tool_title">Resource Download View</msg>
-	<msg name="tool_desc">This application, when added to a space, allows to view and download resources from the space. At the moment, it works only in Graasp.</msg>
 	<msg name="resources_from_space">Resources from the space</msg>
 	<msg name="show_previews">Show previews</msg>
 	<msg name="hide_previews">Hide previews</msg>

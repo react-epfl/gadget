@@ -1,6 +1,4 @@
 <messageblundle>
-<msg name="tool_title">Traceur de Fonction </msg>
-<msg name="tool_desc">Trace des fonctions mathématiques en utilisant JSXGraph</msg>
 <msg name="plot_desc">Dessine la fonction sur le graphe</msg>
 <msg name="clear_desc">Efface toutes les fontions sur le graphe</msg>
 <msg name="tangent_desc">Ajoute la tangente du dernier graphe ajouté</msg>

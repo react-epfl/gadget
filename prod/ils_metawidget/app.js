@@ -1,3 +1,5 @@
+var metadataHandler = undefined;
+var actionLogger = undefined;
 var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
@@ -14,7 +16,7 @@ var initialize_user = function(){
     if ($.cookie('graasp_user')) {
         app.user_name = $.cookie('graasp_user');
         animate_logo();
-        updateUserActions(app.user_name);
+        //updateUserActions(app.user_name); //Temporarily Deactivated
         initialize_ils();
     } else {
         $("#loader-image-static").show();
@@ -28,13 +30,6 @@ var initialize_user = function(){
                     show_error_msg();
                 }
             }});
-        $('#ok_btn').click(function(){
-            if (checkUserName()){
-                init_actions();
-            }else{
-                show_error_msg();
-            }
-        });
     }
 
     //Specifies a series of actions to be taken for initialization
@@ -53,6 +48,9 @@ var initialize_user = function(){
 
 // gets the data and calls build for container
 var initialize_ils = function() {
+
+  //Initialize activity streams via MetadataHandler and ActionLogger
+  init_activity_streams();
 
   // This container lays out and renders gadgets itself.
   my.LayoutManager = function() {
@@ -264,18 +262,18 @@ var welcome_user = function(){
 
 // save user's name in appData and display user name on the page
 var saveUserName = function() {
-    updateUserActions(app.user_name);
+    //updateUserActions(app.user_name); //Temporarily Deactivated
     $.cookie('graasp_user', app.user_name, { expires: 1 });
 };
 
 // Validates the entered username
 var checkUserName = function(){
     app.user_name = $('#user_name').val();
-    if (!app.user_name || /^\s*$/.test(app.user_name) || 0 === app.user_name.length) {
-        return false;
+    if (app.user_name && /^\w+$/.test(app.user_name) && app.user_name.length<=14) {
+        return app.user_name;
     }
     else{
-        return app.user_name;
+        return false;
     }
 };
 
@@ -590,5 +588,66 @@ var save = function(notHumanAct, app_json){
     .execute(function() {})
 }
 
+var init_activity_streams=function(){
+    var defaultMetadata = {
+        "actor": {
+            "objectType": "person",
+            "id": "unknown",
+            "displayName": "unknown"
+        },
+        "target": {
+            "objectType": "unknown",
+            "id": generateUUID(),
+            "displayName": "unnamed"
+        },
+        "generator": {
+            "objectType": "application",
+            "url": window.location.href,
+            "id": generateUUID(),
+            "displayName": "toolName"
+        },
+        "provider": {
+            "objectType": "ils",
+            "url": window.location.href,
+            "id": "unknown",
+            "inquiryPhase": "unknown",
+            "displayName": "unknown"
+        }
+    };
 
+    new window.golab.ils.metadata.GoLabMetadataHandler(defaultMetadata, function(error, createdMetadataHandler) {
+        if (error) {
+            console.log(error);
+        } else {
+            metadataHandler = createdMetadataHandler;
+            actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);
+//            actionLogger.setLoggingTargetByName("console");
+//            actionLogger.setLoggingTargetByName("consoleShort");
+            actionLogger.setLoggingTargetByName("opensocial");
+//            actionLogger.setLoggingTargetByName("dufftown");
 
+        }
+    });
+
+    var testLogObject = {
+        objectType: "testObject",
+        id: "123456789",
+        content: "test"
+    };
+
+    setTimeout(function(){actionLogger.log("add", testLogObject)},7000) ;
+    setTimeout(function(){actionLogger.log("access", testLogObject)},10000) ;
+
+}
+
+var generateUUID = (function() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return function() {
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    };
+})();

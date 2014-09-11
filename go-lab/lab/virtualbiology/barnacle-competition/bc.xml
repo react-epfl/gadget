@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Barnacle Competition"
+	 	title_url="http://virtualbiologylab.org/BarnacleCompetition.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="Connell's 1961 classic competition experiment is modeled. You can explore the fundamental and realized niches of two species of barnacles, Chthamalus and Balanus. One species can grow at a wider range in depth but can be outcompeted, while the other species is limited to deeper rock. You can also cause sea level to change simulating global warming."
+	 	height="645"
+	 	screenshot="barnacle-competition-screenshot.png"
+	 	thumbnail="barnacle-competition-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="BarnacleComp" type="application/x-java-applet;version=1.6" width="907" height="643" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="Barnacle_competition.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

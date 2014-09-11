@@ -1,0 +1,190 @@
+<Module>
+	 <ModulePrefs title="Padlet"
+	 	title_url="https://padlet.com/"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="Collaborate on an interactive wall!"
+	 	height="800"
+	 	screenshot="padlet-screenshot.png"
+	 	thumbnail="padlet-logo.png">
+	 	<Require feature="osapi" />
+	 	<Locale messages="./padlet-languages/ALL_ALL.xml"/>
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+	 <style type="text/css">
+	 	img{
+	 		width: 300px;
+	 		display: block;
+	 		margin: auto;	 	
+	 	}
+
+	 	#inputForm{
+	 		margin: 0 auto;
+	 		width: 80%;
+	 	}
+
+	 	form{
+	 		text-align: center;
+	 	}
+
+	 	.form-control{
+	 		width: 600px !important;
+	 	}
+
+	 	#settings{
+	 		padding: 5px;
+	 		position: absolute;
+	 		margin: 5px;
+	 		z-index: 2;
+	 	}
+	 </style>
+
+	 <script type="text/javascript">
+	 	$(function () {
+	 		var originalUrl = "http://padlet.com/"
+	 		var contextId, contextType, prefix, userId, viewerId, ownerId;
+			
+			$("#loadBtn").click(function(event){
+				event.preventDefault();
+				var padletUrl = $('#padletUrl').val();
+				if(typeof padletUrl !== 'undefined' && padletUrl.length > 0 && padletUrl.indexOf('padlet') !== -1){
+					loadFrame(padletUrl);
+				}
+				else{
+					$(".alert-danger").removeClass("hidden");
+				}
+			});
+
+			$("#settings").click(function(event){
+				if($("#inputForm").is(":visible")){
+					$("#inputForm").slideUp();
+				}
+				else{
+					$("#inputForm").removeClass("hidden");
+					$("#inputForm").show();	
+				}
+			});
+
+			//load frame
+			function loadFrame(padletUrl)
+			{
+				if($("container iframe").length == 0){
+					var width = "100%";
+					var height = "800";
+					$('#container').html('<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+padletUrl+'"></iframe>');
+				}
+				else{
+					$("#container iframe").attr('src', padletUrl);
+				}
+				//set url in form
+				$("#padletUrl").val(padletUrl);
+				$("#inputForm").slideUp();
+				saveUrl(padletUrl);
+
+				//show edit button
+				//TODO could be only shown for the owner in the future. The data gets already retrieved, it currently does not work do to the limited Graasp implementation...
+				$("#settings").removeClass("hidden");
+			}
+
+			function onGadgetLoad(){
+				// batch: get viewer and context for gadget
+			    var batch = osapi.newBatch();
+			    batch.add('viewer', osapi.people.getViewer());
+			    batch.add('owner', osapi.people.getOwner());
+			    if (osapi.context) { // only for spaces extended container
+			    	console.log('context ' + osapi.context.get());
+			       batch.add('context', osapi.context.get());
+			    } else {
+			    	console.log('context owner ' + osapi.people.getOwner());
+			       batch.add('context', osapi.people.getOwner());    
+			    }
+			    batch.execute(function(data){
+			    	console.log(data);
+			    	viewerId = data.viewer.id;
+			    	ownerId = data.owner.id;
+
+					contextId = "@owner"
+			        contextType = "@user"
+			        if (osapi.context) { // only for spaces extended container
+			        	contextId = data.context.contextId
+			        	contextType = data.context.contextType      
+			        }
+			        prefix = (contextType === "@space") ? "s_" : "";
+			        userId = prefix + contextId;
+			        console.log(userId + ' ' + prefix + ' ' + contextId + ' ' + contextType);
+
+			        //load URL in iframe if there is a saved URL
+			        loadUrlInIframe();
+			    });
+			}
+
+			function loadUrlInIframe(){
+				var url = null;
+
+				//get appdata
+		        var batch = osapi.newBatch();
+		        batch.add('appdata', osapi.appdata.get({userId: userId}));
+		        batch.execute(function(data){
+			        // update iframe based on appdata
+			        var userAppdata = data.appdata[userId];
+			        console.log(userAppdata);
+			        if (userAppdata) {
+			            url = userAppdata["url"];
+			            console.log(userAppdata["url"]);
+
+						if(typeof url !== 'undefined' && url !== null && url.length > 0){
+							console.log("load in iframe: " + url);
+							loadFrame(url);
+						}
+			        }
+			        else{
+			        	$("#inputForm").removeClass("hidden");
+			        }
+		        });
+			}
+
+			function saveUrl(url){
+				if(typeof url !== 'undefined' && url.length > 0 && url.indexOf('padlet') !== -1){
+					//app data
+					var prefix = (contextType === "@space") ? "s_" : "";
+      				var userId = prefix + contextId;
+      				console.log(userId + " " + url);
+      				osapi.appdata.update({userId: userId, data: {url: url}}).execute(function() {});
+				}
+			}
+			
+			gadgets.util.registerOnLoadHandler(onGadgetLoad);
+		});
+		</script>
+		
+		<button id="settings" class="btn btn-primary hidden"><span class="glyphicon glyphicon-pencil"></span></button>
+		<div id="inputForm" class="hidden">
+			<img title="Padlet" src="padlet-logo.png"/>
+			<form class="form-inline" role="form">
+			  <div class="form-group">
+			    <label class="sr-only" for="padletUrl">__MSG_padlet_url_label__</label>
+			    <input class="form-control" id="padletUrl" placeholder="__MSG_padlet_url_placeholder__">
+			  </div>
+			  <button type="submit" class="btn btn-default" id="loadBtn">__MSG_load_padlet_btn__</button>
+			</form>
+			<div class="alert alert-info alert-dismissible" role="alert">
+				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">__MSG_close_message_btn__</span></button>
+				<strong>__MSG_info_message_title__</strong> __MSG_info_message__
+			</div>
+			<div class="alert alert-danger alert-dismissible hidden" role="alert">
+				<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">__MSG_close_message_btn__</span></button>
+				<strong>__MSG_error_message_title__</strong> __MSG_error_message__
+			</div>
+		</div>
+
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

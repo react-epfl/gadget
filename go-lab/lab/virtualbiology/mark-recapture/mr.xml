@@ -1,0 +1,32 @@
+<Module>
+	 <ModulePrefs title="Virtual Biology Lab - Mark-Recapture"
+	 	title_url="http://virtualbiologylab.org/MarkRecapture.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="The number of individuals in a population, or population size, is perhaps the most important thing to know about a population.  This model is an in-depth exploration of the mark-recapture method of estimating population size, simulating a population of meadow voles which can be trapped, marked, released, and re-trapped.  This advanced model assumes familiarity with the Lincoln-Peterson estimate of population size.  It is designed to be used in exploring how factors such as: population distribution, trap experience (learning to avoid or seek out traps), population size, and sampling effort affect the precision and accuracy of the estimate."
+	 	height="570"
+	 	screenshot="mark-recapture-screenshot.png"
+	 	thumbnail="mark-recapture-icon.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="MarkRecapture" type="application/x-java-applet;version=1.6" width="930" height="567" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/NewModels/" classloader_cache="false" DefaultModel="Mark_Recapture.txt">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>
