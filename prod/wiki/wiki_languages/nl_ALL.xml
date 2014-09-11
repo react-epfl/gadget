@@ -1,0 +1,10 @@
+<messageblundle>
+	<msg name="view_label">Bekijk</msg>
+	<msg name="edit_label">Bewerk</msg>
+	<msg name="history_label">Geschiedenis</msg>
+	<msg name="save_label">Bewaar</msg>
+	<msg name="clear_history_label">Wis geschiedenis</msg>
+	<msg name="viewer_name">Gebruikersnaam</msg>
+	<msg name="date">Datum</msg>
+	<msg name="clear_history_verification">Ben je zeker dat je de geschiedenis wil verwijderen?</msg>
+</messageblundle>
