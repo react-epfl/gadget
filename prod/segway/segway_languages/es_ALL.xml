@@ -1,13 +1,13 @@
 <messageblundle>
 	<msg name="tool_title">Control de un Segway</msg>
-	<msg name="linear_model">Modelo Lineal</msg>
-	<msg name="non_linear_model">Modelo No-Lineal</msg>
+	<msg name="linear_model">Modelo lineal</msg>
+	<msg name="non_linear_model">Modelo no lineal</msg>
 	<msg name="simulation_model">Modelo de simulación:</msg>
 	<msg name="closed_loop">Ciclo cerrado:</msg>
 	<msg name="initial_conditions">Condiciones iniciales:</msg>
 	<msg name="parameters">Parámetros:</msg>
 	<msg name="linear">Lineal:</msg>
-	<msg name="non_linear">No-Lineal:</msg>
+	<msg name="non_linear">No lineal:</msg>
 	<msg name="offset">Desplazamiento:</msg>
 	<msg name="saturation">Saturación:</msg>
 	<msg name="inf">inf</msg>

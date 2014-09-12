@@ -1,17 +1,17 @@
 <messageblundle>
 	<msg name="tool_title">Control of a Segway</msg>
-	<msg name="linear_model">Linear Model</msg>
-	<msg name="non_linear_model">Non-Linear Model</msg>
-	<msg name="simulation_model">Simulation Model:</msg>
-	<msg name="closed_loop">Closed Loop:</msg>
-	<msg name="initial_conditions">Initial Conditions:</msg>
+	<msg name="linear_model">Linear model</msg>
+	<msg name="non_linear_model">Non-linear model</msg>
+	<msg name="simulation_model">Simulation model:</msg>
+	<msg name="closed_loop">Closed loop:</msg>
+	<msg name="initial_conditions">Initial monditions:</msg>
 	<msg name="parameters">Parameters:</msg>
 	<msg name="linear">Linear:</msg>
-	<msg name="non_linear">Non-Linear:</msg>
+	<msg name="non_linear">Non-linear:</msg>
 	<msg name="offset">Offset:</msg>
 	<msg name="saturation">Saturation:</msg>
 	<msg name="inf">inf</msg>
-	<msg name="open_loop">Open Loop:</msg>
+	<msg name="open_loop">Open loop:</msg>
 	<msg name="start_stop">Start/Stop</msg>
 	<msg name="reset">Reset</msg>
 	<msg name="saturation_warning">Not a valid value</msg>
