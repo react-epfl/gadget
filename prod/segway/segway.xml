@@ -8,6 +8,10 @@
                 height="500"
                 thumbnail="http://graasp.epfl.ch/gadget/prod/segway/thumbnail.png"
                 screenshot="http://graasp.epfl.ch/gadget/prod/segway/screenshot.png">
+    <Locale messages="./segway_languages/ALL_ALL.xml"/>
+    <Locale lang="es" messages="./segway_languages/es_ALL.xml"/>
+    <Locale lang="nl" messages="./segway_languages/nl_ALL.xml"/>
+    <Locale lang="fr" messages="./segway_languages/fr_ALL.xml"/>
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -119,7 +123,7 @@ function updateValues(){
 	if (sat!="inf"&&isNaN(sat)){
 		sat="inf";
 		$("#saturation").val("inf");
-		alert("It's hard to believe you really meant that, did you? Anyway, we changed it back for you");
+		alert("__MSG_saturation_warning__");
 	}
 	u=0;
 	u_ln=0;
@@ -635,7 +639,7 @@ function nlclick(){
 		width: 43px;
 	}
 	input[type="button"]{
-		width: 60px;
+		width: 100px;
 	}
 	.animation {
 	    /*background: url(../images/boxBottom.jpg); 
@@ -658,6 +662,7 @@ function nlclick(){
 		border: 1px black solid;
 	    margin-right: 10px;
 	    padding: 15px;
+	    font-size:0.8em;
 	 }
 	.main {
 		background-color: #d9d1c5;
@@ -670,12 +675,17 @@ function nlclick(){
 	 }
 	.title {
 		position:absolute;
-		left:410px;
+		left:370px;
 		top:30px;
 		font-size:2em;
+		text-align: right;
 		font-weight:bold;
 		color: #d9d1c5;
+		padding-right: 15px;
 	}
+	.table_content {
+        font-size:0.9em;
+    }
 	#ubox_ln {
 		background-color: #afa69a;
 	    height: 10;
@@ -755,10 +765,10 @@ function nlclick(){
 <div class="main" id="animpane">
 <div id="anim" class="animation">
 	<div id="legend_ln">
-		<img src="http://graasp.epfl.ch/gadget/prod/segway/checkbox.png"> Linear Model<br>
+		<img src="http://graasp.epfl.ch/gadget/prod/segway/checkbox.png"> __MSG_linear_model__<br>
 	</div>
 	<div id="legend_nl">
-    	<img src="http://graasp.epfl.ch/gadget/prod/segway/checkbox_nl.png"> Non-Linear Model<br>
+    	<img src="http://graasp.epfl.ch/gadget/prod/segway/checkbox_nl.png"> __MSG_non_linear_model__<br>
 	</div>	
 	<div id="ubox_ln_mm">&nbsp;</div>
 	<div id="ubox_nl_mm">&nbsp;</div>
@@ -771,7 +781,7 @@ function nlclick(){
 	<div id="ubox_nl_txt">&nbsp;</div>
 	<div id="dbtext">&nbsp;</div>
 	<div id="testtext">&nbsp;</div>
-	<div class="title">Control of a Segway</div>
+	<div class="title">__MSG_tool_title__</div>
 	<img src="http://graasp.epfl.ch/gadget/prod/segway/baseline.png" id="baseline"/>
     <img src="http://graasp.epfl.ch/gadget/prod/segway/wheel_nl.png" id="wheel_nl"/>
     <img src="http://graasp.epfl.ch/gadget/prod/segway/handlebar_nl.png" id="handlebar_nl" onclick="nlclick()"/>
@@ -781,28 +791,31 @@ function nlclick(){
 </div>
 <div class="main" id="boxpane" style="width:747;">
 <div class="box">
-	<b>Simulation Model:</b>
-	<table>
+	<b>__MSG_simulation_model__</b>
+	<table class="table_content">
+
 		<tr>
-			<td>Linear:</td>
-			<td><input id="checkbox_ln" type="checkbox" value="Linear Model" checked="true" onclick="lmcheck()"/></td>
+			<td>__MSG_linear__</td>
+			<td><input id="checkbox_ln" type="checkbox" value="__MSG_linear_model" checked="true" onclick="lmcheck()"/></td>
 		</tr>
 		<tr>
-			<td>Non-Linear:</td>
-			<td><input id="checkbox_nl" type="checkbox" value="Non-Linear Model" checked="true" onclick="nmcheck()"/></td>
+			<td>__MSG_non_linear__</td>
+			<td><input id="checkbox_nl" type="checkbox" value="__MSG_non_linear_model" checked="true" onclick="nmcheck()"/></td>
 		</tr>
 	</table>		
-	Offset:	<input type="text" id="offset" value="0.2" size="1" /><br>
-	<b>Open Loop:</b><br>
-	<table>
+	__MSG_offset__	<input type="text" id="offset" value="0.2" size="1" /><br>
+	<b>__MSG_open_loop__</b><br>
+	<table class="table_content">
+
         <tr>
-            <td><input type="button" value="Strt/Stp" onclick="olsimulation();"/></td>
+            <td><input type="button" value="__MSG_start_stop__" onclick="olsimulation();"/></td>
         </tr>
 	</table><br>
 </div>
 <div class="box">
-	<b>Closed Loop:</b>
-	<table>
+	<b>__MSG_closed_loop__</b>
+	<table class="table_content">
+
 		<tr>
 			<td>K<sub>&xi;</sub>:</td>
 			<td><input type="text" id="k_xi" value="1" size="2" /></td>
@@ -816,17 +829,19 @@ function nlclick(){
 			<td><input type="text" id="k_dtheta" value="1" size="2" /></td>
 		</tr>
 	</table>
-	<table>
+	<table class="table_content">
+
 		<tr>
-			<td>Saturation: &plusmn; </td>
-			<td><input type="text" id="saturation" value="inf" size="2" /></td>
+			<td>__MSG_saturation__ &plusmn; </td>
+			<td><input type="text" id="saturation" value="__MSG_inf__" size="2" /></td>
 		</tr>
 	</table>
-	<input type="button" value="Strt/Stp" onclick="clsimulation()"/>
+	<input type="button" value="__MSG_start_stop__" onclick="clsimulation()"/>
 </div>
 <div id="box2" class="box">
-	<b>Initial Conditions:</b>
-	<table id="tab2">
+	<b>__MSG_initial_conditions__</b>
+	<table id="tab2" class="table_content">
+
 			<tr>
 				<td>&xi;:</td>
 				<td><input type="text" id="x_1" size="2" /></td>
@@ -841,11 +856,12 @@ function nlclick(){
 			</tr>
 		</table>	
 		
-		<input type="button" value="reset" onclick="reset()"/>
+		<input type="button" value="__MSG_reset__" onclick="reset()"/>
 </div>
 <div class="box" style="margin-right: 0">
-	<b>Parameters:</b>
-	<table>
+	<b>__MSG_parameters__</b>
+	<table class="table_content">
+
 			<tr>
 				<td>C<sub>f</sub>:</td>
 				<td><input type="text" id="c_f" size="2" /></td>

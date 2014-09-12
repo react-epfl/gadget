@@ -1,0 +1,18 @@
+<messageblundle>
+	<msg name="tool_title">Bestuur een Segway</msg>
+	<msg name="linear_model">Lineair model</msg>
+	<msg name="non_linear_model">Niet-lineair model</msg>
+	<msg name="simulation_model">Simulatiemodel:</msg>
+	<msg name="closed_loop">Gesloten lus:</msg>
+	<msg name="initial_conditions">Begincondities:</msg>
+	<msg name="parameters">Parameters:</msg>
+	<msg name="linear">Lineair:</msg>
+	<msg name="non_linear">Niet-lineair:</msg>
+	<msg name="offset">Compensatie:</msg>
+	<msg name="saturation">Saturatie:</msg>
+	<msg name="inf">inf</msg>
+	<msg name="open_loop">Open lus:</msg>
+	<msg name="start_stop">Start/Stop</msg>
+	<msg name="reset">Reset</msg>
+	<msg name="saturation_warning">Zeer goed</msg>
+</messageblundle>
