@@ -1,0 +1,18 @@
+<messageblundle>
+	<msg name="tool_title">Commande d’un Segway</msg>
+	<msg name="linear_model">Modèle linéaire</msg>
+	<msg name="non_linear_model">Modèle non linéaire</msg>
+	<msg name="simulation_model">Modèle de simulation</msg>
+	<msg name="closed_loop">Boucle fermée:</msg>
+	<msg name="initial_conditions">Conditions initiales:</msg>
+	<msg name="parameters">Paramètres:</msg>
+	<msg name="linear">Linéaire:</msg>
+	<msg name="non_linear">Non-linéaire:</msg>
+	<msg name="offset">Offset:</msg>
+	<msg name="saturation">Saturation:</msg>
+	<msg name="inf">inf</msg>
+	<msg name="open_loop">Boucle ouverte:</msg>
+	<msg name="start_stop">Marche/Arrêt</msg>
+	<msg name="reset">Reset</msg>
+	<msg name="saturation_warning">Valeur pas valide</msg>
+</messageblundle>
