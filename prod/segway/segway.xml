@@ -4,8 +4,8 @@
                 author_email="benjamin.fankhauser@epfl.ch" 
                 author="Benjamin Fankhauser" 
                 description="Segway Control Simulation"
-                width="500"
-                height="500"
+                width="790"
+                height="450"
                 thumbnail="http://graasp.epfl.ch/gadget/prod/segway/thumbnail.png"
                 screenshot="http://graasp.epfl.ch/gadget/prod/segway/screenshot.png">
     <Locale messages="./segway_languages/ALL_ALL.xml"/>
@@ -677,7 +677,7 @@ function nlclick(){
 		position:absolute;
 		left:370px;
 		top:30px;
-		font-size:2em;
+		font-size:1.9em;
 		text-align: right;
 		font-weight:bold;
 		color: #d9d1c5;
