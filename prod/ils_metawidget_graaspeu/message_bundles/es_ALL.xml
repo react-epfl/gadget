@@ -1,0 +1,10 @@
+<messagebundle>
+   <msg name="hello"> Hola </msg>
+   <msg name="not_space_owner"> Usted no es dueño de un espacio. No se guardarán los cambios realizados en las aplicaciones acuerdo. </msg>
+   <msg name="description"> Descripción </msg>
+   <msg name="tools"> Herramientas </msg>
+   <msg name="please_enter_your_name"> Introduzca su apodo:</msg>
+   <msg name="please_enter_a_valid_name"> Por favor ingrese un apodo válido </msg>
+   <msg name="type_your_name_here">escriba su apodo aquí...</msg>
+   <msg name="ok">Go!</msg>
+</messagebundle>

@@ -1,0 +1,465 @@
+/**** New UI Customization CERTH ****
+ ------------------------------------ 
+ ****			Start			 **** /
+
+/*Default font style*/
+
+@font-face
+{
+
+font-family: 'EuphemiaUCAS';
+font-style:normal;
+font-weight:normal;
+src: local("fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf"), url("fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf");
+
+}
+
+
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html,
+body {
+  height: 100%;
+  font-size: 18px;
+  overflow: visible;
+  overflow-x: hidden!important;
+}
+
+html,
+html *,
+body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: "EuphemiaUCAS" !important;
+}
+
+/* Wrapper for page content to push down footer */
+
+
+#container {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 5px;
+  left: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  max-width:1024px;
+}
+
+
+
+/* Set the fixed height of the footer here */
+#footer {
+  background-color: #88e2f9;
+  border: 1px solid #88e2f9;
+}
+
+p {
+	text-align: justify;
+}
+
+#footer > p{
+	margin: 0 auto;
+	color:#136ab0;
+	text-align: center;
+	font-weight: bold;
+	vertical-align:middle;
+	line-height: 2.5em;
+}
+
+.dark{
+	color:#136ab0;
+}
+
+.strong{
+	font-weight:bold;
+}
+
+#name_prompt > input {
+    border-color: #a2bed3;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 4px;
+    color: #959292;
+    display: block;
+    font-weight: normal;
+    height: 40px;
+    margin: 0 auto !important;
+    padding: 0 0 4px 9px;
+    width: 90%;
+}
+
+.name_prompt_text{
+    color: #1eb8cd;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#user_name::-webkit-input-placeholder { /* WebKit browsers */
+    font-weight: normal;
+    color: #959292;
+    opacity: 0.5;
+    padding: 0px;
+}
+#user_name:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    font-weight: normal;
+    color: #959292;
+    opacity: 0.5
+}
+#user_name::-moz-placeholder { /* Mozilla Firefox 19+ */
+    font-weight: normal;
+    color: #959292;
+    opacity: 0.5
+}
+#user_name:-ms-input-placeholder { /* Internet Explorer 10+ */
+    font-weight: normal;
+    color: #959292;
+    opacity: 0.5
+}
+
+.name_prompt_text > h3{
+    margin: 0;
+}
+
+#error_name_text{
+    color: red;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+#name_prompt>button:hover{
+    background-color: #FAA61A;
+    color: #ffffff;
+}
+
+#name_prompt > input:focus {
+    outline-width: 0;
+}
+
+#ils_cycle {
+	top: 0px;
+	color:#000;
+    padding: 0px;
+}
+
+#ils_cycle > {
+
+}
+
+#ils_phases{
+    padding-bottom: 60px;
+}
+
+.customTop ul{
+	padding:0px 0px 0px 15px;
+	border-bottom: 0px solid #dddddd;
+}
+
+
+.customHeight {
+	height: 57px;
+}
+
+#customBarWrapper {
+	margin: 0 auto;
+	max-width: 1024px;
+}
+
+
+.fixedCustomTop
+{
+	top: 0px;
+	position:fixed;
+    z-index: 10;
+    -webkit-transform: translateZ(0);
+
+}
+
+.customTop {
+  	background-clip: padding-box;
+    background-color: #21C4F5;
+    border-top: 0 none;
+    color: #FFFFFF;
+    margin-left: -300%;
+    padding-left: 300%;
+    padding-right: 195%;
+    min-height: 50px;
+    width: 600%;
+}
+
+#myCustomBar{
+
+	height: 50px;
+	padding: 0 40px;
+
+}
+
+#title {
+	margin:0px;
+	padding:0px;
+	line-height:50px;
+}
+
+#hello_msg {
+	color: #136AB0;
+    background-color: transparent;
+    line-height:50px;
+    margin:0px;
+}
+
+#toolbar{
+	background-color: #88e2f9;
+}
+
+#tools_title{
+	color:#136ab0;
+	background-color: transparent;    
+	font-size: 16px;
+    height: 40px;
+    padding-top: 12px;
+    text-align: center;
+}
+
+.customTop * {
+	border-color: rgba(0, 0, 0, 0) !important;	
+	border-width: 0 0 1px 1px !important;
+
+}
+
+.customTop li > a{
+	color: white;
+    outline: none;
+    height: 50px;
+}
+
+
+.customTop li.active{
+	background-color: #1A56A1;
+}
+
+.customTop li.active > a{
+	color:white!important;
+	background-color: #1A56A1!important;
+}
+
+.customTop li.active:hover{
+	background-color: #1A56A1;
+}
+.customTop li.active > a:hover{
+	color:white;
+	background-color: #1A56A1;
+}
+
+.customTop li:hover {
+	background-color: #1b99d4;
+}
+
+.customTop li> a:hover{
+	color:white;
+	background-color: #1b99d4;
+}
+
+hr {border:1px solid black;}
+
+.page-header {
+	border:0pc solid black;
+	margin-top:0px;
+}
+
+.tab-pane{
+	padding-top:2em;
+}
+
+.centered {
+	text-align:center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#wrap > .container {
+  padding: 50px 40px 0;
+  overflow-y:visible ;
+}
+.container .credit {
+  margin: 20px 0;
+}
+
+#footer > .container {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+.navbar-brand{
+	padding:10px;
+}
+
+.logoimage {
+width:40px;
+height: 40px;
+}
+
+#login_popup{
+	left:0px;
+	width:auto;
+	top:20%;
+}
+
+.modal-dialog {
+    width: 400px;
+}
+
+.gadgets-gadget-title-bar {
+    display: none;
+}
+
+.gadgets-gadget-content {
+    border:0px;
+}
+
+iframe{
+    border: 0px solid transparent;
+}
+
+/*Notifications Bar override for offline.js START*/
+
+.offline-ui {
+    border-radius: 0px;
+    font-family: 'EuphemiaUCAS';
+    max-width: 100%;
+    overflow: hidden;
+    padding: 1em;
+    top: 50px;
+    width: 100%;
+    font-size: 14px;
+    height: 50px;
+
+
+}
+
+/*Notifications Bar override for offline.js END*/
+
+
+/* Overrides Bootstrap Toolbar */
+/*
+   custom.css
+   Responsive Prototype
+   
+   Created by Alexandros Trichos on 2013-12-16.
+   Copyright 2013 Alexandros Trichos. All rights reserved.
+*/
+.navbar-header {
+	margin-left: 0;
+	line-height: 2.5em;
+	float:left;
+}
+
+.navbar-default > a{
+	line-height: 2.5em;
+	margin-right: 2em;
+	float: right;
+
+}
+
+
+
+
+.navbar-default {
+    background-color: #76d6ff;
+    border-color: #76d6ff;
+}
+.navbar-default .navbar-brand {
+    color: #ffffff;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: red;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #ffffff;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #ffffff;
+}
+.navbar-default .navbar-nav > .active > a, 
+.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #ffffff;
+    background-color: #1A56A1;
+}
+.navbar-default .navbar-nav > .open > a, 
+.navbar-default .navbar-nav > .open > a:hover, 
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #ffffff;
+    background-color: #1A56A1;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+.navbar-default .navbar-nav > .open > a .caret, 
+.navbar-default .navbar-nav > .open > a:hover .caret, 
+.navbar-default .navbar-nav > .open > a:focus .caret {
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+}
+.navbar-default .navbar-toggle {
+    border-color: #1A56A1;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: red;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #ffffff;
+}
+
+
+/* Scrollbar Fix */
+
+
+
+/* Scrollbar Fix */
+
+
+/* RESPONSIVE OVERRIDE */
+
+@media (max-width: 991px) {
+
+}
+
+@media (min-width: 768px) {
+    .customSize li{
+        font-size: 1.2em!important;
+    }
+
+
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+}
+
+@media (min-width: 1200px) {
+}
+
+
+
+
+/**** New UI Customization CERTH ****
+ ------------------------------------ 
+ ****			End				 **** /
