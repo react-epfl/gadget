@@ -1,0 +1,10 @@
+<messagebundle> 
+   <msg name="hello">Bonjour</msg> 
+   <msg name="not_space_owner">Vous n'êtes pas le propriétaire de l'espace. Les modifications apportées ne seront pas sauvegardés.</msg> 
+   <msg name="description">Description</msg> 
+   <msg name="tools">Outils</msg> 
+   <msg name="please_enter_your_name">Entre ton nom s'il te plaît</msg> 
+   <msg name="please_enter_a_valid_name">Entre un nom valide s'il te plaît</msg>
+   <msg name="type_your_name_here">tapez votre nom ici...</msg>
+   <msg name="ok">Go!</msg>
+</messagebundle>

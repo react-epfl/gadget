@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="ILS Metawidget"
+                author_email="na.li@epfl.ch, alexandros.trichos@gmail.com"
+                author="Evgeny Bogdanov, Na Li, Alexandros Trichos"
+                description="This is a metawidget used to show the student view of an inquiry learning space, which is developed in the framework of the Go-Lab Project. At the moment, it works only in Graasp - http://ask4research.info/golab/">
+    <Require feature="dynamic-height" />
+    <Require feature="shindig-container" />
+    
+    <Locale messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ALL_ALL.xml"/>
+    <Locale lang="fr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/fr_ALL.xml"/>
+    <Locale lang="de" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/de_ALL.xml"/>
+    <Locale lang="es" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/es_ALL.xml"/>
+    <Locale lang="ru" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ru_ALL.xml"/>
+    <Locale lang="th" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/th_ALL.xml"/>
+    <Locale lang="ar" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ar_ALL.xml"/>
+    <Locale lang="it" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/it_ALL.xml"/>
+    <Locale lang="gr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/gr_ALL.xml"/>
+    <Locale lang="ee" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ee_ALL.xml"/>
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/head.js/head.min.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/offline.js/offline.min.js"></script>
+
+<script type="text/javascript">
+//gadgets.util.registerOnLoadHandler(initialize);
+
+head.js ([
+"http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js",
+"http://graasp.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js",
+"http://graasp.epfl.ch/gadget/libs/jquery.cookie.js",
+"http://graasp.epfl.ch/gadget/libs/underscore-min.js",
+"http://graasp.epfl.ch/gadget/libs/bootstrap3/js/bootstrap.min.js",
+"http://graasp.epfl.ch/gadget/libs/MetadataHandler/MetadataHandler.js",
+"http://graasp.epfl.ch/gadget/libs/ActionLogger/ActionLogger.js",
+"http://graasp.epfl.ch/ils_lib/main/ils.js",
+"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/app.js",
+"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/custom.js",
+"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/data.js",
+"http://graasp.epfl.ch/gadget/libs/bootstrap3/css/bootstrap.css",
+"http://graasp.epfl.ch/gadget/libs/offline.js/offline-theme-default.css",
+"http://graasp.epfl.ch/gadget/libs/offline.js/offline-language-english.css",
+"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/app.css",
+"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/custom.css"],
+function(){
+if (osapi.people.getViewer) {
+    try{initialize_user(); }
+    catch(err){
+        console.log(err);
+        setTimeout(function(){
+            initialize_user();
+        }, 2000);
+    }
+} else {
+    try{
+        setTimeout(function(){
+            initialize_user();
+        }, 1000);
+    }catch(err){
+        console.log(err);
+        setTimeout(function(){
+            initialize_user();
+        }, 2000);
+    }
+}
+})
+</script>
+<div id="main" style="display:none;">
+<div id="wrap">
+<nav id="myCustomBar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+          <div id="customBarWrapper">
+          <div class="navbar-header">
+            <a id="title" class="dark strong h3" href="#"></a>
+          </div>
+            <a id = "hello_msg" href="" class="navbar-right dark"></a>
+           </div>
+</nav>
+<div id="main_block" class="container">
+  <div id="container" onmouseover="adjustHeight();">
+    <div id="not_owner" style="display:none">__MSG_not_space_owner__</div>
+    <div id = "description_block">
+      <span id = "description"></span>
+    </div>
+    <div id="center">
+      <div id="fauxContainer" class="container"></div>
+      <ul class=" nav nav-tabs" id="ils_cycle"></ul>
+      <div class="tab-content" id="ils_phases"></div>
+    </div>
+  </div> <!-- /container -->
+</div>
+</div>
+
+<div id="toolbar" class="navbar-fixed-bottom">
+  <div id="tools_title"><img id="arrow_down" src="arrow_down.png"><img id="arrow_up" src="arrow_up.png"> __MSG_tools__</div>
+  <div id="tools_content"></div>
+</div>
+</div>
+<div id="loader" style="position:relative;top:25%;margin-left:auto;margin-right:auto;width:320px;">
+    <img width="320" id="loader-image" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/golab_logo_big.gif">
+    <img width="320" id="loader-image-static" class="centered" style="display:none" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/golab_logo_big_static.gif">
+    <div id="greeting_text" class="name_prompt_text" style="display:none"><h3>__MSG_welcome_to_golab__</h3></div>
+    <div id="name_prompt" style="display:none" >
+        <div id="hello_name_text" class="name_prompt_text"><h3>__MSG_welcome_to_golab__!</h3></div>
+        <input type="text" id="user_name" placeholder="__MSG_type_your_name_here__">
+        <div id="error_name_text" class="name_prompt_text error" style="display:none"><span>__MSG_valid_name_instructions__</span></div>
+    </div>
+</div>
+
+
+  ]]></Content>
+</Module>
