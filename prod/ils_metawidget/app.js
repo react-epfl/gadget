@@ -33,7 +33,7 @@ var initialize_user = function(){
     }
 
     //Specifies a series of actions to be taken for initialization
-    var  init_actions=function(){
+    var init_actions=function(){
         animate_logo();
         saveUserName();
         initialize_ils();
@@ -48,11 +48,7 @@ var initialize_user = function(){
 
 // gets the data and calls build for container
 var initialize_ils = function() {
-
-  //Initialize activity streams via MetadataHandler and ActionLogger
-  init_activity_streams();
-
-  // This container lays out and renders gadgets itself.
+    // This container lays out and renders gadgets itself.
   my.LayoutManager = function() {
     shindig.LayoutManager.call(this);
   };
@@ -173,6 +169,9 @@ var initialize_ils = function() {
             console.log("Couldn't apply new layout!");
         }
 
+      init_activity_streams(); //Initialize activity streams via MetadataHandler and ActionLogger
+
+      setTimeout(function(){sendStream("access",true,"")},5000); //Sends the access verb in action logging when the user is logged in
     
   });
 
@@ -588,23 +587,27 @@ var save = function(notHumanAct, app_json){
     .execute(function() {})
 }
 
-var init_activity_streams=function(){
-    var defaultMetadata = {
+var init_activity_streams=function() {
+    var documentType = "newDocumentType";
+    var toolName = "ILS Metawidget";
+    var initialMetadata = {
+        "id": "",
+        "published": "",
         "actor": {
             "objectType": "person",
             "id": "unknown",
             "displayName": "unknown"
         },
         "target": {
-            "objectType": "unknown",
+            "objectType": documentType,
             "id": generateUUID(),
-            "displayName": "unnamed"
+            "displayName": "unnamed " + documentType
         },
         "generator": {
             "objectType": "application",
             "url": window.location.href,
             "id": generateUUID(),
-            "displayName": "toolName"
+            "displayName": toolName
         },
         "provider": {
             "objectType": "ils",
@@ -615,7 +618,8 @@ var init_activity_streams=function(){
         }
     };
 
-    new window.golab.ils.metadata.GoLabMetadataHandler(defaultMetadata, function(error, createdMetadataHandler) {
+
+    new window.golab.ils.metadata.GoLabMetadataHandler(initialMetadata, function (error, createdMetadataHandler) {
         if (error) {
             console.log(error);
         } else {
@@ -629,16 +633,37 @@ var init_activity_streams=function(){
         }
     });
 
-    var testLogObject = {
-        objectType: "testObject",
-        id: "123456789",
-        content: "test"
+}
+
+$(document).ready(function(){
+    $('body').on('click','.nav-tabs>li>a', function (e) {
+        var ils_active_phase={
+            id:this.attributes["href"].value.slice(1),
+            name:this.innerHTML
+        };
+        sendStream("access",false,ils_active_phase);
+    });
+});
+
+
+function sendStream(action,first_access,ils_active_phase){
+
+
+    var ILSLogObject = {
+        objectType: "ILS_Log_Object",
+        id: generateUUID(),
+        first_access: first_access,
+        ils_active_phase_name: ils_active_phase.name,
+        ils_active_phase_id:ils_active_phase.id
     };
 
-    setTimeout(function(){actionLogger.log("add", testLogObject)},7000) ;
-    setTimeout(function(){actionLogger.log("access", testLogObject)},10000) ;
-
+    if (actionLogger&&metadataHandler) {
+        actionLogger.log(action, ILSLogObject);
+    }else{
+        console.log("Could not log action "+action+". Action Logging not initialized properly.")
+    }
 }
+
 
 var generateUUID = (function() {
     function s4() {
