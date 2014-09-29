@@ -105,7 +105,7 @@ var initialize_ils = function() {
     app.owner = data.owner;
     var appdata = data.appdata; // .settings
     var apps = data.apps; // .list
-    var subspaces = get_public_spaces(data.spaces.list);  //subspaces of the current space
+    var subspaces = get_visible_spaces(data.spaces.list);  //subspaces of the current space
 
     // add space title and description
     var currentSpace = data.currentSpace;
@@ -247,12 +247,14 @@ var build_tabs = function(subspaces) {
   center.append(ils_phases);
 };
 
-// get the public spaces from the subspaces array
-var get_public_spaces = function(subspaces) {
-  var public_spaces = _.filter(subspaces, function(item) {
-    return ( item.spacetype == "folder" && item.visibilityLevel == "public");
+// get the visible spaces from the subspaces array
+var get_visible_spaces = function(subspaces) {
+  var visible_spaces = _.filter(subspaces, function(item) {
+    //return ( (typeof(item.spaceType) != "undefined") && (item.visibilityLevel != "hidden") && (item.spaceType != "Vault") );
+    //return ( (typeof(item.spaceType) != "folder") && (item.visibilityLevel != "hidden"));
+    return ( (item.spacetype == "folder") && (item.visibilityLevel != "hidden") && (item.displayName != "Vault"));
   });
-  return public_spaces;
+  return visible_spaces;
 };
 
 // Displays welcome message to user
