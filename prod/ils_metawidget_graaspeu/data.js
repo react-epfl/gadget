@@ -44,9 +44,11 @@ function getDataById(spaceId, callback) {
   var batch = osapi.newBatch();
   batch.add('appdata', osapi.appdata.get({userId: prefixContextId}));
   batch.add('apps', osapi.apps.get({contextId: spaceId, contextType: contextType}));
+  batch.add('spaces', osapi.spaces.get({contextId: spaceId, contextType: contextType}));
   batch.execute(function(res){
     output.appdata = res.appdata;
-    output.apps = res.apps;
+    output.apps = res.apps.list;
+    output.items = res.spaces.list;
     callback(output);
   }); 
 }
