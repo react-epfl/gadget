@@ -557,7 +557,8 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
     case ".wma":
     case ".wmv":
     case ".3pg":
-    // ------------------ TODO: NOT YET WORKING FOR ONLINE VIDEOS ----------------------
+      // ------------------ NOT YET WORKING !! ----------------------
+//      $docToDisplay = $("<p>vcv</p>").text(title);
       $docToDisplay = $('<video controls></video>');
       $docToDisplay.attr("class", "resource_content");
       var testUrl = "http://localhost:9091/resources/"+id+"/raw";
@@ -660,7 +661,7 @@ var getGadgetSize = function(gadgetUrl){
 
   var host_url=window.location.host.toString(); //Gets the current host and uses it to switch between development and production in the following URL
   // for testing on developement machine use port 8080
-  xhr.open( "POST", "http://"+host_url+"/gadgets/metadata?st=0:0:0:0:0:0:0", false );
+  xhr.open( "POST", "http://"+host_url+":80/gadgets/metadata?st=0:0:0:0:0:0:0", false );
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.setRequestHeader("Accept", "application/json");
   xhr.send(str_data);
