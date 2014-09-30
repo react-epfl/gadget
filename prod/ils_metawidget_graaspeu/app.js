@@ -502,6 +502,9 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   var doc = doc_json.hash[id];
   // build placeholder
   var title = doc.displayName;
+  //  URL for development purposes (local)
+  //  var testUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
+ var testUrl = window.location.protocol+"//"+window.location.hostname+"/resources/"+id+"/raw";
 
   //title of each doc
 //  var titleToDisplay = $('<h3></h3>').text(title.substr(0, n));
@@ -520,10 +523,8 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
     case ".tif":
     case ".tiff":
     case ".vsd":
-//      $docToDisplay = $("<img></img>").text(title);
       $docToDisplay = $('<img></img>');
       $docToDisplay.attr("class", "resource_content");
-      var testUrl = "/resources/"+id+"/raw";
       $docToDisplay.attr("src", testUrl);
       break;
     case ".acm":
@@ -560,22 +561,19 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
       // TODO: support online videos
       $docToDisplay = $('<video controls></video>');
       $docToDisplay.attr("class", "resource_content");
-      var testUrl = "http://localhost:9091/resources/"+id+"/raw";
       $docToDisplay.attr("src", testUrl);
       $docToDisplay.attr("type", "video/"+docType);
       break;
     case ".pdf":
       $docToDisplay = $('<div ng-swipe-left="prev()" ng-swipe-right="next()"></div>').addClass("content");
-      var $pdf = $('<object data="http://localhost:9091/resources/'+id+'/raw" type="application/pdf" width="100%" height="100%"></object>');
+      var $pdf = $('<object data="'+testUrl+'" type="application/pdf" width="100%" height="100%"></object>');
       $docToDisplay.append($pdf)
       break;
     default:
       $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
       // $docToDisplay = $('<iframe></iframe>');
       // $docToDisplay.attr("class", "resource_content");
-      // var testUrl = "http://localhost:9091/resources/"+id+"/raw";
-      // $docToDisplay.attr("src", testUrl);
-      
+      // $docToDisplay.attr("src", testUrl);      
   }
 
     parent.append(descrToDisplay);
