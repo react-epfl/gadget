@@ -127,6 +127,7 @@ var initialize_ils = function() {
     // --- apps from space ---
     app.list = apps.list;
 
+
     //Check if there are available apps
     if (app.list.length>0)
     {
@@ -140,9 +141,9 @@ var initialize_ils = function() {
         });
         // -----------------------
 
-        refreshItemsList(app);
+        refreshAppsList(app);
 
-        buildSkeleton($("#tools_content"),app, app, false);
+        buildSkeleton($("#tools_content"),app, false);
     } else {
         // What to do when there re no apps  
         toggle_toolbar(); // Hide the toolbar
@@ -205,13 +206,31 @@ var build_tabs = function(subspaces) {
     ils_phases.append(phase);
     getDataById(item.id, function (data) {
 
-      var itemsIds=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
-      var json_app = buildJson(data.apps, data, itemsIds, item);
-      var json_allItems = buildJson(data.items, data, itemsIds, item);
+      var app_ids_in_description=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
 
-      refreshItemsList(json_app);
-      refreshItemsList(json_allItems);
-      buildSkeleton(phase_content, json_app, json_allItems, true);
+      var json = {};
+      json.contextId = "s_" + item.id;
+
+      json.hash = {};
+      json.sizeType = "px";
+      json.order = [];
+      json.sizes = {};
+      _.each(data.apps.list, function (elem){
+        if (app_ids_in_description.indexOf(elem.id)==-1) //if the id of this widget is not found in the description
+        {
+          json.hash[elem.id] = elem; //add the widget to the widget list to be rendered
+        }
+      });
+      var appdata = data.appdata[json.contextId];
+      if (appdata) {
+        json.data = JSON.parse(appdata.settings);
+        json.order = json.data.order || [];
+        json.sizes = json.data.sizes || {};
+        json.sizeType = json.data.sizeType || "px"; // px or % to calculate the size
+      }
+
+      refreshAppsList(json);
+      buildSkeleton(phase_content,json, true);
 
     });
   });
@@ -233,37 +252,10 @@ var get_visible_spaces = function(subspaces) {
   var visible_spaces = _.filter(subspaces, function(item) {
     //return ( (typeof(item.spaceType) != "undefined") && (item.visibilityLevel != "hidden") && (item.spaceType != "Vault") );
     //return ( (typeof(item.spaceType) != "folder") && (item.visibilityLevel != "hidden"));
-    return ( (item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (item.displayName != "Vault"));
+    return ( (item.spacetype == "folder") && (item.visibilityLevel != "hidden") && (item.displayName != "Vault"));
   });
   return visible_spaces;
 };
-
-// build the json from a list and data
-
-var buildJson = function(list, data, itemsIds, item) {
-  var json = {};
-  jsoncontextId = "s_" + item.id;
-
-  json.hash = {};
-  json.sizeType = "px";
-  json.order = [];
-  json.sizes = {};
-  _.each(list, function (elem){
-    if (itemsIds.indexOf(elem.id)==-1) //if the id of this widget is not found in the description
-    {
-      json.hash[elem.id] = elem; //add the widget to the widget list to be rendered
-    }
-  });
-  var appdata = data.appdata[json.contextId];
-  if (appdata) {
-    json.data = JSON.parse(appdata.settings);
-    json.order = json.data.order || [];
-    json.sizes = json.data.sizes || {};
-    json.sizeType = json.data.sizeType || "px"; // px or % to calculate the size
-  }
-
-  return json;
-}
 
 // Displays welcome message to user
 var welcome_user = function(){
@@ -359,7 +351,7 @@ var resizeAllApps = function (type) {
 }
 // refreshes order of app, takes as the base appdata representation
 // removes deleted app and adds new apps
-var refreshItemsList = function (app_json) {
+var refreshAppsList = function (app_json) {
   // removes apps that are no longer in the space
   var savedIds = [] // list of valid ids that are in the app.order
   _.each(app_json.order, function (id, i) {
@@ -386,20 +378,15 @@ var adjustHeight = function () {
   gadgets.window.adjustHeight();
 }
 
-var buildSkeleton = function (container, app_json, all_json, is_center) {
+var buildSkeleton = function (container,app_json, is_center) {
   // build first drop_here block
   var fakeGadget = $('<div id="fake_gadget" appId="0"></div>')
     .append($('<div class="drop_here"></div>'))
   container.append(fakeGadget)
 
   // build apps
-  _.each(all_json.order, function (id) {
-    //check if it is an app: buildApp or not: buildDoc.
-    if(app_json.order.indexOf(id) != -1) {
-      buildWindowApp(id, container, app_json, is_center)
-    } else {
-      buildWindowDoc(id, container, all_json, is_center)
-    }
+  _.each(app_json.order, function (id) {
+    buildWindow(id, container, app_json, is_center)
   })
   // resize width of apps
   resizeAllApps()
@@ -470,23 +457,17 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
     })
 }
 
-//display when is an app
-var buildWindowApp = function (id, parent, app_json, is_center) {
+var buildWindow = function (id, parent, app_json, is_center) {
   var gadget = app_json.hash[id]
- // var titleToDisplay = $('<h3></h3>').text(gadget.displayName);
- // parent.append(titleToDisplay);
 
-  var description = $("<div></div>").text(gadget.description);
-  parent.append(description);
-  parent.append($("<br>"));
   // build placeholder
   var blk = $("<div></div>")
     .addClass("window")
     .attr('appId', gadget.id)
 
- // var title = $("<div></div>").addClass('gadgets-gadget-title-bar')
- //   .append($("<span></span>").text(gadget.displayName))
- // blk.append(title)
+  var title = $("<div></div>").addClass('gadgets-gadget-title-bar')
+    .append($("<span></span>").text(gadget.displayName))
+  blk.append(title)
   parent.append(blk)
 
   var gadget_el = $("<div></div>").attr('id', 'gadget-chrome-'+id)
@@ -495,95 +476,6 @@ var buildWindowApp = function (id, parent, app_json, is_center) {
 
   blk.append($('<div class="window_placeholder"></div>'));
   blk.append($('<div class="drop_here"></div>'));
-}
-
-//display other formats than apps (documents, images, videos, ..)
-var buildWindowDoc = function (id, parent, doc_json, is_center) {
-  var doc = doc_json.hash[id];
-  // build placeholder
-  var title = doc.displayName;
-
-  //title of each doc
-//  var titleToDisplay = $('<h3></h3>').text(title.substr(0, n));
-//  parent.append(titleToDisplay);
-  
-  var descrToDisplay = $('<div class="resource_description"></div>').text(doc.description);
-  var docType = title.substr(title.lastIndexOf("."), title.length);
-  var $docToDisplay;
-  switch (docType) {
-    case ".drw":
-    case ".gif":
-    case ".jpg":
-    case ".jpeg":
-    case ".png":
-    case ".svg":
-    case ".tif":
-    case ".tiff":
-    case ".vsd":
-//      $docToDisplay = $("<img></img>").text(title);
-      $docToDisplay = $('<img></img>');
-      $docToDisplay.attr("class", "resource_content");
-      var testUrl = "http://localhost:9091/resources/"+id+"/raw";
-      $docToDisplay.attr("src", testUrl);
-      break;
-    case ".acm":
-    case ".aif":
-    case ".asf":
-    case ".avi":
-    case ".bun":
-    case ".caf":
-    case ".csh":
-    case ".flv":
-    case ".omf":
-    case ".mid":
-    case ".mov":
-    case ".mp3":
-    case ".mp4":
-    case ".mpg":
-    case ".mus":
-    case ".m3u":
-    case ".m4a":
-    case ".nsf":
-    case ".oga":
-    case ".ogg":
-    case ".ram":
-    case ".rm":
-    case ".sib":
-    case ".sty":
-    case ".swf":
-    case ".vag":
-    case ".vlc":
-    case ".wav":
-    case ".wma":
-    case ".wmv":
-    case ".3pg":
-    // ------------------ TODO: NOT YET WORKING FOR ONLINE VIDEOS ----------------------
-      $docToDisplay = $('<video controls></video>');
-      $docToDisplay.attr("class", "resource_content");
-      var testUrl = "http://localhost:9091/resources/"+id+"/raw";
-      $docToDisplay.attr("src", testUrl);
-      $docToDisplay.attr("type", "video/"+docType);
-      break;
-    case ".pdf":
-      $docToDisplay = $('<div ng-swipe-left="prev()" ng-swipe-right="next()"></div>').addClass("content");
-      var $pdf = $('<object data="http://localhost:9091/resources/'+id+'/raw" type="application/pdf" width="100%" height="100%"></object>');
-      $docToDisplay.append($pdf)
-      break;
-    default:
-      $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
-      // $docToDisplay = $('<iframe></iframe>');
-      // $docToDisplay.attr("class", "resource_content");
-      // var testUrl = "http://localhost:9091/resources/"+id+"/raw";
-      // $docToDisplay.attr("src", testUrl);
-      
-  }
-
-    parent.append(descrToDisplay);
-    parent.append($("<br>"));
-    parent.append($docToDisplay);
-    parent.append($("<br>"));
-
-
 }
 
 // is_center indicates if the gadget is in the center or at the bottom tool bar
