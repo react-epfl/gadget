@@ -515,14 +515,14 @@ var buildGadget = function (id, app_json, is_center) {
 
   $('#gadget-chrome-'+id).replaceWith(gadget_el);
 
-  // for gadgets in the center, if the width is not empty and less than 900, use the original width
-  // otherwise, use 900px
+  // for gadgets in the center, if the width is not empty and less than 876, use the original width
+  // otherwise, use 876px
   // for gadgets at the bottom tool bar, use the default width 300px
   if(is_center){
-    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 900))
-      $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 20 + 'px');
+    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 876))
+      $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 'px');
     else
-      $('#gadget-chrome-'+id).css('width', '900px');
+      $('#gadget-chrome-'+id).css('width', '876px');
   }
 
   shindig.container.setView("home");

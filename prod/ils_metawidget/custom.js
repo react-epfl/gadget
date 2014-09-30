@@ -12,6 +12,7 @@ var applyNewLayout= function  () {
     setTimeout(function(){
         $("#main").show("fade",1000);
         $("#loader").hide("fade",500).remove();
+        $("body").addClass("bg_image");
     },1000);
 
 

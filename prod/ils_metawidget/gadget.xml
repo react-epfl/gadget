@@ -72,9 +72,9 @@ if (osapi.people.getViewer) {
 <nav id="myCustomBar" class="navbar navbar-default navbar-fixed-top" role="navigation">
           <div id="customBarWrapper">
           <div class="navbar-header">
-            <a id="title" class="dark strong h3" href="#"></a>
+            <a id="title" href="#"></a>
           </div>
-            <a id = "hello_msg" href="" class="navbar-right dark"></a>
+            <a id = "hello_msg" href="" class="navbar-right"></a>
            </div>
 </nav>
 <div id="main_block" class="container">
