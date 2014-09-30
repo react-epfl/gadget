@@ -504,7 +504,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   var title = doc.displayName;
   //  URL for development purposes (local)
   //  var testUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
- var testUrl = window.location.protocol+"//"+"http://graasp.eu"+"/resources/"+id+"/raw";
+ var testUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
 
   //title of each doc
 //  var titleToDisplay = $('<h3></h3>').text(title.substr(0, n));
