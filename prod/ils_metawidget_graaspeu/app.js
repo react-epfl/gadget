@@ -523,7 +523,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
 //      $docToDisplay = $("<img></img>").text(title);
       $docToDisplay = $('<img></img>');
       $docToDisplay.attr("class", "resource_content");
-      var testUrl = "http://localhost:9091/resources/"+id+"/raw";
+      var testUrl = "/resources/"+id+"/raw";
       $docToDisplay.attr("src", testUrl);
       break;
     case ".acm":
