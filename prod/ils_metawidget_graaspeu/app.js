@@ -252,7 +252,7 @@ var get_visible_spaces = function(subspaces) {
   var visible_spaces = _.filter(subspaces, function(item) {
     //return ( (typeof(item.spaceType) != "undefined") && (item.visibilityLevel != "hidden") && (item.spaceType != "Vault") );
     //return ( (typeof(item.spaceType) != "folder") && (item.visibilityLevel != "hidden"));
-    return ( (item.spacetype == "folder") && (item.visibilityLevel != "hidden") && (item.displayName != "Vault"));
+    return ( (item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (item.displayName != "Vault"));
   });
   return visible_spaces;
 };
