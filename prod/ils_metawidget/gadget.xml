@@ -33,8 +33,9 @@ head.js ([
 "http://graasp.epfl.ch/gadget/libs/jquery.cookie.js",
 "http://graasp.epfl.ch/gadget/libs/underscore-min.js",
 "http://graasp.epfl.ch/gadget/libs/bootstrap3/js/bootstrap.min.js",
-"https://rawgit.com/go-lab/ils/master/metadata/MetadataHandler.js",
-"https://rawgit.com/go-lab/ils/master/applog/ActionLogger.js",
+//Rawgit proxy was used to overcome the chrome MIME issue
+    "https://rawgit.com/go-lab/ils/master/metadata/MetadataHandler.js",
+    "https://rawgit.com/go-lab/ils/master/applog/ActionLogger.js",
 "http://graasp.epfl.ch/ils_lib/main/ils.js",
 urlPrefix+"app.js",
 urlPrefix+"custom.js",
