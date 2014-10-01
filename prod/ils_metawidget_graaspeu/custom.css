@@ -50,7 +50,7 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 /* Wrapper for page content to push down footer */
 .bg_image{
     background-size: 100%;
-    background-image: url("bg300.jpg");
+    background-image: url("bg.jpg");
 }
 
 #container {
