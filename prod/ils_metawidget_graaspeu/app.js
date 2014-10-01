@@ -4,10 +4,12 @@ var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
           , data: { view: "" }
-          , root_url: "http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/"
+          , root_url: "http://graasp.epfl.ch/gadget/prod/ils_metawidget/"
           , user_name: ""
           , prefs: new gadgets.Prefs()
 }
+var ILS = { name: "",
+            id: ""};
 
 // Identify which user is using this url
 // The ILS is not initialized unless a valid nickname is found
@@ -33,7 +35,7 @@ var initialize_user = function(){
     }
 
     //Specifies a series of actions to be taken for initialization
-    var  init_actions=function(){
+    var init_actions=function(){
         animate_logo();
         saveUserName();
         initialize_ils();
@@ -48,11 +50,7 @@ var initialize_user = function(){
 
 // gets the data and calls build for container
 var initialize_ils = function() {
-
-  //Initialize activity streams via MetadataHandler and ActionLogger
-  init_activity_streams();
-
-  // This container lays out and renders gadgets itself.
+    // This container lays out and renders gadgets itself.
   my.LayoutManager = function() {
     shindig.LayoutManager.call(this);
   };
@@ -72,6 +70,7 @@ var initialize_ils = function() {
 
   // make toolbar togglable
   $("#tools_title").click(function() {
+    $(this).toggleClass("expanded");
     var tools_panel = document.getElementById("tools_content");
     var main_block = document.getElementById("main_block");
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
@@ -96,7 +95,7 @@ var initialize_ils = function() {
 
   //getting the user's settings
   getData(function (data) {
-    app.viewer = data.viewer; // .displayName
+    app.viewer = data.viewer // .displayName
     app.viewerName = data.viewer.displayName;
     var context = data.context; // .contextId, .contextType
     app.context = context;
@@ -105,12 +104,14 @@ var initialize_ils = function() {
     app.owner = data.owner;
     var appdata = data.appdata; // .settings
     var apps = data.apps; // .list
-    var subspaces = get_visible_spaces(data.spaces.list);  //subspaces of the current space
+    var subspaces = remove_hidden_spaces(data.spaces.list);  //subspaces of the current space
 
     // add space title and description
     var currentSpace = data.currentSpace;
+    ILS.name=currentSpace.displayName;
+    ILS.id=currentSpace.id;
     if (currentSpace) {
-      $("#title").append(currentSpace.displayName);
+      $("#title").append(ILS.name);
       if (currentSpace.description !="" ){ // when there is a valid description
         $("#description").append(currentSpace.description);
       }
@@ -127,6 +128,7 @@ var initialize_ils = function() {
     // --- apps from space ---
     app.list = apps.list;
 
+
     //Check if there are available apps
     if (app.list.length>0)
     {
@@ -140,9 +142,9 @@ var initialize_ils = function() {
         });
         // -----------------------
 
-        refreshItemsList(app);
+        refreshAppsList(app);
 
-        buildSkeleton($("#tools_content"),app, app, false);
+        buildSkeleton($("#tools_content"),app, false);
     } else {
         // What to do when there re no apps  
         toggle_toolbar(); // Hide the toolbar
@@ -172,6 +174,9 @@ var initialize_ils = function() {
             console.log("Couldn't apply new layout!");
         }
 
+      init_activity_streams(); //Initialize activity streams via MetadataHandler and ActionLogger
+
+      setTimeout(function(){sendStream("access","ILS","")},5000); //Sends the access verb in action logging when the user is logged in
     
   });
 
@@ -181,6 +186,7 @@ var initialize_ils = function() {
 var toggle_toolbar = function () {
     $('#toolbar').hide(); //remove toolbar
     $("#main_block").css('bottom','0px'); //extend main block
+    $("#container").css("margin-bottom", "0px");
 };
 
 
@@ -205,13 +211,31 @@ var build_tabs = function(subspaces) {
     ils_phases.append(phase);
     getDataById(item.id, function (data) {
 
-      var itemsIds=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
-      var json_app = buildJson(data.apps, data, itemsIds, item);
-      var json_allItems = buildJson(data.items, data, itemsIds, item);
+      var app_ids_in_description=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
 
-      refreshItemsList(json_app);
-      refreshItemsList(json_allItems);
-      buildSkeleton(phase_content, json_app, json_allItems, true);
+      var json = {};
+      json.contextId = "s_" + item.id;
+
+      json.hash = {};
+      json.sizeType = "px";
+      json.order = [];
+      json.sizes = {};
+      _.each(data.apps.list, function (elem){
+        if (app_ids_in_description.indexOf(elem.id)==-1) //if the id of this widget is not found in the description
+        {
+          json.hash[elem.id] = elem; //add the widget to the widget list to be rendered
+        }
+      });
+      var appdata = data.appdata[json.contextId];
+      if (appdata) {
+        json.data = JSON.parse(appdata.settings);
+        json.order = json.data.order || [];
+        json.sizes = json.data.sizes || {};
+        json.sizeType = json.data.sizeType || "px"; // px or % to calculate the size
+      }
+
+      refreshAppsList(json);
+      buildSkeleton(phase_content,json, true);
 
     });
   });
@@ -228,42 +252,13 @@ var build_tabs = function(subspaces) {
   center.append(ils_phases);
 };
 
-// get the visible spaces from the subspaces array
-var get_visible_spaces = function(subspaces) {
+// remove the hidden spaces from the subspaces array
+var remove_hidden_spaces = function(subspaces) {
   var visible_spaces = _.filter(subspaces, function(item) {
-    //return ( (typeof(item.spaceType) != "undefined") && (item.visibilityLevel != "hidden") && (item.spaceType != "Vault") );
-    //return ( (typeof(item.spaceType) != "folder") && (item.visibilityLevel != "hidden"));
-    return ( (item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (item.displayName != "Vault"));
+    return item.visibilityLevel != "hidden";
   });
   return visible_spaces;
 };
-
-// build the json from a list and data
-
-var buildJson = function(list, data, itemsIds, item) {
-  var json = {};
-  jsoncontextId = "s_" + item.id;
-
-  json.hash = {};
-  json.sizeType = "px";
-  json.order = [];
-  json.sizes = {};
-  _.each(list, function (elem){
-    if (itemsIds.indexOf(elem.id)==-1) //if the id of this widget is not found in the description
-    {
-      json.hash[elem.id] = elem; //add the widget to the widget list to be rendered
-    }
-  });
-  var appdata = data.appdata[json.contextId];
-  if (appdata) {
-    json.data = JSON.parse(appdata.settings);
-    json.order = json.data.order || [];
-    json.sizes = json.data.sizes || {};
-    json.sizeType = json.data.sizeType || "px"; // px or % to calculate the size
-  }
-
-  return json;
-}
 
 // Displays welcome message to user
 var welcome_user = function(){
@@ -359,7 +354,7 @@ var resizeAllApps = function (type) {
 }
 // refreshes order of app, takes as the base appdata representation
 // removes deleted app and adds new apps
-var refreshItemsList = function (app_json) {
+var refreshAppsList = function (app_json) {
   // removes apps that are no longer in the space
   var savedIds = [] // list of valid ids that are in the app.order
   _.each(app_json.order, function (id, i) {
@@ -386,20 +381,15 @@ var adjustHeight = function () {
   gadgets.window.adjustHeight();
 }
 
-var buildSkeleton = function (container, app_json, all_json, is_center) {
+var buildSkeleton = function (container,app_json, is_center) {
   // build first drop_here block
   var fakeGadget = $('<div id="fake_gadget" appId="0"></div>')
     .append($('<div class="drop_here"></div>'))
   container.append(fakeGadget)
 
   // build apps
-  _.each(all_json.order, function (id) {
-    //check if it is an app: buildApp or not: buildDoc.
-    if(app_json.order.indexOf(id) != -1) {
-      buildWindowApp(id, container, app_json, is_center)
-    } else {
-      buildWindowDoc(id, container, all_json, is_center)
-    }
+  _.each(app_json.order, function (id) {
+    buildWindow(id, container, app_json, is_center)
   })
   // resize width of apps
   resizeAllApps()
@@ -470,23 +460,17 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
     })
 }
 
-//display when is an app
-var buildWindowApp = function (id, parent, app_json, is_center) {
+var buildWindow = function (id, parent, app_json, is_center) {
   var gadget = app_json.hash[id]
- // var titleToDisplay = $('<h3></h3>').text(gadget.displayName);
- // parent.append(titleToDisplay);
 
-  var description = $("<div></div>").text(gadget.description);
-  parent.append(description);
-  parent.append($("<br>"));
   // build placeholder
   var blk = $("<div></div>")
     .addClass("window")
     .attr('appId', gadget.id)
 
- // var title = $("<div></div>").addClass('gadgets-gadget-title-bar')
- //   .append($("<span></span>").text(gadget.displayName))
- // blk.append(title)
+  var title = $("<div></div>").addClass('gadgets-gadget-title-bar')
+    .append($("<span></span>").text(gadget.displayName))
+  blk.append(title)
   parent.append(blk)
 
   var gadget_el = $("<div></div>").attr('id', 'gadget-chrome-'+id)
@@ -495,93 +479,6 @@ var buildWindowApp = function (id, parent, app_json, is_center) {
 
   blk.append($('<div class="window_placeholder"></div>'));
   blk.append($('<div class="drop_here"></div>'));
-}
-
-//display other formats than apps (documents, images, videos, ..)
-var buildWindowDoc = function (id, parent, doc_json, is_center) {
-  var doc = doc_json.hash[id];
-  // build placeholder
-  var title = doc.displayName;
-  //  URL for development purposes (local)
-  //  var testUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
- var testUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
-
-  //title of each doc
-//  var titleToDisplay = $('<h3></h3>').text(title.substr(0, n));
-//  parent.append(titleToDisplay);
-  
-  var descrToDisplay = $('<div class="resource_description"></div>').text(doc.description);
-  var docType = title.substr(title.lastIndexOf("."), title.length);
-  var $docToDisplay;
-  switch (docType) {
-    case ".drw":
-    case ".gif":
-    case ".jpg":
-    case ".jpeg":
-    case ".png":
-    case ".svg":
-    case ".tif":
-    case ".tiff":
-    case ".vsd":
-      $docToDisplay = $('<img></img>');
-      $docToDisplay.attr("class", "resource_content");
-      $docToDisplay.attr("src", testUrl);
-      break;
-    case ".acm":
-    case ".aif":
-    case ".asf":
-    case ".avi":
-    case ".bun":
-    case ".caf":
-    case ".csh":
-    case ".flv":
-    case ".omf":
-    case ".mid":
-    case ".mov":
-    case ".mp3":
-    case ".mp4":
-    case ".mpg":
-    case ".mus":
-    case ".m3u":
-    case ".m4a":
-    case ".nsf":
-    case ".oga":
-    case ".ogg":
-    case ".ram":
-    case ".rm":
-    case ".sib":
-    case ".sty":
-    case ".swf":
-    case ".vag":
-    case ".vlc":
-    case ".wav":
-    case ".wma":
-    case ".wmv":
-    case ".3pg":
-      // TODO: support online videos
-      $docToDisplay = $('<video controls></video>');
-      $docToDisplay.attr("class", "resource_content");
-      $docToDisplay.attr("src", testUrl);
-      $docToDisplay.attr("type", "video/"+docType);
-      break;
-    case ".pdf":
-      $docToDisplay = $('<div ng-swipe-left="prev()" ng-swipe-right="next()"></div>').addClass("content");
-      var $pdf = $('<object data="'+testUrl+'" type="application/pdf" width="100%" height="100%"></object>');
-      $docToDisplay.append($pdf)
-      break;
-    default:
-      $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
-      // $docToDisplay = $('<iframe></iframe>');
-      // $docToDisplay.attr("class", "resource_content");
-      // $docToDisplay.attr("src", testUrl);      
-  }
-
-    parent.append(descrToDisplay);
-    parent.append($("<br>"));
-    parent.append($docToDisplay);
-    parent.append($("<br>"));
-
-
 }
 
 // is_center indicates if the gadget is in the center or at the bottom tool bar
@@ -624,14 +521,14 @@ var buildGadget = function (id, app_json, is_center) {
 
   $('#gadget-chrome-'+id).replaceWith(gadget_el);
 
-  // for gadgets in the center, if the width is not empty and less than 900, use the original width
-  // otherwise, use 900px
+  // for gadgets in the center, if the width is not empty and less than 876, use the original width
+  // otherwise, use 876px
   // for gadgets at the bottom tool bar, use the default width 300px
   if(is_center){
-    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 900))
-      $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 20 + 'px');
+    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 876))
+      $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 'px');
     else
-      $('#gadget-chrome-'+id).css('width', '900px');
+      $('#gadget-chrome-'+id).css('width', '876px');
   }
 
   shindig.container.setView("home");
@@ -696,8 +593,12 @@ var save = function(notHumanAct, app_json){
     .execute(function() {})
 }
 
-var init_activity_streams=function(){
-    var defaultMetadata = {
+var init_activity_streams=function() {
+    var documentType = "newDocumentType";
+    var toolName = "ILS Metawidget";
+    var initialMetadata = {
+        "id": "",
+        "published": "",
         "actor": {
             "objectType": "person",
             "id": "unknown",
@@ -706,16 +607,16 @@ var init_activity_streams=function(){
         "target": {
             "objectType": "unknown",
             "id": generateUUID(),
-            "displayName": "unnamed"
+            "displayName": "unknown"
         },
         "generator": {
             "objectType": "application",
             "url": window.location.href,
             "id": generateUUID(),
-            "displayName": "toolName"
+            "displayName": toolName
         },
         "provider": {
-            "objectType": "ils",
+            "objectType": "ILS",
             "url": window.location.href,
             "id": "unknown",
             "inquiryPhase": "unknown",
@@ -723,7 +624,8 @@ var init_activity_streams=function(){
         }
     };
 
-    new window.golab.ils.metadata.GoLabMetadataHandler(defaultMetadata, function(error, createdMetadataHandler) {
+
+    new window.golab.ils.metadata.GoLabMetadataHandler(initialMetadata, function (error, createdMetadataHandler) {
         if (error) {
             console.log(error);
         } else {
@@ -737,16 +639,69 @@ var init_activity_streams=function(){
         }
     });
 
-    var testLogObject = {
-        objectType: "testObject",
-        id: "123456789",
-        content: "test"
+}
+
+$(document).ready(function(){
+    $('body').on('click','.nav-tabs>li>a', function (e) {
+        var ils_active_phase={
+            id:this.attributes["href"].value.slice(1),
+            name:this.innerHTML
+        };
+        sendStream("access","PHASE",ils_active_phase);
+    });
+
+    $('body').on('click','#tools_title', function (e) {
+        if ($(this).hasClass("expanded")){
+            sendStream("access","TOOLBAR","");
+        }
+    });
+});
+
+
+function sendStream(action,log_type,ils_active_phase){
+    var phase_target={};
+    var ILSLogObject={};
+
+    if (log_type=="ILS"){
+         phase_target={
+            "objectType": "ils",
+            "id": ILS.id,
+            "displayName":ILS.name
+        }
+    }else if (log_type=="PHASE"){
+        phase_target={
+            "objectType": "phase",
+            "id": ils_active_phase.id,
+            "displayName":ils_active_phase.name
+        }
+
+    }else if(log_type=="TOOLBAR"){
+         phase_target={
+            "objectType": "toolbar",
+            "id": ILS.id,
+            "displayName":"toolbar"
+        }
+    }
+
+    metadataHandler.setTarget(phase_target);
+
+    ILSLogObject = {
+        objectType: "ILS_Log_Object",
+        id: generateUUID(),
+        log_type: log_type,
+        ils_name: ILS.name,
+        ils_id: ILS.id,
+        ils_active_phase_name: ils_active_phase.name,
+        ils_active_phase_id: ils_active_phase.id
     };
 
-    setTimeout(function(){actionLogger.log("add", testLogObject)},7000) ;
-    setTimeout(function(){actionLogger.log("access", testLogObject)},10000) ;
-
+    if (actionLogger&&metadataHandler) {
+        actionLogger.log(action, ILSLogObject);
+    }else{
+        console.log("Could not log action "+action+". Action Logging not initialized properly.")
+    }
 }
+
 
 var generateUUID = (function() {
     function s4() {

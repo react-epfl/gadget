@@ -2,7 +2,6 @@ body{
   background-color:transparent;
   font-family: "Helvetica Neue", arial, sans-serif;
   font-size: 11px;
-  text-align: justify;
 }
 html{
   overflow: hidden;
@@ -24,10 +23,7 @@ html{
 .view6{ background-position: -800px 0; width: 30px; height: 18px; }
 .view6_blue{ background-position: -880px 0; width: 30px; height: 18px; }
 
-.gadgets-gadget{
-  width: 100%;
-  border-radius:5px;
-}
+.gadgets-gadget{width: 100%;border-radius:5px;}
 #popup{
   position: fixed;
   width: 300px;
@@ -79,12 +75,12 @@ html{
   display:block;
 }
 .drop_here{
-  width: 12px;
-  height: 100%;
-  display: inline-block;
-  position: absolute;
-  right: -6px;
-  top: 0px;
+  /*width: 12px;*/
+  /*height: 100%;*/
+  /*display: inline-block;*/
+  /*position: absolute;*/
+  /*right: -6px;*/
+  /*top: 0px;*/
 }
 .drop_here.active{
   background-color: #87AFDA;
@@ -109,30 +105,7 @@ html{
 }
 .window:hover .gadgets-gadget-content{
   border-color: #87AFDA;
-  max-width: 100%;
-  height:auto;
 }
-.resource_description{
-  text-align: justify;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-.resource_content{
-  display: block;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  max-width: 100%;
-  height:auto;
-  margin-left: auto;
-  margin-right: auto;
-}
-.resource_error{
-  padding-top: 10px;
-  padding-bottom: 10px;
-  font-style: italic;
-  text-align: center;
-}
-
 #fake_gadget{
   display: inline-block;
   width: 0px;
@@ -166,15 +139,6 @@ html{
   border-bottom-right-radius: 5px;
 }
 
-#container {
-  width: 940px;
-  height: 100%;
-  background-color: white;
-  border-radius: 5px;
-  left: 50%;
-  margin-left: -470px;
-  position: absolute;
-}
 
 .button{
   display: inline-block;
@@ -200,7 +164,7 @@ html{
   height: 30px;
 }
 #title{
-  font-size:20px;
+  font-size:28px;
   padding:5px 0;
   float:left;
   margin-top: 15px;
@@ -257,7 +221,7 @@ html{
   width: 250px;
 }
 #description_block{
-  margin: 20px 0;
+  padding: 20px 14px;
 }
 .modal-backdrop{
   background-color: rgba(0, 0, 0, 0.5);
