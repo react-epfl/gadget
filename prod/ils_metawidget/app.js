@@ -8,6 +8,8 @@ var app = { context: "", viewerName: ""
           , user_name: ""
           , prefs: new gadgets.Prefs()
 }
+var ILS = { name: "",
+            id: ""};
 
 // Identify which user is using this url
 // The ILS is not initialized unless a valid nickname is found
@@ -68,6 +70,7 @@ var initialize_ils = function() {
 
   // make toolbar togglable
   $("#tools_title").click(function() {
+    $(this).toggleClass("expanded");
     var tools_panel = document.getElementById("tools_content");
     var main_block = document.getElementById("main_block");
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
@@ -105,8 +108,10 @@ var initialize_ils = function() {
 
     // add space title and description
     var currentSpace = data.currentSpace;
+    ILS.name=currentSpace.displayName;
+    ILS.id=currentSpace.id;
     if (currentSpace) {
-      $("#title").append(currentSpace.displayName);
+      $("#title").append(ILS.name);
       if (currentSpace.description !="" ){ // when there is a valid description
         $("#description").append(currentSpace.description);
       }
@@ -171,7 +176,7 @@ var initialize_ils = function() {
 
       init_activity_streams(); //Initialize activity streams via MetadataHandler and ActionLogger
 
-      setTimeout(function(){sendStream("access",true,"")},5000); //Sends the access verb in action logging when the user is logged in
+      setTimeout(function(){sendStream("access","ILS","")},5000); //Sends the access verb in action logging when the user is logged in
     
   });
 
@@ -181,6 +186,7 @@ var initialize_ils = function() {
 var toggle_toolbar = function () {
     $('#toolbar').hide(); //remove toolbar
     $("#main_block").css('bottom','0px'); //extend main block
+    $("#container").css("margin-bottom", "0px");
 };
 
 
@@ -599,9 +605,9 @@ var init_activity_streams=function() {
             "displayName": "unknown"
         },
         "target": {
-            "objectType": documentType,
+            "objectType": "unknown",
             "id": generateUUID(),
-            "displayName": "unnamed " + documentType
+            "displayName": "unknown"
         },
         "generator": {
             "objectType": "application",
@@ -610,7 +616,7 @@ var init_activity_streams=function() {
             "displayName": toolName
         },
         "provider": {
-            "objectType": "ils",
+            "objectType": "ILS",
             "url": window.location.href,
             "id": "unknown",
             "inquiryPhase": "unknown",
@@ -641,20 +647,52 @@ $(document).ready(function(){
             id:this.attributes["href"].value.slice(1),
             name:this.innerHTML
         };
-        sendStream("access",false,ils_active_phase);
+        sendStream("access","PHASE",ils_active_phase);
+    });
+
+    $('body').on('click','#tools_title', function (e) {
+        if ($(this).hasClass("expanded")){
+            sendStream("access","TOOLBAR","");
+        }
     });
 });
 
 
-function sendStream(action,first_access,ils_active_phase){
+function sendStream(action,log_type,ils_active_phase){
+    var phase_target={};
+    var ILSLogObject={};
 
+    if (log_type=="ILS"){
+         phase_target={
+            "objectType": "ils",
+            "id": ILS.id,
+            "displayName":ILS.name
+        }
+    }else if (log_type=="PHASE"){
+        phase_target={
+            "objectType": "phase",
+            "id": ils_active_phase.id,
+            "displayName":ils_active_phase.name
+        }
 
-    var ILSLogObject = {
+    }else if(log_type=="TOOLBAR"){
+         phase_target={
+            "objectType": "toolbar",
+            "id": ILS.id,
+            "displayName":"toolbar"
+        }
+    }
+
+    metadataHandler.setTarget(phase_target);
+
+    ILSLogObject = {
         objectType: "ILS_Log_Object",
         id: generateUUID(),
-        first_access: first_access,
+        log_type: log_type,
+        ils_name: ILS.name,
+        ils_id: ILS.id,
         ils_active_phase_name: ils_active_phase.name,
-        ils_active_phase_id:ils_active_phase.id
+        ils_active_phase_id: ils_active_phase.id
     };
 
     if (actionLogger&&metadataHandler) {
