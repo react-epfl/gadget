@@ -8,6 +8,8 @@ var app = { context: "", viewerName: ""
           , user_name: ""
           , prefs: new gadgets.Prefs()
 }
+var ILS = { name: "",
+            id: ""};
 
 // Identify which user is using this url
 // The ILS is not initialized unless a valid nickname is found
@@ -33,7 +35,7 @@ var initialize_user = function(){
     }
 
     //Specifies a series of actions to be taken for initialization
-    var  init_actions=function(){
+    var init_actions=function(){
         animate_logo();
         saveUserName();
         initialize_ils();
@@ -48,9 +50,6 @@ var initialize_user = function(){
 
 // gets the data and calls build for container
 var initialize_ils = function() {
-
-  //Initialize activity streams via MetadataHandler and ActionLogger
-  init_activity_streams();
 
   // This container lays out and renders gadgets itself.
   my.LayoutManager = function() {
@@ -72,6 +71,7 @@ var initialize_ils = function() {
 
   // make toolbar togglable
   $("#tools_title").click(function() {
+    $(this).toggleClass("expanded");
     var tools_panel = document.getElementById("tools_content");
     var main_block = document.getElementById("main_block");
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
@@ -109,8 +109,10 @@ var initialize_ils = function() {
 
     // add space title and description
     var currentSpace = data.currentSpace;
+    ILS.name=currentSpace.displayName;
+    ILS.id=currentSpace.id;
     if (currentSpace) {
-      $("#title").append(currentSpace.displayName);
+      $("#title").append(ILS.name);
       if (currentSpace.description !="" ){ // when there is a valid description
         $("#description").append(currentSpace.description);
       }
@@ -167,11 +169,15 @@ var initialize_ils = function() {
       welcome_user();
         
     try{
-         applyNewLayout();
-        }catch(err){
-            console.log("Couldn't apply new layout!");
-        }
+      applyNewLayout();
+    }catch(err){
+      console.log("Couldn't apply new layout!");
+    }
 
+    //Initialize activity streams via MetadataHandler and ActionLogger
+    init_activity_streams(); 
+    //Sends the access verb in action logging when the user is logged in
+    setTimeout(function(){sendStream("access","ILS","")},5000); 
     
   });
 
@@ -181,6 +187,7 @@ var initialize_ils = function() {
 var toggle_toolbar = function () {
     $('#toolbar').hide(); //remove toolbar
     $("#main_block").css('bottom','0px'); //extend main block
+    $("#container").css("margin-bottom", "0px");
 };
 
 
@@ -624,14 +631,14 @@ var buildGadget = function (id, app_json, is_center) {
 
   $('#gadget-chrome-'+id).replaceWith(gadget_el);
 
-  // for gadgets in the center, if the width is not empty and less than 900, use the original width
-  // otherwise, use 900px
+  // for gadgets in the center, if the width is not empty and less than 876, use the original width
+  // otherwise, use 876px
   // for gadgets at the bottom tool bar, use the default width 300px
   if(is_center){
-    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 900))
-      $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 20 + 'px');
+    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 876))
+      $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 'px');
     else
-      $('#gadget-chrome-'+id).css('width', '900px');
+      $('#gadget-chrome-'+id).css('width', '876px');
   }
 
   shindig.container.setView("home");
@@ -696,8 +703,12 @@ var save = function(notHumanAct, app_json){
     .execute(function() {})
 }
 
-var init_activity_streams=function(){
-    var defaultMetadata = {
+var init_activity_streams=function() {
+    var documentType = "newDocumentType";
+    var toolName = "ILS Metawidget";
+    var initialMetadata = {
+        "id": "",
+        "published": "",
         "actor": {
             "objectType": "person",
             "id": "unknown",
@@ -706,13 +717,13 @@ var init_activity_streams=function(){
         "target": {
             "objectType": "unknown",
             "id": generateUUID(),
-            "displayName": "unnamed"
+            "displayName": "unknown"
         },
         "generator": {
             "objectType": "application",
             "url": window.location.href,
             "id": generateUUID(),
-            "displayName": "toolName"
+            "displayName": toolName
         },
         "provider": {
             "objectType": "ils",
@@ -723,7 +734,8 @@ var init_activity_streams=function(){
         }
     };
 
-    new window.golab.ils.metadata.GoLabMetadataHandler(defaultMetadata, function(error, createdMetadataHandler) {
+
+    new window.golab.ils.metadata.GoLabMetadataHandler(initialMetadata, function (error, createdMetadataHandler) {
         if (error) {
             console.log(error);
         } else {
@@ -733,20 +745,71 @@ var init_activity_streams=function(){
 //            actionLogger.setLoggingTargetByName("consoleShort");
             actionLogger.setLoggingTargetByName("opensocial");
 //            actionLogger.setLoggingTargetByName("dufftown");
-
         }
     });
+}
 
-    var testLogObject = {
-        objectType: "testObject",
-        id: "123456789",
-        content: "test"
+$(document).ready(function(){
+    $('body').on('click','.nav-tabs>li>a', function (e) {
+        var ils_active_phase={
+            id:this.attributes["href"].value.slice(1),
+            name:this.innerHTML
+        };
+        sendStream("access","PHASE",ils_active_phase);
+    });
+
+    $('body').on('click','#tools_title', function (e) {
+        if ($(this).hasClass("expanded")){
+            sendStream("access","TOOLBAR","");
+        }
+    });
+});
+
+
+function sendStream(action,log_type,ils_active_phase){
+    var phase_target={};
+    var ILSLogObject={};
+
+    if (log_type=="ILS"){
+         phase_target={
+            "objectType": "ils",
+            "id": ILS.id,
+            "displayName":ILS.name
+        }
+    }else if (log_type=="PHASE"){
+        phase_target={
+            "objectType": "phase",
+            "id": ils_active_phase.id,
+            "displayName":ils_active_phase.name
+        }
+
+    }else if(log_type=="TOOLBAR"){
+         phase_target={
+            "objectType": "toolbar",
+            "id": ILS.id,
+            "displayName":"toolbar"
+        }
+    }
+
+    metadataHandler.setTarget(phase_target);
+
+    ILSLogObject = {
+        objectType: "ILS_Log_Object",
+        id: generateUUID(),
+        log_type: log_type,
+        ils_name: ILS.name,
+        ils_id: ILS.id,
+        ils_active_phase_name: ils_active_phase.name,
+        ils_active_phase_id: ils_active_phase.id
     };
 
-    setTimeout(function(){actionLogger.log("add", testLogObject)},7000) ;
-    setTimeout(function(){actionLogger.log("access", testLogObject)},10000) ;
-
+    if (actionLogger&&metadataHandler) {
+        actionLogger.log(action, ILSLogObject);
+    }else{
+        console.log("Could not log action "+action+". Action Logging not initialized properly.")
+    }
 }
+
 
 var generateUUID = (function() {
     function s4() {

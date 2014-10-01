@@ -2,7 +2,6 @@ body{
   background-color:transparent;
   font-family: "Helvetica Neue", arial, sans-serif;
   font-size: 11px;
-  text-align: justify;
 }
 html{
   overflow: hidden;
@@ -79,12 +78,12 @@ html{
   display:block;
 }
 .drop_here{
-  width: 12px;
+  /* width: 12px;
   height: 100%;
   display: inline-block;
   position: absolute;
   right: -6px;
-  top: 0px;
+  top: 0px;*/
 }
 .drop_here.active{
   background-color: #87AFDA;
@@ -167,13 +166,13 @@ html{
 }
 
 #container {
-  width: 940px;
+ /* width: 940px;
   height: 100%;
   background-color: white;
   border-radius: 5px;
   left: 50%;
   margin-left: -470px;
-  position: absolute;
+  position: absolute;*/
 }
 
 .button{
@@ -200,7 +199,7 @@ html{
   height: 30px;
 }
 #title{
-  font-size:20px;
+  font-size:28px;
   padding:5px 0;
   float:left;
   margin-top: 15px;
@@ -257,7 +256,7 @@ html{
   width: 250px;
 }
 #description_block{
-  margin: 20px 0;
+  padding: 20px 14px;
 }
 .modal-backdrop{
   background-color: rgba(0, 0, 0, 0.5);
