@@ -4,15 +4,30 @@
 
 /*Default font style*/
 
-@font-face
-{
-
-font-family: 'EuphemiaUCAS';
-font-style:normal;
-font-weight:normal;
-src: local("fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf"), url("fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf");
-
+@font-face{
+    font-family: 'SuisseIntl'
+src: url('http://graasp.eu/fonts/SuisseIntl-Regular-WebS.eot')
+src: url('http://graasp.eu/fonts/SuisseIntl-Regular-WebS.eot?#iefix') format('embedded-opentype'), url('http://graasp.eu/fonts/SuisseIntl-Regular-WebS.woff') format('woff')
+font-weight: normal
+font-style: normal
 }
+
+@font-face{
+    font-family: 'SuisseIntl'
+src: url('http://graasp.eu/fonts/SuisseIntl-RegularItalic-WebS.eot')
+src: url('http://graasp.eu/fonts/SuisseIntl-RegularItalic-WebS.eot?#iefix') format('embedded-opentype'), url('http://graasp.eu/fonts/SuisseIntl-RegularItalic-WebS.woff') format('woff')
+font-weight: normal
+font-style: italic
+}
+
+@font-face{
+    font-family: 'graaspicto'
+src: url('http://graasp.eu/fonts/graaspicto.eot')
+src: url('/http://graasp.eu/fonts/graaspicto.eot?#iefix') format('embedded-opentype'), url('http://graasp.eu/fonts/graaspicto.woff') format('woff')
+font-weight: normal
+font-style: normal
+}
+
 
 
 
@@ -20,60 +35,65 @@ src: local("fonts/Euphemia-UCAS/Euphemia_UCAS_Regular_2.6.6.ttf"), url("fonts/Eu
 -------------------------------------------------- */
 html,
 body {
-  height: 100%;
-  font-size: 18px;
-  overflow: visible;
-  overflow-x: hidden!important;
+    height: 100%;
+    font-size: 21px;
+    overflow: visible;
+    overflow-x: hidden!important;
 }
 
 html,
 html *,
 body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "EuphemiaUCAS" !important;
+    font-family: 'SuisseIntl', 'Helvetica', 'Arial', Sans-Serif!important;
 }
 
 /* Wrapper for page content to push down footer */
-
+.bg_image{
+    background-size: 100%;
+    background-image: url("bg300.jpg");
+}
 
 #container {
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  border-radius: 5px;
-  left: 0px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  max-width:1024px;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    border-radius: 5px;
+    left: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    max-width:904px;
+    border-radius: 0px;
+    margin-bottom: 42px;
 }
 
 
 
 /* Set the fixed height of the footer here */
 #footer {
-  background-color: #88e2f9;
-  border: 1px solid #88e2f9;
+    background-color: #88e2f9;
+    border: 1px solid #88e2f9;
 }
 
 p {
-	text-align: justify;
+    text-align: justify;
 }
 
 #footer > p{
-	margin: 0 auto;
-	color:#136ab0;
-	text-align: center;
-	font-weight: bold;
-	vertical-align:middle;
-	line-height: 2.5em;
+    margin: 0 auto;
+    color:#136ab0;
+    text-align: center;
+    font-weight: bold;
+    vertical-align:middle;
+    line-height: 2.5em;
 }
 
 .dark{
-	color:#136ab0;
+    color:#136ab0;
 }
 
 .strong{
-	font-weight:bold;
+    font-weight:bold;
 }
 
 #name_prompt > input {
@@ -138,175 +158,178 @@ p {
 }
 
 #ils_cycle {
-	top: 0px;
-	color:#000;
+    top: 0px;
+    color:#000;
     padding: 0px;
-}
-
-#ils_cycle > {
-
 }
 
 #ils_phases{
     padding-bottom: 60px;
+    overflow-x: hidden;
+    padding: 14px;
 }
 
 .customTop ul{
-	padding:0px 0px 0px 15px;
-	border-bottom: 0px solid #dddddd;
+    padding:0px 0px 0px 15px;
+    border-bottom: 0px solid #dddddd;
 }
 
 
 .customHeight {
-	height: 57px;
+    height: 42px;
 }
 
 #customBarWrapper {
-	margin: 0 auto;
-	max-width: 1024px;
+    margin: 0 auto;
+    max-width: 1024px;
 }
 
 
 .fixedCustomTop
 {
-	top: 0px;
-	position:fixed;
+    top: 0px;
+    position:fixed;
     z-index: 10;
     -webkit-transform: translateZ(0);
+    margin-left: -300%;
+    padding-left: 300%;
+    padding-right: 195%;
+    width: 600%;
 
 }
 
 .customTop {
-  	background-clip: padding-box;
-    background-color: #21C4F5;
+    background-clip: padding-box;
+    background-color: #5050D2;
     border-top: 0 none;
-    color: #FFFFFF;
-    margin-left: -300%;
-    padding-left: 300%;
-    padding-right: 195%;
-    min-height: 50px;
-    width: 600%;
+    color: #ffffff;
+    min-height: 42px;
 }
 
 #myCustomBar{
 
-	height: 50px;
-	padding: 0 40px;
+    height: 42px;
+    min-height: 42px;
+    padding: 0 40px;
 
 }
 
 #title {
-	margin:0px;
-	padding:0px;
-	line-height:50px;
+    margin:0px;
+    padding:0px;
+    line-height:42px;
+    color:#ffffff;
 }
 
 #hello_msg {
-	color: #136AB0;
+    color: #ffffff;
     background-color: transparent;
-    line-height:50px;
+    line-height:42px;
     margin:0px;
 }
 
 #toolbar{
-	background-color: #88e2f9;
+    background-color: #5050D2;
+    line-height:normal;
 }
 
 #tools_title{
-	color:#136ab0;
-	background-color: transparent;    
-	font-size: 16px;
-    height: 40px;
+    color:#ffffff;
+    background-color: transparent;
+    font-size: 21px;
+    height: 42px;
     padding-top: 12px;
     text-align: center;
 }
 
 .customTop * {
-	border-color: rgba(0, 0, 0, 0) !important;	
-	border-width: 0 0 1px 1px !important;
+    border-color: rgba(0, 0, 0, 0) !important;
+    border-width: 0 0 1px 1px !important;
 
 }
 
 .customTop li > a{
-	color: white;
+    color: white;
     outline: none;
-    height: 50px;
+    height: 42px;
+    line-height: normal;
 }
 
 
 .customTop li.active{
-	background-color: #1A56A1;
+    background-color: #ffffff;
 }
 
 .customTop li.active > a{
-	color:white!important;
-	background-color: #1A56A1!important;
+    color:#5050D2!important;
+    background-color: #ffffff;
 }
 
 .customTop li.active:hover{
-	background-color: #1A56A1;
+    background-color: #ffffff;
 }
 .customTop li.active > a:hover{
-	color:white;
-	background-color: #1A56A1;
+    color:#5050D2;
+    background-color: #ffffff;
+
 }
 
 .customTop li:hover {
-	background-color: #1b99d4;
+    background-color: #6262FF;
 }
 
 .customTop li> a:hover{
-	color:white;
-	background-color: #1b99d4;
+    color:white;
+    background-color: #6262FF;
 }
 
 hr {border:1px solid black;}
 
 .page-header {
-	border:0pc solid black;
-	margin-top:0px;
+    border:0pc solid black;
+    margin-top:0px;
 }
 
 .tab-pane{
-	padding-top:2em;
+    padding-top:2em;
 }
 
 .centered {
-	text-align:center;
-	margin-left: auto;
-	margin-right: auto;
+    text-align:center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 #wrap > .container {
-  padding: 50px 40px 0;
-  overflow-y:visible ;
+    padding: 42px 40px 0;
+    overflow-y:visible ;
 }
 .container .credit {
-  margin: 20px 0;
+    margin: 20px 0;
 }
 
 #footer > .container {
-  padding-left: 15px;
-  padding-right: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 code {
-  font-size: 80%;
+    font-size: 80%;
 }
 
 .navbar-brand{
-	padding:10px;
+    padding:10px;
 }
 
 .logoimage {
-width:40px;
-height: 40px;
+    width:40px;
+    height: 40px;
 }
 
 #login_popup{
-	left:0px;
-	width:auto;
-	top:20%;
+    left:0px;
+    width:auto;
+    top:20%;
 }
 
 .modal-dialog {
@@ -333,10 +356,10 @@ iframe{
     max-width: 100%;
     overflow: hidden;
     padding: 1em;
-    top: 50px;
+    top: 42px;
     width: 100%;
     font-size: 14px;
-    height: 50px;
+    height: 42px;
 
 
 }
@@ -353,32 +376,28 @@ iframe{
    Copyright 2013 Alexandros Trichos. All rights reserved.
 */
 .navbar-header {
-	margin-left: 0;
-	line-height: 2.5em;
-	float:left;
+    margin-left: 0;
+    line-height: 2.5em;
+    float:left;
 }
 
 .navbar-default > a{
-	line-height: 2.5em;
-	margin-right: 2em;
-	float: right;
+    line-height: 2.5em;
+    margin-right: 2em;
+    float: right;
 
 }
-
 
 
 
 .navbar-default {
-    background-color: #76d6ff;
-    border-color: #76d6ff;
+    background-color: #5050D2;
+    border-color: #ffffff;
 }
 .navbar-default .navbar-brand {
     color: #ffffff;
 }
-.navbar-default .navbar-brand:hover,
-.navbar-default .navbar-brand:focus {
-    color: red;
-}
+
 .navbar-default .navbar-nav > li > a {
     color: #ffffff;
 }
@@ -386,17 +405,17 @@ iframe{
 .navbar-default .navbar-nav > li > a:focus {
     color: #ffffff;
 }
-.navbar-default .navbar-nav > .active > a, 
-.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover,
 .navbar-default .navbar-nav > .active > a:focus {
     color: #ffffff;
-    background-color: #1A56A1;
+    background-color: #6262ff;
 }
-.navbar-default .navbar-nav > .open > a, 
-.navbar-default .navbar-nav > .open > a:hover, 
+.navbar-default .navbar-nav > .open > a,
+.navbar-default .navbar-nav > .open > a:hover,
 .navbar-default .navbar-nav > .open > a:focus {
     color: #ffffff;
-    background-color: #1A56A1;
+    background-color: #6262ff;
 }
 .navbar-default .navbar-nav > .dropdown > a .caret {
     border-top-color: #ffffff;
@@ -407,19 +426,16 @@ iframe{
     border-top-color: #ffffff;
     border-bottom-color: #ffffff;
 }
-.navbar-default .navbar-nav > .open > a .caret, 
-.navbar-default .navbar-nav > .open > a:hover .caret, 
+.navbar-default .navbar-nav > .open > a .caret,
+.navbar-default .navbar-nav > .open > a:hover .caret,
 .navbar-default .navbar-nav > .open > a:focus .caret {
     border-top-color: #ffffff;
     border-bottom-color: #ffffff;
 }
 .navbar-default .navbar-toggle {
-    border-color: #1A56A1;
+    border-color: #6262ff;
 }
-.navbar-default .navbar-toggle:hover,
-.navbar-default .navbar-toggle:focus {
-    background-color: red;
-}
+
 .navbar-default .navbar-toggle .icon-bar {
     background-color: #ffffff;
 }
@@ -463,3 +479,5 @@ iframe{
 /**** New UI Customization CERTH ****
  ------------------------------------ 
  ****			End				 **** /
+
+
