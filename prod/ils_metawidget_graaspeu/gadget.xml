@@ -34,7 +34,7 @@ head.js ([
 "http://graasp.epfl.ch/gadget/libs/bootstrap3/js/bootstrap.min.js",
 "http://graasp.epfl.ch/ils_lib/metadata/MetadataHandler.js",
 "http://graasp.epfl.ch/ils_lib/applog/ActionLogger.js",
-"http://graasp.epfl.ch/ils_lib/main/ils.js",
+"http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js",
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/app.js",
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/custom.js",
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/data.js",
