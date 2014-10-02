@@ -238,9 +238,7 @@ var build_tabs = function(subspaces) {
 // get the visible spaces from the subspaces array
 var get_visible_spaces = function(subspaces) {
   var visible_spaces = _.filter(subspaces, function(item) {
-    //return ( (typeof(item.spaceType) != "undefined") && (item.visibilityLevel != "hidden") && (item.spaceType != "Vault") );
-    //return ( (typeof(item.spaceType) != "folder") && (item.visibilityLevel != "hidden"));
-    return ( (item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (item.displayName != "Vault"));
+    return ( (item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (item.metadata.type != "Vault")&& (item.metadata.type != "About"));
   });
   return visible_spaces;
 };
