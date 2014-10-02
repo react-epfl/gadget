@@ -49,8 +49,7 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 /* Wrapper for page content to push down footer */
 .bg_image{
-    background-size: 100%;
-    background-image: url("bg.jpg");
+  background: url("bg.jpg") no-repeat fixed center center / cover  rgba(0, 0, 0, 0)
 }
 
 #container {
@@ -157,6 +156,11 @@ p {
     outline-width: 0;
 }
 
+#description_block{
+    word-break: break-all;
+    padding: 20px 14px;
+}
+
 #ils_cycle {
     top: 0px;
     color:#000;
@@ -181,20 +185,17 @@ p {
 
 #customBarWrapper {
     margin: 0 auto;
-    max-width: 1024px;
+    max-width: 904px;
 }
 
 
 .fixedCustomTop
 {
     top: 0px;
-    position:fixed;
-    z-index: 10;
+    position:fixed!important;
+    z-index: 1040;
     -webkit-transform: translateZ(0);
-    margin-left: -300%;
-    padding-left: 300%;
-    padding-right: 195%;
-    width: 600%;
+
 
 }
 
@@ -204,6 +205,9 @@ p {
     border-top: 0 none;
     color: #ffffff;
     min-height: 42px;
+    z-index: 1040;
+    position: relative;
+    width: 904px;
 }
 
 #myCustomBar{

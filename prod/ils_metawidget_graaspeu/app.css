@@ -255,9 +255,6 @@ html{
   margin-left: 35px;
   width: 250px;
 }
-#description_block{
-  padding: 20px 14px;
-}
 .modal-backdrop{
   background-color: rgba(0, 0, 0, 0.5);
 }

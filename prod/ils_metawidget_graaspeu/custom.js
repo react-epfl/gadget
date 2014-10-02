@@ -25,7 +25,7 @@ var applyNewLayout= function  () {
     windowScrollTop= $(window).scrollTop(); //gets the ammount of scrolling in main_block
 
     $('body').on('click', '.fixedCustomTop', function (e) {
-        $(window).scrollTop(fauxOffset-customBarHeight);
+        $(window).scrollTop(fauxOffset+2);
     });
 
 };
@@ -38,41 +38,26 @@ $(window).scroll(function(){
 
 function stickyBar() {
 
-    var myNavMenuDataTop = myNavMenu.attr("data-top"); //gets the data-top attribute
-    var myNavMenuOffset = myNavMenu.offset().top;// gets the offset from top of tabbed menu
-    //var windowScrollTop= $(this).scrollTop(); //gets the ammount of scrolling in main_block
-    var customBarOffset= customBar.offset().top;
     fauxOffset=faux.offset().top;
     windowScrollTop= $(this).scrollTop();
     var test = fauxOffset - windowScrollTop ;
     var test2 = fauxOffset - windowScrollTop - customBarHeight;
-
-
-    if ((test2<=0) && (test>=0)){ //when menu reaches right under top bar push the bar up
-        customBar.css({top:test2});
-    }
-
-    else if (test2>0){ //else keep bar attached
-        customBar.css({top:0});
-    }
+    myNavMenuHeight = myNavMenu.outerHeight(); //gets the height of tabbed menu
 
     if ((test < 0) && !attached ) //attach the sticky bar when it has reached to the top
         {
             attached=true;
-                 customBar.hide();
-                     myNavMenu.addClass("fixedCustomTop");
-                     faux.addClass("customHeight");
-                     myNavMenu.fadeIn("slow");
+            myNavMenu.addClass("fixedCustomTop");
+            faux.css("height", myNavMenuHeight);
+            myNavMenu.fadeIn("slow");
          }
 
     else   if ((test > 0) && attached) // detach the sticky bar when not at the top
 
     {
-        customBar.show();
         myNavMenu.removeClass("fixedCustomTop")
-        faux.removeClass("customHeight");
+        faux.css("height", 0);
         attached=false;
-
     }
 }
 
