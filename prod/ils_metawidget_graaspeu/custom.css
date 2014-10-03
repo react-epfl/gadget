@@ -64,6 +64,7 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     max-width:904px;
     border-radius: 0px;
     margin-bottom: 42px;
+    min-height: 120%;
 }
 
 
@@ -165,6 +166,7 @@ p {
     top: 0px;
     color:#000;
     padding: 0px;
+    height: 100%;
 }
 
 #ils_phases{
@@ -186,6 +188,7 @@ p {
 #customBarWrapper {
     margin: 0 auto;
     max-width: 904px;
+    padding:0 14px;
 }
 
 
@@ -195,8 +198,6 @@ p {
     position:fixed!important;
     z-index: 1040;
     -webkit-transform: translateZ(0);
-
-
 }
 
 .customTop {
@@ -204,7 +205,7 @@ p {
     background-color: #5050D2;
     border-top: 0 none;
     color: #ffffff;
-    min-height: 42px;
+    height: 42px;
     z-index: 1040;
     position: relative;
     width: 904px;
@@ -212,8 +213,8 @@ p {
 
 #myCustomBar{
 
-    height: 42px;
-    min-height: 42px;
+    height: 43px;
+    min-height: 0px;
     padding: 0 40px;
 
 }
@@ -248,7 +249,7 @@ p {
 
 .customTop * {
     border-color: rgba(0, 0, 0, 0) !important;
-    border-width: 0 0 1px 1px !important;
+    border-width: 0 0 0 1px !important;
 
 }
 
@@ -257,6 +258,7 @@ p {
     outline: none;
     height: 42px;
     line-height: normal;
+    padding: 10px 14px;
 }
 
 
@@ -305,7 +307,7 @@ hr {border:1px solid black;}
 }
 
 #wrap > .container {
-    padding: 42px 40px 0;
+    padding: 42px 0px 0;
     overflow-y:visible ;
 }
 .container .credit {
