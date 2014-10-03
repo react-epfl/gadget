@@ -563,7 +563,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
       break;
     case ".txt":
       $docToDisplay = $('<div></div>').addClass("content");
-      var $txt = $('<object data="'+itemUrl+'" type="text/plain" width="100%" height="100%"></object>');
+      var $txt = $('<object data="'+itemUrl+'" type="text/plain" width="100%"></object>');
       $docToDisplay.append($txt)
       break;
     case ".pdf":
