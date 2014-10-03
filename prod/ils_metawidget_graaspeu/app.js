@@ -505,8 +505,8 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   // build placeholder
   var title = doc.displayName;
   //  URL for development purposes (local)
-  //  var testUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
-  var testUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
+  // var itemUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
+  var itemUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
 
   var descrToDisplay = $("<div></div>").append(doc.description);
   var docType = title.substr(title.lastIndexOf("."), title.length);
@@ -523,7 +523,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
     case ".vsd":
       $docToDisplay = $('<img></img>');
       $docToDisplay.attr("class", "resource_content");
-      $docToDisplay.attr("src", testUrl);
+      $docToDisplay.attr("src", itemUrl);
       break;
     case ".acm":
     case ".aif":
@@ -556,15 +556,19 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
     case ".wma":
     case ".wmv":
     case ".3pg":
-      // TODO: support online videos
       $docToDisplay = $('<video controls></video>');
       $docToDisplay.attr("class", "resource_content");
-      $docToDisplay.attr("src", testUrl);
+      $docToDisplay.attr("src", itemUrl);
       $docToDisplay.attr("type", "video/"+docType);
+      break;
+    case ".txt":
+      $docToDisplay = $('<div></div>').addClass("content");
+      var $txt = $('<object data="'+itemUrl+'" type="text/plain" width="100%" height="100%"></object>');
+      $docToDisplay.append($txt)
       break;
     case ".pdf":
       $docToDisplay = $('<div ng-swipe-left="prev()" ng-swipe-right="next()"></div>').addClass("content");
-      var $pdf = $('<object data="'+testUrl+'" type="application/pdf" width="100%" height="100%"></object>');
+      var $pdf = $('<object data="'+itemUrl+'" type="application/pdf" width="100%" height="100%"></object>');
       $docToDisplay.append($pdf)
       break;
     default:
@@ -580,9 +584,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
     parent.append($("<br>"));
     parent.append($docToDisplay);
     parent.append($("<br>"));
-
-
-}
+}}
 
 // is_center indicates if the gadget is in the center or at the bottom tool bar
 var buildGadget = function (id, app_json, is_center) {
