@@ -575,10 +575,12 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
       $docToDisplay.append($pdf)
       break;
     default:
-      $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
-      // $docToDisplay = $('<iframe></iframe>');
-      // $docToDisplay.attr("class", "resource_content");
-      // $docToDisplay.attr("src", testUrl);      
+      if (doc.embeddedHTML!=undefined && doc.embeddedHTML!=""){
+        $docToDisplay = $(doc.embeddedHTML);
+        break;
+      }else{
+        $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
+      }    
   }
 
     parent.append(descrToDisplay);
