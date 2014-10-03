@@ -584,7 +584,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
     parent.append($("<br>"));
     parent.append($docToDisplay);
     parent.append($("<br>"));
-}}
+}
 
 // is_center indicates if the gadget is in the center or at the bottom tool bar
 var buildGadget = function (id, app_json, is_center) {
