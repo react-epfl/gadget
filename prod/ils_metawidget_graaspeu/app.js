@@ -577,6 +577,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   }
 
     parent.append(descrToDisplay);
+    parent.append($("<br>"));
     parent.append($docToDisplay);
     parent.append($("<br>"));
 
