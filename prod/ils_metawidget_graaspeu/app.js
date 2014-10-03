@@ -480,20 +480,16 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
 //display when is an app
 var buildWindowApp = function (id, parent, app_json, is_center) {
   var gadget = app_json.hash[id]
- // var titleToDisplay = $('<h3></h3>').text(gadget.displayName);
- // parent.append(titleToDisplay);
 
-  var description = $("<div></div>").text(gadget.description);
+  var description = $("<div></div>").append(gadget.description);
   parent.append(description);
   parent.append($("<br>"));
+  
   // build placeholder
   var blk = $("<div></div>")
     .addClass("window")
     .attr('appId', gadget.id)
 
- // var title = $("<div></div>").addClass('gadgets-gadget-title-bar')
- //   .append($("<span></span>").text(gadget.displayName))
- // blk.append(title)
   parent.append(blk)
 
   var gadget_el = $("<div></div>").attr('id', 'gadget-chrome-'+id)
@@ -511,13 +507,9 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   var title = doc.displayName;
   //  URL for development purposes (local)
   //  var testUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
- var testUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
+  var testUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
 
-  //title of each doc
-//  var titleToDisplay = $('<h3></h3>').text(title.substr(0, n));
-//  parent.append(titleToDisplay);
-  
-  var descrToDisplay = $('<div class="resource_description"></div>').text(doc.description);
+  var descrToDisplay = $("<div></div>").append(doc.description);
   var docType = title.substr(title.lastIndexOf("."), title.length);
   var $docToDisplay;
   switch (docType) {
