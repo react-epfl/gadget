@@ -483,7 +483,6 @@ var buildWindowApp = function (id, parent, app_json, is_center) {
 
   var description = $("<div></div>").append(gadget.description);
   parent.append(description);
-  parent.append($("<br>"));
   
   // build placeholder
   var blk = $("<div></div>")
@@ -578,7 +577,6 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   }
 
     parent.append(descrToDisplay);
-    parent.append($("<br>"));
     parent.append($docToDisplay);
     parent.append($("<br>"));
 
