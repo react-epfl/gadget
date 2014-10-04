@@ -3,7 +3,7 @@
   <ModulePrefs title="File Drop"
                 author_email="na.li@epfl.ch"
                 author="Na Li"
-                description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.eu.">
+                description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.">
     <Locale messages="./file_drop_languages/ALL_ALL.xml"/>
     <Locale lang="es" messages="./file_drop_languages/es_ALL.xml"/>
     <Locale lang="de" messages="./file_drop_languages/de_ALL.xml"/>
@@ -67,7 +67,8 @@
 <!-- The dropzone.min.js library has been updated -->
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
 <!-- The ILS library has been included to work with the ILS and the VAULT space -->
-<script type="text/javascript" src="http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js"></script>
+<script type="text/javascript" src="http://graasp.epfl.ch/ils_lib/main/ils.js"></script>
+
 
 <script type="text/javascript">
 var app = {};
@@ -97,11 +98,12 @@ function dropListener(){
         var action = "/rpc?method=documents.create&id=documents.create"
         action = action + "&st=" + getQueryVariable("st")
         this.options.url = action;   
+    
         var request={"method":"documents.create",
           "params": {
             "document": {
               "displayName": filename,
-              "parentSpaceId": parentSpaceId,
+                "parentId": parentSpaceId,
               "mimeType": file_type,
               "fileName": filename
             }
@@ -114,8 +116,8 @@ function dropListener(){
       });
 
       this.on("success", function(file, response) {
-        if (response.hasOwnProperty("result")) {
-          buildNewItem(response.result);
+        if (response.result.entry != null) {
+          buildItem(response.result.entry);
           $('#msg').text("");
           adjustHeight();
         }
@@ -128,10 +130,11 @@ function dropListener(){
 var initialize = function() {
     app.list = $("#list");
     ils.getIls(function(response) {
+
       if (response !=null && response != undefined && response.error == undefined) {
         ils.getVault(function(vault) {
           if (vault !=null && vault != undefined) { //The space is an ILS and there is a VAULT folder
-            // The resource will be retrieved from / store in VAULT          
+            // The resource will be retrieved from / store in VAULT
             parentSpaceId = vault.id;
             ils.listVault(function(resourceList) {
               build(resourceList);
@@ -156,9 +159,10 @@ var initialize = function() {
           });
         });
       }
+
     });
 
-
+  
   dropListener();
   gadgets.window.adjustHeight();
 };
@@ -169,10 +173,11 @@ var adjustHeight = function() {
 
 // build the container with gadgets
 var build = function(documents) {
+  console.log(documents);
   if (documents.length >0) {
     for (var i = 0; i < documents.length; i++) {
      var doc = documents[i];
-     buildExistingItem(doc);
+     buildItem(doc);
     }
   }else{
       $('#msg').text("__MSG_no_resource_found__");
@@ -187,17 +192,16 @@ var build = function(documents) {
   setTimeout(adjustHeight,5000);
 };
 
-
-//TODO: BuildExistingItem & BuildNewItem must be unified once the code in Shindig and Graasp is fixed
-buildExistingItem = function (doc) {
+buildItem = function (doc) {
   var doc_id = 'document_'+doc.id;
   var doc_el = $("<tr id='"+doc_id+"'></tr>");
 
   var doc_name = $('<td id="doc_name"></td>');
   var download_link = $("<a target='_blank'></a>");
-
-  if (doc.hasOwnProperty("url")){
-    download_link.attr("href",doc.url+"/raw");    
+  if (doc.attachment != null) {
+    var downloadUrl = doc.attachment.url;
+    download_link.attr("href",downloadUrl);
+    
   }
   download_link.text(doc.displayName);
   doc_name.append(download_link);
@@ -209,32 +213,6 @@ buildExistingItem = function (doc) {
 
   app.list.prepend(doc_el);
 }
-
-buildNewItem = function (doc) {
-  var doc_id = 'document_'+doc._id;
-  var doc_el = $("<tr id='"+doc_id+"'></tr>");
-
-  var doc_name = $('<td id="doc_name"></td>');
-  var download_link = $("<a target='_blank'></a>");
-
-  //Development URL:
-  // var itemUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+doc._id+"/raw";
-  
-  //Production URL:
-  var itemUrl = "http://graasp.eu"+"/resources/"+doc._id+"/raw";
-  download_link.attr("href", itemUrl);    
-  
-  download_link.text(doc.name);
-  doc_name.append(download_link);
-  doc_el.append(doc_name);
-
-  var update_time = $('<td id = "update_time"></td>');
-  update_time.text(doc.modified.replace("T"," ").replace(/.....$/,""));
-  doc_el.append(update_time);
-
-  app.list.prepend(doc_el);
-}
-
 </script>
 
 <script type="text/javascript">
