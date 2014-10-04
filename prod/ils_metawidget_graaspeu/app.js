@@ -481,9 +481,11 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
 var buildWindowApp = function (id, parent, app_json, is_center) {
   var gadget = app_json.hash[id]
 
-  var description = $("<div></div>").append(gadget.description);
-  parent.append(description);
-  
+  if(gadget.description.replace(/[\s|&nbsp;]+/gi,'') !="" ){
+    var description = $("<div></div>").append(gadget.description);
+    parent.append(description);
+  }
+
   // build placeholder
   var blk = $("<div></div>")
     .addClass("window")
@@ -508,7 +510,13 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   // var itemUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
   var itemUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
 
-  var descrToDisplay = $("<div></div>").append(doc.description);
+  if(doc.description.replace(/[\s|&nbsp;]+/gi,'') !="" ){
+    var descrToDisplay = $("<div></div>").append(doc.description);    
+    parent.append(descrToDisplay);    
+    parent.append($("<br>"));     
+   } 
+
+
   var docType = title.substr(title.lastIndexOf("."), title.length);
   var $docToDisplay;
   switch (docType) {
@@ -579,8 +587,6 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
       }    
   }
 
-    parent.append(descrToDisplay);
-    parent.append($("<br>"));
     parent.append($docToDisplay);
     parent.append($("<br>"));
 }
