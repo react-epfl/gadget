@@ -44,6 +44,7 @@ head.js ([
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/app.css",
 "http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/custom.css"],
 function(){
+Offline.options = {checks: {image: {url: 'http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/arrow_down.png'}, active: 'image'}} ; //Initialize Offline.js to check a specific icon
 if (osapi.people.getViewer) {
     try{initialize_user(); }
     catch(err){
@@ -71,9 +72,10 @@ if (osapi.people.getViewer) {
 <nav id="myCustomBar" class="navbar navbar-default navbar-fixed-top" role="navigation">
           <div id="customBarWrapper">
           <div class="navbar-header">
-            <a id="title" href="#"></a>
+            <span id="title" href="#"></span>
           </div>
-            <a id = "hello_msg" href="" class="navbar-right"></a>
+           <img id = "logout_button" title="__MSG_logout_label__" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/logout.png">
+           <span id = "hello_msg" href="" class="navbar-right"></span>
            </div>
 </nav>
 <div id="main_block" class="container">
