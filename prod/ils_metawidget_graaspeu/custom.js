@@ -4,14 +4,11 @@
 
 // Dynamically add classes and format content
 var applyNewLayout= function  () {
-
    $("#ils_phases .tab-pane").addClass("fade"); //Add Fade effect to tabs
    $("#ils_phases .tab-pane:first").addClass("in"); //Fade the tab in
    $("#ils_cycle").wrap("<div id='customTopWrapper' class='customTop'></div>");
-   //$("#customTopWrapper").prepend("<div id='leftChevron' class='tabChevron'/><div id='righrChevron' class='tabChevron'/>");
 
-
-    //When done, wait 1000ms hide the loader and display content
+   //When done, wait 1000ms hide the loader and display content
     setTimeout(function(){
         $("#main").show("fade",1000);
         $("#loader").hide("fade",500).remove();
@@ -29,10 +26,6 @@ var applyNewLayout= function  () {
 
     $('body').on('click', '.fixedCustomTop', function (e) {
         $(window).scrollTop(fauxOffset+2);
-    });
-
-    $('#logout_button').on("click",function(e){
-       logoutUser();
     });
 
 };

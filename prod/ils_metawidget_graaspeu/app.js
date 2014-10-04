@@ -294,12 +294,6 @@ var checkUserName = function(){
     }
 };
 
-// Log's out the active user by removing tha cookie and reloading tha page
-var logoutUser = function() {
-    $.removeCookie('graasp_user');
-    location.reload();
-};
-
 // update user's last access time in appData
 var updateUserActions = function(user_name) {
   var user_hash = {};
