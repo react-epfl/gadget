@@ -49,7 +49,7 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 /* Wrapper for page content to push down footer */
 .bg_image{
-  background: url("bg.jpg") no-repeat fixed center center / cover  rgba(0, 0, 0, 0)
+  background: url("bg.jpg") no-repeat fixed left center / cover  rgba(0, 0, 0, 0)
 }
 
 #container {
@@ -232,6 +232,13 @@ p {
     line-height:42px;
     margin:0px;
 }
+#logout_button {
+    cursor: pointer;
+    float: right;
+    height: 0.9em;
+    margin-left: 0.2em;
+    margin-top: 0.45em;
+}
 
 #toolbar{
     background-color: #5050D2;
@@ -289,6 +296,22 @@ p {
     background-color: #6262FF;
 }
 
+.tabChevron{
+    height: 100%;
+    width: 20px;
+    background: #000000;
+}
+
+#leftChevron{
+
+}
+
+
+#rightChevron{
+
+}
+
+
 hr {border:1px solid black;}
 
 .page-header {
@@ -307,7 +330,7 @@ hr {border:1px solid black;}
 }
 
 #wrap > .container {
-    padding: 42px 0px 0;
+    padding: 43px 0px 0;
     overflow-y:visible ;
 }
 .container .credit {
@@ -461,10 +484,6 @@ iframe{
 }
 
 @media (min-width: 768px) {
-    .customSize li{
-        font-size: 1.2em!important;
-    }
-
 
 }
 
