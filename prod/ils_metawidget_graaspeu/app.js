@@ -512,15 +512,11 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   var docType = title.substr(title.lastIndexOf("."), title.length);
   var $docToDisplay;
   switch (docType) {
-    case ".drw":
     case ".gif":
     case ".jpg":
     case ".jpeg":
     case ".png":
     case ".svg":
-    case ".tif":
-    case ".tiff":
-    case ".vsd":
       $docToDisplay = $('<img></img>');
       $docToDisplay.attr("class", "resource_content");
       $docToDisplay.attr("src", itemUrl);
@@ -571,6 +567,9 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
       var $pdf = $('<object data="'+itemUrl+'" type="application/pdf" width="100%" height="100%"></object>');
       $docToDisplay.append($pdf)
       break;
+    case ".html":
+      $docToDisplay = $('<iframe src="'+itemUrl+'" width="100%" height="100%" seamless></iframe>');
+      break;  
     default:
       if (doc.embeddedHTML!=undefined && doc.embeddedHTML!=""){
         $docToDisplay = $(doc.embeddedHTML);
