@@ -4,7 +4,6 @@
                 author_email="jad.naoum@epfl.ch" 
                 author="Jad Naoum" 
                 description="The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
-                width="350"
                 height="500"
                 thumbnail="http://graasp.epfl.ch/gadget/prod/wiki/thumbnail.png"
                 screenshot="http://graasp.epfl.ch/gadget/prod/wiki/screenshot.png">
