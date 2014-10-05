@@ -112,7 +112,11 @@ var initialize_ils = function() {
     ILS.name=currentSpace.displayName;
     ILS.id=currentSpace.id;
     if (currentSpace) {
-      $("#title").append(ILS.name);
+      if(ILS.name.length>35){
+        $("#title").append(ILS.name.substring(0,34)+"...");
+      }else{
+        $("#title").append(ILS.name);
+      }
       if (currentSpace.description.replace(/[\s|&nbsp;]+/gi,'') !="" ){ // when there is a valid description
         $("#description").append(currentSpace.description);
       }
