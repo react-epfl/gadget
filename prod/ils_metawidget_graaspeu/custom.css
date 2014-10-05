@@ -407,6 +407,8 @@ iframe{
 .navbar-header {
     margin-left: 0;
     line-height: 2.5em;
+    word-break: break-word;
+    width: 70%;
     float:left;
 }
 
