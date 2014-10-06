@@ -414,7 +414,7 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
     //check if it is an app: buildApp or not: buildDoc.
     if(app_json.order.indexOf(id) != -1) {
       buildWindowApp(id, container, app_json, is_center)
-    } else {
+    } else if(all_json.hash[id].spaceType!="folder"){
       buildWindowDoc(id, container, all_json, is_center)
     }
   })
