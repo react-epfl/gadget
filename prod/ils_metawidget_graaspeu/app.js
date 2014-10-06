@@ -539,41 +539,19 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
       $docToDisplay.attr("class", "resource_content");
       $docToDisplay.attr("src", itemUrl);
       break;
-    case ".acm":
-    case ".aif":
     case ".asf":
     case ".avi":
-    case ".bun":
-    case ".caf":
-    case ".csh":
     case ".flv":
-    case ".omf":
-    case ".mid":
     case ".mov":
     case ".mp3":
     case ".mp4":
-    case ".mpg":
-    case ".mus":
-    case ".m3u":
-    case ".m4a":
-    case ".nsf":
+    case ".m4v":
     case ".oga":
-    case ".ogg":
-    case ".ram":
-    case ".rm":
-    case ".sib":
-    case ".sty":
-    case ".swf":
-    case ".vag":
-    case ".vlc":
-    case ".wav":
-    case ".wma":
-    case ".wmv":
-    case ".3pg":
+    case ".ogv":
       $docToDisplay = $('<video controls></video>');
       $docToDisplay.attr("class", "resource_content");
       $docToDisplay.attr("src", itemUrl);
-      $docToDisplay.attr("type", "video/"+docType);
+      $docToDisplay.attr("type", "video/"+docType.replace(".",""));
       break;
     case ".txt":
       $docToDisplay = $('<div></div>').addClass("content");
