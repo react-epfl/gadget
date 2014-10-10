@@ -25,46 +25,37 @@
 
 <script type="text/javascript">
 //gadgets.util.registerOnLoadHandler(initialize);
+var production="http://graasp.epfl.ch";
+var development="http://ask4research.info/golab";
+var local="";
+var server=production;
 
 head.js ([
-"http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js",
-"http://graasp.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js",
-"http://graasp.epfl.ch/gadget/libs/jquery.cookie.js",
-"http://graasp.epfl.ch/gadget/libs/underscore-min.js",
-"http://graasp.epfl.ch/gadget/libs/bootstrap3/js/bootstrap.min.js",
-"http://graasp.epfl.ch/ils_lib/metadata/MetadataHandler.js",
-"http://graasp.epfl.ch/ils_lib/applog/ActionLogger.js",
-"http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/app.js",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/custom.js",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/data.js",
-"http://graasp.epfl.ch/gadget/libs/bootstrap3/css/bootstrap.css",
-"http://graasp.epfl.ch/gadget/libs/offline.js/offline-theme-default.css",
-"http://graasp.epfl.ch/gadget/libs/offline.js/offline-language-english.css",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/app.css",
-"http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/custom.css"],
+server+"/gadget/libs/jquery-1.8.0.min.js",
+server+"/gadget/libs/jquery-ui/jquery-ui.js",
+server+"/gadget/libs/jquery.cookie.js",
+server+"/gadget/libs/underscore-min.js",
+server+"/gadget/libs/bootstrap3/js/bootstrap.min.js",
+server+"/ils_lib/metadata/MetadataHandler.js",
+server+"/ils_lib/applog/ActionLogger.js",
+server+"/ils_lib/main/ils_graaspeu.js",
+server+"/gadget/prod/ils_metawidget_graaspeu/app.js",
+server+"/gadget/prod/ils_metawidget_graaspeu/custom.js",
+server+"/gadget/prod/ils_metawidget_graaspeu/data.js",
+server+"/gadget/libs/bootstrap3/css/bootstrap.css",
+server+"/gadget/libs/offline.js/offline-theme-default.css",
+server+"/gadget/libs/offline.js/offline-language-english.css",
+server+"/gadget/prod/ils_metawidget_graaspeu/app.css",
+server+"/gadget/prod/ils_metawidget_graaspeu/custom.css"],
 function(){
-Offline.options = {checks: {image: {url: 'http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/arrow_down.png'}, active: 'image'}} ; //Initialize Offline.js to check a specific icon
-if (osapi.people.getViewer) {
-    try{initialize_user(); }
-    catch(err){
-        console.log(err);
-        setTimeout(function(){
-            initialize_user();
-        }, 2000);
-    }
-} else {
+Offline.options = {checks: {image: {url: server+'/gadget/prod/ils_metawidget_graaspeu/arrow_down.png'}, active: 'image'}} ; //Initialize Offline.js to check a specific icon
+initIntervalTimer=setInterval(function(){
     try{
-        setTimeout(function(){
-            initialize_user();
-        }, 1000);
+    initialize_user();
     }catch(err){
-        console.log(err);
-        setTimeout(function(){
-            initialize_user();
-        }, 2000);
+    console.log("Could not initialize user: ",err);
     }
-}
+},1000);
 })
 </script>
 <div id="main" style="display:none;">
@@ -72,7 +63,7 @@ if (osapi.people.getViewer) {
 <nav id="myCustomBar" class="navbar navbar-default navbar-fixed-top" role="navigation">
           <div id="customBarWrapper">
           <div class="navbar-header">
-            <span id="title" href="#"></span>
+            <span id="title" title="__MSG_toggle_description_tooltip__" href="#"></span>
           </div>
            <img id = "logout_button" title="__MSG_logout_label__" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/logout.png">
            <span id = "hello_msg" href="" class="navbar-right"></span>
