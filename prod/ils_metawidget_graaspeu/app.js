@@ -15,6 +15,7 @@ var ILS = { name: "",
 // The ILS is not initialized unless a valid nickname is found
 
 var initialize_user = function(){
+    clearInterval(initIntervalTimer);
     if ($.cookie('graasp_user')) {
         app.user_name = $.cookie('graasp_user');
         animate_logo();
@@ -237,6 +238,7 @@ var build_tabs = function(subspaces) {
   });
   center.append(ils_cycle_tabs);
   center.append(ils_phases);
+
 };
 
 // get the visible spaces from the subspaces array
@@ -278,7 +280,7 @@ var buildJson = function(list, data, itemsIds, item) {
 
 // Displays welcome message to user
 var welcome_user = function(){
-    $('#hello_msg').text(app.prefs.getMsg("hello") + " " + app.user_name + "!");
+    $('#hello_msg').text(app.user_name);
 };
 
 // save user's name in appData and display user name on the page
@@ -743,6 +745,7 @@ $(document).ready(function(){
             id:this.attributes["href"].value.slice(1),
             name:this.innerHTML
         };
+        $(this).trigger("tabClick");
         sendStream("access","PHASE",ils_active_phase);
     });
 

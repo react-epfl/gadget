@@ -160,18 +160,21 @@ p {
 #description_block{
     word-break: break-all;
     padding: 20px 14px;
+    background-color: #ebebeb;
 }
+
 
 #ils_cycle {
     top: 0px;
-    color:#000;
+    color:white;
     padding: 0px;
-    height: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    -webkit-transform: translateZ(0);
 }
 
 #ils_phases{
     padding-bottom: 60px;
-    overflow-x: hidden;
     padding: 14px;
 }
 
@@ -189,12 +192,12 @@ p {
     margin: 0 auto;
     max-width: 904px;
     padding:0 14px;
+    position: relative;
 }
 
 
 .fixedCustomTop
 {
-    top: 0px;
     position:fixed!important;
     z-index: 1040;
     -webkit-transform: translateZ(0);
@@ -209,14 +212,16 @@ p {
     z-index: 1040;
     position: relative;
     width: 904px;
+    overflow: hidden;
 }
 
 #myCustomBar{
 
-    height: 43px;
+    height: 42px;
     min-height: 0px;
-    padding: 0 40px;
-
+    padding:0;
+    margin: 0;
+    border: none;
 }
 
 #title {
@@ -224,6 +229,7 @@ p {
     padding:0px;
     line-height:42px;
     color:#ffffff;
+    cursor: pointer;
 }
 
 #hello_msg {
@@ -255,8 +261,9 @@ p {
 }
 
 .customTop * {
-    border-color: rgba(0, 0, 0, 0) !important;
-    border-width: 0 0 0 1px !important;
+    border-color: #5050d2 !important;
+    border-radius: 0 !important;
+    border-width: 0px 0 0 !important;
 
 }
 
@@ -264,8 +271,10 @@ p {
     color: white;
     outline: none;
     height: 42px;
-    line-height: normal;
-    padding: 10px 14px;
+    line-height: 42px;
+    vertical-align: middle;
+    padding: 0px 14px;
+    margin-right: 0px;
 }
 
 
@@ -296,26 +305,58 @@ p {
     background-color: #6262FF;
 }
 
+.hasChevrons{
+    margin: 0 20px;
+}
+
 .tabChevron{
     height: 100%;
     width: 20px;
-    background: #000000;
+    background: transparent;
+    position: absolute;
+    top:0px;
+    cursor: pointer;
+    background-position: 50%;
+    background-repeat: no-repeat;
 }
 
-#leftChevron{
-
+.tabChevron:hover{
+    background-color: #6262ff ;
 }
 
-
-#rightChevron{
-
+.tabChevron.left{
+   left: 0px;
+   background-image: url("left-chevron.png");
+   border-right: 1px solid rgba(255, 255, 255, 0.5) !important;
 }
 
+.tabChevron.right{
+    right: 0px;
+    background-image: url("right-chevron.png");
+    border-left: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+.tabChevron.disabled
+{
+    background-image: none;
+    cursor: not-allowed;
+    border: 0px none !important;
+}
+
+.tabChevron.disabled:hover{
+    background-color: #5050d2 ;
+}
+
+#ils_cycle > li{
+    float: none;
+    display: inline-block;
+    margin-bottom: 0px;
+}
 
 hr {border:1px solid black;}
 
 .page-header {
-    border:0pc solid black;
+    border:0px solid black;
     margin-top:0px;
 }
 
@@ -330,7 +371,7 @@ hr {border:1px solid black;}
 }
 
 #wrap > .container {
-    padding: 43px 0px 0;
+    padding: 42px 0px 0;
     overflow-y:visible ;
 }
 .container .credit {
@@ -423,7 +464,6 @@ iframe{
 
 .navbar-default {
     background-color: #5050D2;
-    border-color: #ffffff;
 }
 .navbar-default .navbar-brand {
     color: #ffffff;
