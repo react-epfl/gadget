@@ -25,7 +25,6 @@ html{
 
 .gadgets-gadget{
   width: 100%;
-  border-radius:5px;
 }
 #popup{
   position: fixed;
@@ -156,7 +155,7 @@ html{
   cursor: pointer;
 }
 .gadgets-gadget-content{
-  margin: 0 8px;
+  margin: 0px;
   background:white;
   border-left: 1px solid #bbb;
   border-right: 1px solid #bbb;
