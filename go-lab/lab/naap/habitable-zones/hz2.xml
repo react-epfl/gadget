@@ -1,0 +1,36 @@
+<Module>
+	 <ModulePrefs title="NAAP lab - Habitable Zones Lab - Milky Way Habitability Explorer"
+	 	title_url="http://astro.unl.edu/naap/habitablezones/habitablezones.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@gmail.com"
+	 	description="The NAAP Habitable Zones Lab introduces the basic conditions thought necessary for life to exist, and explores where in the universe those conditions are most likely to be met."
+	 	height="700"
+	 	screenshot="hl-screenshot-2.png"
+	 	thumbnail="http://astro.unl.edu/naap/habitablezones/graphics/stellarHabitableZoneScreenshot.jpg">
+	 	<Require feature="opensocial-0.9" />
+	 	<Require feature="flash" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+		  // Play .swf file
+		  function displayFlash(){
+		    var url = "http://astro.unl.edu/naap/habitablezones/animations/milkyWayHabitability.swf";
+
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", {
+		      swf_version: 9,
+		      id: "milkyWayHabitability",
+		      width: 860,
+		      height: 700
+		    });
+		  }
+
+		  // When gadget first loads, display lab.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
+
+	 <div id="flashcontainer" style="text-align: center;"></div>
+	 ]]>
+	 </Content>
+ </Module>

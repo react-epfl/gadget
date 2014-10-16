@@ -1,0 +1,36 @@
+<Module>
+	 <ModulePrefs title="NAAP lab - Atmospheric Retention Lab - Gas Retention Simulator"
+	 	title_url="http://astro.unl.edu/naap/atmosphere/atmosphere.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@gmail.com"
+	 	description="The NAAP Atmospheric Retention Lab explores some of the elements that go into the retention or loss of an atmosphere by a planet. The Maxwell-Boltzmann velocity distribution and escape velocity are introduced."
+	 	height="660"
+	 	screenshot="ar-screenshot-2.png"
+	 	thumbnail="http://astro.unl.edu/naap/atmosphere/graphics/atmosphere_screen1.png">
+	 	<Require feature="opensocial-0.9" />
+	 	<Require feature="flash" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+		  // Play .swf file
+		  function displayFlash(){
+		    var url = "http://astro.unl.edu/naap/atmosphere/animations/gasRetentionPlot.swf";
+
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", {
+		      swf_version: 9,
+		      id: "gasRetentionPlot",
+		      width: 880,
+		      height: 660
+		    });
+		  }
+
+		  // When gadget first loads, display lab.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
+
+	 <div id="flashcontainer" style="text-align: center;"></div>
+	 ]]>
+	 </Content>
+ </Module>

@@ -1,0 +1,36 @@
+<Module>
+	 <ModulePrefs title="NAAP lab - Rotating Sky Lab"
+	 	title_url="http://astro.unl.edu/naap/motion2/motion2.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@gmail.com"
+	 	description="The NAAP Rotating Sky Lab introduces the horizon coordinate system and the “apparent” rotation of the sky. The relationship between the horizon and celestial equatorial coordinate systems is explicitly explored."
+	 	height="710"
+	 	screenshot="rs-screenshot.png"
+	 	thumbnail="http://astro.unl.edu/naap/motion2/animations/ce_hc_300.jpg">
+	 	<Require feature="opensocial-0.9" />
+	 	<Require feature="flash" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+		  // Play .swf file
+		  function displayFlash(){
+		    var url = "http://astro.unl.edu/naap/motion2/animations/ce_hc.swf";
+
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", {
+		      swf_version: 9,
+		      id: "ce_hc",
+		      width: 900,
+		      height: 710
+		    });
+		  }
+
+		  // When gadget first loads, display lab.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
+
+	 <div id="flashcontainer" style="text-align: center;"></div>
+	 ]]>
+	 </Content>
+ </Module>

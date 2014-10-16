@@ -1,0 +1,30 @@
+<Module>
+	 <ModulePrefs title="Foucault Pendulum"
+	 	title_url="http://virtualbiologylab.org/BarnacleCompetition.htm"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@epfl.ch"
+	 	description="A simulation of Foucault's Pendulum"
+	 	height="768">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			$('container').innerHTML = '<embed id="Foucault" type="application/x-java-applet;version=1.6" width="1024" height="768" archive="TWJar.jar" code="TWApplet.class" pluginspage="http://java.com/download/" codebase="http://www.3dtrainingdesign.co.uk/GoLab/FoucaultPendulum/">';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>

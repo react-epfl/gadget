@@ -1,0 +1,36 @@
+<Module>
+	 <ModulePrefs title="NAAP lab - Extrasolar Planets Lab"
+	 	title_url="http://astro.unl.edu/naap/esp/esp.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@gmail.com"
+	 	description="The NAAP Extrasolar Planets Lab introduces the search for planets outside of our solar system using the Doppler and transit methods. It includes simulations of the observed radial velocities of singular planetary systems and introduces the concept of noise and detection."
+	 	height="650"
+	 	screenshot="eps-screenshot-1.png"
+	 	thumbnail="http://astro.unl.edu/naap/esp/graphics/esp_screen1.png">
+	 	<Require feature="opensocial-0.9" />
+	 	<Require feature="flash" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+		  // Play .swf file
+		  function displayFlash(){
+		    var url = "http://astro.unl.edu/naap/esp/animations/radialVelocitySimulator.swf";
+
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", {
+		      swf_version: 9,
+		      id: "radialVelocitySimulator",
+		      width: 920,
+		      height: 650
+		    });
+		  }
+
+		  // When gadget first loads, display lab.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
+
+	 <div id="flashcontainer" style="text-align: center;"></div>
+	 ]]>
+	 </Content>
+ </Module>

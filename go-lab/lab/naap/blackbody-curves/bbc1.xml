@@ -1,0 +1,36 @@
+<Module>
+	 <ModulePrefs title="NAAP lab - Blackbody &amp; UBV Filters Lab"
+	 	title_url="http://astro.unl.edu/naap/blackbody/blackbody.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts@gmail.com"
+	 	description="The NAAP Blackbody Curves &amp; UBV Filters Lab demonstrates the basic properties of the blackbody curve and how temperature relates to blackbody curves. The temperature-color correlation of blackbody curves is explored through the concept of filters, which are also introduced in this module."
+	 	height="710"
+	 	screenshot="bbc-screenshot-1.png"
+	 	thumbnail="http://astro.unl.edu/naap/blackbody/graphics/blackbody_screen1.png">
+	 	<Require feature="opensocial-0.9" />
+	 	<Require feature="flash" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+		  // Play .swf file
+		  function displayFlash(){
+		    var url = "http://astro.unl.edu/naap/blackbody/animations/filters.swf";
+
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", {
+		      swf_version: 9,
+		      id: "filters",
+		      width: 980,
+		      height: 710
+		    });
+		  }
+
+		  // When gadget first loads, display lab.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
+
+	 <div id="flashcontainer" style="text-align: center;"></div>
+	 ]]>
+	 </Content>
+ </Module>
