@@ -11,40 +11,44 @@ function getData(callback) {
   batch.add('viewer', osapi.people.getViewer());
   batch.add('context', osapi.context.get());
   batch.execute(function(data){
-    output.viewer = data.viewer
-    var context = data.context
-    output.context = context
-    var contextId = context.contextId
-    var contextType = context.contextType
+    output.viewer = data.viewer;
+    var context = data.context;
+    output.context = context;
+    var contextId = context.contextId;
+    var contextType = context.contextType;
     var prefix = (contextType === "@space") ? "s_" : "";
     var prefixContextId = prefix + contextId;
-
     var batch = osapi.newBatch();
+    
     batch.add('owner', osapi.people.getOwner());
     batch.add('currentSpace', osapi.spaces.get({contextId: contextId}));
     batch.add('spaces', osapi.spaces.get({contextId: contextId, contextType: contextType}));
-    batch.add('appdata', osapi.appdata.get({userId: prefixContextId}));
+    batch.add('appdata', osapi.appdata.get({userId: prefixContextId, appId: contextId}));
     batch.add('apps', osapi.apps.get({contextId: contextId, contextType: contextType}));
+    
     batch.execute(function(res){
-      output.owner = res.owner
-      output.apps = res.apps
-      output.appdata = res.appdata
-      output.currentSpace = res.currentSpace
-      output.spaces = res.spaces
-      callback(output)
+      output.owner = res.owner;
+      output.apps = res.apps;
+      output.appdata = res.appdata;
+      output.currentSpace = res.currentSpace;
+      output.spaces = res.spaces;
+      callback(output);
     });
   });
 
 }
 
-function getDataById(spaceId, callback) {
+function getDataById(space, callback) {
   var output = {};
   var contextType = "@space";
-  var prefixContextId = "s_" + spaceId;
+  var contextId = space.parentId;
+  var prefixContextId = "s_" + space.id;
   var batch = osapi.newBatch();
-  batch.add('appdata', osapi.appdata.get({userId: prefixContextId}));
-  batch.add('apps', osapi.apps.get({contextId: spaceId, contextType: contextType}));
-  batch.add('spaces', osapi.spaces.get({contextId: spaceId, contextType: contextType}));
+  
+  batch.add('appdata', osapi.appdata.get({userId: prefixContextId, appId: contextId}));
+  batch.add('apps', osapi.apps.get({contextId: space.id, contextType: contextType}));
+  batch.add('spaces', osapi.spaces.get({contextId: space.id, contextType: contextType}));
+
   batch.execute(function(res){
     output.appdata = res.appdata;
     output.apps = res.apps.list;

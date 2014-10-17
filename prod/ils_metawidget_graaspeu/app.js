@@ -215,7 +215,7 @@ var build_tabs = function(subspaces) {
     phase_content.attr("id", "phase_" + item.id);
     phase.append(phase_content);
     ils_phases.append(phase);
-    getDataById(item.id, function (data) {
+    getDataById(item, function (data) {
 
       var itemsIds=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
       var json_app = buildJson(data.apps, data, itemsIds, item);
@@ -315,6 +315,7 @@ var updateUserActions = function(user_name) {
   user_hash[user_name] = JSON.stringify(user_actions);
   osapi.appdata.update(
     { userId: app.contextId,
+      appId: ILS.id,
       data: user_hash
     }).execute(function() {})
 }
@@ -687,8 +688,9 @@ var save = function(notHumanAct, app_json){
   data.sizeType = app_json.sizeType
 
   osapi.appdata.update(
-    { userId: app_json.contextId
-    , data: {"settings": JSON.stringify(data)}
+    { userId: app_json.contextId,
+      appId : ILS.id,
+      data: {"settings": JSON.stringify(data)}
     })
     .execute(function() {})
 }
