@@ -20,6 +20,10 @@ body {
 #dialog {
   font-size: 70%;
 }
+
+#form input[id$="id"] {
+  width: 180px;
+}
 </style>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css" />
 <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
