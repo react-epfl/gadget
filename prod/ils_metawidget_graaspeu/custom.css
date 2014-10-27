@@ -63,7 +63,6 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     position: relative;
     max-width:904px;
     border-radius: 0px;
-    margin-bottom: 42px;
     min-height: 120%;
 }
 
@@ -190,8 +189,12 @@ p {
 #ils_phases{
     padding-bottom: 60px;
     padding: 14px;
+    overflow: hidden;
 }
 
+.tab-pane *{
+    max-width: 100%;
+}
 .customTop ul{
     padding:0px 0px 0px 15px;
     border-bottom: 0px solid #dddddd;
@@ -263,18 +266,34 @@ p {
 }
 
 #toolbar{
-    background-color: #5050D2;
     line-height:normal;
+    cursor: pointer;
 }
 
 #tools_title{
+    background-color: #5050D2;
     color:#ffffff;
-    background-color: transparent;
     font-size: 21px;
     height: 42px;
     padding-top: 12px;
     text-align: center;
 }
+
+#tools_content{
+    display: none;
+    background-color: rgba(80,80,200,0.8);
+}
+
+
+#tools_content > .window{
+    width:auto;
+    margin: 5px;
+}
+
+#arrow_down{
+    display: none;
+}
+
 
 .customTop * {
     border-color: #5050d2 !important;

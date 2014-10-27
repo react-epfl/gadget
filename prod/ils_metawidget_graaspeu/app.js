@@ -78,9 +78,7 @@ var initialize_ils = function() {
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
       $("#tools_content").animate({ height: "toggle"}, "slow",function() { //added slide effect
         // Animation complete fuction
-          if(app.list.length > 0) {
-              main_block.style.bottom = "495px";
-          }
+
       });
       $("#arrow_down").show();
       $("#arrow_up").hide();
@@ -89,9 +87,7 @@ var initialize_ils = function() {
       $("#tools_content").animate({ height: "toggle"}, "slow"); //added slide effect
       $("#arrow_down").hide();
       $("#arrow_up").show();
-      if(app.list.length > 0) {
-        main_block.style.bottom = "40px";
-      }
+
     }
   });
 

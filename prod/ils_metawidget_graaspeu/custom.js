@@ -111,7 +111,7 @@ var checkTabBarOverflow=function(){ //Check if tab bar has overflow
                 if (!hasHidden(this)){
                     $(this).addClass("disabled");
                 }
-                e.stopPropagation();
+                //e.stopPropagation();
             })
             .on('click','#rightChevron',function (e) {
                 var firstVisible=$(this).nextAll("#ils_cycle").children(":visible:first");
@@ -122,7 +122,7 @@ var checkTabBarOverflow=function(){ //Check if tab bar has overflow
                 if (!checkOverflow("current")){
                     $(this).addClass("disabled");
                 }
-                e.stopPropagation();
+                //e.stopPropagation();
             })
             .on('tabClick',function (e) {
                 var clickedTab = isOutsideContainer(e);
