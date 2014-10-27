@@ -122,7 +122,7 @@ var initialize_ils = function() {
         $("#description").append(currentSpace.description);
       }
       else { //when there is not a valid description
-        $("#description_block").remove(); // remove the description block
+        $("#description_block").hide(); // remove the description block
       }
     }
 
@@ -205,7 +205,6 @@ var build_tabs = function(subspaces) {
     var ils_tab = $("<li></li>");
     var tab_link = $("<a></a>").text(item.displayName);
     tab_link.attr("href", "#" + item.id);
-    tab_link.attr("phaseType",item.metadata.type);
     ils_tab.append(tab_link);
     ils_cycle_tabs.append(ils_tab);
     var phase = $("<div></div>").addClass("tab-pane");
@@ -304,7 +303,6 @@ var checkUserName = function(){
 // Log's out the active user by removing tha cookie and reloading tha page
 var logoutUser = function() {
     $.removeCookie('graasp_user');
-    sendStream("exit","LOGOUT","");
     location.reload();
 };
 
@@ -628,9 +626,10 @@ var buildGadget = function (id, app_json, is_center) {
   // otherwise, use 876px
   // for gadgets at the bottom tool bar, use the default width 300px
   if(is_center){
-    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 768))
+    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 876))
       $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 'px');
-    else   $('#gadget-chrome-'+id).css('max-width', '100%');
+    else
+      $('#gadget-chrome-'+id).css('width', '876px');
   }
 
   shindig.container.setView("home");
@@ -746,8 +745,7 @@ $(document).ready(function(){
     $('body').on('click','.nav-tabs>li>a', function (e) {
         var ils_active_phase={
             id:this.attributes["href"].value.slice(1),
-            name:this.innerHTML,
-            phaseType:this.attributes["phaseType"].value
+            name:this.innerHTML
         };
         $(this).trigger("tabClick");
         sendStream("access","PHASE",ils_active_phase);
@@ -762,72 +760,46 @@ $(document).ready(function(){
 
 
 function sendStream(action,log_type,ils_active_phase){
-    var new_target={};
+    var phase_target={};
     var ILSLogObject={};
 
     if (log_type=="ILS"){
-        new_target={
+         phase_target={
             "objectType": "ils",
             "id": ILS.id,
             "displayName":ILS.name
-        };
-
-        ILSLogObject = {
-            objectType: "ils",
-            id: ILS.id,
-            content:{}
-        };
-
+        }
     }else if (log_type=="PHASE"){
-        new_target={
+        phase_target={
             "objectType": "phase",
             "id": ils_active_phase.id,
             "displayName":ils_active_phase.name
-        };
-
-        ILSLogObject = {
-            objectType: "phase",
-            id: ils_active_phase.id,
-            content:{   inquiryPhase: ils_active_phase.phaseType,
-                        inquiryPhaseName: ils_active_phase.name }
-
-        };
-
-    }else if(log_type=="TOOLBAR") {
-        new_target = {
-            "objectType": "toolbar",
-            "id": ILS.id,
-            "displayName": "toolbar"
-        };
-
-        ILSLogObject = {
-            objectType: "toolbar",
-            id: generateUUID(),
-            content: {}
-        };
-    }
-    else if(log_type=="LOGOUT"){
-        new_target = {
-            "objectType": "ils",
-            "id": ILS.id,
-            "displayName":ILS.name
-        };
-
-        ILSLogObject = {
-            objectType: "ils",
-            id: ILS.id,
-            content:{}
-        };
         }
 
+    }else if(log_type=="TOOLBAR"){
+         phase_target={
+            "objectType": "toolbar",
+            "id": ILS.id,
+            "displayName":"toolbar"
+        }
+    }
 
-    metadataHandler.setTarget(new_target);
+    metadataHandler.setTarget(phase_target);
 
+    ILSLogObject = {
+        objectType: "ILS_Log_Object",
+        id: generateUUID(),
+        log_type: log_type,
+        ils_name: ILS.name,
+        ils_id: ILS.id,
+        ils_active_phase_name: ils_active_phase.name,
+        ils_active_phase_id: ils_active_phase.id
+    };
 
     if (actionLogger&&metadataHandler) {
         actionLogger.log(action, ILSLogObject);
     }else{
-        console.log("Could not log action "+action+". Action Logging not initialized properly.");
+        console.log("Could not log action "+action+". Action Logging not initialized properly.")
     }
 }
 
