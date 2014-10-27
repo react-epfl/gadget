@@ -9,16 +9,20 @@
     <Require feature="dynamic-height"/>
 </ModulePrefs>
 <Content type="html"><![CDATA[
-<style> 
+<style>
 body {
   color:#666;
   font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
   margin-top:10px;
-  background-color: transparent;
+  background-color: rgba(255,255,255,0.8);
 }
 #dialog-confirm,
 #dialog {
   font-size: 70%;
+}
+
+#form input[id$="id"] {
+  width: 180px;
 }
 </style>
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.min.css" />
@@ -178,7 +182,7 @@ body {
 
 
   function init() {
-    findContext(); 
+    findContext();
   }
 
 
@@ -281,6 +285,7 @@ body {
       <option value="invite-remind">Send invitation reminder</option>
       <option value="request-join">Join request</option>
       <option value="join">Join</option>
+      <option value="leave">Leave</option>
       <option value="remove">Remove</option>
       <option value="delete">Delete</option>
     </select><br />
@@ -305,7 +310,7 @@ body {
       <input type="radio" name="generator_origin" value="custom"> Custom Generator<br />
       <div id="graasp_generator">
         <label for="generator_id">Id : </label>
-        <input type="number" name="generator_id" id="generator_id" min="1" max="999999"><br />
+        <input type="text" name="generator_id" id="generator_id"><br />
         <label for="generator_type">Type </label>
         <select name="generator_type" id="generator_type">
           <option value="User">User</option>
@@ -344,7 +349,7 @@ body {
       <input type="radio" name="actor_origin" value="custom"> Custom Actor<br />
       <div id="graasp_actor">
         <label for="actor_id">Id : </label>
-        <input type="number" name="actor_id" id="actor_id" min="1" max="999999"><br />
+        <input type="text" name="actor_id" id="actor_id"><br />
       </div>
       <div id="custom_actor"  style="display: none">
         <label for="actor_iri_custom">IRI : </label>
@@ -371,7 +376,7 @@ body {
       <input type="radio" name="object_origin" value="custom"> Custom Object<br />
       <div id="graasp_object">
         <label for="object_id">Id : </label>
-        <input type="number" name="object_id" id="object_id" min="1" max="999999"><br />
+        <input type="text" name="object_id" id="object_id"><br />
         <label for="object_type">Type </label>
         <select name="object_type" id="object_type">
           <option value="User">User</option>
@@ -412,7 +417,7 @@ body {
       <input type="radio" name="target_origin" value="custom"> Custom Target<br />
       <div id="graasp_target">
         <label for="target_id">Id : </label>
-        <input type="number" name="target_id" id="target_id" min="1" max="999999"><br />
+        <input type="text" name="target_id" id="target_id"><br />
         <label for="target_type">Type </label>
         <select name="target_type" id="target_type">
           <option value="User" selected="selected">User</option>
