@@ -49,7 +49,7 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
 
 /* Wrapper for page content to push down footer */
 .bg_image{
-    background: url("bg.jpg") no-repeat fixed left center / cover  rgba(0, 0, 0, 0)
+  background: url("bg.jpg") no-repeat fixed left center / cover  rgba(0, 0, 0, 0)
 }
 
 #container {
@@ -360,9 +360,9 @@ p {
 }
 
 .tabChevron.left{
-    left: 0px;
-    background-image: url("left-chevron.png");
-    border-right: 1px solid rgba(255, 255, 255, 0.5) !important;
+   left: 0px;
+   background-image: url("left-chevron.png");
+   border-right: 1px solid rgba(255, 255, 255, 0.5) !important;
 }
 
 .tabChevron.right{

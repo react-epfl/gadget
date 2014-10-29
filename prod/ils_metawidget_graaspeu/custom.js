@@ -5,9 +5,9 @@
 // Dynamically add classes and format content
 var applyNewLayout= function  () {
 
-    $("#ils_phases .tab-pane").addClass("fade"); //Add Fade effect to tabs
-    $("#ils_phases .tab-pane:first").addClass("in"); //Fade the tab in
-    $("#ils_cycle").wrap("<div id='customTopWrapper' class='customTop'></div>");
+   $("#ils_phases .tab-pane").addClass("fade"); //Add Fade effect to tabs
+   $("#ils_phases .tab-pane:first").addClass("in"); //Fade the tab in
+   $("#ils_cycle").wrap("<div id='customTopWrapper' class='customTop'></div>");
 
 
     //When done, wait 1000ms hide the loader and display content
@@ -26,7 +26,6 @@ var applyNewLayout= function  () {
     customBarHeight = customBar.outerHeight(); //gets the height of info bar
     myNavMenuHeight = myNavMenu.outerHeight(); //gets the height of tabbed menu
     attached = false;
-
 
 
     $('body').on('click', '.fixedCustomTop', function (e) {
