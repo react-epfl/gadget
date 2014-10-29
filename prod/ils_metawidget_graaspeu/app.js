@@ -300,7 +300,7 @@ var checkUserName = function(){
 // Log's out the active user by removing tha cookie and reloading tha page
 var logoutUser = function() {
     $.removeCookie('graasp_user');
-    sendStream("exit","LOGOUT","");
+    sendStream("cancel","LOGOUT");
     location.reload();
 };
 
@@ -730,89 +730,74 @@ var init_activity_streams=function() {
         } else {
             metadataHandler = createdMetadataHandler;
             actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);
-//            actionLogger.setLoggingTargetByName("console");
+            actionLogger.setLoggingTargetByName("console");
 //            actionLogger.setLoggingTargetByName("consoleShort");
-            actionLogger.setLoggingTargetByName("opensocial");
+//            actionLogger.setLoggingTargetByName("opensocial");
 //            actionLogger.setLoggingTargetByName("dufftown");
         }
     });
 }
 
 $(document).ready(function(){
-    $('body').on('click','.nav-tabs>li>a', function (e) {
-        var ils_active_phase={
-            id:this.attributes["href"].value.slice(1),
-            name:this.innerHTML,
-            phaseType:this.attributes["phaseType"].value
-        };
+    $('body').on('click','.nav-tabs li a', function (e) {
         $(this).trigger("tabClick");
-        sendStream("access","PHASE",ils_active_phase);
+        sendStream("access","PHASE");
     });
 
     $('body').on('click','#tools_title', function (e) {
         if ($(this).hasClass("expanded")){
-            sendStream("access","TOOLBAR","");
+            sendStream("access","TOOLBAR");
         }
     });
 });
 
 
-function sendStream(action,log_type,ils_active_phase){
-    var new_target={};
+function sendStream(action,log_type){
+    var ils_active_phase_element=$("#ils_cycle").children(".active").children();
+
+    var ils_active_phase={
+        id:ils_active_phase_element[0].attributes["href"].value.slice(1),
+        name:ils_active_phase_element[0].innerHTML,
+        phaseType:ils_active_phase_element[0].attributes["phaseType"].value
+    }
+
+    var new_target= {
+        "objectType": "phase",
+        "id":  ils_active_phase.id, // ils_active_phase.id.
+        "displayName": ils_active_phase.name, // the given name of the phase.
+        "inquiryPhase": ils_active_phase.phaseType // the type of the phase.
+    }
     var ILSLogObject={};
 
     if (log_type=="ILS"){
-        new_target={
-            "objectType": "ils",
-            "id": ILS.id,
-            "displayName":ILS.name
-        };
 
         ILSLogObject = {
             objectType: "ils",
             id: ILS.id,
-            content:{}
+            displayName:ILS.name
         };
 
     }else if (log_type=="PHASE"){
-        new_target={
-            "objectType": "phase",
-            "id": ils_active_phase.id,
-            "displayName":ils_active_phase.name
-        };
 
         ILSLogObject = {
-            objectType: "phase",
-            id: ils_active_phase.id,
-            content:{   inquiryPhase: ils_active_phase.phaseType,
-                        inquiryPhaseName: ils_active_phase.name }
-
+            "objectType": "phase",
+            "id":  ils_active_phase.id, // ils_active_phase.id.
+            "displayName": ils_active_phase.name, // the given name of the phase.
+            "inquiryPhase": ils_active_phase.phaseType // the type of the phase.
         };
 
     }else if(log_type=="TOOLBAR") {
-        new_target = {
-            "objectType": "toolbar",
-            "id": ILS.id,
-            "displayName": "toolbar"
-        };
 
         ILSLogObject = {
-            objectType: "toolbar",
-            id: generateUUID(),
-            content: {}
+            objectType: "toolbar"
         };
     }
     else if(log_type=="LOGOUT"){
-        new_target = {
-            "objectType": "ils",
-            "id": ILS.id,
-            "displayName":ILS.name
-        };
 
         ILSLogObject = {
             objectType: "ils",
             id: ILS.id,
-            content:{}
+            displayName:ILS.name
         };
         }
 

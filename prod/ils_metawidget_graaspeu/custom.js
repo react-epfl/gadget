@@ -30,7 +30,13 @@ var applyNewLayout= function  () {
 
 
     $('body').on('click', '.fixedCustomTop', function (e) {
-        var descriptionOffset=$("#description_block").innerHeight();
+        var descriptionOffset;
+        try{
+            descriptionOffset=$("#description_block").innerHeight();
+        }catch(err){
+            descriptionOffset=0;
+        }
+        descriptionOffset= isNaN(descriptionOffset)?0:descriptionOffset;
         $("#main_block").scrollTop(descriptionOffset);
     });
 
@@ -60,8 +66,6 @@ function stickyBar() {
 
     fauxOffset=faux.offset().top;
     myNavMenuHeight = myNavMenu.outerHeight(); //gets the height of tabbed menu
-
-    console.log(fauxOffset,$(window).scrollTop());
 
     if ((fauxOffset < customBarHeight) && !attached ) //attach the sticky bar when it has reached to the top
         {
@@ -111,7 +115,7 @@ var checkTabBarOverflow=function(){ //Check if tab bar has overflow
                 if (!hasHidden(this)){
                     $(this).addClass("disabled");
                 }
-                //e.stopPropagation();
+                e.stopPropagation();
             })
             .on('click','#rightChevron',function (e) {
                 var firstVisible=$(this).nextAll("#ils_cycle").children(":visible:first");
@@ -122,7 +126,7 @@ var checkTabBarOverflow=function(){ //Check if tab bar has overflow
                 if (!checkOverflow("current")){
                     $(this).addClass("disabled");
                 }
-                //e.stopPropagation();
+                e.stopPropagation();
             })
             .on('tabClick',function (e) {
                 var clickedTab = isOutsideContainer(e);
