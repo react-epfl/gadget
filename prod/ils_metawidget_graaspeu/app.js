@@ -76,13 +76,9 @@ var initialize_ils = function() {
     var tools_panel = document.getElementById("tools_content");
     var main_block = document.getElementById("main_block");
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
-      $("#tools_content").animate({ height: "toggle"}, "slow",function() { //added slide effect
-        // Animation complete fuction
-
-      });
+      $("#tools_content").animate({ height: "toggle"}, "slow");
       $("#arrow_down").show();
       $("#arrow_up").hide();
-
     } else {
       $("#tools_content").animate({ height: "toggle"}, "slow"); //added slide effect
       $("#arrow_down").hide();
@@ -730,10 +726,10 @@ var init_activity_streams=function() {
         } else {
             metadataHandler = createdMetadataHandler;
             actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);
-            actionLogger.setLoggingTargetByName("console");
-//            actionLogger.setLoggingTargetByName("consoleShort");
-//            actionLogger.setLoggingTargetByName("opensocial");
-//            actionLogger.setLoggingTargetByName("dufftown");
+//          actionLogger.setLoggingTargetByName("console");
+//          actionLogger.setLoggingTargetByName("consoleShort");
+            actionLogger.setLoggingTargetByName("opensocial");
+//          actionLogger.setLoggingTargetByName("dufftown");
         }
     });
 }
