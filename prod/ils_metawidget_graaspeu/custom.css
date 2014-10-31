@@ -63,20 +63,33 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     position: relative;
     max-width:904px;
     border-radius: 0px;
-    margin-bottom: 42px;
     min-height: 120%;
 }
 
 
 
 /* Set the fixed height of the footer here */
+
+#center{
+    width: 100%;
+    position: relative;
+    top:0px;
+}
+
+#main_block{
+    position: absolute;
+    bottom: 40px;
+    top: 0px;
+    overflow-y: auto;
+    width: 100%;
+}
 #footer {
     background-color: #88e2f9;
     border: 1px solid #88e2f9;
 }
 
 p {
-    text-align: justify;
+    text-align: inherit;
 }
 
 #footer > p{
@@ -158,7 +171,7 @@ p {
 }
 
 #description_block{
-    word-break: break-all;
+    word-wrap: break-word;
     padding: 20px 14px;
     background-color: #ebebeb;
 }
@@ -176,8 +189,12 @@ p {
 #ils_phases{
     padding-bottom: 60px;
     padding: 14px;
+    overflow: hidden;
 }
 
+.tab-pane *{
+    max-width: 100%;
+}
 .customTop ul{
     padding:0px 0px 0px 15px;
     border-bottom: 0px solid #dddddd;
@@ -199,6 +216,7 @@ p {
 .fixedCustomTop
 {
     position:fixed!important;
+    width:100%;
     z-index: 1040;
     -webkit-transform: translateZ(0);
 }
@@ -211,7 +229,7 @@ p {
     height: 42px;
     z-index: 1040;
     position: relative;
-    width: 904px;
+    max-width: 904px;
     overflow: hidden;
 }
 
@@ -237,6 +255,7 @@ p {
     background-color: transparent;
     line-height:42px;
     margin:0px;
+    float: right;
 }
 #logout_button {
     cursor: pointer;
@@ -247,18 +266,34 @@ p {
 }
 
 #toolbar{
-    background-color: #5050D2;
     line-height:normal;
+    cursor: pointer;
 }
 
 #tools_title{
+    background-color: #5050D2;
     color:#ffffff;
-    background-color: transparent;
     font-size: 21px;
     height: 42px;
     padding-top: 12px;
     text-align: center;
 }
+
+#tools_content{
+    display: none;
+    background-color: rgba(80,80,200,0.8);
+}
+
+
+#tools_content > .window{
+    width:auto;
+    margin: 5px;
+}
+
+#arrow_down{
+    display: none;
+}
+
 
 .customTop * {
     border-color: #5050d2 !important;
@@ -372,7 +407,8 @@ hr {border:1px solid black;}
 
 #wrap > .container {
     padding: 42px 0px 0;
-    overflow-y:visible ;
+    overflow-x: hidden;
+    /*overflow-y:visible ;*/
 }
 .container .credit {
     margin: 20px 0;
@@ -406,6 +442,10 @@ code {
     width: 400px;
 }
 
+.gadgets-gadget{
+    width: 100%;
+}
+
 .gadgets-gadget-title-bar {
     display: none;
 }
@@ -416,6 +456,28 @@ code {
 
 iframe{
     border: 0px solid transparent;
+}
+
+.window{
+    margin-top: 0px;
+    margin-bottom: 10px;
+    display: inline-block;
+    position: relative;
+    vertical-align:top;
+    width: 100%;
+    overflow: auto;
+}
+.window_placeholder{
+    display:none;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top:0px;
+    left:0px;
+    z-index:10;
+}
+.window_placeholder.active{
+    display:block;
 }
 
 /*Notifications Bar override for offline.js START*/
@@ -515,7 +577,6 @@ iframe{
 /* Scrollbar Fix */
 
 
-
 /* Scrollbar Fix */
 
 
@@ -525,9 +586,12 @@ iframe{
 
 }
 
-@media (min-width: 768px) {
-
+@media (max-width: 768px) {
+    .bg_image{
+        background: none;
+    }
 }
+
 
 @media (min-width: 768px) and (max-width: 991px) {
 

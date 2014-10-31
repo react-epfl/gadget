@@ -76,27 +76,19 @@ var initialize_ils = function() {
     var tools_panel = document.getElementById("tools_content");
     var main_block = document.getElementById("main_block");
     if ((tools_panel.style.display == 'none') || (tools_panel.style.display == '')) {
-      $("#tools_content").animate({ height: "toggle"}, "slow",function() { //added slide effect
-        // Animation complete fuction
-          if(app.list.length > 0) {
-              main_block.style.bottom = "495px";
-          }
-      });
+      $("#tools_content").animate({ height: "toggle"}, "slow");
       $("#arrow_down").show();
       $("#arrow_up").hide();
-
     } else {
       $("#tools_content").animate({ height: "toggle"}, "slow"); //added slide effect
       $("#arrow_down").hide();
       $("#arrow_up").show();
-      if(app.list.length > 0) {
-        main_block.style.bottom = "40px";
+
       }
-    }
   });
 
-  //getting the user's settings
-  getData(function (data) {
+ //getting the user's settings
+ getData(function (data) {
     app.viewer = data.viewer; // .displayName
     app.viewerName = data.viewer.displayName;
     var context = data.context; // .contextId, .contextType
@@ -122,7 +114,7 @@ var initialize_ils = function() {
         $("#description").append(currentSpace.description);
       }
       else { //when there is not a valid description
-        $("#description_block").hide(); // remove the description block
+        $("#description_block").remove(); // remove the description block
       }
     }
 
@@ -151,7 +143,7 @@ var initialize_ils = function() {
 
         buildSkeleton($("#tools_content"),app, app, false);
     } else {
-        // What to do when there re no apps  
+        // What to do when there re no apps
         toggle_toolbar(); // Hide the toolbar
     }
     $("#help_button").click(function(){
@@ -172,7 +164,7 @@ var initialize_ils = function() {
     setTimeout(adjustHeight,10000);
 
       welcome_user();
-        
+
     try{
       applyNewLayout();
     }catch(err){
@@ -180,10 +172,10 @@ var initialize_ils = function() {
     }
 
     //Initialize activity streams via MetadataHandler and ActionLogger
-    init_activity_streams(); 
+    init_activity_streams();
     //Sends the access verb in action logging when the user is logged in
-    setTimeout(function(){sendStream("access","ILS","")},5000); 
-    
+    setTimeout(function(){sendStream("access","ILS")},5000);
+
   });
 
 };
@@ -205,6 +197,7 @@ var build_tabs = function(subspaces) {
     var ils_tab = $("<li></li>");
     var tab_link = $("<a></a>").text(item.displayName);
     tab_link.attr("href", "#" + item.id);
+    tab_link.attr("phaseType",item.metadata.type);
     ils_tab.append(tab_link);
     ils_cycle_tabs.append(ils_tab);
     var phase = $("<div></div>").addClass("tab-pane");
@@ -303,6 +296,7 @@ var checkUserName = function(){
 // Log's out the active user by removing tha cookie and reloading tha page
 var logoutUser = function() {
     $.removeCookie('graasp_user');
+    sendStream("cancel","LOGOUT");
     location.reload();
 };
 
@@ -524,10 +518,10 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   var itemUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
 
   if(doc.description.replace(/[\s|&nbsp;]+/gi,'') !="" ){
-    var descrToDisplay = $("<div></div>").append(doc.description);    
-    parent.append(descrToDisplay);    
-    parent.append($("<br>"));     
-   } 
+    var descrToDisplay = $("<div></div>").append(doc.description);
+    parent.append(descrToDisplay);
+    parent.append($("<br>"));
+   }
 
 
   var docType = title.substr(title.lastIndexOf("."), title.length);
@@ -568,14 +562,14 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
       break;
     case ".html":
       $docToDisplay = $('<iframe src="'+itemUrl+'" width="100%" height="100%" seamless></iframe>');
-      break;  
+      break;
     default:
       if (doc.embeddedHTML!=undefined && doc.embeddedHTML!=""){
         $docToDisplay = $(doc.embeddedHTML);
         break;
       }else{
         $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
-      }    
+      }
   }
 
     parent.append($docToDisplay);
@@ -595,7 +589,7 @@ var buildGadget = function (id, app_json, is_center) {
     { specUrl: gadget.appUrl
     , appId: id
     , secureToken: gadget.token
-    }
+  }
   // for gadgets in the center, use the height of the gadgets themselves
   // for gadgets at the bottom tool bar, set height as 400px
   var gadget_size = {};
@@ -626,10 +620,9 @@ var buildGadget = function (id, app_json, is_center) {
   // otherwise, use 876px
   // for gadgets at the bottom tool bar, use the default width 300px
   if(is_center){
-    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 876))
+    if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 768))
       $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 'px');
-    else
-      $('#gadget-chrome-'+id).css('width', '876px');
+    else   $('#gadget-chrome-'+id).css('max-width', '100%');
   }
 
   shindig.container.setView("home");
@@ -742,64 +735,74 @@ var init_activity_streams=function() {
 }
 
 $(document).ready(function(){
-    $('body').on('click','.nav-tabs>li>a', function (e) {
-        var ils_active_phase={
-            id:this.attributes["href"].value.slice(1),
-            name:this.innerHTML
-        };
+    $('body').on('click','.nav-tabs li a', function (e) {
         $(this).trigger("tabClick");
-        sendStream("access","PHASE",ils_active_phase);
+        sendStream("access","PHASE");
     });
 
     $('body').on('click','#tools_title', function (e) {
         if ($(this).hasClass("expanded")){
-            sendStream("access","TOOLBAR","");
+            sendStream("access","TOOLBAR");
         }
     });
 });
 
 
-function sendStream(action,log_type,ils_active_phase){
-    var phase_target={};
+function sendStream(action,log_type){
+    var ils_active_phase_element=$("#ils_cycle").children(".active").children();
+
+    var ils_active_phase={
+        id:ils_active_phase_element[0].attributes["href"].value.slice(1),
+        name:ils_active_phase_element[0].innerHTML,
+        phaseType:ils_active_phase_element[0].attributes["phaseType"].value
+    }
+
+    var new_target= {
+        "objectType": "phase",
+        "id":  ils_active_phase.id, // ils_active_phase.id.
+        "displayName": ils_active_phase.name, // the given name of the phase.
+        "inquiryPhase": ils_active_phase.phaseType // the type of the phase.
+    }
     var ILSLogObject={};
 
     if (log_type=="ILS"){
-         phase_target={
-            "objectType": "ils",
-            "id": ILS.id,
-            "displayName":ILS.name
-        }
-    }else if (log_type=="PHASE"){
-        phase_target={
-            "objectType": "phase",
-            "id": ils_active_phase.id,
-            "displayName":ils_active_phase.name
-        }
 
-    }else if(log_type=="TOOLBAR"){
-         phase_target={
-            "objectType": "toolbar",
-            "id": ILS.id,
-            "displayName":"toolbar"
-        }
+        ILSLogObject = {
+            objectType: "ils",
+            id: ILS.id,
+            displayName:ILS.name
+        };
+
+    }else if (log_type=="PHASE"){
+
+        ILSLogObject = {
+            "objectType": "phase",
+            "id":  ils_active_phase.id, // ils_active_phase.id.
+            "displayName": ils_active_phase.name, // the given name of the phase.
+            "inquiryPhase": ils_active_phase.phaseType // the type of the phase.
+        };
+
+    }else if(log_type=="TOOLBAR") {
+
+        ILSLogObject = {
+            objectType: "toolbar"
+        };
+    }
+    else if(log_type=="LOGOUT"){
+
+        ILSLogObject = {
+            objectType: "ils",
+            id: ILS.id,
+            displayName:ILS.name
+        };
     }
 
-    metadataHandler.setTarget(phase_target);
-
-    ILSLogObject = {
-        objectType: "ILS_Log_Object",
-        id: generateUUID(),
-        log_type: log_type,
-        ils_name: ILS.name,
-        ils_id: ILS.id,
-        ils_active_phase_name: ils_active_phase.name,
-        ils_active_phase_id: ils_active_phase.id
-    };
+    metadataHandler.setTarget(new_target);
 
     if (actionLogger&&metadataHandler) {
         actionLogger.log(action, ILSLogObject);
     }else{
-        console.log("Could not log action "+action+". Action Logging not initialized properly.")
+        console.log("Could not log action "+action+". Action Logging not initialized properly.");
     }
 }
 
