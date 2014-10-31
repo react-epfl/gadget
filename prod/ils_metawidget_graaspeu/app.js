@@ -517,63 +517,62 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
   // var itemUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
   var itemUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
 
-  if(doc.description.replace(/[\s|&nbsp;]+/gi,'') !="" ){
-    var descrToDisplay = $("<div></div>").append(doc.description);
-    parent.append(descrToDisplay);
-    parent.append($("<br>"));
-   }
+    if(doc.description.replace(/[\s|&nbsp;]+/gi,'') !="" ){
+        var descrToDisplay = $("<div></div>").append(doc.description);
+        parent.append(descrToDisplay);
+    }
 
-
-  var docType = title.substr(title.lastIndexOf("."), title.length);
-  var $docToDisplay;
-  switch (docType) {
-    case ".gif":
-    case ".jpg":
-    case ".jpeg":
-    case ".png":
-    case ".svg":
-      $docToDisplay = $('<img></img>');
-      $docToDisplay.attr("class", "resource_content");
-      $docToDisplay.attr("src", itemUrl);
-      break;
-    case ".asf":
-    case ".avi":
-    case ".flv":
-    case ".mov":
-    case ".mp3":
-    case ".mp4":
-    case ".m4v":
-    case ".oga":
-    case ".ogv":
-      $docToDisplay = $('<video controls></video>');
-      $docToDisplay.attr("class", "resource_content");
-      $docToDisplay.attr("src", itemUrl);
-      $docToDisplay.attr("type", "video/"+docType.replace(".",""));
-      break;
-    case ".txt":
-      $docToDisplay = $('<div></div>').addClass("content");
-      var $txt = $('<object data="'+itemUrl+'" type="text/plain" width="100%"></object>');
-      $docToDisplay.append($txt)
-      break;
-    case ".pdf":
-      $docToDisplay = $('<div ng-swipe-left="prev()" ng-swipe-right="next()"></div>').addClass("content");
-      var $pdf = $('<object data="'+itemUrl+'" type="application/pdf" width="100%" height="100%"></object>');
-      $docToDisplay.append($pdf)
-      break;
-    case ".html":
-      $docToDisplay = $('<iframe src="'+itemUrl+'" width="100%" height="100%" seamless></iframe>');
-      break;
-    default:
-      if (doc.embeddedHTML!=undefined && doc.embeddedHTML!=""){
-        $docToDisplay = $(doc.embeddedHTML);
-        break;
-      }else{
-        $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
-      }
-  }
+    var docType = title.substr(title.lastIndexOf("."), title.length);
+    var $docToDisplay;
+    switch (docType) {
+        case ".gif":
+        case ".jpg":
+        case ".jpeg":
+        case ".png":
+        case ".svg":
+            $docToDisplay = $('<img></img>');
+            $docToDisplay.attr("class", "resource_content");
+            $docToDisplay.attr("src", itemUrl);
+            break;
+        case ".asf":
+        case ".avi":
+        case ".flv":
+        case ".mov":
+        case ".mp3":
+        case ".mp4":
+        case ".m4v":
+        case ".oga":
+        case ".ogv":
+            $docToDisplay = $('<video controls></video>');
+            $docToDisplay.attr("class", "resource_content");
+            $docToDisplay.attr("src", itemUrl);
+            $docToDisplay.attr("type", "video/"+docType.replace(".",""));
+            break;
+        case ".txt":
+            $docToDisplay = $('<div></div>').addClass("resource_content");
+            var $txt = $('<object data="'+itemUrl+'" type="text/plain" width="100%"></object>');
+            $docToDisplay.append($txt);
+            break;
+        case ".pdf":
+            $docToDisplay = $('<div ng-swipe-left="prev()" ng-swipe-right="next()"></div>').addClass("resource_content");
+            var $pdf = $('<object data="'+itemUrl+'" type="application/pdf" width="100%" height="100%"></object>');
+            $docToDisplay.append($pdf);
+            break;
+        case ".html":
+            $docToDisplay = $('<div></div>').addClass("resource_content");
+            var $code = $('<iframe src="'+itemUrl+'" width="100%" height="100%" seamless></iframe>');
+            $docToDisplay.append($code);
+            break;
+        default:
+            if (doc.embeddedHTML!=undefined && doc.embeddedHTML!=""){
+                $docToDisplay = $(doc.embeddedHTML).addClass("resource_content");
+                break;
+            }else{
+                $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
+            }
+    }
 
     parent.append($docToDisplay);
-    parent.append($("<br>"));
 }
 
 // is_center indicates if the gadget is in the center or at the bottom tool bar

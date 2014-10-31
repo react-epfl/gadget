@@ -607,7 +607,22 @@ iframe{
 
 
 
-/**** New UI Customization CERTH ****
+/**** New UI Customization EPFL ****
  ------------------------------------ 
- ****     End        **** /
+ **** Styles from the previous app.css  ****/
 
+.resource_content{
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    max-width: 100%;
+    height:auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+.resource_error{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-style: italic;
+    text-align: center;
+}
