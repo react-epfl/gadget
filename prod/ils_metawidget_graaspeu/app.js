@@ -560,7 +560,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
             break;
         case ".html":
             $docToDisplay = $('<div></div>').addClass("resource_content");
-            var $code = $('<iframe src="'+itemUrl+'" width="100%" height="100%" seamless></iframe>');
+            var $code = $('<iframe src="'+itemUrl+'" width="100%" seamless></iframe>');
             $docToDisplay.append($code);
             break;
         default:
@@ -817,3 +817,4 @@ var generateUUID = (function() {
             s4() + '-' + s4() + s4() + s4();
     };
 })();
+
