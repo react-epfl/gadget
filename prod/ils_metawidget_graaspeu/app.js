@@ -197,7 +197,11 @@ var build_tabs = function(subspaces) {
     var ils_tab = $("<li></li>");
     var tab_link = $("<a></a>").text(item.displayName);
     tab_link.attr("href", "#" + item.id);
-    tab_link.attr("phaseType",item.metadata.type);
+    if (item.metadata && item.metadata.type ) {
+        tab_link.attr("phaseType", item.metadata.type); // default phases & spaces: 'Orientation', 'Conceptualisation', 'Investigation', 'Conclusion', 'Discussion', 'About', 'Vault'
+    }else{
+        tab_link.attr("phaseType", "Extra"); //phases manually added
+    }
     ils_tab.append(tab_link);
     ils_cycle_tabs.append(ils_tab);
     var phase = $("<div></div>").addClass("tab-pane");
