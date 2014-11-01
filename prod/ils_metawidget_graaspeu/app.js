@@ -102,9 +102,9 @@ var initialize_ils = function() {
 
     // add space title and description
     var currentSpace = data.currentSpace;
-    ILS.name=currentSpace.displayName;
-    ILS.id=currentSpace.id;
     if (currentSpace) {
+      ILS.name=currentSpace.displayName;
+      ILS.id=currentSpace.id;
       if(ILS.name.length>35){
         $("#title").append(ILS.name.substring(0,34)+"...");
       }else{
@@ -127,29 +127,27 @@ var initialize_ils = function() {
     app.list = apps.list;
 
     //Check if there are available apps
-    if (app.list.length>0)
-    {
+    if (app.list.length>0){
         // build a hash containing {id, app} pairs from the space
         app.hash = {};
         app.sizeType = "px"; // px or % to calculate the size
         app.order = []; // list of app ids
         app.sizes = {}; // hash or app sizes {id: size, id: size}
         _.each(apps.list, function (item) {
-        app.hash[item.id] = item;
+            app.hash[item.id] = item;
         });
-        // -----------------------
 
         refreshItemsList(app);
 
         buildSkeleton($("#tools_content"),app, app, false);
     } else {
-        // What to do when there re no apps
+        // What to do when there are no apps
         toggle_toolbar(); // Hide the toolbar
     }
+
     $("#help_button").click(function(){
       $('#popup').show();
     });
-
 
     // build tabs for inquiry learning phases
     build_tabs(subspaces);
@@ -212,8 +210,8 @@ var build_tabs = function(subspaces) {
     phase_content.attr("id", "phase_" + item.id);
     phase.append(phase_content);
     ils_phases.append(phase);
-    getDataById(item, function (data) {
 
+    getDataById(item, function (data) {
       var itemsIds=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
       var json_app = buildJson(data.apps, data, itemsIds, item);
       var json_allItems = buildJson(data.items, data, itemsIds, item);
@@ -221,8 +219,8 @@ var build_tabs = function(subspaces) {
       refreshItemsList(json_app);
       refreshItemsList(json_allItems);
       buildSkeleton(phase_content, json_app, json_allItems, true);
-
     });
+
   });
 
   // set the first tab active
@@ -367,13 +365,15 @@ var rebuildSizes = function (parent) {
 }
 // type = % or px
 var resizeAllApps = function (type) {
-  type = type || app.sizeType
-  var sizes = app.sizes
-  $("#center").find(".window").each(function (i) {
-    var win = $(this)
-    var appId = win.attr('appId')
-    win.css("width", sizes[appId]+type)
-  })
+    if (app.sizeType && app.sizes) {
+      type = type || app.sizeType
+      var sizes = app.sizes
+      $("#center").find(".window").each(function (i) {
+        var win = $(this)
+        var appId = win.attr('appId')
+        win.css("width", sizes[appId] + type)
+      })
+    }
 }
 // refreshes order of app, takes as the base appdata representation
 // removes deleted app and adds new apps
@@ -422,7 +422,7 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
   // resize width of apps
   resizeAllApps()
 
-  // //set fake gadget height to the height of the first app
+  // set fake gadget height to the height of the first app
   fakeGadget.height(container.find(".window").height())
 
   $(".window").draggable(
