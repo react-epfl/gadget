@@ -630,6 +630,10 @@ var buildGadget = function (id, app_json, is_center) {
 
   shindig.container.setView("home");
   shindig.container.renderGadget(gadgetEl);
+
+  gadgets.rpc.setRelayUrl(gadgetEl.getIframeId(), "http://localhost" + gadgetEl.getIframeUrl());
+  gadgets.rpc.setAuthToken(gadgetEl.getIframeId(), gadgetEl.rpcToken);
+
 }
 
 // get the size of gadget before rendering it
