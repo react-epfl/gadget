@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Test space osapi"
+              author_email="aubry.cholleton@epfl.ch"
+              author="Aubry Cholleton"
+              description="Test space open social api in graspeo"
+              width="500"
+              height="800">
+      <Require feature="opensocial-2.5" />
+      <Require feature="osapi" />
+    </ModulePrefs>
+ <Content type="html" view="default,canvas,home,profile">
+ <![CDATA[
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+
+  <iframe id="bbb" src="http://128.178.5.173:8000/index.html" height="500" width="1000" ></iframe>
+
+  ]]>
+  </Content>
+</Module>
