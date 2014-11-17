@@ -528,7 +528,7 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
 
     var docType = title.substr(title.lastIndexOf("."), title.length);
     var $docToDisplay;
-    switch (docType) {
+    switch (docType.toLowerCase()) {
         case ".gif":
         case ".jpg":
         case ".jpeg":
