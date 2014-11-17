@@ -211,25 +211,25 @@ buildExistingItem = function (doc) {
 }
 
 buildNewItem = function (doc) {
-  var doc_id = 'document_'+doc._id;
+  var doc_id = 'document_'+doc.id;
   var doc_el = $("<tr id='"+doc_id+"'></tr>");
 
   var doc_name = $('<td id="doc_name"></td>');
   var download_link = $("<a target='_blank'></a>");
 
   //Development URL:
-  // var itemUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+doc._id+"/raw";
+  //var itemUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+doc.id+"/raw";
   
   //Production URL:
   var itemUrl = "http://graasp.eu"+"/resources/"+doc._id+"/raw";
   download_link.attr("href", itemUrl);    
   
-  download_link.text(doc.name);
+  download_link.text(doc.displayName);
   doc_name.append(download_link);
   doc_el.append(doc_name);
 
   var update_time = $('<td id = "update_time"></td>');
-  update_time.text(doc.modified.replace("T"," ").replace(/.....$/,""));
+  update_time.text(doc.updated.replace("T"," ").replace(/.....$/,""));
   doc_el.append(update_time);
 
   app.list.prepend(doc_el);
