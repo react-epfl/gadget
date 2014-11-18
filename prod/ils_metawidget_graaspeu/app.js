@@ -552,6 +552,11 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
             $docToDisplay.attr("src", itemUrl);
             $docToDisplay.attr("type", "video/"+docType.replace(".",""));
             break;
+        case ".swf":
+            $docToDisplay = $('<object></object>');
+            $docToDisplay.attr("class", "resource_content");
+            $docToDisplay.attr("data", itemUrl);
+            break;
         case ".txt":
             $docToDisplay = $('<div></div>').addClass("resource_content");
             var $txt = $('<object data="'+itemUrl+'" type="text/plain" width="100%"></object>');
