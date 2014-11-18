@@ -556,8 +556,8 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
             $docToDisplay = $('<object></object>');
             $docToDisplay.attr("class", "resource_content");
             $docToDisplay.attr("data", itemUrl);
-            $docToDisplay.attr("width", "100%");
-            $docToDisplay.attr("height", "100%");
+           // $docToDisplay.attr("width", "100%");
+           // $docToDisplay.attr("height", "100%");
             break;
         case ".txt":
             $docToDisplay = $('<div></div>').addClass("resource_content");
