@@ -240,8 +240,8 @@ var build_tabs = function(subspaces) {
 var get_visible_spaces = function(subspaces) {
   var visible_spaces = _.filter(subspaces, function(item) {
     return ( (item.spaceType == "ils") ||
-      ((item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (item.metadata === undefined)) ||
-      ((item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (item.metadata.type != "Vault") && (item.metadata.type != "About")));
+      ((item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (!item.metadata)) ||
+      ((item.spaceType == "folder") && (item.visibilityLevel != "hidden") && (item.metadata) && (item.metadata.type) && (item.metadata.type != "Vault") && (item.metadata.type != "About")));
   });
   return visible_spaces;
 };
