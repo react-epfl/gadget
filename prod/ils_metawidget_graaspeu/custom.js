@@ -11,7 +11,7 @@ var applyNewLayout= function  () {
 
     //When done, wait 1000ms hide the loader and display content
     setTimeout(function(){
-        $("#main").show("fade",1000);
+        $("#main").fadeIn(500);
         var firstPhase=$("#ils_cycle").children("li:first").children();
         var firstColor=firstPhase.attr("bg_color");
         var firstImage=firstPhase.attr("bg_image_url");
