@@ -39,13 +39,13 @@ server+"/gadget/libs/bootstrap3/js/bootstrap.min.js",
 server+"/ils_lib/metadata/MetadataHandler.js",
 server+"/ils_lib/applog/ActionLogger.js",
 server+"/ils_lib/main/ils_graaspeu.js",
-development+"/gadget/prod/ils_metawidget_graaspeu/app.js",
-development+"/gadget/prod/ils_metawidget_graaspeu/custom.js",
+server+"/gadget/prod/ils_metawidget_graaspeu/app.js",
+server+"/gadget/prod/ils_metawidget_graaspeu/custom.js",
 server+"/gadget/prod/ils_metawidget_graaspeu/data.js",
 server+"/gadget/libs/bootstrap3/css/bootstrap.css",
 server+"/gadget/libs/offline.js/offline-theme-default.css",
 server+"/gadget/libs/offline.js/offline-language-english.css",
-development+"/gadget/prod/ils_metawidget_graaspeu/custom.css"],
+server+"/gadget/prod/ils_metawidget_graaspeu/custom.css"],
 function(){
 Offline.options = {checks: {image: {url: server+'/gadget/prod/ils_metawidget_graaspeu/arrow_down.png'}, active: 'image'}} ; //Initialize Offline.js to check a specific icon
 initIntervalTimer=setInterval(function(){
