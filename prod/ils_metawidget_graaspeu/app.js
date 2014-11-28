@@ -633,8 +633,10 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
                 break;
 
             case "application/pdf":
-                $docToDisplay = $('<div ng-swipe-left="prev()" ng-swipe-right="next()"></div>').addClass("resource_content");
-                //var $pdf = $('<object data="' + itemUrl + '" type="' + doc.mimeType + '" width="100%" height="100%"></object>');
+                $docToDisplay = $('<div></div>');
+                $docToDisplay.attr("ng-swipe-left", "prev()");
+                $docToDisplay.attr("ng-swipe-right", "next()");
+                $docToDisplay.attr("class", "resource_content");
                 var $pdf = $('<object></object>');
                 $pdf.attr("data", itemUrl);
                 $pdf.attr("type", doc.mimeType);
@@ -647,13 +649,13 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
                 $docToDisplay = $('<object></object>');
                 $docToDisplay.attr("class", "resource_content");
                 $docToDisplay.attr("data", itemUrl);
-                // $docToDisplay.attr("width", "100%");
-                // $docToDisplay.attr("height", "100%");
+                $docToDisplay.attr("width", "100%");
+                $docToDisplay.attr("height", "640px");
                 break;
 
             case "text/plain":
-                $docToDisplay = $('<div></div>').addClass("resource_content");
-                //var $txt = $('<object data="' + itemUrl + '" type="' + doc.mimeType + '" width="100%"></object>');
+                $docToDisplay = $('<div></div>');
+                $docToDisplay.attr("class", "resource_content");
                 var $txt = $('<object></object>');
                 $txt.attr("data", itemUrl);
                 $txt.attr("type", doc.mimeType);
@@ -662,13 +664,15 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
                 break;
 
             case "text/html":
-                $docToDisplay = $('<div></div>').addClass("resource_content");
-                //var $code = $('<iframe src="' + itemUrl + '" width="100%" seamless></iframe>');
+                $docToDisplay = $('<div></div>');
+                $docToDisplay.attr("class", "resource_content");
                 var $code = $('<iframe seamless></iframe>');
+                $code.attr("class", "resource_content");
                 $code.attr("src", itemUrl);
                 $code.attr("width", "100%");
                 $docToDisplay.append($code);
                 break;
+
             default:
                 $docToDisplay = $('<div class="resource_error"></div>');
                 var $text = $('<p>[The file format of ' + doc.displayName + ' is not yet supported. You can access the resource in the following link: '+ itemUrl + ']</p>');
