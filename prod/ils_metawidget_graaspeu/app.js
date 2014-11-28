@@ -549,73 +549,171 @@ var buildWindowApp = function (id, parent, app_json, is_center) {
 
 //display other formats than apps (documents, images, videos, ..)
 var buildWindowDoc = function (id, parent, doc_json, is_center) {
-  var doc = doc_json.hash[id];
-  // build placeholder
-  var title = doc.displayName;
-  //  URL for development purposes (local)
-  // var itemUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+id+"/raw";
-  var itemUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
+    var doc = doc_json.hash[id];
+    // build placeholder
+    var $docToDisplay;
+    var title = doc.displayName;
+    //  URL for development purposes (local)
+    // var itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + id + "/raw";
+    var itemUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
 
-    if(doc.description.replace(/[\s|&nbsp;]+/gi,'') !="" ){
+    if (doc.description.replace(/[\s|&nbsp;]+/gi, '') != "") {
         var descrToDisplay = $("<div></div>").append(doc.description);
         parent.append(descrToDisplay);
     }
 
-    var docType = title.substr(title.lastIndexOf("."), title.length);
-    var $docToDisplay;
-    switch (docType.toLowerCase()) {
-        case ".gif":
-        case ".jpg":
-        case ".jpeg":
-        case ".png":
-        case ".svg":
-            $docToDisplay = $('<img></img>');
-            $docToDisplay.attr("class", "resource_content");
-            $docToDisplay.attr("src", itemUrl);
-            break;
-        case ".asf":
-        case ".avi":
-        case ".flv":
-        case ".mov":
-        case ".mp3":
-        case ".mp4":
-        case ".m4v":
-        case ".oga":
-        case ".ogv":
-            $docToDisplay = $('<video controls></video>');
-            $docToDisplay.attr("class", "resource_content");
-            $docToDisplay.attr("src", itemUrl);
-            $docToDisplay.attr("type", "video/"+docType.replace(".",""));
-            break;
-        case ".swf":
-            $docToDisplay = $('<object></object>');
-            $docToDisplay.attr("class", "resource_content");
-            $docToDisplay.attr("data", itemUrl);
-           // $docToDisplay.attr("width", "100%");
-           // $docToDisplay.attr("height", "100%");
-            break;
-        case ".txt":
-            $docToDisplay = $('<div></div>').addClass("resource_content");
-            var $txt = $('<object data="'+itemUrl+'" type="text/plain" width="100%"></object>');
-            $docToDisplay.append($txt);
-            break;
-        case ".pdf":
-            $docToDisplay = $('<div ng-swipe-left="prev()" ng-swipe-right="next()"></div>').addClass("resource_content");
-            var $pdf = $('<object data="'+itemUrl+'" type="application/pdf" width="100%" height="100%"></object>');
-            $docToDisplay.append($pdf);
-            break;
-        case ".html":
-            $docToDisplay = $('<div></div>').addClass("resource_content");
-            var $code = $('<iframe src="'+itemUrl+'" width="100%" seamless></iframe>');
-            $docToDisplay.append($code);
-            break;
-        default:
-            if (doc.embeddedHTML!=undefined && doc.embeddedHTML!=""){
-                $docToDisplay = $(doc.embeddedHTML).addClass("resource_content");
-                break;
-            }else{
-                $docToDisplay = $('<div class="resource_error"></div>').text("[The file format is not yet supported.]");
+    if (doc.embeddedHTML && doc.embeddedHTML != "") {
+        $docToDisplay = $(doc.embeddedHTML).addClass("resource_content");
+    } else {
+        //if there's not mimeType it should be obtained
+        if(!doc.mimeType || doc.mimeType == "") {
+            var docType = title.substr(title.lastIndexOf("."), title.length);
+            switch (docType.toLowerCase()) {
+                //images
+                case ".bmp": doc.mimeType = "image/bmp";  break;
+                case ".gif": doc.mimeType = "image/gif";  break;
+                case ".jpeg":
+                case ".jpg":
+                case ".jpe": doc.mimeType = "image/jpeg";  break;
+                case ".png": doc.mimeType = "image/png";  break;
+                case ".svg": doc.mimeType = "image/svg+xml";  break;
+
+                //audio
+                case ".m4a":
+                case ".mp4a": doc.mimeType = "audio/mp4";  break;
+                case ".mpga":
+                case ".mp2":
+                case ".mp2a":
+                case ".mp3":
+                case ".m2a":
+                case ".m3a": doc.mimeType = "audio/mpeg";  break;
+                case ".oga":
+                case ".ogg":
+                case ".spx": doc.mimeType = "audio/ogg";  break;
+                case ".weba": doc.mimeType = "audio/webm";  break;
+                case ".aac": doc.mimeType = "audio/x-aac";  break;
+                case ".wav": doc.mimeType = "audio/x-wav";  break;
+
+                //video
+                case ".mp4":
+                case ".mp4v":
+                case ".mpg4": doc.mimeType = "video/mp4";  break;
+                case ".ogv": doc.mimeType = "video/ogg";  break;
+                case ".qt":
+                case ".mov": doc.mimeType = "video/quicktime";  break;
+                case ".webm": doc.mimeType = "video/webm";  break;
+                case ".flv": doc.mimeType = "video/x-flv";  break;
+                case ".m4v": doc.mimeType = "video/x-m4v";  break;
+                case ".asf": doc.mimeType = "video/x-ms-asf";  break;
+                case ".avi": doc.mimeType = "video/x-msvideo";  break;
+
+                //application
+                case ".mp4s": doc.mimeType = "application/mp4";  break;
+                case ".ogx": doc.mimeType = "application/ogg";  break;
+                case ".swf": doc.mimeType = "application/x-shockwave-flash";  break;
+
+                //TXT
+                case ".txt": doc.mimeType = "text/plain";  break;
+
+                //PDFs
+                case ".pdf": doc.mimeType = "application/pdf";  break;
+
+                //HTML
+                case ".graasp":
+                case ".html": doc.mimeType = "text/html";  break;
+
+                default: doc.mimeType = "";    break;
             }
+        }
+
+        //visualize the resource based on the mimeType
+        switch (doc.mimeType.toLowerCase()) {
+            case "image/bmp":
+            case "image/gif":
+            case "image/jpeg":
+            case "image/png":
+            case "image/svg+xml":
+                $docToDisplay = $('<img></img>');
+                $docToDisplay.attr("class", "resource_content");
+                $docToDisplay.attr("src", itemUrl);
+                $docToDisplay.attr("alt", itemUrl);
+                break;
+
+            case "audio/mp4":
+            case "audio/mpeg":
+            case "audio/ogg":
+            case "audio/webm":
+            case "audio/x-aac":
+            case "audio/x-wav":
+                $docToDisplay = $('<audio controls></audio>');
+                $docToDisplay.attr("class", "resource_content");
+                $docToDisplay.attr("src", itemUrl);
+                $docToDisplay.attr("type", doc.mimeType);
+                break;
+
+            case "application/mp4":
+            case "application/ogg":
+            case "video/mp4":
+            case "video/ogg":
+            case "video/quicktime":
+            case "video/webm":
+            case "video/x-flv":
+            case "video/x-m4v":
+            case "video/x-ms-asf":
+            case "video/x-msvideo":
+                $docToDisplay = $('<video controls></video>');
+                $docToDisplay.attr("class", "resource_content");
+                $docToDisplay.attr("src", itemUrl);
+                $docToDisplay.attr("type", doc.mimeType);
+                break;
+
+            case "application/pdf":
+                $docToDisplay = $('<div></div>');
+                $docToDisplay.attr("ng-swipe-left", "prev()");
+                $docToDisplay.attr("ng-swipe-right", "next()");
+                $docToDisplay.attr("class", "resource_content");
+                var $pdf = $('<object></object>');
+                $pdf.attr("data", itemUrl);
+                $pdf.attr("type", doc.mimeType);
+                $pdf.attr("width", "100%");
+                $pdf.attr("height", "100%");
+                $docToDisplay.append($pdf);
+                break;
+
+            case "application/x-shockwave-flash":
+                $docToDisplay = $('<object></object>');
+                $docToDisplay.attr("class", "resource_content");
+                $docToDisplay.attr("data", itemUrl);
+                $docToDisplay.attr("width", "100%");
+                $docToDisplay.attr("height", "640px");
+                break;
+
+            case "text/plain":
+                $docToDisplay = $('<div></div>');
+                $docToDisplay.attr("class", "resource_content");
+                var $txt = $('<object></object>');
+                $txt.attr("data", itemUrl);
+                $txt.attr("type", doc.mimeType);
+                $txt.attr("width", "100%");
+                $docToDisplay.append($txt);
+                break;
+
+            case "text/html":
+                $docToDisplay = $('<div></div>');
+                $docToDisplay.attr("class", "resource_content");
+                var $code = $('<iframe seamless></iframe>');
+                $code.attr("class", "resource_content");
+                $code.attr("src", itemUrl);
+                $code.attr("width", "100%");
+                $docToDisplay.append($code);
+                break;
+
+            default:
+                $docToDisplay = $('<div class="resource_error"></div>');
+                var $text = $('<p>[The file format of ' + doc.displayName + ' is not yet supported. You can access the resource in the following link: '+ itemUrl + ']</p>');
+                $docToDisplay.append($text);
+                break;
+        }
     }
 
     parent.append($docToDisplay);
