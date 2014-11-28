@@ -9,12 +9,14 @@ var applyNewLayout= function  () {
    $("#ils_phases .tab-pane:first").addClass("in"); //Fade the tab in
    $("#ils_cycle").wrap("<div id='customTopWrapper' class='customTop'></div>");
 
-
     //When done, wait 1000ms hide the loader and display content
     setTimeout(function(){
         $("#main").show("fade",1000);
+        var firstPhase=$("#ils_cycle").children("li:first").children();
+        var firstColor=firstPhase.attr("bg_color");
+        var firstImage=firstPhase.attr("bg_image_url");
+        applyBackground(firstImage,firstColor);
         $("#loader").hide("fade",500).remove();
-        $("body").addClass("bg_image")
         checkTabBarOverflow();
     },1000);
 
@@ -50,6 +52,10 @@ var applyNewLayout= function  () {
 
 };
 
+$('body').on('tabClick',function (e) {
+    var clickedTab = e.target;
+    applyBackground($(clickedTab).attr("bg_image_url"),$(clickedTab).attr("bg_color"));
+});
 
 
 $("#main_block").scroll(function(){
@@ -82,6 +88,36 @@ function stickyBar() {
     }
 }
 
+var applyBackground=function(image_url,color){
+    try{
+        var image_url=image_url?image_url:app.backgroundImage;
+        var color=color?color:app.backgroundColor;
+        if(image_url!=undefined&&image_url!=""&&image_url!=null){
+            var new_node=$("<div class='bg_image'/>").appendTo("#bg_image").css({"background-image": "url('"+image_url+"')"});
+            new_node.fadeIn(500,function(){
+                $("#bg_image").children(":first").not(this).remove()
+            });
+
+        }else if (color!=undefined&&color!=""&&acolor!=null){
+            var new_node=$("<div class='bg_image'/>").appendTo("#bg_image").css({"background-color":color});
+            new_node.fadeIn(500,function(){
+                $("#bg_image").children(":first").not(this).remove()
+            });
+        }else{
+            var new_node=$("<div class='bg_image bg_default'/>").appendTo("#bg_image");
+            new_node.fadeIn(500,function(){
+                $("#bg_image").children(":first").not(this).remove()
+            });
+        }
+
+
+    }catch(err){
+        console.log("Cannot set custom ILS background. Using default. "+err)
+        var new_node=$("<div class='bg_image bg_default'/>").appendTo("#bg_image")
+        new_node.fadeIn(500,function(){$("#bg_image").children(":first").not(this).remove();});
+    }
+}
+
 var animate_logo = function(){
     $("#name_prompt").hide("fade",500,function(){
         $("#greeting_text").find("h3").append(" "+app.user_name+"!");
@@ -94,8 +130,6 @@ var animate_logo = function(){
     if($('#loader-image').is(':hidden')) {
         $("#loader-image").show("fade", 500);
     }
-
-
 };
 
 var checkTabBarOverflow=function(){ //Check if tab bar has overflow

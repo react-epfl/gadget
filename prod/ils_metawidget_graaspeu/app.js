@@ -96,6 +96,22 @@ var initialize_ils = function() {
     var prefix = (context.contextType === "@space") ? "s_" : "";
     app.contextId = prefix + context.contextId;
     app.owner = data.owner;
+
+    //try to get and cache the background image of the space, if any.
+     try{
+         app.backgroundImage=data.currentSpace.background.image?data.currentSpace.background.image:"";
+         img = new Image();
+         img.src=item.background.image;
+     }catch(err){
+         app.backgroundImage="";
+     }
+     //try to get the background color of the space, if any.
+     try{
+         app.backgroundColor=data.currentSpace.background.color?data.currentSpace.background.color:"";
+     }catch(err){
+         app.backgroundColor="";
+     }
+
     var appdata = data.appdata; // .settings
     var apps = data.apps; // .list
     var subspaces = get_visible_spaces(data.spaces.list);  //subspaces of the current space
@@ -195,7 +211,26 @@ var build_tabs = function(subspaces) {
     var ils_tab = $("<li></li>");
     var tab_link = $("<a></a>").text(item.displayName);
     tab_link.attr("href", "#" + item.id);
-    if (item.metadata && item.metadata.type ) {
+    var bg_image_url="";
+    var bg_color;
+    //try to get and cache the background image of the phase, if any.
+    try{
+        bg_image_url=item.background.image?item.background.image:"";
+        img = new Image();
+        img.src=item.background.image;
+    }catch(err){
+        bg_image_url="";
+    }
+    //try to get the background color of the phase, if any.
+    try{
+        bg_color=item.background.color?item.background.color:"";
+    }catch(err){
+        bg_color="";
+    }
+    tab_link.attr("bg_image_url", bg_image_url);
+    tab_link.attr("bg_color", bg_color);
+
+      if (item.metadata && item.metadata.type ) {
         tab_link.attr("phaseType", item.metadata.type); // default phases & spaces: 'Orientation', 'Conceptualisation', 'Investigation', 'Conclusion', 'Discussion', 'About', 'Vault'
     }else{
         tab_link.attr("phaseType", "Extra"); //phases manually added
@@ -742,8 +777,9 @@ var init_activity_streams=function() {
             actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);
 //            actionLogger.setLoggingTargetByName("console");
 //            actionLogger.setLoggingTargetByName("consoleShort");
-            actionLogger.setLoggingTargetByName("opensocial");
+              actionLogger.setLoggingTargetByName("opensocial");
 //            actionLogger.setLoggingTargetByName("dufftown");
+//            actionLogger.setLoggingTarget("http://localhost/activity");
         }
     });
 }
