@@ -266,6 +266,11 @@ p {
     line-height:42px;
     color:#ffffff;
     cursor: pointer;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width:100%;
+    display: block;
 }
 
 #hello_msg {
@@ -525,7 +530,7 @@ iframe{
     margin-left: 0;
     line-height: 2.5em;
     word-break: break-word;
-    width: 70%;
+    width: 80%;
     float:left;
 }
 
