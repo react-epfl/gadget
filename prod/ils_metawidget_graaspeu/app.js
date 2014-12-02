@@ -543,7 +543,7 @@ var buildWindowDoc = function (parent, resource, is_center) {
     var title = resource.displayName;
     //  URL for development purposes (local)
     // var itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + resource.id + "/raw";
-    var itemUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
+    var itemUrl = "http://graasp.eu"+"/resources/"+resource.id+"/raw";
 
     if (resource.description.replace(/[\s|&nbsp;]+/gi, '') != "") {
         var descrToDisplay = $("<div></div>").append(resource.description);
