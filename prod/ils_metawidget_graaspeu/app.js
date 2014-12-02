@@ -102,6 +102,8 @@ var initialize_ils = function() {
          app.backgroundImage=data.currentSpace.background.image?data.currentSpace.background.image:"";
          img = new Image();
          img.src=item.background.image;
+         img_default= new Image();
+         img_default.src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/bg.jpg";
      }catch(err){
          app.backgroundImage="";
      }
@@ -121,11 +123,7 @@ var initialize_ils = function() {
     if (currentSpace) {
       ILS.name=currentSpace.displayName;
       ILS.id=currentSpace.id;
-      if(ILS.name.length>35){
-        $("#title").append(ILS.name.substring(0,34)+"...");
-      }else{
         $("#title").append(ILS.name);
-      }
       if (currentSpace.description.replace(/[\s|&nbsp;]+/gi,'') !="" && $(currentSpace.description).text()!=""){ // when there is a valid description
         $("#description").append(currentSpace.description);
       }
