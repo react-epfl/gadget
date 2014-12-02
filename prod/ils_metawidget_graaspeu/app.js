@@ -89,73 +89,72 @@ var initialize_ils = function() {
 
  //getting the user's settings
  getData(function (data) {
-    app.viewer = data.viewer; // .displayName
+    app.viewer = data.viewer;
     app.viewerName = data.viewer.displayName;
-    var context = data.context; // .contextId, .contextType
-    app.context = context;
-    var prefix = (context.contextType === "@space") ? "s_" : "";
-    app.contextId = prefix + context.contextId;
+    app.context = data.context;
+    var prefix = (data.context.contextType === "@space") ? "s_" : "";
+    app.contextId = prefix + data.context.contextId;
     app.owner = data.owner;
+
+
+    var appdata = data.appdata; // .settings
+    var apps = data.apps; // .list
+    var subspaces = get_visible_spaces(data.spaces.list);  //subspaces of the current space
+    var currentSpace = data.currentSpace;
 
     //try to get and cache the background image of the space, if any.
      try{
-         app.backgroundImage=data.currentSpace.background.image?data.currentSpace.background.image:"";
+         app.backgroundImage = currentSpace.background.image?currentSpace.background.image:"";
          img = new Image();
-         img.src=item.background.image;
+         img.src = item.background.image;
+         img_default= new Image();
+         img_default.src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/bg.jpg";
      }catch(err){
          app.backgroundImage="";
      }
      //try to get the background color of the space, if any.
      try{
-         app.backgroundColor=data.currentSpace.background.color?data.currentSpace.background.color:"";
+         app.backgroundColor=currentSpace.background.color?currentSpace.background.color:"";
      }catch(err){
          app.backgroundColor="";
      }
 
-    var appdata = data.appdata; // .settings
-    var apps = data.apps; // .list
-    var subspaces = get_visible_spaces(data.spaces.list);  //subspaces of the current space
-
-    // add space title and description
-    var currentSpace = data.currentSpace;
-    if (currentSpace) {
-      ILS.name=currentSpace.displayName;
-      ILS.id=currentSpace.id;
-      if(ILS.name.length>35){
-        $("#title").append(ILS.name.substring(0,34)+"...");
-      }else{
-        $("#title").append(ILS.name);
-      }
-      if (currentSpace.description.replace(/[\s|&nbsp;]+/gi,'') !="" && $(currentSpace.description).text()!=""){ // when there is a valid description
-        $("#description").append(currentSpace.description);
-      }
-      else { //when there is not a valid description
-        $("#description_block").remove(); // remove the description block
-      }
-    }
+     // add space title and description
+     if (currentSpace) {
+         ILS.name=currentSpace.displayName;
+         ILS.id=currentSpace.id;
+         $("#title").append(ILS.name);
+         if (currentSpace.description.replace(/[\s|&nbsp;]+/gi,'') !="" && $(currentSpace.description).text()!=""){ // when there is a valid description
+             $("#description").append(currentSpace.description);
+         }
+         else { //when there is not a valid description
+             $("#description_block").remove(); // remove the description block
+         }
+     }
 
     // current viewer is the owner, then show management block
     if (app.viewer.id === app.owner.id) {
       isOwner = true;
     }
 
-    // --- apps from space ---
-    app.list = apps.list;
-
     //Check if there are available apps
-    if (app.list.length>0){
-        // build a hash containing {id, app} pairs from the space
-        app.hash = {};
-        app.sizeType = "px"; // px or % to calculate the size
-        app.order = []; // list of app ids
-        app.sizes = {}; // hash or app sizes {id: size, id: size}
+    if (apps.list.length>0){
+        // build a list with the app ids to be visualized
+        var itemsIds= [];
         _.each(apps.list, function (item) {
-            app.hash[item.id] = item;
-        });
+            itemsIds.push(item);
+        })
 
-        refreshItemsList(app);
+        var json_app = buildJson(apps.list, data.appdata, itemsIds, currentSpace.id);
+        var json_allItems = buildJson(data.spaces.list, data.appdata, itemsIds, currentSpace.id);
 
-        buildSkeleton($("#tools_content"),app, app, false);
+        refreshItemsList(json_app);
+        refreshItemsList(json_allItems);
+
+        json_allItems.order = json_app.order;
+
+        buildSkeleton($("#tools_content"), json_app, json_allItems, false);
+
     } else {
         // What to do when there are no apps
         toggle_toolbar(); // Hide the toolbar
@@ -230,7 +229,7 @@ var build_tabs = function(subspaces) {
     tab_link.attr("bg_image_url", bg_image_url);
     tab_link.attr("bg_color", bg_color);
 
-      if (item.metadata && item.metadata.type ) {
+    if (item.metadata && item.metadata.type ) {
         tab_link.attr("phaseType", item.metadata.type); // default phases & spaces: 'Orientation', 'Conceptualisation', 'Investigation', 'Conclusion', 'Discussion', 'About', 'Vault'
     }else{
         tab_link.attr("phaseType", "Extra"); //phases manually added
@@ -248,12 +247,13 @@ var build_tabs = function(subspaces) {
 
     getDataById(item, function (data) {
       var itemsIds=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
-      var json_app = buildJson(data.apps, data, itemsIds, item);
-      var json_allItems = buildJson(data.items, data, itemsIds, item);
+      var json_app = buildJson(data.apps, data.appdata, itemsIds, item.id);
+      var json_allItems = buildJson(data.items, data.appdata, itemsIds, item.id);
 
       refreshItemsList(json_app);
       refreshItemsList(json_allItems);
       buildSkeleton(phase_content, json_app, json_allItems, true);
+
     });
 
   });
@@ -282,24 +282,24 @@ var get_visible_spaces = function(subspaces) {
 };
 
 // build the json from a list and data
-
-var buildJson = function(list, data, itemsIds, item) {
+var buildJson = function(list, appdata, itemsIds, spaceId) {
   var json = {};
-  jsoncontextId = "s_" + item.id;
-
+  json.contextId = "s_" + spaceId;
   json.hash = {};
   json.sizeType = "px";
   json.order = [];
   json.sizes = {};
+
+    //for each app / item in a phase
   _.each(list, function (elem){
     if (itemsIds.indexOf(elem.id)==-1) //if the id of this widget is not found in the description
     {
       json.hash[elem.id] = elem; //add the widget to the widget list to be rendered
     }
   });
-  var appdata = data.appdata[json.contextId];
-  if (appdata) {
-    json.data = JSON.parse(appdata.settings);
+
+  if (appdata[json.contextId]) {
+    json.data = JSON.parse(appdata[json.contextId].settings);
     json.order = json.data.order || [];
     json.sizes = json.data.sizes || {};
     json.sizeType = json.data.sizeType || "px"; // px or % to calculate the size
@@ -410,30 +410,19 @@ var resizeAllApps = function (type) {
       })
     }
 }
-// refreshes order of app, takes as the base appdata representation
-// removes deleted app and adds new apps
-var refreshItemsList = function (app_json) {
-  // removes apps that are no longer in the space
-  var savedIds = [] // list of valid ids that are in the app.order
-  _.each(app_json.order, function (id, i) {
-    if (!app_json.hash[id]) { // delete id since it does not exist anymore
-      delete app_json.order[i]
-      delete app_json.sizes[id]
-    } else { // add to the current savedIds list
-      savedIds.push(id)
-    }
-  })
 
-  // appends new space apps to the end
-  var curIds = _.keys(app_json.hash)
-  var newIds = _.difference(curIds, savedIds)
-  _.each(newIds, function (id) {
-    app_json.order.push(id)
-    app_json.sizes[id] = 300 // 300 - is the default width
-  })
+// refreshes order of items
+var refreshItemsList = function (json) {
+    // appends new space apps to the end
+    var curIds = _.keys(json.hash)
+    _.each(curIds, function (id) {
+        json.order.push(id)
+        json.sizes[id] = 300 // 300 - is the default width
+    })
 
-  save(true,app)
+    save(true,app)
 }
+
 
 var adjustHeight = function () {
   gadgets.window.adjustHeight();
@@ -445,14 +434,15 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
     .append($('<div class="drop_here"></div>'))
   container.append(fakeGadget)
 
-  // build apps
+  // build apps and resources
   _.each(all_json.order, function (id) {
-    //check if it is an app: buildApp or not: buildDoc.
-    if(app_json.order.indexOf(id) != -1) {
-      buildWindowApp(id, container, app_json, is_center)
-    } else if(all_json.hash[id].spaceType!="folder"){
-      buildWindowDoc(id, container, all_json, is_center)
-    }
+      if(all_json.hash[id].itemType) {
+          if (all_json.hash[id].itemType == "Application") {
+              buildWindowApp(container, app_json.hash[id], is_center)
+          } else if (all_json.hash[id].itemType == "Resource") {
+              buildWindowDoc(container, all_json.hash[id], is_center)
+          }
+      }
   })
   // resize width of apps
   resizeAllApps()
@@ -516,7 +506,7 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
         var prevPos = (prevId == 0) ? 0 : (_.indexOf(app_json.order, prevId)+1)
         app_json.order.splice(prevPos, 0, curId)
         // build gadget content again (iframe is lost for some reason)
-        buildGadget(curId, app_json, is_center)
+        buildGadget(app_json.hash[curId], is_center)
         // save new position
         save()
       }
@@ -524,9 +514,7 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
 }
 
 //display when is an app
-var buildWindowApp = function (id, parent, app_json, is_center) {
-  var gadget = app_json.hash[id]
-
+var buildWindowApp = function (parent, gadget, is_center) {
   if(gadget.description.replace(/[\s|&nbsp;]+/gi,'') !="" ){
     var description = $("<div></div>").append(gadget.description);
     parent.append(description);
@@ -537,106 +525,106 @@ var buildWindowApp = function (id, parent, app_json, is_center) {
     .addClass("window")
     .attr('appId', gadget.id)
 
-  parent.append(blk)
+  parent.append(blk);
 
-  var gadget_el = $("<div></div>").attr('id', 'gadget-chrome-'+id)
-  blk.append(gadget_el)
-  buildGadget(id, app_json, is_center)
-
+  var gadget_el = $("<div></div>").attr('id', 'gadget-chrome-'+gadget.id);
+  blk.append(gadget_el);
   blk.append($('<div class="window_placeholder"></div>'));
   blk.append($('<div class="drop_here"></div>'));
+
+  buildGadget(gadget, is_center)
+
 }
 
 //display other formats than apps (documents, images, videos, ..)
-var buildWindowDoc = function (id, parent, doc_json, is_center) {
-    var doc = doc_json.hash[id];
+var buildWindowDoc = function (parent, resource, is_center) {
     // build placeholder
-    var $docToDisplay;
-    var title = doc.displayName;
+    var $resourceToDisplay;
+    var title = resource.displayName;
     //  URL for development purposes (local)
-    // var itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + id + "/raw";
-    var itemUrl = "http://graasp.eu"+"/resources/"+id+"/raw";
+    // var itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + resource.id + "/raw";
+    var itemUrl = "http://graasp.eu"+"/resources/"+resource.id+"/raw";
 
-    if (doc.description.replace(/[\s|&nbsp;]+/gi, '') != "") {
-        var descrToDisplay = $("<div></div>").append(doc.description);
+    if (resource.description.replace(/[\s|&nbsp;]+/gi, '') != "") {
+        var descrToDisplay = $("<div></div>").append(resource.description);
         parent.append(descrToDisplay);
     }
 
-    if (doc.embeddedHTML && doc.embeddedHTML != "") {
-        $docToDisplay = $(doc.embeddedHTML).addClass("resource_content");
+    if (resource.embeddedHTML && resource.embeddedHTML != "") {
+        $resourceToDisplay = $(resource.embeddedHTML).addClass("resource_content");
     } else {
         //if there's not mimeType it should be obtained
-        if(!doc.mimeType || doc.mimeType == "") {
+        if(!resource.mimeType || resource.mimeType == "") {
             var docType = title.substr(title.lastIndexOf("."), title.length);
             switch (docType.toLowerCase()) {
                 //images
-                case ".bmp": doc.mimeType = "image/bmp";  break;
-                case ".gif": doc.mimeType = "image/gif";  break;
+                case ".bmp": resource.mimeType = "image/bmp";  break;
+                case ".gif": resource.mimeType = "image/gif";  break;
                 case ".jpeg":
                 case ".jpg":
-                case ".jpe": doc.mimeType = "image/jpeg";  break;
-                case ".png": doc.mimeType = "image/png";  break;
-                case ".svg": doc.mimeType = "image/svg+xml";  break;
+                case ".jpe": resource.mimeType = "image/jpeg";  break;
+                case ".png": resource.mimeType = "image/png";  break;
+                case ".svg": resource.mimeType = "image/svg+xml";  break;
 
                 //audio
                 case ".m4a":
-                case ".mp4a": doc.mimeType = "audio/mp4";  break;
+                case ".mp4a": resource.mimeType = "audio/mp4";  break;
                 case ".mpga":
                 case ".mp2":
                 case ".mp2a":
                 case ".mp3":
                 case ".m2a":
-                case ".m3a": doc.mimeType = "audio/mpeg";  break;
+                case ".m3a": resource.mimeType = "audio/mpeg";  break;
                 case ".oga":
                 case ".ogg":
-                case ".spx": doc.mimeType = "audio/ogg";  break;
-                case ".weba": doc.mimeType = "audio/webm";  break;
-                case ".aac": doc.mimeType = "audio/x-aac";  break;
-                case ".wav": doc.mimeType = "audio/x-wav";  break;
+                case ".spx": resource.mimeType = "audio/ogg";  break;
+                case ".weba": resource.mimeType = "audio/webm";  break;
+                case ".aac": resource.mimeType = "audio/x-aac";  break;
+                case ".wav": resource.mimeType = "audio/x-wav";  break;
 
                 //video
                 case ".mp4":
                 case ".mp4v":
-                case ".mpg4": doc.mimeType = "video/mp4";  break;
-                case ".ogv": doc.mimeType = "video/ogg";  break;
+                case ".mpg4": resource.mimeType = "video/mp4";  break;
+                case ".ogv": resource.mimeType = "video/ogg";  break;
                 case ".qt":
-                case ".mov": doc.mimeType = "video/quicktime";  break;
-                case ".webm": doc.mimeType = "video/webm";  break;
-                case ".flv": doc.mimeType = "video/x-flv";  break;
-                case ".m4v": doc.mimeType = "video/x-m4v";  break;
-                case ".asf": doc.mimeType = "video/x-ms-asf";  break;
-                case ".avi": doc.mimeType = "video/x-msvideo";  break;
+                case ".mov": resource.mimeType = "video/quicktime";  break;
+                case ".webm": resource.mimeType = "video/webm";  break;
+                case ".flv": resource.mimeType = "video/x-flv";  break;
+                case ".m4v": resource.mimeType = "video/x-m4v";  break;
+                case ".asf": resource.mimeType = "video/x-ms-asf";  break;
+                case ".avi": resource.mimeType = "video/x-msvideo";  break;
 
                 //application
-                case ".mp4s": doc.mimeType = "application/mp4";  break;
-                case ".ogx": doc.mimeType = "application/ogg";  break;
-                case ".swf": doc.mimeType = "application/x-shockwave-flash";  break;
+                case ".mp4s": resource.mimeType = "application/mp4";  break;
+                case ".ogx": resource.mimeType = "application/ogg";  break;
+                case ".swf": resource.mimeType = "application/x-shockwave-flash";  break;
 
                 //TXT
-                case ".txt": doc.mimeType = "text/plain";  break;
+                case ".txt": resource.mimeType = "text/plain";  break;
 
                 //PDFs
-                case ".pdf": doc.mimeType = "application/pdf";  break;
+                case ".pdf": resource.mimeType = "application/pdf";  break;
 
                 //HTML
                 case ".graasp":
-                case ".html": doc.mimeType = "text/html";  break;
+                case ".html": resource.mimeType = "text/html";  break;
 
-                default: doc.mimeType = "";    break;
+                default: resource.mimeType = "";    break;
             }
         }
 
         //visualize the resource based on the mimeType
-        switch (doc.mimeType.toLowerCase()) {
+        switch (resource.mimeType.toLowerCase()) {
             case "image/bmp":
             case "image/gif":
             case "image/jpeg":
             case "image/png":
             case "image/svg+xml":
-                $docToDisplay = $('<img></img>');
-                $docToDisplay.attr("class", "resource_content");
-                $docToDisplay.attr("src", itemUrl);
-                $docToDisplay.attr("alt", itemUrl);
+                $resourceToDisplay = $('<img></img>');
+                $resourceToDisplay.attr("class", "resource_content");
+                $resourceToDisplay.attr("src", itemUrl);
+                $resourceToDisplay.attr("alt", itemUrl);
                 break;
 
             case "audio/mp4":
@@ -645,10 +633,10 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
             case "audio/webm":
             case "audio/x-aac":
             case "audio/x-wav":
-                $docToDisplay = $('<audio controls></audio>');
-                $docToDisplay.attr("class", "resource_content");
-                $docToDisplay.attr("src", itemUrl);
-                $docToDisplay.attr("type", doc.mimeType);
+                $resourceToDisplay = $('<audio controls></audio>');
+                $resourceToDisplay.attr("class", "resource_content");
+                $resourceToDisplay.attr("src", itemUrl);
+                $resourceToDisplay.attr("type", resource.mimeType);
                 break;
 
             case "application/mp4":
@@ -661,78 +649,77 @@ var buildWindowDoc = function (id, parent, doc_json, is_center) {
             case "video/x-m4v":
             case "video/x-ms-asf":
             case "video/x-msvideo":
-                $docToDisplay = $('<video controls></video>');
-                $docToDisplay.attr("class", "resource_content");
-                $docToDisplay.attr("src", itemUrl);
-                $docToDisplay.attr("type", doc.mimeType);
+                $resourceToDisplay = $('<video controls></video>');
+                $resourceToDisplay.attr("class", "resource_content");
+                $resourceToDisplay.attr("src", itemUrl);
+                $resourceToDisplay.attr("type", resource.mimeType);
                 break;
 
             case "application/pdf":
-                $docToDisplay = $('<div></div>');
-                $docToDisplay.attr("ng-swipe-left", "prev()");
-                $docToDisplay.attr("ng-swipe-right", "next()");
-                $docToDisplay.attr("class", "resource_content");
+                $resourceToDisplay = $('<div></div>');
+                $resourceToDisplay.attr("ng-swipe-left", "prev()");
+                $resourceToDisplay.attr("ng-swipe-right", "next()");
+                $resourceToDisplay.attr("class", "resource_content");
                 var $pdf = $('<object></object>');
                 $pdf.attr("data", itemUrl);
-                $pdf.attr("type", doc.mimeType);
+                $pdf.attr("type", resource.mimeType);
                 $pdf.attr("width", "100%");
                 $pdf.attr("height", "100%");
-                $docToDisplay.append($pdf);
+                $resourceToDisplay.append($pdf);
                 break;
 
             case "application/x-shockwave-flash":
-                $docToDisplay = $('<object></object>');
-                $docToDisplay.attr("class", "resource_content");
-                $docToDisplay.attr("data", itemUrl);
-                $docToDisplay.attr("width", "100%");
-                $docToDisplay.attr("height", "640px");
+                $resourceToDisplay = $('<object></object>');
+                $resourceToDisplay.attr("class", "resource_content");
+                $resourceToDisplay.attr("data", itemUrl);
+                $resourceToDisplay.attr("width", "100%");
+                $resourceToDisplay.attr("height", "640px");
                 break;
 
             case "text/plain":
-                $docToDisplay = $('<div></div>');
-                $docToDisplay.attr("class", "resource_content");
+                $resourceToDisplay = $('<div></div>');
+                $resourceToDisplay.attr("class", "resource_content");
                 var $txt = $('<object></object>');
                 $txt.attr("data", itemUrl);
-                $txt.attr("type", doc.mimeType);
+                $txt.attr("type", resource.mimeType);
                 $txt.attr("width", "100%");
-                $docToDisplay.append($txt);
+                $resourceToDisplay.append($txt);
                 break;
 
             case "text/html":
-                $docToDisplay = $('<div></div>');
-                $docToDisplay.attr("class", "resource_content");
+                $resourceToDisplay = $('<div></div>');
+                $resourceToDisplay.attr("class", "resource_content");
                 var $code = $('<iframe seamless></iframe>');
                 $code.attr("class", "resource_content");
                 $code.attr("src", itemUrl);
                 $code.attr("width", "100%");
-                $docToDisplay.append($code);
+                $resourceToDisplay.append($code);
                 break;
 
             default:
-                $docToDisplay = $('<div class="resource_error"></div>');
-                var $text = $('<p>[The file format of ' + doc.displayName + ' is not yet supported. You can access the resource in the following link: '+ itemUrl + ']</p>');
-                $docToDisplay.append($text);
+                $resourceToDisplay = $('<div class="resource_error"></div>');
+                var $text = $('<p>[The file format of ' + resource.displayName + ' is not yet supported. You can access the resource in the following link: '+ itemUrl + ']</p>');
+                $resourceToDisplay.append($text);
                 break;
         }
     }
 
-    parent.append($docToDisplay);
+    parent.append($resourceToDisplay);
 }
 
 // is_center indicates if the gadget is in the center or at the bottom tool bar
-var buildGadget = function (id, app_json, is_center) {
-  var gadget = app_json.hash[id];
-  var lang = app.prefs.getLang(); //get the language
-  var country = app.prefs.getCountry(); //and the country
-  shindig.container.setLanguage(lang); // set the language to shingig
-  shindig.container.setCountry(country); // and the country
+var buildGadget = function (gadget, is_center) {
+  // set the language and the country to shindig
+  shindig.container.setLanguage(app.prefs.getLang());
+  shindig.container.setCountry(app.prefs.getCountry());
 
   // get secure token for each widget from osapi.apps request
   var gadgetParams =
     { specUrl: gadget.appUrl
-    , appId: id
+    , appId: gadget.id
     , secureToken: gadget.token
   }
+
   // for gadgets in the center, use the height of the gadgets themselves
   // for gadgets at the bottom tool bar, set height as 400px
   var gadget_size = {};
@@ -753,19 +740,19 @@ var buildGadget = function (id, app_json, is_center) {
   shindig.container.addGadget(gadgetEl);
 
   var gadget_el = $('<div><div>')
-    .attr('id', 'gadget-chrome-'+id)
-    .attr('appId', id)
+    .attr('id', 'gadget-chrome-'+gadget.id)
+    .attr('appId', gadget.id)
     .addClass('gadget');
 
-  $('#gadget-chrome-'+id).replaceWith(gadget_el);
+  $('#gadget-chrome-'+gadget.id).replaceWith(gadget_el);
 
   // for gadgets in the center, if the width is not empty and less than 876, use the original width
   // otherwise, use 876px
   // for gadgets at the bottom tool bar, use the default width 300px
   if(is_center){
     if((gadget_size['gadgetWidth'] != "") && (parseInt(gadget_size['gadgetWidth']) < 768))
-      $('#gadget-chrome-'+id).css('width', parseInt(gadget_size['gadgetWidth']) + 'px');
-    else   $('#gadget-chrome-'+id).css('max-width', '100%');
+      $('#gadget-chrome-'+gadget.id).css('width', parseInt(gadget_size['gadgetWidth']) + 'px');
+    else   $('#gadget-chrome-'+gadget.id).css('max-width', '100%');
   }
 
   shindig.container.setView("home");
