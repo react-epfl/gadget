@@ -96,7 +96,6 @@ var initialize_ils = function() {
     app.contextId = prefix + data.context.contextId;
     app.owner = data.owner;
 
-
     var appdata = data.appdata; // .settings
     var apps = data.apps; // .list
     var subspaces = get_visible_spaces(data.spaces.list);  //subspaces of the current space
@@ -606,7 +605,7 @@ var buildWindowDoc = function (parent, resource, is_center) {
                 //PDFs
                 case ".pdf": resource.mimeType = "application/pdf";  break;
 
-                //HTML
+                //HTML and graasp files
                 case ".graasp":
                 case ".html": resource.mimeType = "text/html";  break;
 
@@ -689,11 +688,15 @@ var buildWindowDoc = function (parent, resource, is_center) {
             case "text/html":
                 $resourceToDisplay = $('<div></div>');
                 $resourceToDisplay.attr("class", "resource_content");
-                var $code = $('<iframe seamless></iframe>');
-                $code.attr("class", "resource_content");
-                $code.attr("src", itemUrl);
-                $code.attr("width", "100%");
-                $resourceToDisplay.append($code);
+                if (resource.content) {
+                    $resourceToDisplay.append(resource.content);
+                }else{
+                    var $code = $('<iframe seamless></iframe>');
+                    $code.attr("class", "resource_content");
+                    $code.attr("src", itemUrl);
+                    $code.attr("width", "100%");
+                    $resourceToDisplay.append($code);
+                }
                 break;
 
             default:
