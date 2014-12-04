@@ -1,0 +1,36 @@
+<Module>
+	 <ModulePrefs title="StarOrf"
+	 	title_url="http://star.mit.edu/orf/index.html"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+faulkes@gmail.com"
+	 	description="StarORF facilitates the identification of the protein(s) encoded within a DNA sequence. Using StarORF, the DNA sequence is first transcribed into RNA and then translated into all the potential ORFs (Open Reading Frame) encoded within each of the six translation frames (3 in the forward direction and 3 in the reverse direction). This allows students to identify the translation frame that results in the longest protein coding sequence."
+	 	height="800"
+	 	screenshot="starorf-screenshot"
+	 	thumbnail="starorf.png">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			var srcString = "http://star.mit.edu/media/uploads/star/html/orf/app.html";
+			var width = "900";
+			var height = "800";
+			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
+			gadgets.window.adjustHeight(); //so app resizes itself based on content
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>
