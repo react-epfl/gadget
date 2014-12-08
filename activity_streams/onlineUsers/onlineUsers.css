@@ -1,0 +1,146 @@
+body {
+  background-color: #5050d2;
+  color: white;
+  font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+  margin-top:10px;
+}
+
+#onlineUsers {
+  margin: 0px;
+  padding: 0px;
+}
+
+#onlineUsers h2 {
+  margin-left: 0px;
+}
+
+#onlineUsers *[ng-click] {
+  cursor: pointer;
+}
+
+#onlineUsers .phase {
+  display: inline-block;
+  vertical-align: top;
+  margin: 10px;
+  padding: 5px;
+  width: 220px;
+  height: 245px;
+  background-color: rgba(255,255,255,0.8);
+  color: black;
+  text-align: center
+}
+
+#onlineUsers .phase h3 {
+  margin: 0px;
+  text-align: left;
+}
+
+#onlineUsers .phase .nb-connected-students {
+  font-size: 50px;
+  font-family: "Helvetica Neue", "HelveticaNeue", Helvetica, Arial, sans-serif;
+  font-weight: 100;
+}
+
+#onlineUsers .phase ul {
+  min-width: 10px;
+  margin: 0px;
+  padding: 0px;
+  list-style-type: none;
+  text-align: left;
+  font-size: 0; /* To avoid unwanted margin behavior of inline-block children */
+}
+
+#onlineUsers .phase ul li {
+  display: inline-block;
+  padding: 0px;
+  margin: 7px;
+  width: 40px;
+  height: 40px;
+  text-indent: 0px;
+  position: relative;
+}
+#onlineUsers .phase ul.few li {
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+}
+#onlineUsers .phase ul.a-lot li {
+  margin: 6px;
+  width: 30px;
+  height: 30px;
+}
+
+#onlineUsers .phase ul li.idle {
+  opacity: 0.5;
+}
+
+#onlineUsers .phase ul li div.userImage {
+  width: 32px;
+  height: 32px;
+  background-size: 40px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: #5050d2;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -o-border-radius: 20px;
+  margin: 0px;
+  padding: 0px;
+  font-size: 30px;
+  padding: 4px;
+  text-align: center;
+  font-family: 'Helvetica Neue', 'HelveticaNeue', Helvetica, Arial, sans-serif;
+  font-weight: 100;
+  color: white;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 5;
+}
+#onlineUsers .phase ul.few li div.userImage {
+  width: 42px;
+  height: 42px;
+  background-size: 50px;
+  border-radius: 25px;
+  -webkit-border-radius: 25px;
+  -moz-border-radius: 25px;
+  -o-border-radius: 25px;
+  font-size: 40px;
+  padding: 4px;
+}
+#onlineUsers .phase ul.a-lot li div.userImage {
+  width: 22px;
+  height: 22px;
+  background-size: 30px;
+  border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -o-border-radius: 15px;
+  font-size: 20px;
+  padding: 4px;
+}
+
+#onlineUsers .phase ul li div.userName {
+  display: none;
+  position: absolute;
+  top: 0px;
+  left: 30px;
+  font-size: 20px;
+  background-color: #5050d2;
+  border: 1px solid white;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -o-border-radius: 5px;
+  padding: 3px;
+  color: white;
+  z-index: 6;
+}
+#onlineUsers .phase ul li:hover div.userName {
+  display: block;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}

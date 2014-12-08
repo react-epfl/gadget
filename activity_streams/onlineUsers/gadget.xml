@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+<ModulePrefs title="Online users"
+                author_email="david.sandoz@epfl.ch"
+                author="David Sandoz"
+                description="Show online users in different subspaces">
+    <Require feature="opensocial-0.9"/>
+    <Require feature="osapi"/>
+    <Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html"><![CDATA[
+  <html ng-app="onlineUsersGadget">
+  <head>
+    <title>Online users</title>
+
+    <link rel="stylesheet" type="text/css" href="onlineUsers.css" />
+
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
+    <script type="text/javascript">
+      var pathToGadget = "http://localhost/onlineUsers/gadget/";
+      head.load("http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.js",
+        "http://graasp.epfl.ch/gadget/libs/jquery.cookie.js",
+        "http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0/angular.js",
+        "http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0/angular-resource.js",
+        "http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js",
+        "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore.js",
+        "http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js",
+        pathToGadget + "onlineUsers.module.js",
+        pathToGadget + "onlineUsers.spaces.service.js",
+        pathToGadget + "onlineUsers.controller.js",
+        pathToGadget + "onlineUsers.backImg.directive.js");
+    </script>
+  </head>
+  <body>
+    <div ng-controller="onlineUsersGadget" ng-init="init(); findPhases(); findActivities();">
+      <div id="onlineUsers" class="ng-cloak">
+        <h2><ng-pluralize count="getTotalConnectedUsers()"
+            when="{'0': 'Nobody is connected',
+                   'one': '1 student is connected',
+                   'other': '{} students are connected'}">
+        </ng-pluralize></h2>
+        <div class="phase" ng-repeat="phase in phases">
+          <h3>{{phase.name}}</h3>
+          <div class="nb-connected-students">{{phase.onlineUsers.length}}</div>
+          <ul class="few" ng-class="getPhaseClass(phase.onlineUsers.length)">
+            <li id="user-{{user.id}}" title="{{user.displayName}}" class="connected" ng-repeat="user in phase.onlineUsers | limitTo:20">
+              <div class="userImage" ng-if="user.avatar !== ''" back-img="{{user.avatar}}"></div>
+              <div class="userImage" ng-if="user.avatar === ''">{{user.displayName | limitTo:1}}</div>
+              <div class="userName">{{user.displayName}}</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <script>
+      head.ready(function () {
+        //Scripts loaded
+        gadgets.window.adjustHeight();
+      });
+    </script>
+  </body>
+  </html>
+]]></Content>
+</Module>
