@@ -123,7 +123,7 @@ var initialize_ils = function() {
          ILS.name=currentSpace.displayName;
          ILS.id=currentSpace.id;
          $("#title").append(ILS.name);
-         if (currentSpace.description.replace(/[\s|&nbsp;]+/gi,'') !="" && $(currentSpace.description).text()!=""){ // when there is a valid description
+         if (currentSpace.description && currentSpace.description.replace(/[\s|&nbsp;]+/gi,'') !="" && $(currentSpace.description).text()!=""){ // when there is a valid description
              $("#description").append(currentSpace.description);
          }
          else { //when there is not a valid description
@@ -542,7 +542,7 @@ var buildWindowDoc = function (parent, resource, is_center) {
     var title = resource.displayName;
     //  URL for development purposes (local)
     // var itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + resource.id + "/raw";
-    var itemUrl = "http://graasp.eu"+"/resources/"+resource.id+"/raw";
+    var itemUrl = resource.url+"/raw";
 
     if (resource.description.replace(/[\s|&nbsp;]+/gi, '') != "") {
         var descrToDisplay = $("<div></div>").append(resource.description);
