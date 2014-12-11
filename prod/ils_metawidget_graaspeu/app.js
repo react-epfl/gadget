@@ -540,9 +540,15 @@ var buildWindowDoc = function (parent, resource, is_center) {
     // build placeholder
     var $resourceToDisplay;
     var title = resource.displayName;
-    //  URL for development purposes (local)
-    // var itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + resource.id + "/raw";
-    var itemUrl = resource.url+"/raw";
+    var itemUrl = resource.originUrl;
+    debugger
+    if((window.location.hostname == "localhost") && (itemUrl.indexOf("/resources/")>-1) && (itemUrl.indexOf("/raw")>-1)) {
+            itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + resource.id + "/raw";
+    }
+
+    if(itemUrl.indexOf("http://")<0){
+        itemUrl = window.location.protocol + "//" + itemUrl;
+    }
 
     if (resource.description.replace(/[\s|&nbsp;]+/gi, '') != "") {
         var descrToDisplay = $("<div></div>").append(resource.description);
