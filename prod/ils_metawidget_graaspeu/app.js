@@ -791,8 +791,11 @@ var getGadgetSize = function(gadgetUrl){
   str_data = JSON.stringify(shindig_data);
 
   var host_url=window.location.host.toString(); //Gets the current host and uses it to switch between development and production in the following URL
-  // for testing on developement machine use port 8080
-  xhr.open( "POST", "http://"+host_url+":80/gadgets/metadata?st=0:0:0:0:0:0:0", false );
+  if (window.location.hostname == "localhost") {// for testing in local
+      xhr.open( "POST", "http://"+host_url+"/gadgets/metadata?st=0:0:0:0:0:0:0", false );
+  }else{ //for production
+      xhr.open( "POST", "http://"+host_url+":80/gadgets/metadata?st=0:0:0:0:0:0:0", false );
+  }
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.setRequestHeader("Accept", "application/json");
   xhr.send(str_data);
