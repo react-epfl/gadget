@@ -1,10 +1,14 @@
 <messagebundle>
-   <msg name="hello"> Hallo </msg>
-   <msg name="not_space_owner"> Sie sind kein Raum Inhaber. Ihre Änderungen an Apps Anordnung werden nicht gespeichert. </msg>
-   <msg name="description"> Beschreibung </msg>
-   <msg name="tools"> Extras </msg>
-   <msg name="please_enter_your_name"> Bitte geben Sie Ihren Nickname</msg>
-   <msg name="please_enter_a_valid_name"> Bitte geben Sie einen gültigen Nickname</msg>
+   <msg name="hello">Hallo</msg>
+   <msg name="welcome_to_golab">Willkommen in Go-Lab</msg>
+   <msg name="not_space_owner">Sie sind kein Raum Inhaber. Ihre Änderungen an Apps Anordnung werden nicht gespeichert.</msg>
+   <msg name="description">Beschreibung </msg>
+   <msg name="tools">Extras</msg>
+   <msg name="please_enter_your_name">Bitte geben Sie Ihren Nickname</msg>
+   <msg name="please_enter_a_valid_name">Bitte geben Sie einen gültigen Nickname</msg>
+   <msg name="valid_name_instructions">Please use only letters and numbers up to 14 characters</msg>
    <msg name="type_your_name_here">Geben Sie Ihren Nickname hier...</msg>
    <msg name="ok">Go!</msg>
+   <msg name="toggle_description_tooltip">Click to hide/show the ILS description</msg>
+   <msg name="logout_label">Logout</msg>
 </messagebundle>

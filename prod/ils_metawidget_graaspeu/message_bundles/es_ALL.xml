@@ -1,10 +1,14 @@
 <messagebundle>
-   <msg name="hello"> Hola </msg>
-   <msg name="not_space_owner"> Usted no es dueño de un espacio. No se guardarán los cambios realizados en las aplicaciones acuerdo. </msg>
-   <msg name="description"> Descripción </msg>
-   <msg name="tools"> Herramientas </msg>
-   <msg name="please_enter_your_name"> Introduzca su apodo:</msg>
-   <msg name="please_enter_a_valid_name"> Por favor ingrese un apodo válido </msg>
-   <msg name="type_your_name_here">escriba su apodo aquí...</msg>
-   <msg name="ok">Go!</msg>
+   <msg name="hello">Hola</msg>
+   <msg name="welcome_to_golab">Bienvenido a GoLab!</msg>
+   <msg name="not_space_owner">Usted no es dueño del espacio. No se guardarán los cambios realizados en las aplicaciones.</msg>
+   <msg name="description">Descripción</msg>
+   <msg name="tools">Herramientas</msg>
+   <msg name="please_enter_your_name">Introduzca su nombre:</msg>
+   <msg name="please_enter_a_valid_name">Please enter a valid nickname!</msg>
+   <msg name="valid_name_instructions">Utilice solamente letras y números hasta un máximo de 14 caracteres</msg>
+   <msg name="type_your_name_here">Escriba su nombre aquí ...</msg>
+   <msg name="ok">Entre!</msg>
+   <msg name="toggle_description_tooltip">Haga click aquí para ocultar/mostrar la descripción</msg>
+   <msg name="logout_label">Cerrar sesión</msg>
 </messagebundle>
