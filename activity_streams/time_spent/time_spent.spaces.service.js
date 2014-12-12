@@ -1,0 +1,50 @@
+app.factory('Spaces', function ($resource, $http) {
+  'use strict';
+
+  var space = {
+    phases : [],
+    lastActionByUser : [],
+    ils_id : null
+  };
+
+  space.context = function(cb) {
+    ils.getIls(function(ils_space){
+      cb(ils_space.id);
+    });
+  }
+
+  space.getPhases = function(cb) {
+    ils.getIls(function(ils_space){
+
+      osapi.spaces.get({contextId: ils_space.id, contextType: "@space"}).execute(function (subspaces){
+
+        var phases = [];
+        _.each(subspaces.list, function (subspace){
+          if (subspace.spaceType != null
+              && subspace.displayName != "About"
+              && subspace.displayName != "Vault") {
+            phases.push({
+              id: subspace.id,
+              name: subspace.displayName,
+              onlineUsers: []
+            });
+          }
+        });
+        cb(phases);
+      });
+    });
+  };
+
+  space.getLastAccesses = function(cb) {
+    ils.getIls(function(ils_space){
+      osapi.activitystreams.get({contextId: ils_space.id, contextType: "@space", "minutes":"180"})
+        .execute(function (actions) {
+        var accesses = _.filter(actions.list, function(action){ return action.verb == "accessed" });
+        accesses = _.sortBy(accesses, function(action) { return action.published });
+        console.log(accesses);
+        cb(accesses);
+      });
+    });
+  }
+  return space;
+});

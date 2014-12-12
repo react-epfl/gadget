@@ -2,28 +2,9 @@ app.controller('onlineUsersGadget',
 function ($http, $scope, $resource, $timeout, Spaces) {
   $scope.phases = [];
 
-  $scope.init = function () {
-    Spaces.context(function (context) {
-      socket.emit('enterspace', context);
-    });
-  }
-
-  $scope.findPhases = function () {
-    Spaces.getPhases(function (phases) {
-      $scope.phases = phases;
-      $scope.$apply();
-    });
-  }
-
-  $scope.findActivities = function () {
-    Spaces.actions(function (actions) {
-      _.each(actions, function (action) {
-        addUserToPhase(action);
-        $scope.$apply();
-      });
-    });
-  }
-
+  $scope.minutes = 10; // 10 minutes of timeout by default
+  var offlineTimeout;
+  var idleTimeout;
 
   var usersIdleTimeout = {};
   var usersOfflineTimeout = {};
@@ -52,7 +33,9 @@ function ($http, $scope, $resource, $timeout, Spaces) {
         //From the socket, the url of the gravatar is in action.actor.image
         //and from activitystreams, the url is in action.actor.image.url
         //Temparory workaround:
-        if (typeof action.actor.image.url !== 'undefined') {
+        if (typeof action.actor.image === 'undefined') {
+          var avatar = '';
+        } else if (typeof action.actor.image.url !== 'undefined') {
           var avatar = action.actor.image.url;
         } else {
           var avatar = action.actor.image;
@@ -85,16 +68,47 @@ function ($http, $scope, $resource, $timeout, Spaces) {
     clearTimeout(usersIdleTimeout[action.actor.id]);
     clearTimeout(usersOfflineTimeout[action.actor.id]);
 
-    // After 8 minutes without changing phases, users are considered idle.
+    // After 'idleTimeout' minutes without changing phases, users are considered idle.
     usersIdleTimeout[action.actor.id] = setTimeout(function () {
       $("#user-" + action.actor.id).attr('class','idle');
-    }, 480000); //8 minutes = 480000 milliseconds
+    }, idleTimeout);
 
-    // After 10 minutes without changing phases, users are considered offline.
+    // After 'offlineTimeout' minutes without changing phases, users are considered offline.
     usersOfflineTimeout[action.actor.id] = setTimeout(function () {
       removeUserFromAllPhases(action);
-    }, 600000); //10 minutes = 600000 milliseconds
+    }, offlineTimeout);
   }
+
+  $scope.setUsersTimeout = function() {
+    offlineTimeout = $scope.minutes * 60000;
+    idleTimeout = 0.9 * offlineTimeout;
+    console.log(idleTimeout);
+    console.log(offlineTimeout);
+  }
+
+  $scope.init = function () {
+    Spaces.context(function (context) {
+      socket.emit('enterspace', context);
+    });
+    $scope.setUsersTimeout();
+  };
+
+  $scope.findPhases = function () {
+    Spaces.getPhases(function (phases) {
+      $scope.phases = phases;
+      $scope.$apply();
+      gadgets.window.adjustHeight();
+    });
+  };
+
+  $scope.findActivities = function () {
+    Spaces.actions(function (actions) {
+      _.each(actions, function (action) {
+        addUserToPhase(action);
+        $scope.$apply();
+      });
+    });
+  };
 
   $scope.getPhaseClass = function(nbConnectedUsers) {
     if (nbConnectedUsers >= 13) {
@@ -104,7 +118,7 @@ function ($http, $scope, $resource, $timeout, Spaces) {
     } else {
       return "";
     }
-  }
+  };
 
   $scope.getTotalConnectedUsers = function() {
     var total = 0;
@@ -114,7 +128,7 @@ function ($http, $scope, $resource, $timeout, Spaces) {
         total += $scope.phases[i].onlineUsers.length;
     }
     return total;
-  }
+  };
 
 });
 

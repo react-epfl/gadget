@@ -2,7 +2,7 @@ body {
   background-color: #5050d2;
   color: white;
   font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
-  margin-top:10px;
+  padding: 10px;
 }
 
 #onlineUsers {
@@ -18,13 +18,17 @@ body {
   cursor: pointer;
 }
 
+#onlineUsers form input[type=text] {
+  width: 30px;
+}
+
 #onlineUsers .phase {
   display: inline-block;
   vertical-align: top;
-  margin: 10px;
+  margin: 10px 10px 0px 0px;
   padding: 5px;
-  width: 220px;
-  height: 245px;
+  width: 280px;
+  height: 224px;
   background-color: rgba(255,255,255,0.8);
   color: black;
   text-align: center
@@ -32,7 +36,7 @@ body {
 
 #onlineUsers .phase h3 {
   margin: 0px;
-  text-align: left;
+  text-align: center;
 }
 
 #onlineUsers .phase .nb-connected-students {
@@ -53,7 +57,7 @@ body {
 #onlineUsers .phase ul li {
   display: inline-block;
   padding: 0px;
-  margin: 7px;
+  margin: 0px 8px 8px 8px;
   width: 40px;
   height: 40px;
   text-indent: 0px;
@@ -65,7 +69,7 @@ body {
   height: 50px;
 }
 #onlineUsers .phase ul.a-lot li {
-  margin: 6px;
+  margin: 10px 5px 5px 5px;
   width: 30px;
   height: 30px;
 }
