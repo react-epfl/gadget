@@ -541,12 +541,13 @@ var buildWindowDoc = function (parent, resource, is_center) {
     var $resourceToDisplay;
     var title = resource.displayName;
     var itemUrl = resource.originUrl;
-    debugger
+    
     if((window.location.hostname == "localhost") && (itemUrl.indexOf("/resources/")>-1) && (itemUrl.indexOf("/raw")>-1)) {
             itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + resource.id + "/raw";
     }
-
-    if(itemUrl.indexOf("http://")<0){
+    
+    var urlComponents = itemUrl.split('/');
+    if(urlComponents[0].indexOf("http")<0){
         itemUrl = window.location.protocol + "//" + itemUrl;
     }
 
