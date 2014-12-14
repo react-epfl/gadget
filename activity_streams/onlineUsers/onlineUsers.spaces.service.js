@@ -1,4 +1,4 @@
-app.factory('Spaces', function ($resource, $http) {
+app.factory('Spaces', function () {
   'use strict';
 
   var space = {
@@ -11,7 +11,7 @@ app.factory('Spaces', function ($resource, $http) {
     ils.getIls(function(ils_space){
       cb(ils_space.id);
     });
-  }
+  };
 
   space.getPhases = function(cb) {
     ils.getIls(function(ils_space){
@@ -20,9 +20,9 @@ app.factory('Spaces', function ($resource, $http) {
 
         var phases = [];
         _.each(subspaces.list, function (subspace){
-          if (subspace.spaceType != null
-              && subspace.displayName != "About"
-              && subspace.displayName != "Vault") {
+          if (subspace.spaceType !== null &&
+              subspace.displayName != "About" &&
+              subspace.displayName != "Vault") {
             phases.push({
               id: subspace.id,
               name: subspace.displayName,
@@ -37,18 +37,18 @@ app.factory('Spaces', function ($resource, $http) {
 
   space.actions = function(cb) {
     ils.getIls(function(ils_space){
-      osapi.activitystreams.get({contextId: ils_space.id, contextType: "@space", "minutes":"60"})
+      osapi.activitystreams.get({contextId: ils_space.id, contextType: "@space", "minutes":"180"})
         .execute(function (actions) {
-        var accesses = _.filter(actions.list, function(action){ return action.verb == "accessed" });
-        var accessesByUser = _.toArray(_.groupBy(accesses, function(action){ return action.actor.id}));
+        var accesses = _.filter(actions.list, function(action){ return action.verb == "accessed"; });
+        var accessesByUser = _.toArray(_.groupBy(accesses, function(action){ return action.actor.id; }));
         var lastActionByUser = [];
         _.each(accessesByUser, function (userAccesses) {
-          var lastAction = _.last(_.sortBy(userAccesses, function(action){ return action.published }));
+          var lastAction = _.last(_.sortBy(userAccesses, function(action){ return action.published; }));
           lastActionByUser.push(lastAction);
         });
         cb(lastActionByUser);
       });
     });
-  }
+  };
   return space;
 });

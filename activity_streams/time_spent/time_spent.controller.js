@@ -1,40 +1,19 @@
 app.controller('timeSpentGadget',
-function ($http, $scope, $resource, $timeout, Spaces) {
+function ($scope, Spaces) {
   $scope.phases = [];
   $scope.users = [];
 
   $scope.minutes = 10; // 10 minutes of timeout by default
   var offlineTimeout;
 
-  //Listening to the new actions
-  socket.on('action_created', function (action) {
-    resetUserTimeout(action);
-    if (action.verb == "accessed") {
-      //console.log('New access by ' + action.actor.displayName);
-      addUser(action, function() {
-        changeUserCurrentPhase(action);
-      });
-    }
-  });
-
   function addUser(action, cb) {
     if (!userAlreadyAdded(action)) {
-      //From the socket, the url of the gravatar is in action.actor.image
-      //and from activitystreams, the url is in action.actor.image.url
-      //Temparory workaround:
-      if (typeof action.actor.image === 'undefined') {
-        var avatar = '';
-      } else if (typeof action.actor.image.url !== 'undefined') {
-        var avatar = action.actor.image.url;
-      } else {
-        var avatar = action.actor.image;
-      }
       var user = {
         id: action.actor.id,
         displayName: action.actor.displayName,
-        avatar: avatar,
-        currentPhase: action.object.id,
+        currentPhase: action.target.id,
         lastAccess: action.published,
+        lastAction: action.published,
         timeSpentIn: {},
         timeout: setTimeout(function () {
           user.currentPhase = null;
@@ -46,7 +25,6 @@ function ($http, $scope, $resource, $timeout, Spaces) {
       $scope.users.push(user);
       $scope.$apply();
       gadgets.window.adjustHeight();
-      console.log('User ' + user.displayName + ' added');
     }
     cb();
   }
@@ -59,19 +37,17 @@ function ($http, $scope, $resource, $timeout, Spaces) {
 
   function addTimeToUser(user, timeToAdd) {
     if (typeof user.timeSpentIn[user.currentPhase] !== 'undefined') {
-      //console.log("Adding " + timeToAdd + "ms to " + user.currentPhase + " for " + user.displayName);
       user.timeSpentIn[user.currentPhase].add(moment.duration(timeToAdd));
     }
-    //console.log(user.timeSpentIn);
   }
 
-  function updateUserTimeSinceLastAction(action) {
+  function updateUserTimeSinceLastAccess(action) {
     var userToUpdate = getUser(action);
     if (typeof userToUpdate !== 'undefined') {
       var timeToAdd = new Date(action.published).getTime() - new Date(userToUpdate.lastAccess).getTime();
       addTimeToUser(userToUpdate, timeToAdd);
       userToUpdate.lastAccess = action.published;
-      userToUpdate.currentPhase = action.object.id;
+      userToUpdate.currentPhase = action.target.id;
     }
   }
 
@@ -81,7 +57,7 @@ function ($http, $scope, $resource, $timeout, Spaces) {
       totalTime = 0;
       _.each($scope.users, function (user) {
         totalTime += user.timeSpentIn[phase.id];
-      })
+      });
       phase.averageTime = moment.duration(totalTime / $scope.users.length);
     });
   }
@@ -99,14 +75,20 @@ function ($http, $scope, $resource, $timeout, Spaces) {
   function changeUserCurrentPhase(action) {
     var userToChangePhase = getUser(action);
     userToChangePhase.lastAccess = action.published;
-    userToChangePhase.currentPhase = action.object.id;
+    userToChangePhase.currentPhase = action.target.id;
     resetUserTimeout(action);
   }
 
   function computeLastTimeForEachUser() {
     _.each($scope.users, function (user) {
-      var timeToAdd = new Date().getTime() - new Date(user.lastAccess).getTime();
-      addTimeToUser(user, timeToAdd)
+      var timeSinceLastAction = new Date().getTime() - new Date(user.lastAction).getTime();
+      if (timeSinceLastAction > offlineTimeout) {
+        addTimeToUser(user, offlineTimeout);
+        user.currentPhase = null;
+      } else {
+        var timeToAdd = new Date().getTime() - new Date(user.lastAccess).getTime();
+        addTimeToUser(user, timeToAdd);
+      }
     });
   }
 
@@ -125,31 +107,46 @@ function ($http, $scope, $resource, $timeout, Spaces) {
 
   $scope.setUsersTimeout = function() {
     offlineTimeout = $scope.minutes * 60000;
-    console.log(offlineTimeout);
-  }
+  };
 
   $scope.init = function () {
     Spaces.context(function (context) {
       socket.emit('enterspace', context);
     });
     $scope.setUsersTimeout();
-    $scope.findPhases();
-    $scope.findLastAccesses();
-  };
+    $scope.findPhases(function() {
+      $scope.findAccesses();
 
-  $scope.findPhases = function () {
-    Spaces.getPhases(function (phases) {
-      $scope.phases = phases;
-      $scope.$apply();
+      //Listening to the new actions
+      socket.on('action_created', function (action) {
+        resetUserTimeout(action);
+        if (action.verb == "accessed") {
+          addUser(action, function() {
+            changeUserCurrentPhase(action);
+          });
+        }
+      });
     });
   };
 
-  $scope.findLastAccesses = function () {
-    Spaces.getLastAccesses(function (actions) {
+  $scope.findPhases = function (cb) {
+    Spaces.getPhases(function (phases) {
+      $scope.phases = phases;
+      $scope.$apply();
+      cb();
+    });
+  };
+
+  $scope.findAccesses = function () {
+    Spaces.getActions(function (actions) {
       _.each(actions, function (action) {
-        addUser(action, function() {
-          updateUserTimeSinceLastAction(action);
-        });
+        if (action.verb === 'accessed') {
+          addUser(action, function() {
+            updateUserTimeSinceLastAccess(action);
+          });
+        }
+        var user = getUser(action);
+        user.lastAction = action.published;
       });
       computeLastTimeForEachUser();
       updateAverageTime();
@@ -164,7 +161,7 @@ function ($http, $scope, $resource, $timeout, Spaces) {
       updateAverageTime();
       $scope.$apply();
     }, oneSecond);
-  }
+  };
 
 });
 

@@ -16,12 +16,10 @@ app.filter('numberFixedLen', function () {
 });
 
 if (location.hostname === 'localhost' && location.port === '8080') {
-  var usedPort = '9091';
-} else if (location.port) {
-  var usedPort = location.port;
+  var hostToConnect = 'http://localhost:9091';
+} else {
+  var hostToConnect = 'http://graasp.eu';
 }
 
-var origin = location.protocol + '//' + location.hostname + (usedPort ? ':' + usedPort : '');
-
-var socket = io.connect(origin);
+var socket = io.connect(hostToConnect);
 
