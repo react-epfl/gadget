@@ -92,7 +92,7 @@ body {
   margin: 0px;
   padding: 0px;
   font-size: 30px;
-  padding: 4px;
+  padding: 3px 4px 5px 4px;
   text-align: center;
   font-family: 'Helvetica Neue', 'HelveticaNeue', Helvetica, Arial, sans-serif;
   font-weight: 100;
@@ -111,7 +111,7 @@ body {
   -moz-border-radius: 25px;
   -o-border-radius: 25px;
   font-size: 40px;
-  padding: 4px;
+  padding: 2px 4px 6px 4px;
 }
 #onlineUsers .phase ul.a-lot li div.userImage {
   width: 22px;
@@ -122,7 +122,7 @@ body {
   -moz-border-radius: 15px;
   -o-border-radius: 15px;
   font-size: 20px;
-  padding: 4px;
+  padding: 3px 4px 5px 4px;
 }
 
 #onlineUsers .phase ul li div.userName {

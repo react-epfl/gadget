@@ -1,5 +1,5 @@
 app.controller('onlineUsersGadget',
-function ($http, $scope, $resource, $timeout, Spaces) {
+function ($scope, $timeout, Spaces) {
   $scope.phases = [];
 
   $scope.minutes = 10; // 10 minutes of timeout by default
@@ -9,15 +9,6 @@ function ($http, $scope, $resource, $timeout, Spaces) {
   var usersIdleTimeout = {};
   var usersOfflineTimeout = {};
 
-  //Listening to the new actions
-  socket.on('action_created', function (action) {
-    resetUserTimeouts(action);
-
-    if (action.verb == "accessed") {
-      connectUserToPhase(action);
-    }
-  });
-
   function connectUserToPhase(action) {
     removeUserFromAllPhases(action);
     addUserToPhase(action);
@@ -25,7 +16,7 @@ function ($http, $scope, $resource, $timeout, Spaces) {
 
   function addUserToPhase(action) {
     var phaseToAddUser = _.find($scope.phases, function (phase) {
-      return phase.id === action.object.id;
+      return phase.id === action.target.id;
     });
     $timeout(function() {
       //if phaseToAddUser is undefined, it means the phase is not in the gadget (e.g. for the root of the ILS)
@@ -33,18 +24,24 @@ function ($http, $scope, $resource, $timeout, Spaces) {
         //From the socket, the url of the gravatar is in action.actor.image
         //and from activitystreams, the url is in action.actor.image.url
         //Temparory workaround:
+        var avatar;
         if (typeof action.actor.image === 'undefined') {
-          var avatar = '';
+          avatar = '';
         } else if (typeof action.actor.image.url !== 'undefined') {
-          var avatar = action.actor.image.url;
+          avatar = action.actor.image.url;
         } else {
-          var avatar = action.actor.image;
+          avatar = action.actor.image;
         }
-        phaseToAddUser.onlineUsers = _.union([{
-          id: action.actor.id,
-          displayName: action.actor.displayName,
-          avatar: avatar,
-        }], phaseToAddUser.onlineUsers);
+        var userAlreadyInPhase = _.find(phaseToAddUser.onlineUsers, function (user) {
+          return user.id === action.actor.id;
+        });
+        if (!userAlreadyInPhase) {
+          phaseToAddUser.onlineUsers.push({
+            id: action.actor.id,
+            displayName: action.actor.displayName,
+            avatar: avatar
+          });
+        }
       }
     });
 
@@ -56,7 +53,7 @@ function ($http, $scope, $resource, $timeout, Spaces) {
 
     _.each($scope.phases, function (phase) {
       userToRemove = _.find(phase.onlineUsers, function (user) {
-          return user.id === action.actor.id
+          return user.id === action.actor.id;
       });
       $scope.$apply(function() {
         phase.onlineUsers = _.without(phase.onlineUsers, userToRemove);
@@ -82,15 +79,22 @@ function ($http, $scope, $resource, $timeout, Spaces) {
   $scope.setUsersTimeout = function() {
     offlineTimeout = $scope.minutes * 60000;
     idleTimeout = 0.9 * offlineTimeout;
-    console.log(idleTimeout);
-    console.log(offlineTimeout);
-  }
+  };
 
   $scope.init = function () {
     Spaces.context(function (context) {
       socket.emit('enterspace', context);
     });
     $scope.setUsersTimeout();
+
+    //Listening to the new actions
+    socket.on('action_created', function (action) {
+      resetUserTimeouts(action);
+
+      if (action.verb == "accessed") {
+        connectUserToPhase(action);
+      }
+    });
   };
 
   $scope.findPhases = function () {
