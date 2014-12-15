@@ -1,0 +1,13 @@
+<messagebundle>
+<msg name="hello">Привіт</msg>
+<msg name="welcome_to_golab">Ласкаво просимо до Go-Lab</msg>
+<msg name="not_space_owner">Ви не є власником спейсу. Ваші зміни щодо порядку додатків не будуть збережені.</msg>
+<msg name="description">Опис</msg>
+<msg name="tools">Інструменти</msg>
+<msg name="please_enter_a_valid_name">Будь ласка, введіть коректний псевдонім!</msg>
+<msg name="valid_name_instructions">Будь ласка, використовуйте лише літери та цифри, загалом до 14 знаків.</msg>
+<msg name="type_your_name_here">Введіть ваш псевдонім</msg>
+<msg name="ok">Go!</msg>
+<msg name="toggle_description_tooltip">Нажміть щоб сховати/показати опис ILS</msg>
+<msg name="logout_label">Вихід</msg>
+</messagebundle>

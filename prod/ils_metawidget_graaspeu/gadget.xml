@@ -12,9 +12,11 @@
     <Locale lang="de" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/de_ALL.xml"/>
     <Locale lang="es" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/es_ALL.xml"/>
     <Locale lang="ru" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ru_ALL.xml"/>
+    <Locale lang="uk" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/uk_ALL.xml"/>
     <Locale lang="ar" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ar_ALL.xml"/>
     <Locale lang="it" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/it_ALL.xml"/>
     <Locale lang="gr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/gr_ALL.xml"/>
+    <Locale lang="nl" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/nl_ALL.xml"/>
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">

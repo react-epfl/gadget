@@ -1,0 +1,13 @@
+<messagebundle>
+<msg name="hello">Hallo</msg>
+<msg name="welcome_to_golab">Welkom in Go-Lab</msg>
+<msg name="not_space_owner">Jij bent niet de eigenaar van deze space. Jouw aanpassingen aan de ordening van de apps zal niet bewaard worden.</msg>
+<msg name="description">Beschrijving</msg>
+<msg name="tools">Gereedschap</msg>
+<msg name="please_enter_a_valid_name">Geef een geldige naam op, a.u.b.!</msg>
+<msg name="valid_name_instructions">Gebruik a.u.b. enkel maximum 14 letters en nummers.</msg>
+<msg name="type_your_name_here">Vul jouw bijnaam in</msg>
+<msg name="ok">Ga verder!</msg>
+<msg name="toggle_description_tooltip">Klik hier om de ILS beschrijving te tonen of te verbergen.</msg>
+<msg name="logout_label">Log uit</msg>
+</messagebundle>
