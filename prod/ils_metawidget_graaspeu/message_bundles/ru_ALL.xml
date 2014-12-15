@@ -1,13 +1,13 @@
 <messagebundle>
-<msg name="hello">Hello</msg>
-<msg name="welcome_to_golab">Welcome to Go-Lab</msg>
-<msg name="not_space_owner">You are not a space owner. Your changes to apps arrangement will not be saved.</msg>
-<msg name="description">Description</msg>
-<msg name="tools">Tools</msg>
-<msg name="please_enter_a_valid_name">Please enter a valid nickname!</msg>
-<msg name="valid_name_instructions">Please use only letters and numbers up to 14 characters</msg>
-<msg name="type_your_name_here">Enter your nickname</msg>
+<msg name="hello">Привет</msg>
+<msg name="welcome_to_golab">Добро пожаловать в Go-Lab</msg>
+<msg name="not_space_owner">Вы не являетесь собственником спейса. Ваши изменения порядка программ не будут сохранены.</msg>
+<msg name="description">Описание</msg>
+<msg name="tools">Инструменты</msg>
+<msg name="please_enter_a_valid_name">Пожалуйста, введите корректный псевдоним!</msg>
+<msg name="valid_name_instructions">Пожалуйста, используйте только буквы и цифры вместе длинной до 14 символов.</msg>
+<msg name="type_your_name_here">Введите ваш псевдоним</msg>
 <msg name="ok">Go!</msg>
-<msg name="toggle_description_tooltip">Click to hide/show the ILS description</msg>
-<msg name="logout_label">Logout</msg>
+<msg name="toggle_description_tooltip">Нажмите чтобы спрятать/показать описание ILS</msg>
+<msg name="logout_label">Выход</msg>
 </messagebundle>
