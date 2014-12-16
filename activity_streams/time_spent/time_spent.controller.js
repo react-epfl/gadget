@@ -110,22 +110,27 @@ function ($scope, Spaces) {
   };
 
   $scope.init = function () {
-    Spaces.context(function (context) {
-      socket.emit('enterspace', context);
-    });
-    $scope.setUsersTimeout();
-    $scope.findPhases(function() {
-      $scope.findAccesses();
+    Spaces.context(function (response) {
+      if (response != null && response != undefined && response.error == undefined) {
+        socket.emit('enterspace', response.id);
+        $scope.setUsersTimeout();
+        $scope.findPhases(function() {
+          $scope.findAccesses();
 
-      //Listening to the new actions
-      socket.on('action_created', function (action) {
-        resetUserTimeout(action);
-        if (action.verb == "accessed") {
-          addUser(action, function() {
-            changeUserCurrentPhase(action);
+          //Listening to the new actions
+          socket.on('action_created', function (action) {
+            resetUserTimeout(action);
+            if (action.verb == "accessed") {
+              addUser(action, function() {
+                changeUserCurrentPhase(action);
+              });
+            }
           });
-        }
-      });
+        });
+      } else {
+        $scope.notInIlsMessage = 'Please, place this app in an inquiry space to visualise the time spent by users in inquiry phases.';
+      }
+      gadgets.window.adjustHeight();
     });
   };
 

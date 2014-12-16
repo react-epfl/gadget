@@ -35,13 +35,14 @@
   <body>
     <div ng-controller="timeSpentGadget" ng-init="init(); startTimer();">
       <div id="timeSpent" class="ng-cloak">
+        <p ng-show="notInIlsMessage">{{notInIlsMessage}}</p>
         <!--<form novalidate>
           <label>Users are considered offline after</label>
           <input type="text" ng-model="minutes" />
           <label>minutes</label>
           <input type="submit" ng-click="setUsersTimeout()" value="Apply" />
         </form>-->
-        <table>
+        <table ng-show="!notInIlsMessage">
           <tr>
             <th></th>
             <th ng-repeat="phase in phases">{{phase.name}}</th>

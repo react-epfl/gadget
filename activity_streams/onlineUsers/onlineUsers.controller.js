@@ -82,18 +82,27 @@ function ($scope, $timeout, Spaces) {
   };
 
   $scope.init = function () {
-    Spaces.context(function (context) {
-      socket.emit('enterspace', context);
-    });
-    $scope.setUsersTimeout();
+    Spaces.context(function (response) {
+      if (response != null && response != undefined && response.error == undefined) {
+        socket.emit('enterspace', response.id);
+        $scope.setUsersTimeout();
 
-    //Listening to the new actions
-    socket.on('action_created', function (action) {
-      resetUserTimeouts(action);
+        //Listening to the new actions
+        socket.on('action_created', function (action) {
+          resetUserTimeouts(action);
 
-      if (action.verb == "accessed") {
-        connectUserToPhase(action);
+          if (action.verb == "accessed") {
+            connectUserToPhase(action);
+          }
+        });
+
+        $scope.findPhases();
+        $scope.findActivities();
+      } else {
+        $scope.notInIlsMessage = 'Please, place this app in an inquiry space to get visualise who is active in which inquiry phase.';
+        $scope.$apply();
       }
+      gadgets.window.adjustHeight();
     });
   };
 
