@@ -32,9 +32,10 @@
     </script>
   </head>
   <body>
-    <div ng-controller="onlineUsersGadget" ng-init="init(); findPhases(); findActivities();">
+    <div ng-controller="onlineUsersGadget" ng-init="init();">
       <div id="onlineUsers" class="ng-cloak">
-        <h2><ng-pluralize count="getTotalConnectedUsers()"
+        <p ng-show="notInIlsMessage">{{notInIlsMessage}}</p>
+        <h2 ng-show="!notInIlsMessage"><ng-pluralize count="getTotalConnectedUsers()"
             when="{'0': 'Nobody is connected',
                    'one': '1 student is connected',
                    'other': '{} students are connected'}">

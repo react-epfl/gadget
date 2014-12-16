@@ -8,8 +8,8 @@ app.factory('Spaces', function () {
   };
 
   space.context = function(cb) {
-    ils.getIls(function(ils_space){
-      cb(ils_space.id);
+    ils.getIls(function(response){
+      cb(response);
     });
   };
 
