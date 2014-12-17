@@ -41,10 +41,17 @@ function ($scope, Spaces) {
     }
   }
 
+  function computeTimePeriod(start, end) {
+    if (end) {
+      return new Date(end).getTime() - new Date(start).getTime();
+    }
+    return new Date().getTime() - new Date(start).getTime();
+  }
+
   function updateUserTimeSinceLastAccess(action) {
     var userToUpdate = getUser(action);
     if (typeof userToUpdate !== 'undefined') {
-      var timeToAdd = new Date(action.published).getTime() - new Date(userToUpdate.lastAccess).getTime();
+      var timeToAdd = computeTimePeriod(userToUpdate.lastAccess, action.published);
       addTimeToUser(userToUpdate, timeToAdd);
       userToUpdate.lastAccess = action.published;
       userToUpdate.currentPhase = action.target.id;
@@ -81,12 +88,12 @@ function ($scope, Spaces) {
 
   function computeLastTimeForEachUser() {
     _.each($scope.users, function (user) {
-      var timeSinceLastAction = new Date().getTime() - new Date(user.lastAction).getTime();
+      var timeSinceLastAction = computeTimePeriod(user.lastAction);
       if (timeSinceLastAction > offlineTimeout) {
         addTimeToUser(user, offlineTimeout);
         user.currentPhase = null;
       } else {
-        var timeToAdd = new Date().getTime() - new Date(user.lastAccess).getTime();
+        var timeToAdd = computeTimePeriod(user.lastAccess);
         addTimeToUser(user, timeToAdd);
       }
     });
