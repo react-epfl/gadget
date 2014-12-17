@@ -50,7 +50,7 @@
           <h3>{{phase.name}}</h3>
           <div class="nb-connected-students">{{phase.onlineUsers.length}}</div>
           <ul class="few" ng-class="getPhaseClass(phase.onlineUsers.length)">
-            <li id="user-{{user.id}}" title="{{user.displayName}}" class="connected" ng-repeat="user in phase.onlineUsers | limitTo:20">
+            <li id="user-{{user.id}}" title="{{user.displayName}}" class="connected" ng-repeat="user in phase.onlineUsers | limitTo:21">
               <div class="userImage" ng-if="user.avatar !== ''" back-img="{{user.avatar}}"></div>
               <div class="userImage" ng-if="user.avatar === ''">{{user.displayName | limitTo:1}}</div>
               <div class="userName">{{user.displayName}}</div>

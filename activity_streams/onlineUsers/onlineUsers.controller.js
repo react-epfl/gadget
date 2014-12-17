@@ -99,7 +99,7 @@ function ($scope, $timeout, Spaces) {
         $scope.findPhases();
         $scope.findActivities();
       } else {
-        $scope.notInIlsMessage = 'Please, place this app in an inquiry space to get visualise who is active in which inquiry phase.';
+        $scope.notInIlsMessage = 'Please, place this app in an inquiry space to visualise who is active in which inquiry phase.';
         $scope.$apply();
       }
       gadgets.window.adjustHeight();
@@ -124,9 +124,9 @@ function ($scope, $timeout, Spaces) {
   };
 
   $scope.getPhaseClass = function(nbConnectedUsers) {
-    if (nbConnectedUsers >= 13) {
+    if (nbConnectedUsers >= 16) {
       return "a-lot";
-    } else if (nbConnectedUsers <= 6) {
+    } else if (nbConnectedUsers <= 8) {
       return "few";
     } else {
       return "";
