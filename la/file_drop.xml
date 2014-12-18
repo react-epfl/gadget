@@ -73,6 +73,7 @@
 var app = {};
 var isOwner = false;
 var parentSpaceId = null;
+var nameList = [];
 
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
@@ -90,27 +91,32 @@ function getQueryVariable(variable) {
 function dropListener(){
   Dropzone.options.fileDropzone = {
     init: function() {
-
       this.on("addedfile", function(file) { 
         var filename = file.name;
-        var file_type = file.type;
-        var action = "/rpc?method=documents.create&id=documents.create"
-        action = action + "&st=" + getQueryVariable("st")
-        this.options.url = action;   
-        var request={"method":"documents.create",
-          "params": {
-            "document": {
-              "displayName": filename,
-              "parentSpaceId": parentSpaceId,
-              "mimeType": file_type,
-              "fileName": filename
+          initialize;
+          if (nameList.indexOf(filename)==-1) {
+            var file_type = file.type;
+            var action = "/rpc?method=documents.create&id=documents.create"
+            action = action + "&st=" + getQueryVariable("st")
+            this.options.url = action;   
+            var request={"method":"documents.create",
+              "params": {
+                "document": {
+                  "displayName": filename,
+                  "parentSpaceId": parentSpaceId,
+                  "mimeType": file_type,
+                  "fileName": filename
+                }
+              },
+              "id":"documents.create"
             }
-          },
-          "id":"documents.create"
-        }
 
-        // add request payload to the form
-        $('#request').val(JSON.stringify(request));
+          // add request payload to the form
+          $('#request').val(JSON.stringify(request));
+        } else {
+          alert("The file name already exists. Please, find a new name and drop the file again.");
+          this.removeFile(file);          
+        }
       });
 
       this.on("success", function(file, response) {
@@ -120,6 +126,7 @@ function dropListener(){
           adjustHeight();
         }
       });
+
     }
   };
 }
@@ -128,7 +135,7 @@ function dropListener(){
 var initialize = function() {
     app.list = $("#list");
     ils.getIls(function(response) {
-      if (response !=null && response != undefined && response.error == undefined) {
+      if (response && !response.error) {
         ils.getVault(function(vault) {
           if (vault !=null && vault != undefined) { //The space is an ILS and there is a VAULT folder
             // The resource will be retrieved from / store in VAULT          
@@ -169,13 +176,14 @@ var adjustHeight = function() {
 
 // build the container with gadgets
 var build = function(documents) {
-  if (documents.length >0) {
+  if (documents.error || documents.length ==0) {
+    $('#msg').text("__MSG_no_resource_found__");
+  } else {
     for (var i = 0; i < documents.length; i++) {
      var doc = documents[i];
-     buildExistingItem(doc);
+     nameList.push(doc.displayName);
+     buildExistingItem(documents[i]);
     }
-  }else{
-      $('#msg').text("__MSG_no_resource_found__");
   }
 
   // resize the gadget
