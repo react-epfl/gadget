@@ -768,7 +768,7 @@ var buildGadget = function (gadget, is_center) {
   shindig.container.setView("home");
   shindig.container.renderGadget(gadgetEl);
 
-  gadgets.rpc.setRelayUrl(gadgetEl.getIframeId(), "http://localhost" + gadgetEl.getIframeUrl());
+  gadgets.rpc.setRelayUrl(gadgetEl.getIframeId(), window.location.host.toString() + gadgetEl.getIframeUrl());
   gadgets.rpc.setAuthToken(gadgetEl.getIframeId(), gadgetEl.rpcToken);
 
 }
@@ -791,12 +791,9 @@ var getGadgetSize = function(gadgetUrl){
   }
   str_data = JSON.stringify(shindig_data);
 
-  var host_url=window.location.host.toString(); //Gets the current host and uses it to switch between development and production in the following URL
-  if (window.location.hostname == "localhost") {// for testing in local
-      xhr.open( "POST", "http://"+host_url+"/gadgets/metadata?st=0:0:0:0:0:0:0", false );
-  }else{ //for production
-      xhr.open( "POST", "http://"+host_url+":80/gadgets/metadata?st=0:0:0:0:0:0:0", false );
-  }
+  //Sending request for metawidget rendering
+  var host_url=window.location.host.toString(); //Getting the running shindig
+  xhr.open( "POST", "http://"+host_url+"/gadgets/metadata?st=0:0:0:0:0:0:0", false );
   xhr.setRequestHeader("Content-type", "application/json");
   xhr.setRequestHeader("Accept", "application/json");
   xhr.send(str_data);
