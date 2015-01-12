@@ -559,7 +559,18 @@ var buildWindowDoc = function (parent, resource, is_center) {
     }
 
     if (resource.embeddedHTML && resource.embeddedHTML != "") {
-        $resourceToDisplay = $(resource.embeddedHTML).addClass("resource_content");
+        $resourceToDisplay = $('<div></div>');
+        $resourceToDisplay.attr("width: 100%");
+        $resourceToDisplay.attr("height: 0px");
+        $resourceToDisplay.attr("padding-bottom: 75%");
+        $resourceToDisplay.attr("display: block");
+        var $code = $(resource.embeddedHTML);
+        $code.attr("display", "block");
+        $code.attr("width", "100%");
+        $code.attr("height", "50%");
+        $code.attr("margin-left", "auto");
+        $code.attr("margin-right", "auto");
+        $resourceToDisplay.append($code);
     } else {
         //if there's not mimeType it should be obtained
         if(!resource.mimeType || resource.mimeType == "") {
