@@ -543,15 +543,14 @@ var buildWindowDoc = function (parent, resource, is_center) {
     var itemUrl = resource.originUrl;
     var location = "http://graasp.eu";
 
-    if((window.location.hostname == "localhost") && (itemUrl.indexOf("/resources/")>-1) && (itemUrl.indexOf("/raw")>-1)) {
+    if ((window.location.hostname == "localhost") && (itemUrl.indexOf("/resources/")>-1) && (itemUrl.indexOf("/raw")>-1)) {
         location = window.location.protocol + "//" + window.location.hostname + ":9091"
         itemUrl = location + "/resources/" + resource.id + "/raw";
     }
     
     var urlComponents = itemUrl.split('/');
-    if(urlComponents[0].indexOf("http")<0){
-        location = window.location.protocol + "//";
-        itemUrl = location + itemUrl;
+    if (urlComponents[0].indexOf("http")<0){
+        itemUrl = window.location.protocol + "//" + itemUrl;
     }
 
     if (resource.description.replace(/[\s|&nbsp;]+/gi, '') != "") {
@@ -634,7 +633,7 @@ var buildWindowDoc = function (parent, resource, is_center) {
                 $resourceToDisplay.attr("class", "resource_content");
                 if (resource.preview && resource.preview.size) {
                     if(resource.preview.image){
-                        itemUrl =  lcoation + "/pictures/" + resource.id + "/"+resource.preview.size + "_" + resource.preview.image;
+                        itemUrl =  location + "/pictures/" + resource.id + "/" + resource.preview.size + "_" + resource.preview.image;
                     }else if(resource.picture){
                         itemUrl =  location + "/pictures/" + resource.id + "/" + resource.preview.size + "_" + resource.picture;
                     }
