@@ -541,13 +541,15 @@ var buildWindowDoc = function (parent, resource, is_center) {
     var $resourceToDisplay;
     var title = resource.displayName;
     var itemUrl = resource.originUrl;
-    
-    if((window.location.hostname == "localhost") && (itemUrl.indexOf("/resources/")>-1) && (itemUrl.indexOf("/raw")>-1)) {
-            itemUrl = window.location.protocol + "//" + window.location.hostname + ":9091" + "/resources/" + resource.id + "/raw";
+    var location = "http://graasp.eu";
+
+    if ((window.location.hostname == "localhost") && (itemUrl.indexOf("/resources/")>-1) && (itemUrl.indexOf("/raw")>-1)) {
+        location = window.location.protocol + "//" + window.location.hostname + ":9091"
+        itemUrl = location + "/resources/" + resource.id + "/raw";
     }
     
     var urlComponents = itemUrl.split('/');
-    if(urlComponents[0].indexOf("http")<0){
+    if (urlComponents[0].indexOf("http")<0){
         itemUrl = window.location.protocol + "//" + itemUrl;
     }
 
@@ -629,6 +631,13 @@ var buildWindowDoc = function (parent, resource, is_center) {
             case "image/svg+xml":
                 $resourceToDisplay = $('<img></img>');
                 $resourceToDisplay.attr("class", "resource_content");
+                if (resource.preview && resource.preview.size) {
+                    if(resource.preview.image){
+                        itemUrl =  location + "/pictures/" + resource.id + "/" + resource.preview.size + "_" + resource.preview.image;
+                    }else if(resource.picture){
+                        itemUrl =  location + "/pictures/" + resource.id + "/" + resource.preview.size + "_" + resource.picture;
+                    }
+                }
                 $resourceToDisplay.attr("src", itemUrl);
                 $resourceToDisplay.attr("alt", itemUrl);
                 break;
