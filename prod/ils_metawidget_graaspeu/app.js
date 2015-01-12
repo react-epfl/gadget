@@ -541,7 +541,7 @@ var buildWindowDoc = function (parent, resource, is_center) {
     var $resourceToDisplay;
     var title = resource.displayName;
     var itemUrl = resource.originUrl;
-    var location = window.location.protocol + "//";
+    var location = "http://graasp.eu";
 
     if((window.location.hostname == "localhost") && (itemUrl.indexOf("/resources/")>-1) && (itemUrl.indexOf("/raw")>-1)) {
         location = window.location.protocol + "//" + window.location.hostname + ":9091"
@@ -550,6 +550,7 @@ var buildWindowDoc = function (parent, resource, is_center) {
     
     var urlComponents = itemUrl.split('/');
     if(urlComponents[0].indexOf("http")<0){
+        location = window.location.protocol + "//";
         itemUrl = location + itemUrl;
     }
 
