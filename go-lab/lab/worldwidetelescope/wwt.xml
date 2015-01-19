@@ -1,0 +1,36 @@
+<Module>
+	 <ModulePrefs title="Worldwide Telescope"
+	 	title_url="http://www.worldwidetelescope.org/webclient/default.aspx"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+worldwidetelescope@gmail.com"
+	 	description=""
+	 	height="800"
+	 	screenshot="wwt-screenshot.png"
+	 	thumbnail="wwt-thumb.png">
+	 	<Require feature="opensocial-0.9" />
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			var srcString = "http://www.worldwidetelescope.org/webclient/default.aspx";
+			var width = "100%";
+			var height = "800";
+			$('container').innerHTML = '<iframe  frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>
