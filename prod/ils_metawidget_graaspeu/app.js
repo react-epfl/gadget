@@ -16,8 +16,8 @@ var ILS = { name: "",
 
 var initialize_user = function(){
     clearInterval(initIntervalTimer);
-    if ($.cookie('graasp_user')) {
-        app.user_name = $.cookie('graasp_user');
+    app.user_name = loadUserName();
+    if (app.user_name) {
         animate_logo();
         //updateUserActions(app.user_name); //Temporarily Deactivated
         initialize_ils();
@@ -312,10 +312,31 @@ var welcome_user = function(){
     $('#hello_msg').text(app.user_name);
 };
 
+// load cookie and username
+var loadUserName = function() {
+    // Check if localstorage exists
+    if(typeof(Storage) !== "undefined") {
+        // If it does load from localstorage
+        return localStorage.getItem("graasp_user");
+    } else {
+        // else try to load from cookie
+        return $.cookie('graasp_user');
+    }
+};
+
 // save user's name in appData and display user name on the page
 var saveUserName = function() {
-    //updateUserActions(app.user_name); //Temporarily Deactivated
-    $.cookie('graasp_user', app.user_name, { expires: 1 });
+
+    // Check if localstorage exists
+    if(typeof(Storage) !== "undefined") {
+        // If it does, save to localstorage
+         localStorage.setItem("graasp_user",app.user_name);
+    } else {
+        // else try to save to the cookie
+        //updateUserActions(app.user_name); //Temporarily Deactivated
+        $.cookie('graasp_user', app.user_name, { expires: 1 });
+    }
+
 };
 
 // Validates the entered username
@@ -331,6 +352,11 @@ var checkUserName = function(){
 
 // Log's out the active user by removing tha cookie and reloading tha page
 var logoutUser = function() {
+    // Check if localstorage exists
+    if(typeof(Storage) !== "undefined") {
+        // If it does, remove the entry
+        localStorage.removeItem('graasp_user');
+    }
     $.removeCookie('graasp_user');
     sendStream("cancel","LOGOUT");
     location.reload();
