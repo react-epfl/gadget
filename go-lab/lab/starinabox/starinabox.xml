@@ -1,0 +1,43 @@
+<Module>
+	 <ModulePrefs title="Star in a Box"
+	 	title_url="http://lcogt.net/education/starinabox"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+starinabox@gmail.com"
+	 	description="Star in a Box is an interactive webapp which animates stars with different starting masses as they change during their lives. Some stars live fast-paced, dramatic lives, others change very little for billions of years. The webapp visualises the changes in mass, size, brightness and temperature for all these different stages."
+	 	height="60"
+	 	screenshot="starinbox-screenshot.png"
+	 	thumbnail="starinabox-thumb.png">
+	 	<Require feature="opensocial-0.9" />
+	 	<Locale messages="ALL_ALL.xml"/> 
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+		<style>
+			div {
+		  		font-family: sans-serif, Helvetica, Arial;
+		 	}
+
+		 	.button {
+		 		background-color: #5050d2;
+		 		text-decoration: none;
+		 		margin-left: auto;
+		 		margin-right: auto;
+		 		margin-top: 10px;
+		 		margin-bottom: 10px;
+				display: block;
+				text-align: center;
+				width: 280px;
+				line-height: 40px;
+				font-size: larger;
+		 	}
+
+		 	a:link, a:visited, a:hover, a:active {
+		 		color: #ffffff;
+		 	}
+		</style>
+		<div> 
+			<a href="http://lcogt.net/siab/" target="_blank" class="button">__MSG_open_lab__</a>
+		</div>
+	 ]]>
+	 </Content>
+ </Module>
