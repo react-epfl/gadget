@@ -162,102 +162,102 @@ var build = function(documents){
   });
 
   //the preview button
-  var preview = $("<div class='preview_button' id='preview_button'></div>");
-  var button_text = "__MSG_show_previews__";
-  if (app.showingPreview == true) {
-    button_text = "__MSG_hide_previews__";
-  }
-  var preview_button = $("<button type='button' onclick='changePreviewMode()'>"+button_text+"</button>");
-  preview.append(preview_button);
-  header.append(preview);
+//  var preview = $("<div class='preview_button' id='preview_button'></div>");
+//  var button_text = "__MSG_show_previews__";
+//  if (app.showingPreview == true) {
+//    button_text = "__MSG_hide_previews__";
+//  }
+//  var preview_button = $("<button type='button' onclick='changePreviewMode()'>"+button_text+"</button>");
+//  preview.append(preview_button);
+//  header.append(preview);
 
-  if (documents.length == 0) {
+  if (documents && documents.length == 0) {
     container.text("__MSG_no_resource__");
   }
 
   container.append(header);
 
   var existsDownDoc = false; // if at least one doc is downloadable
+  if (documents){
+    for (var i = 0; i < documents.length; i++) {
+      var doc = documents[i];
 
-  for (var i = 0; i < documents.length; i++) {
-    var doc = documents[i];
+      var doc_id = 'document_'+doc.id;
+      var doc_el = $("<div id='"+doc_id+"'></div>");
+      doc_el.attr('class','doc');
 
-    var doc_id = 'document_'+doc.id;
-    var doc_el = $("<div id='"+doc_id+"'></div>");
-    doc_el.attr('class','doc');
+      //thumbnail
+      var thumb_id = 'asset_' + doc.objectId + '_thumb_image';
+      var thumb_el = $("<div class='thumbnail'></div>");
+      var thumbURL = doc.thumbnailUrl;
+      var thumbnail = $("<img id='"+thumb_id+"' src='"+ thumbURL +"' style='width: 28px; height: 36px;'>");
+      thumb_el.append(thumbnail);
+      doc_el.append(thumb_el);
 
-    //thumbnail
-    var thumb_id = 'asset_' + doc.objectId + '_thumb_image';
-    var thumb_el = $("<div class='thumbnail'></div>");
-    var thumbURL = app.containerUrl + doc.thumbnailUrl;
-    var thumbnail = $("<img id='"+thumb_id+"' src='"+ thumbURL +"' style='width: 28px; height: 36px;'>");
-    thumb_el.append(thumbnail);
-    doc_el.append(thumb_el);
+      //document name, downloads the attachment on click
+      var doc_name = $('<div class="title"></div>');
 
-    //document name, downloads the attachment on click
-    var doc_name = $('<div class="title"></div>');
+      var asset_url = doc.originUrl;
+      var doc_name_link = $("<a href='"+asset_url+"' target='_blank'></a>");
+      doc_name.append(doc_name_link);
+      doc_name_link.text(doc.displayName);
 
-    var asset_url = doc.profileUrl;
-    var doc_name_link = $("<a href='"+asset_url+"' target='_blank'></a>");
-    doc_name.append(doc_name_link);
-    doc_name_link.text(doc.displayName);
+      doc_el.append(doc_name);
 
-    doc_el.append(doc_name);
+      //Download icon and a 'Download' link if the resource is an attachment
+      if (typeof doc.attachment !== "undefined") {
+        var downloadUrl = doc.attachment.url;
+        var download_el = $("<div class='download'></div>");
 
-    //Download icon and a 'Download' link if the resource is an attachment
-    if (typeof doc.attachment !== "undefined") {
-      var downloadUrl = doc.attachment.url;
-      var download_el = $("<div class='download'></div>");
+        var download_img = $("<img alt=__MSG_download__ height='32' width='32' style='margin: 2px 5px; display:inline-block; vertical-align:middle'></img>");
+        download_img.attr("src", app.rootUrl + "download.png");
+        var img_link = $("<a href='"+downloadUrl+"' target='_blank'></a>");
+        img_link.append(download_img);
+        download_el.append(img_link);
 
-      var download_img = $("<img alt=__MSG_download__ height='32' width='32' style='margin: 2px 5px; display:inline-block; vertical-align:middle'></img>");
-      download_img.attr("src", app.rootUrl + "download.png");
-      var img_link = $("<a href='"+downloadUrl+"' target='_blank'></a>");
-      img_link.append(download_img);
-      download_el.append(img_link);
+        var download_link = $("<a href='"+downloadUrl+"' target='_blank' style='display:inline-block; vertical-align:middle'>__MSG_download__</a>");
+        download_el.append(download_link);
+        doc_el.append(download_el);
 
-      var download_link = $("<a href='"+downloadUrl+"' target='_blank' style='display:inline-block; vertical-align:middle'>__MSG_download__</a>");
-      download_el.append(download_link);
-      doc_el.append(download_el);
+        existsDownDoc = true;
+      }
 
-      existsDownDoc = true;
-    }
+      //Showing the previews
+      var doc_body = $('<div class="content"></div>');
+      if (app.showingPreview == true) {
+        var preview_el = $("<div class='preview'></div>");
 
-    //Showing the previews
-    var doc_body = $('<div class="content"></div>');
+        //show embedded documents
+        if (typeof doc.documentEntity !== "undefined") {
+          if (!isBookmark(doc)) {
+            doc_body.html(doc.documentEntity);
+          } else {
+            var site_preview_url = app.containerUrl + "/item4a/picture/full/asset/" + doc.id;
+            var preview_img = $("<img alt='"+"__MSG_resource_preview__"+"' src='"+ site_preview_url +"' width='63%'></img>");
+            preview_el.append(preview_img);
+            doc_body.append(preview_el);
+          }
+        }
 
-    if (app.showingPreview == true) {
-      var preview_el = $("<div class='preview'></div>");
-
-      //show embedded documents
-      if (typeof doc.documentEntity !== "undefined") {
-        if (!isBookmark(doc)) {
-          doc_body.html(doc.documentEntity);
-        } else {
-          var site_preview_url = app.containerUrl + "/item4a/picture/full/asset/" + doc.id;
-          var preview_img = $("<img alt='"+"__MSG_resource_preview__"+"' src='"+ site_preview_url +"' width='63%'></img>");
+        // show a preview of the attachment
+        if (typeof doc.attachment !== "undefined") {
+          var preview_path = app.containerUrl + "/attachment/" + doc.attachment.id;
+          var preview_img = $("<img alt='"+"__MSG_resource_preview__"+"' src='"+ preview_path +"' width='63%'></img>");
           preview_el.append(preview_img);
           doc_body.append(preview_el);
         }
       }
 
-      // show a preview of the attachment
-      if (typeof doc.attachment !== "undefined") {
-        var preview_path = app.containerUrl + "/attachment/" + doc.attachment.id;
-        var preview_img = $("<img alt='"+"__MSG_resource_preview__"+"' src='"+ preview_path +"' width='63%'></img>");
-        preview_el.append(preview_img);
-        doc_body.append(preview_el);
-      }
+      doc_el.append(doc_body);
+
+      // description block
+      // var doc_desc = $('<div class="desc"></div>')
+      // var desc = (doc.description && doc.description.length != 0) ? doc.description.slice(0,150)+"..." : "";
+      // doc_desc.html(desc);
+      // doc_el.append(doc_desc)
+
+      container.append(doc_el);
     }
-
-    doc_el.append(doc_body);
-
-    // description block
-    // var doc_desc = $('<div class="desc"></div>')
-    // var desc = (doc.description && doc.description.length != 0) ? doc.description.slice(0,150)+"..." : "";
-    // doc_desc.html(desc);
-    // doc_el.append(doc_desc)
-
-    container.append(doc_el);
   }
 
   if(existsDownDoc) {
