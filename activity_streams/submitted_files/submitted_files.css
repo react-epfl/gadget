@@ -1,0 +1,53 @@
+body {
+  background-color: #5050d2;
+  color: white;
+  font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
+  margin-top:10px;
+}
+
+#submittedFiles {
+  margin: 0px;
+  padding: 0px;
+}
+
+#submittedFiles h2, #submittedFiles h3, #submittedFiles p {
+  padding: 10px;
+}
+
+#submittedFiles *[ng-click] {
+  cursor: pointer;
+}
+
+#submittedFiles ul.users {
+  list-style-type: none;
+  padding: 0px;
+}
+
+#submittedFiles ul.users li div.username {
+  background-color: rgba(255,255,255,0.8);
+  padding: 5px;
+  color: #5050d2;
+  margin-bottom: 5px;
+}
+
+#submittedFiles ul.submissions {
+  margin-bottom: 10px;
+}
+
+#submittedFiles ul.submissions li {
+  cursor: default;
+}
+
+#submittedFiles ul.submissions li .fulltime,
+#submittedFiles ul.submissions li:hover span[am-time-ago] {
+  display: none;
+}
+
+#submittedFiles ul.submissions li:hover .fulltime,
+#submittedFiles ul.submissions li span[am-time-ago] {
+  display: inline;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}

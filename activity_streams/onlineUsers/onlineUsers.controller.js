@@ -67,7 +67,7 @@ function ($scope, $timeout, Spaces) {
 
     // After 'idleTimeout' minutes without changing phases, users are considered idle.
     usersIdleTimeout[action.actor.id] = setTimeout(function () {
-      $("#user-" + action.actor.id).attr('class','idle');
+      $("#user-" + action.actor.id.replace('@', '-')).attr('class','idle');
     }, idleTimeout);
 
     // After 'offlineTimeout' minutes without changing phases, users are considered offline.
@@ -91,7 +91,7 @@ function ($scope, $timeout, Spaces) {
         socket.on('action_created', function (action) {
           resetUserTimeouts(action);
 
-          if (action.verb == "accessed") {
+          if (action.verb == 'accessed') {
             connectUserToPhase(action);
           }
         });
@@ -110,15 +110,17 @@ function ($scope, $timeout, Spaces) {
     Spaces.getPhases(function (phases) {
       $scope.phases = phases;
       $scope.$apply();
-      gadgets.window.adjustHeight();
     });
   };
 
   $scope.findActivities = function () {
-    Spaces.actions(function (actions) {
+    Spaces.getActions(function (actions) {
       _.each(actions, function (action) {
-        addUserToPhase(action);
-        $scope.$apply();
+        var timeSinceLastAction = new Date().getTime() - new Date(action.published).getTime();
+        if (timeSinceLastAction <= offlineTimeout) {
+          addUserToPhase(action);
+          $scope.$apply();
+        }
       });
     });
   };
