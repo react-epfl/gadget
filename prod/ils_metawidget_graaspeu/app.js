@@ -24,7 +24,9 @@ var initialize_user = function(){
     } else {
         $("#loader-image-static").show();
         $("#loader-image").hide();
-        $('#name_prompt').fadeIn(1500);
+        $("#inner_loader").animate({top:"-=200"},1000,function(){
+        });
+        $('#name_prompt').delay(200).fadeIn(800);
         $('#user_name').keyup(function(event){
             if (event.keyCode === 13) {
                 if (checkUserName()){
