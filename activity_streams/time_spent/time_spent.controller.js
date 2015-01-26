@@ -36,7 +36,7 @@ function ($scope, Spaces) {
   }
 
   function addTimeToUser(user, timeToAdd) {
-    if (typeof user.timeSpentIn[user.currentPhase] !== 'undefined') {
+    if (typeof user.timeSpentIn[user.currentPhase] !== 'undefined' && user.timeSpentIn[user.currentPhase] !== null) {
       user.timeSpentIn[user.currentPhase].add(moment.duration(timeToAdd));
     }
   }
@@ -76,7 +76,6 @@ function ($scope, Spaces) {
     var userToChangePhase = getUser(action);
     userToChangePhase.lastAccess = action.published;
     userToChangePhase.currentPhase = action.target.id;
-    resetUserTimeout(action);
   }
 
   function computeLastTimeForEachUser() {
@@ -120,7 +119,7 @@ function ($scope, Spaces) {
           //Listening to the new actions
           socket.on('action_created', function (action) {
             resetUserTimeout(action);
-            if (action.verb == "accessed") {
+            if (action.verb == 'accessed') {
               addUser(action, function() {
                 changeUserCurrentPhase(action);
               });

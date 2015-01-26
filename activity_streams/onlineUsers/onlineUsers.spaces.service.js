@@ -35,7 +35,7 @@ app.factory('Spaces', function () {
     });
   };
 
-  space.actions = function(cb) {
+  space.getActions = function(cb) {
     ils.getIls(function(ils_space){
       osapi.activitystreams.get({contextId: ils_space.id, contextType: "@space", "minutes":"180"})
         .execute(function (actions) {
