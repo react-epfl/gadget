@@ -128,55 +128,53 @@ p {
 }
 
 #name_prompt > input {
-    border-color: #a2bed3;
-    border-radius: 10px;
-    border-style: solid;
-    border-width: 4px;
+    height: 75px;
+    margin: 15px auto !important;
+    padding: 0 10px;
+    vertical-align: middle;
+    width: 100%;
+    font-size: 43px;
+    border: none;
+    color: #5050D2;
+}
+
+#name_prompt > input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
     color: #959292;
-    display: block;
-    font-weight: normal;
-    height: 40px;
-    margin: 0 auto !important;
-    padding: 0 0 4px 9px;
-    width: 90%;
+}
+#name_prompt > input::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #959292;
+}
+
+@-moz-document url-prefix() {
+    #name_prompt > input {
+
+        padding: 6px 10px 0;
+
+    }
 }
 
 .name_prompt_text{
-    color: #1eb8cd;
-    margin-bottom: 20px;
+    color: #ffffff;
+    font-size: 43px;
     text-align: center;
 }
 
-#user_name::-webkit-input-placeholder { /* WebKit browsers */
-    font-weight: normal;
-    color: #959292;
-    opacity: 0.5;
-    padding: 0px;
-}
-#user_name:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-    font-weight: normal;
-    color: #959292;
-    opacity: 0.5
-}
-#user_name::-moz-placeholder { /* Mozilla Firefox 19+ */
-    font-weight: normal;
-    color: #959292;
-    opacity: 0.5
-}
-#user_name:-ms-input-placeholder { /* Internet Explorer 10+ */
-    font-weight: normal;
-    color: #959292;
-    opacity: 0.5
-}
 
 .name_prompt_text > h3{
     margin: 0;
+    font-size: 43px;
+}
+
+#forgot_password_text{
+    float: right;
+    color: #ffffff;
 }
 
 #error_name_text{
+    clear: both;
     color: red;
-    margin-top: 10px;
-    font-size: 16px;
+    font-size: 21px;
+    margin-top: 15px;
 }
 
 #name_prompt>button:hover{
@@ -427,7 +425,9 @@ hr {border:1px solid black;}
     margin-left: auto;
     margin-right: auto;
 }
-
+.block{
+    display: block;
+}
 
 #main_block .credit {
     margin: 20px 0;

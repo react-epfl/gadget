@@ -6,7 +6,9 @@
   <msg name="tools">Tools</msg>
   <msg name="please_enter_a_valid_name">Please enter a valid nickname!</msg>
   <msg name="valid_name_instructions">Please use only letters and numbers up to 14 characters</msg>
-  <msg name="type_your_name_here">Enter your nickname</msg>
+  <msg name="type_your_name_here">Nickname</msg>
+  <msg name="password_optional">Password (optional)</msg>
+  <msg name="forgot_password">Forgot password?</msg>
   <msg name="ok">Go!</msg>
   <msg name="toggle_description_tooltip">Click to hide/show the ILS description</msg>
   <msg name="logout_label">Logout</msg>
