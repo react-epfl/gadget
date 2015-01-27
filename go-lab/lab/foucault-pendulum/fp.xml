@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Foucault Pendulum"
-	 	title_url="http://virtualbiologylab.org/BarnacleCompetition.htm"
+	 	title_url="http://www.3dtrainingdesign.co.uk/GoLab/FoucaultPendulum20150123/TW_Applet.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@epfl.ch"
 	 	description="A simulation of Foucault's Pendulum"
@@ -17,7 +17,7 @@
 		//load frame
 		function loadFrame()
 		{
-			$('container').innerHTML = '<embed id="Foucault" type="application/x-java-applet;version=1.6" width="1024" height="768" archive="TWJar.jar" code="TWApplet.class" pluginspage="http://java.com/download/" codebase="http://www.3dtrainingdesign.co.uk/GoLab/FoucaultPendulum/">';
+			$('container').innerHTML = '<embed id="Foucault" type="application/x-java-applet;version=1.6" width="1024" height="768" archive="TWJar.jar" code="TWApplet.class" pluginspage="http://java.com/download/" codebase="http://www.3dtrainingdesign.co.uk/GoLab/FoucaultPendulum20150123/">';
 		}
 		
 		gadgets.util.registerOnLoadHandler(loadFrame);
