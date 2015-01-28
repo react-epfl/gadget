@@ -609,6 +609,41 @@ iframe{
     #bg_image{
         display: none;
     }
+
+    /*Loader related responsiveness START*/
+    #inner_loader{
+        top:10%!important;
+    }
+    #loader-image{
+        width: 30%;
+    }
+
+    #loader-image-static{
+        width: 30%;
+    }
+
+    #name_prompt > input {
+        height: 55px;
+        margin: 15px auto !important;
+        padding: 0 10px;
+        font-size: 33px;
+    }
+
+    .name_prompt_text{
+        color: #ffffff;
+        font-size: 30px;
+        text-align: center;
+    }
+
+    .name_prompt_text > h3{
+        font-size: 30px;
+    }
+
+    #inner_loader{
+        max-width: 400px!important;
+    }
+    /*Loader related responsiveness END*/
+
 }
 
 

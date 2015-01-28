@@ -90,14 +90,14 @@ initIntervalTimer=setInterval(function(){
 </div>
 </div>
 <div id="loader" style="position:relative;top:0;bottom:0;left:0;right:0;height:100%;background-color:#5050D2;z-index:10000;" >
-    <div id="inner_loader" style="position:relative;top:30%;margin-left:auto;margin-right:auto;width:490px;">
+    <div id="inner_loader" style="position:relative;top:30%;margin-left:auto;margin-right:auto;max-width:510px;padding:0 10px;">
         <img id="loader-image" class="centered block" style=" margin: 0 auto 30px;display:block" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/golab_logo_white_small_animated.gif">
         <img id="loader-image-static" class="centered block" style="display:none;margin-bottom:30px;" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/golab_logo_white_small.png">
         <div id="greeting_text" class="name_prompt_text" style="display:none"><h3>__MSG_welcome_to_golab__</h3></div>
         <div id="name_prompt" style="display:none" >
             <div id="hello_name_text" class="name_prompt_text"><h3>__MSG_welcome_to_golab__</h3></div>
-            <input type="text" id="user_name" placeholder="__MSG_type_your_name_here__">
-            <input type="text" id="password" style="display:none;" placeholder="__MSG_password_optional__">
+            <input type="text" id="user_name" style="border-radius:0px;" placeholder="__MSG_type_your_name_here__">
+            <input type="text" id="password" style="display:none;border-radius:0px;" placeholder="__MSG_password_optional__">
             <a id="forgot_password_text" style="display:none;" href="#">__MSG_forgot_password__</a>
             <div id="error_name_text" class="name_prompt_text error" style="display:none"><span>__MSG_valid_name_instructions__</span></div>
         </div>
