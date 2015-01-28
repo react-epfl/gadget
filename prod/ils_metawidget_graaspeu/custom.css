@@ -78,7 +78,7 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    max-width:904px;
+    max-width:940px;
     border-radius: 0px;
     min-height: 120%;
 }
@@ -223,7 +223,7 @@ p {
 
 #customBarWrapper {
     margin: 0 auto;
-    max-width: 904px;
+    max-width: 940px;
     padding:0 14px;
     position: relative;
 }
@@ -245,7 +245,7 @@ p {
     height: 42px;
     z-index: 1040;
     position: relative;
-    max-width: 904px;
+    max-width: 940px;
     overflow: hidden;
 }
 
