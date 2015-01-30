@@ -17,7 +17,11 @@ var ILS = { name: "",
 var initialize_user = function(){
     clearInterval(initIntervalTimer);
     app.user_name = loadUserName();
-    if (app.user_name) {
+    if (checkAnonymousLogin()){
+        console.log("Anonymous login: "+app.user_name);
+        anonymousLoginActions();
+    }
+    else if (app.user_name) {
         animate_logo();
         //updateUserActions(app.user_name); //Temporarily Deactivated
         initialize_ils();
@@ -36,6 +40,7 @@ var initialize_user = function(){
                 }
             }});
     }
+
 
     //Specifies a series of actions to be taken for initialization
     var init_actions=function(){
@@ -313,6 +318,60 @@ var buildJson = function(list, appdata, itemsIds, spaceId) {
 var welcome_user = function(){
     $('#hello_msg').text(app.user_name);
 };
+
+//check anonymous login
+var checkAnonymousLogin=function(){
+    var isAnonymousStored;
+    if(getUrlParameter("type")=="anonymous"){
+        return true
+    }else{
+        if(typeof(Storage) !== "undefined") {
+            // localstorage
+            isAnonymousStored=localStorage.getItem("anonymous_user");
+        } else {
+            // cookie
+            isAnonymousStored=$.cookie('anonymous_user');
+        }
+        if (app.user_name==isAnonymousStored) {
+            app.user_name="";
+            localStorage.removeItem('graasp_user');
+            localStorage.removeItem('anonymous_user');
+            $.removeCookie('graasp_user');
+            $.removeCookie('anonymous_user');
+        }
+        return false
+    }
+
+}
+
+//anonymous login actions
+var anonymousLoginActions=function(){
+    // first check if localstorage or cookie exists for an anonymous user
+    var isAnonymousStored;
+    if(typeof(Storage) !== "undefined") {
+        // localstorage
+        isAnonymousStored=localStorage.getItem("anonymous_user");
+    } else {
+        // cookie
+        isAnonymousStored=$.cookie('anonymous_user');
+    }
+    //if anonymous is stored load it
+    if (isAnonymousStored){
+        app.user_name=isAnonymousStored;
+    }else{
+    //else generate an id and store it
+        app.user_name=generateUUID();
+        localStorage.setItem("anonymous_user",app.user_name);
+    }
+    $("#hello_msg").remove();
+    $('#greeting_text').after(function() {
+        return $(this).clone().attr('id', '').show();
+    }).remove();
+    $('#greeting_text');
+    saveUserName();
+    animate_logo();
+    initialize_ils();
+}
 
 // load cookie and username
 var loadUserName = function() {
@@ -1012,3 +1071,19 @@ var generateUUID = (function() {
     };
 })();
 
+var getUrlParameter = function(sParam)
+{
+    var host_url=document.referrer;
+    var parser=document.createElement('a');
+    parser.href = host_url;
+    var sPageURL = parser.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++)
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam)
+        {
+            return sParameterName[1];
+        }
+    }
+}
