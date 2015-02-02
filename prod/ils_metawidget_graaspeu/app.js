@@ -367,7 +367,7 @@ var anonymousLoginActions=function(){
     $('#greeting_text').after(function() {
         return $(this).clone().attr('id', '').show();
     }).remove();
-    $('#greeting_text');
+    $('#logout_button').remove();
     saveUserName();
     animate_logo();
     initialize_ils();
