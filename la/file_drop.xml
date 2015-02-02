@@ -64,9 +64,7 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
-<!-- The dropzone.min.js library has been updated -->
 <script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
-<!-- The ILS library has been included to work with the ILS and the VAULT space -->
 <script type="text/javascript" src="http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js"></script>
 
 <script type="text/javascript">
@@ -121,7 +119,7 @@ function dropListener(){
 
       this.on("success", function(file, response) {
         if (response.hasOwnProperty("result")) {
-          buildNewItem(response.result);
+          buildItem(response.result);
           $('#msg').text("");
           adjustHeight();
         }
@@ -182,7 +180,7 @@ var build = function(documents) {
     for (var i = 0; i < documents.length; i++) {
      var doc = documents[i];
      nameList.push(doc.displayName);
-     buildExistingItem(documents[i]);
+     buildItem(documents[i]);
     }
   }
 
@@ -196,18 +194,16 @@ var build = function(documents) {
 };
 
 
-//TODO: BuildExistingItem & BuildNewItem must be unified once the code in Shindig and Graasp is fixed
-buildExistingItem = function (doc) {
+buildItem = function (doc) {
   var doc_id = 'document_'+doc.id;
   var doc_el = $("<tr id='"+doc_id+"'></tr>");
 
   var doc_name = $('<td id="doc_name"></td>');
-  var download_link = $("<a target='_blank'></a>");
 
-  if (doc.hasOwnProperty("url")){
-    download_link.attr("href",doc.url+"/raw");    
-  }
+  var download_link = $("<a target='_blank'></a>");
+  download_link.attr("href",doc.originUrl);
   download_link.text(doc.displayName);
+
   doc_name.append(download_link);
   doc_el.append(doc_name);
 
@@ -218,30 +214,6 @@ buildExistingItem = function (doc) {
   app.list.prepend(doc_el);
 }
 
-buildNewItem = function (doc) {
-  var doc_id = 'document_'+doc.id;
-  var doc_el = $("<tr id='"+doc_id+"'></tr>");
-
-  var doc_name = $('<td id="doc_name"></td>');
-  var download_link = $("<a target='_blank'></a>");
-
-  //Development URL:
-  //var itemUrl = window.location.protocol+"//"+window.location.hostname+":9091"+"/resources/"+doc.id+"/raw";
-  
-  //Production URL:
-  var itemUrl = "http://graasp.eu"+"/resources/"+doc._id+"/raw";
-  download_link.attr("href", itemUrl);    
-  
-  download_link.text(doc.displayName);
-  doc_name.append(download_link);
-  doc_el.append(doc_name);
-
-  var update_time = $('<td id = "update_time"></td>');
-  update_time.text(doc.updated.replace("T"," ").replace(/.....$/,""));
-  doc_el.append(update_time);
-
-  app.list.prepend(doc_el);
-}
 
 </script>
 
