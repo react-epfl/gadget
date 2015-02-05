@@ -1,0 +1,45 @@
+<Module>
+	 <ModulePrefs title="MeteoSat (IM)"
+	 	title_url="http://www.asrc.ro/imeteosat_beta/geostationary_view.php"
+	 	author="Sten Govaerts"
+	 	author_email="sten.govaerts+faulkes@gmail.com"
+	 	description="This application allows you to compare meteorological observations with METEOSAT satellite imagery. If this help does not answer your questions, please take a look at the User manual and the IM case study."
+	 	height="800"
+	 	screenshot=""
+	 	thumbnail="meteosat.jpg">
+	 </ModulePrefs>
+	 <Content type="html">
+	 <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			//get language
+			var prefs = new gadgets.Prefs();
+			var lang = prefs.getLang();
+			
+			var language = "en";
+			if(lang === 'pt' || lang === 'da' || lang === 'de' || lang === 'fr' || lang === 'el' || lang === 'es' || lang === 'it' || lang === 'nl' || lang === 'ro'){
+				language = lang;
+			}
+
+			var srcString = "http://www.asrc.ro/imeteosat_beta/geostationary_view.php?lang="+language;
+			var width = "100%";
+			var height = "800";
+			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
+			gadgets.window.adjustHeight(); //so app resizes itself based on content
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+	 </Content>
+ </Module>
