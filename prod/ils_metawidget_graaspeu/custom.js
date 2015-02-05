@@ -19,7 +19,7 @@ var applyNewLayout= function  () {
         checkTabBarOverflow();
         setTimeout(function(){
             $("#loader").hide("fade", 500, function () {
-                this.remove();
+                $(this).remove();
             });
         },500);
     },1000);
