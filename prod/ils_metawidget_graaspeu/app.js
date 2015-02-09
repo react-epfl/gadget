@@ -10,6 +10,7 @@ var app = { context: "", viewerName: ""
 }
 var ILS = { name: "",
             id: ""};
+var ILS_subspaces;
 
 // Identify which user is using this url
 // The ILS is not initialized unless a valid nickname is found
@@ -73,7 +74,7 @@ var initialize_ils = function() {
 
   shindig.container.layoutManager = new my.LayoutManager();
   // to remove building prefs and title block in gadget
-  shindig.Gadget.prototype.getContent=function(A){
+    shindig.Gadget.prototype.getContent=function(A){
     shindig.callAsyncAndJoin(["getMainContent"],function(B){A(B.join(""))},this)
   }
 
@@ -106,6 +107,7 @@ var initialize_ils = function() {
     var appdata = data.appdata; // .settings
     var apps = data.apps; // .list
     var subspaces = get_visible_spaces(data.spaces.list);  //subspaces of the current space
+    ILS_subspaces=subspaces;
     var currentSpace = data.currentSpace;
 
     //try to get and cache the background image of the space, if any.
@@ -242,28 +244,30 @@ var build_tabs = function(subspaces) {
     }
     ils_tab.append(tab_link);
     ils_cycle_tabs.append(ils_tab);
-    var phase = $("<div></div>").addClass("tab-pane");
-    phase.attr("id", item.id);
-    var phase_description = $("<div></div>").append(item.description);
-    phase.append(phase_description);
-    var phase_content = $("<div></div>");
-    phase_content.attr("id", "phase_" + item.id);
-    phase.append(phase_content);
-    ils_phases.append(phase);
-
-    getDataById(item, function (data) {
-      var itemsIds=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
-      var json_app = buildJson(data.apps, data.appdata, itemsIds, item.id);
-      var json_allItems = buildJson(data.items, data.appdata, itemsIds, item.id);
-
-      refreshItemsList(json_app);
-      refreshItemsList(json_allItems);
-      buildSkeleton(phase_content, json_app, json_allItems, true);
-
-    });
 
   });
-
+   $('#ils_cycle li').on('show.bs.tab', function (e) {
+          var index=$(this).index();
+          var item = ILS_subspaces[index];
+          var ils_phases = $("#ils_phases");
+          var phase = $("<div></div>").addClass("tab-pane");
+          phase.attr("id", item.id);
+          var phase_description = $("<div></div>").append(item.description);
+          phase.append(phase_description);
+          var phase_content = $("<div></div>");
+          phase_content.attr("id", "phase_" + item.id);
+          phase.append(phase_content);
+          ils_phases.append(phase);
+          getDataById(item, function (data) {
+              var itemsIds=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
+              var json_app = buildJson(data.apps, data.appdata, itemsIds, item.id);
+              var json_allItems = buildJson(data.items, data.appdata, itemsIds, item.id);
+              refreshItemsList(json_app);
+              refreshItemsList(json_allItems);
+              buildSkeleton(phase_content, json_app, json_allItems, true);
+          });
+        $($(e.relatedTarget).attr('href')).remove();
+    })
   // set the first tab active
   $('#ils_cycle a:first').tab('show');
 
@@ -274,7 +278,6 @@ var build_tabs = function(subspaces) {
   });
   center.append(ils_cycle_tabs);
   center.append(ils_phases);
-
 };
 
 // get the visible spaces from the subspaces array
@@ -515,10 +518,6 @@ var adjustHeight = function () {
 }
 
 var buildSkeleton = function (container, app_json, all_json, is_center) {
-  // build first drop_here block
-  var fakeGadget = $('<div id="fake_gadget" appId="0"></div>')
-    .append($('<div class="drop_here"></div>'))
-  container.append(fakeGadget)
 
   // build apps and resources
   _.each(all_json.order, function (id) {
@@ -532,9 +531,6 @@ var buildSkeleton = function (container, app_json, all_json, is_center) {
   })
   // resize width of apps
   resizeAllApps()
-
-  // set fake gadget height to the height of the first app
-  fakeGadget.height(container.find(".window").height())
 
   $(".window").draggable(
     { revert: "invalid"
