@@ -9,20 +9,16 @@ var applyNewLayout= function  () {
    $("#ils_phases .tab-pane:first").addClass("in"); //Fade the tab in
    $("#ils_cycle").wrap("<div id='customTopWrapper' class='customTop'></div>");
 
-    //When done, wait 1000ms hide the loader and display content
-    setTimeout(function(){
+    //When done, hide the loader and display content
         $("#main").show();
         var firstPhase=$("#ils_cycle").children("li:first").children();
         var firstColor=firstPhase.attr("bg_color");
         var firstImage=firstPhase.attr("bg_image_url");
         applyBackground(firstImage,firstColor);
         checkTabBarOverflow();
-        setTimeout(function(){
-            $("#loader").hide("fade", 500, function () {
+        $("#loader").hide("fade", 500, function () {
                 $(this).remove();
-            });
-        },500);
-    },1000);
+        });
 
 
     myNavMenu = $('#customTopWrapper');  //gets the tabbed menu
