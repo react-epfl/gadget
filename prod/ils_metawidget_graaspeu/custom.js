@@ -119,18 +119,11 @@ var applyBackground=function(image_url,color){
 }
 
 var animate_logo = function(){
-
     if ($('#user_name').is(':visible')){
         $("#name_prompt").hide("fade",500,function(){
-            $("#inner_loader").animate({top:"+=200"},1000,function(){
-                $("#greeting_text").find("h3").append(" "+app.user_name+"!");
-                $("#greeting_text").show("fade",1000);            });
+            $("#inner_loader").animate({top:"+=200"},1000);
         });
-    }else{
-        $("#greeting_text").find("h3").append(" "+app.user_name+"!");
-        $("#greeting_text").show("fade",1000);
     }
-
     if($('#loader-image-static').is(':visible')) {
         $("#loader-image-static").hide();
     }
