@@ -23,23 +23,27 @@ var initialize_user = function(){
         anonymousLoginActions();
     }
     else if (app.user_name) {
-        animate_logo();
-        //updateUserActions(app.user_name); //Temporarily Deactivated
-        initialize_ils();
-    } else {
-        $("#loader-image-static").show();
-        $("#loader-image").hide();
-        $("#inner_loader").animate({top:"-=200"},1000,function(){
+        $("#loader").fadeIn(500,function(){
+            animate_logo();
+            initialize_ils();
         });
-        $('#name_prompt').delay(200).fadeIn(800);
-        $('#user_name').keyup(function(event){
-            if (event.keyCode === 13) {
-                if (checkUserName()){
-                    init_actions();
-                }else{
-                    show_error_msg();
-                }
-            }});
+        //updateUserActions(app.user_name); //Temporarily Deactivated
+    } else {
+        $("#loader").fadeIn(500,function(){
+            $("#loader-image-static").show();
+            $("#loader-image").hide();
+            $("#inner_loader").animate({top:"-=200"},1000);
+            $('#name_prompt').delay(200).fadeIn(800);
+            $('#user_name').keyup(function(event){
+                if (event.keyCode === 13) {
+                    if (checkUserName()){
+                        init_actions();
+                    }else{
+                        show_error_msg();
+                    }
+                }});
+        });
+
     }
 
 
@@ -349,30 +353,16 @@ var checkAnonymousLogin=function(){
 
 //anonymous login actions
 var anonymousLoginActions=function(){
-    // first check if localstorage or cookie exists for an anonymous user
-    var isAnonymousStored;
-    if(typeof(Storage) !== "undefined") {
-        // localstorage
-        isAnonymousStored=localStorage.getItem("anonymous_user");
-    } else {
-        // cookie
-        isAnonymousStored=$.cookie('anonymous_user');
-    }
-    //if anonymous is stored load it
-    if (isAnonymousStored){
-        app.user_name=isAnonymousStored;
-    }else{
-    //else generate an id and store it
-        app.user_name=generateUUID();
-        localStorage.setItem("anonymous_user",app.user_name);
-    }
+
+    // generate an id and store it
+    app.user_name=generateUUID();
+    localStorage.setItem("anonymous_user",app.user_name);
     $("#hello_msg").remove();
     $('#greeting_text').after(function() {
         return $(this).clone().attr('id', '').show();
     }).remove();
     $('#logout_button').remove();
     saveUserName();
-    animate_logo();
     initialize_ils();
 }
 
@@ -395,6 +385,7 @@ var saveUserName = function() {
     if(typeof(Storage) !== "undefined") {
         // If it does, save to localstorage
          localStorage.setItem("graasp_user",app.user_name);
+
     } else {
         // else try to save to the cookie
         //updateUserActions(app.user_name); //Temporarily Deactivated
