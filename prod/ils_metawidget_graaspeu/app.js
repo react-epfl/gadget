@@ -251,26 +251,31 @@ var build_tabs = function(subspaces) {
 
   });
    $('#ils_cycle li').on('show.bs.tab', function (e) {
-          var index=$(this).index();
-          var item = ILS_subspaces[index];
-          var ils_phases = $("#ils_phases");
-          var phase = $("<div></div>").addClass("tab-pane");
-          phase.attr("id", item.id);
-          var phase_description = $("<div></div>").append(item.description);
-          phase.append(phase_description);
-          var phase_content = $("<div></div>");
-          phase_content.attr("id", "phase_" + item.id);
-          phase.append(phase_content);
-          ils_phases.append(phase);
-          getDataById(item, function (data) {
-              var itemsIds=$('iframe').map(function() { return $(this).attr('name') }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
-              var json_app = buildJson(data.apps, data.appdata, itemsIds, item.id);
-              var json_allItems = buildJson(data.items, data.appdata, itemsIds, item.id);
-              refreshItemsList(json_app);
-              refreshItemsList(json_allItems);
-              buildSkeleton(phase_content, json_app, json_allItems, true);
-          });
-        $($(e.relatedTarget).attr('href')).remove();
+       var $ils_tab=$($(e.target).attr('href'));
+       //Load the content of the tab only if it doesn't exist
+       if(!$ils_tab[0]) {
+           var index = $(this).index();
+           var item = ILS_subspaces[index];
+           var ils_phases = $("#ils_phases");
+           var phase = $("<div></div>").addClass("tab-pane");
+           phase.attr("id", item.id);
+           var phase_description = $("<div></div>").append(item.description);
+           phase.append(phase_description);
+           var phase_content = $("<div></div>");
+           phase_content.attr("id", "phase_" + item.id);
+           phase.append(phase_content);
+           ils_phases.append(phase);
+           getDataById(item, function (data) {
+               var itemsIds = $('iframe').map(function () {
+                   return $(this).attr('name')
+               }).get() //An array of all names/ids of iframes (apps that run in an iframe in the description)
+               var json_app = buildJson(data.apps, data.appdata, itemsIds, item.id);
+               var json_allItems = buildJson(data.items, data.appdata, itemsIds, item.id);
+               refreshItemsList(json_app);
+               refreshItemsList(json_allItems);
+               buildSkeleton(phase_content, json_app, json_allItems, true);
+           });
+       }
     })
   // set the first tab active
   $('#ils_cycle a:first').tab('show');
