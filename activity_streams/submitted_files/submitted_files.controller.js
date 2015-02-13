@@ -54,7 +54,7 @@ function ($scope, Spaces) {
       }
     return setTimeout(function() {
       gadgets.window.adjustHeight();
-    }, 2000);
+    }, 5000);
     });
   };
 

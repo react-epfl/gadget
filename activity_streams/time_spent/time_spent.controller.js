@@ -129,7 +129,9 @@ function ($scope, Spaces) {
       } else {
         $scope.notInIlsMessage = 'Please, place this app in an inquiry space to visualise the time spent by users in inquiry phases.';
       }
-      gadgets.window.adjustHeight();
+      setTimeout(function() {
+        gadgets.window.adjustHeight();
+      }, 5000);
     });
   };
 
