@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
   <ModulePrefs title="File Drop"
-                author_email="na.li@epfl.ch"
-                author="Na Li"
+                author_email="na.li@epfl.ch, maria.rodrigueztriana@epfl.ch"
+                author="Na Li, María Jesús Rodríguez-Triana"
                 description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.eu.">
     <Locale messages="./file_drop_languages/ALL_ALL.xml"/>
     <Locale lang="es" messages="./file_drop_languages/es_ALL.xml"/>
