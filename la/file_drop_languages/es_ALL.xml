@@ -1,4 +1,5 @@
 <messageblundle>
 	<msg name="resources_in_the_space">Recursos existentes en el espacio:</msg>
-	<msg name="no_resource_found">No hay recursos actualmente en el espacio.</msg>
+	<msg name="no_resource_found">No hay recursos públicos disponibles en este espacio.</msg>
+	<msg name="file_name_warning">El nombre del fichero ya existe en este espacio. Cambie el nombre y vuelva a intentarlo.</msg>
 </messageblundle>
