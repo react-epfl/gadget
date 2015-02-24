@@ -174,7 +174,7 @@ var build = function(documents) {
     $.each( documents, function( key, value ) {
       nameList.push(value.displayName);
       if(value.visibilityLevel == "public"){
-        buildItem(documents[i]);
+        buildItem(value);
       }
     });
 
