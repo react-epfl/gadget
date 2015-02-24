@@ -1,4 +1,5 @@
 <messageblundle>
 	<msg name="resources_in_the_space">Bestanden in een space:</msg>
 	<msg name="no_resource_found">Er werden geen bestanden gevonden in deze space.</msg>
+	<msg name="file_name_warning">De bestandsnaam bestaat al. Hernoem het bestand en drop het opnieuw.</msg>
 </messageblundle>

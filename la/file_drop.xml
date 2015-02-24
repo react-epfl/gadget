@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
   <ModulePrefs title="File Drop"
-                author_email="na.li@epfl.ch"
-                author="Na Li"
+                author_email="na.li@epfl.ch, maria.rodrigueztriana@epfl.ch"
+                author="Na Li, María Jesús Rodríguez-Triana"
                 description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.eu.">
     <Locale messages="./file_drop_languages/ALL_ALL.xml"/>
     <Locale lang="es" messages="./file_drop_languages/es_ALL.xml"/>
@@ -72,6 +72,7 @@ var app = {};
 var isOwner = false;
 var parentSpaceId = null;
 var nameList = [];
+var visibility = "public";
 
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
@@ -112,7 +113,7 @@ function dropListener(){
           // add request payload to the form
           $('#request').val(JSON.stringify(request));
         } else {
-          alert("The file name already exists. Please, find a new name and drop the file again.");
+          alert("__MSG_file_name_warning__");
           this.removeFile(file);          
         }
       });
@@ -131,38 +132,28 @@ function dropListener(){
 
 // gets the data and calls build for container
 var initialize = function() {
-    app.list = $("#list");
-    ils.getIls(function(response) {
-      if (response && !response.error) {
-        ils.getVault(function(vault) {
-          if (vault !=null && vault != undefined) { //The space is an ILS and there is a VAULT folder
-            // The resource will be retrieved from / store in VAULT          
-            parentSpaceId = vault.id;
-            ils.listVault(function(resourceList) {
-              build(resourceList);
-            });
-          } else { //The space is an ILS and there is no VAULT folder
-            // The resource will be retrieved from/stored in the current space
-           osapi.context.get().execute(function(space){
-             parentSpaceId = space.contextId
-             osapi.documents.get({contextId: space.contextId, contextType: space.contextType}).execute(function(spaceResources){
-               build(spaceResources.list);
-             });
-           });
-          }
+  app.list = $("#list");
+  ils.getVault(function(vault) {
+    if (vault !=null && vault != undefined) { //The space is an ILS and there is a VAULT folder
+      // The resource will be retrieved from / store in VAULT
+      parentSpaceId = vault.id;
+      visibility = vault.visibilityLevel;
+      ils.listVault(function(resourceList) {
+        build(resourceList);
+      });
+    } else { //If theres no VAULT folder
+      // The resource will be retrieved from/stored in the current space
+      osapi.context.get().execute(function(space){
+        parentSpaceId = space.contextId;
+        if(space.visibilityLevel){
+          visibility = space.visibilityLevel;
+        }
+        osapi.documents.get({contextId: space.contextId, contextType: space.contextType}).execute(function(spaceResources){
+          build(spaceResources.list);
         });
-      }else{ // The space is not an ILS            
-        // Currently developed in the same way than an ILS without VAULT folder
-        // TODO: It should be adapted once we decide how to deal with the VAULT spaces in the new GRASP
-        osapi.context.get().execute(function(space){
-          parentSpaceId = space.contextId
-          osapi.documents.get({contextId: space.contextId, contextType: space.contextType}).execute(function(spaceResources){
-            build(spaceResources.list);
-          });
-        });
-      }
-    });
-
+      });
+    }
+  });
 
   dropListener();
   gadgets.window.adjustHeight();
@@ -177,11 +168,16 @@ var build = function(documents) {
   if (documents.error || documents.length ==0) {
     $('#msg').text("__MSG_no_resource_found__");
   } else {
-    for (var i = 0; i < documents.length; i++) {
-     var doc = documents[i];
-     nameList.push(doc.displayName);
-     buildItem(documents[i]);
+    if(visibility != "public"){
+      $('#msg').text("__MSG_no_resource_found__");
     }
+    $.each( documents, function( key, value ) {
+      nameList.push(value.displayName);
+      if(value.visibilityLevel == "public"){
+        buildItem(documents[i]);
+      }
+    });
+
   }
 
   // resize the gadget
