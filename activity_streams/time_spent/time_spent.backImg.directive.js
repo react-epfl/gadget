@@ -1,3 +1,5 @@
+'use strict';
+
 app.directive('backImg', function(){
   return function(scope, element, attrs){
     var url = attrs.backImg;

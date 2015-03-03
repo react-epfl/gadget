@@ -51,10 +51,11 @@ function ($scope, Spaces) {
         });
       } else {
         $scope.notInIlsMessage = 'Please, place this app in an inquiry space to visualise the resources submitted by users in inquiry phases.';
+        $scope.$apply();
       }
     return setTimeout(function() {
       gadgets.window.adjustHeight();
-    }, 2000);
+    }, 5000);
     });
   };
 

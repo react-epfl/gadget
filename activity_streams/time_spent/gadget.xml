@@ -33,15 +33,36 @@
     </script>
   </head>
   <body>
-    <div ng-controller="timeSpentGadget" ng-init="init(); startTimer();">
+    <div ng-controller="timeSpentGadget" ng-init="init();">
       <div id="timeSpent" class="ng-cloak">
         <p ng-show="notInIlsMessage">{{notInIlsMessage}}</p>
+        <img ng-show="notInIlsMessage" src="screenshot.png" alt="Screenshot of the time spent gadget" />
         <!--<form novalidate>
           <label>Users are considered offline after</label>
           <input type="text" ng-model="minutes" />
           <label>minutes</label>
           <input type="submit" ng-click="setUsersTimeout()" value="Apply" />
         </form>-->
+        <form ng-show="!notInIlsMessage" name="timePeriod" novalidate>
+          <label for="startTime">Get data from </label>
+          <input type="datetime-local" id="startTime" name="startTime" ng-model="startTime" placeholder="yyyy-MM-ddTHH:mm:ss" />
+          <label for="endTime" ng-hide="noEndTime"> to </label>
+          <input type="datetime-local" id="endTime" name="endTime" ng-model="endTime" placeholder="yyyy-MM-ddTHH:mm:ss" ng-hide="noEndTime" />
+          <label id="nowLabel" ng-show="noEndTime">until now</label>
+          <input
+              type="submit"
+              ng-click="fetchDataFromPeriod()"
+              ng-show="!timePeriod.startTime.$error.datetimelocal &&
+                       ((!timePeriod.endTime.$error.datetimelocal && !noEndTime) || noEndTime) &&
+                       ((endTime >= startTime && !noEndTime) || noEndTime)"
+              value="Fetch" />
+          <br />
+          <input type="checkbox" id="noEndTime" ng-model="noEndTime" />
+          <label for="noEndTime">No end time</label>
+          <div class="error" ng-show="timePeriod.startTime.$error.datetimelocal">Invalid start time</div>
+          <div class="error" ng-show="timePeriod.endTime.$error.datetimelocal && !noEndTime">Invalid end time</div>
+          <div class="error" ng-show="startTime > endTime && !noEndTime">Start time cannot be after end time</div>
+        </form>
         <table ng-show="!notInIlsMessage">
           <tr>
             <th></th>
@@ -67,7 +88,6 @@
     <script>
       head.ready(function () {
         //Scripts loaded
-        gadgets.window.adjustHeight();
       });
     </script>
   </body>
