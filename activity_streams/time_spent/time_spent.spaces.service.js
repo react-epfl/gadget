@@ -16,13 +16,13 @@ app.factory('Spaces', function () {
   space.getPhases = function(cb) {
     ils.getIls(function(ils_space){
 
-      osapi.spaces.get({contextId: ils_space.id, contextType: "@space"}).execute(function (subspaces){
+      osapi.spaces.get({contextId: ils_space.id, contextType: '@space'}).execute(function (subspaces){
 
         var phases = [];
         _.each(subspaces.list, function (subspace){
           if (subspace.spaceType !== null &&
-              subspace.displayName != "About" &&
-              subspace.displayName != "Vault") {
+              subspace.displayName != 'About' &&
+              subspace.displayName != 'Vault') {
             phases.push({
               id: subspace.id,
               name: subspace.displayName
@@ -34,9 +34,9 @@ app.factory('Spaces', function () {
     });
   };
 
-  space.getActions = function(cb) {
+  space.getActions = function(startTime, endTime, cb) {
     ils.getIls(function(ils_space){
-      osapi.activitystreams.get({contextId: ils_space.id, contextType: "@space", "minutes":"180"})
+      osapi.activitystreams.get({contextId: ils_space.id, contextType: '@space', from: startTime, to: endTime})
         .execute(function (actions) {
         var accesses = _.sortBy(actions.list, function(action) {
           return action.published;

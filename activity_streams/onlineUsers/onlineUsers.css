@@ -102,6 +102,9 @@ body {
   left: 0px;
   z-index: 5;
 }
+#onlineUsers .phase ul li div.userImage:first-letter {
+  text-transform: uppercase;
+}
 #onlineUsers .phase ul.few li div.userImage {
   width: 42px;
   height: 42px;
@@ -140,6 +143,9 @@ body {
   padding: 3px;
   color: white;
   z-index: 6;
+}
+#onlineUsers .phase ul li div.userName:first-letter {
+  text-transform: uppercase;
 }
 #onlineUsers .phase ul li:hover div.userName {
   display: block;

@@ -37,6 +37,7 @@
       <!--<p onclick="gadgets.window.adjustHeight();">Resize</p>-->
       <div id="submittedFiles" class="ng-cloak">
         <p ng-show="notInIlsMessage">{{notInIlsMessage}}</p>
+        <img ng-show="notInIlsMessage" src="screenshot.png" alt="Screenshot of the submitted files gadget" />
         <h2 ng-show="!notInIlsMessage"><ng-pluralize count="users.length"
             when="{'0': 'No file submissions',
                    'one': '1 student submitted files',
