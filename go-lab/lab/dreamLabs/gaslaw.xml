@@ -1,0 +1,37 @@
+<Module>
+    <ModulePrefs title="Gas Law"
+                 title_url="http://create.nyu.edu/dream/login.php?play=simGL"
+                 author="María Jesús Rodríguez-Triana"
+                 author_email="maria.rodrigueztriana@epfl.ch"
+                 description="The Gas Laws bring together temperature, volume and pressure and help us to see how these factors are related."
+                 height="525"
+                 screenshot="http://create.nyu.edu/dream/images/DREAM_GasLawsTile.png"
+                 thumbnail="">
+        <Require feature="opensocial-0.9" />
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string);
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			var srcString = "http://create.nyu.edu/dream/login.php?play=simGL";
+			var width = "750";
+			var height = "525";
+			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
+			gadgets.window.adjustHeight(); //so app resizes itself based on content
+		}
+
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+
+		<div id="container">
+		</div>
+	 ]]>
+    </Content>
+</Module>
