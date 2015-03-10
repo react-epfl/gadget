@@ -78,7 +78,7 @@ body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    max-width:940px;
+    max-width:1020px;
     border-radius: 0px;
     min-height: 120%;
 }
@@ -195,17 +195,20 @@ p {
 
 #ils_cycle {
     top: 0px;
-    color:white;
+    margin: 0 auto;
     padding: 0px;
+    max-width:940px;
+    color:white;
     white-space: nowrap;
     overflow: hidden;
     -webkit-transform: translateZ(0);
 }
 
 #ils_phases{
-    padding-bottom: 60px;
-    padding: 14px;
+    margin: 0 auto;
+    max-width: 940px;
     overflow: hidden;
+    padding: 0 14px 60px;
 }
 
 .tab-pane *{
@@ -245,7 +248,7 @@ p {
     height: 42px;
     z-index: 1040;
     position: relative;
-    max-width: 940px;
+    max-width: 1020px;
     overflow: hidden;
 }
 
@@ -362,7 +365,7 @@ p {
 }
 
 .hasChevrons{
-    margin: 0 20px;
+    margin: 0 20px!important;
 }
 
 .tabChevron{
@@ -374,6 +377,8 @@ p {
     cursor: pointer;
     background-position: 50%;
     background-repeat: no-repeat;
+    background-color: #5050d2;
+    z-index: 10;
 }
 
 .tabChevron:hover{
