@@ -12,8 +12,8 @@
     <Require feature="dynamic-height" />
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
-<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
-<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
+<link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 
 <!-- Style  configuration -->
 <style type="text/css">
@@ -61,50 +61,79 @@
   <table class="table table-hover doc_list"><tbody id="list"></tbody></table>
   <div id = "msg" class="msg"><div>
 </div>
-
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
 
 <script type="text/javascript">
 var app = {};
-var isOwner = false;
-var parentSpaceId = null;
 var nameList = [];
-var visibility = "public";
+var context = {};
+var userResources = [];
 
-function getQueryVariable(variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split('&');
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split('=');
-        if (decodeURIComponent(pair[0]) == variable) {
-            return decodeURIComponent(pair[1]);
+
+// gets the data and calls build for container
+var initialize = function() {
+  app.list = $("#list");
+  getContext();
+  dropListener();
+  adjustHeight();
+};
+
+function getContext(){
+  ils.getAppContextParameters(function(contextParameters){
+    context = contextParameters;
+    if(context.provider.id != "undefined" && context.storageId != "undefined"){//The provider is an ILS with VAULT
+      ils.getVaultByIlsId(context.provider.id, function(vault) {
+          context.storageVisibility = vault.visibilityLevel;
+          getResourceList();
+      });
+    } else { // The resources will be retrieved from/stored in the current space
+      osapi.context.get().execute(function(space){
+        context.storageId = space.contextId;
+        context.storageType = space.contextType;
+        if(space.visibilityLevel){
+          context.storageVisibility = space.visibilityLevel;
+        }else{
+          context.storageVisibility = "public";
         }
+        getResourceList();
+      });
     }
-    console.log('Query variable %s not found', variable);
+  });
+}
+
+function getResourceList(){
+  ils.listFilesBySpaceId(context.storageId, function(resourceList) {
+    build(resourceList);
+  });
 }
 
 // Bind listener to dropzone, and upload the dropped file
 function dropListener(){
   Dropzone.options.fileDropzone = {
     init: function() {
-      this.on("addedfile", function(file) { 
+      this.on("addedfile", function(file) {
         var filename = file.name;
-          initialize;
+          getResourceList();
           if (nameList.indexOf(filename)==-1) {
             var file_type = file.type;
-            var action = "/rpc?method=documents.create&id=documents.create"
-            action = action + "&st=" + getQueryVariable("st")
-            this.options.url = action;   
+            this.options.url  = "/rpc?method=documents.create&id=documents.create" + "&st=" + getQueryVariable("st");
+            var metadata = context;
+            metadata.target = {
+               "objectType": "file",
+               "id": "",
+               "displayName": filename
+            }
             var request={"method":"documents.create",
               "params": {
                 "document": {
-                  "displayName": filename,
-                  "parentSpaceId": parentSpaceId,
+                  "parentSpaceId": context.storageId,
                   "mimeType": file_type,
-                  "fileName": filename
+                  "fileName": filename,
+                  "metadata": metadata
                 }
               },
               "id":"documents.create"
@@ -114,14 +143,15 @@ function dropListener(){
           $('#request').val(JSON.stringify(request));
         } else {
           alert("__MSG_file_name_warning__");
-          this.removeFile(file);          
+          this.removeFile(file);
         }
       });
 
       this.on("success", function(file, response) {
         if (response.hasOwnProperty("result")) {
-          buildItem(response.result);
           $('#msg').text("");
+          buildItem(response.result);
+          userResources.push(response.result.id);
           adjustHeight();
         }
       });
@@ -130,34 +160,28 @@ function dropListener(){
   };
 }
 
-// gets the data and calls build for container
-var initialize = function() {
-  app.list = $("#list");
-  ils.getVault(function(vault) {
-    if (vault !=null && vault != undefined) { //The space is an ILS and there is a VAULT folder
-      // The resource will be retrieved from / store in VAULT
-      parentSpaceId = vault.id;
-      visibility = vault.visibilityLevel;
-      ils.listVault(function(resourceList) {
-        build(resourceList);
-      });
-    } else { //If theres no VAULT folder
-      // The resource will be retrieved from/stored in the current space
-      osapi.context.get().execute(function(space){
-        parentSpaceId = space.contextId;
-        if(space.visibilityLevel){
-          visibility = space.visibilityLevel;
-        }
-        osapi.documents.get({contextId: space.contextId, contextType: space.contextType}).execute(function(spaceResources){
-          build(spaceResources.list);
-        });
-      });
+function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split('&');
+  for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split('=');
+      if (decodeURIComponent(pair[0]) == variable) {
+          return decodeURIComponent(pair[1]);
+      }
+  }
+  console.log('Query variable %s not found', variable);
+}
+
+function verifyFilename(filename, cb) {
+  ils.listFilesBySpaceId(context.storageId, function(resourceList) {
+    build(resourceList);
+    if (nameList.indexOf(filename)==-1) {
+      return cb(true);
+    }else{
+      return cb(false);
     }
   });
-
-  dropListener();
-  gadgets.window.adjustHeight();
-};
+}
 
 var adjustHeight = function() {
   gadgets.window.adjustHeight();
@@ -165,15 +189,17 @@ var adjustHeight = function() {
 
 // build the container with gadgets
 var build = function(documents) {
+  nameList = [];
+  $("#list").empty();
   if (documents.error || documents.length ==0) {
     $('#msg').text("__MSG_no_resource_found__");
   } else {
-    if(visibility != "public"){
+    if(context.storageVisibility != "public" && userResources.length ==0){
       $('#msg').text("__MSG_no_resource_found__");
     }
-    $.each( documents, function( key, value ) {
+    $.each(documents, function(key,value) {
       nameList.push(value.displayName);
-      if(value.visibilityLevel == "public"){
+      if(value.visibilityLevel == "public" || userResources.indexOf(value.id)>-1){
         buildItem(value);
       }
     });
@@ -195,12 +221,14 @@ buildItem = function (doc) {
   var doc_el = $("<tr id='"+doc_id+"'></tr>");
 
   var doc_name = $('<td id="doc_name"></td>');
-
-  var download_link = $("<a target='_blank'></a>");
-  download_link.attr("href",doc.originUrl);
-  download_link.text(doc.displayName);
-
-  doc_name.append(download_link);
+  if(context.storageVisibility == "public"){
+    var download_link = $("<a target='_blank'></a>");
+    download_link.attr("href",doc.originUrl);
+    download_link.text(doc.displayName);
+    doc_name.append(download_link);
+  } else {
+    doc_name.text(doc.displayName);
+  }
   doc_el.append(doc_name);
 
   var update_time = $('<td id = "update_time"></td>');
