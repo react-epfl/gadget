@@ -26,7 +26,7 @@
         "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore.js",
         "http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js",
         "http://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.8.3/angular-moment.min.js",
-        "http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js",
+        "http://shindig2.epfl.ch/ils/main/ils_graaspeu.js",
         pathToGadget + "submitted_files.module.js",
         pathToGadget + "submitted_files.spaces.service.js",
         pathToGadget + "submitted_files.controller.js");
