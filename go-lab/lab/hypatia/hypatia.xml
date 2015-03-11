@@ -21,7 +21,7 @@
 		function loadFrame()
 		{
 			var srcString = "http://195.134.89.89/Hypatia_Vaadin-1.0/";
-			var width = "1200";
+			var width = "100%";
 			var height = "800";
 			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
 			gadgets.window.adjustHeight(); //so app resizes itself based on content

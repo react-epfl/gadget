@@ -1,3 +1,5 @@
+'use strict';
+
 var app = angular.module('timeSpentGadget', ['ngResource']);
 
 app.filter('numberFixedLen', function () {

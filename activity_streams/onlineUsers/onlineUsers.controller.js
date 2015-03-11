@@ -99,10 +99,12 @@ function ($scope, $timeout, Spaces) {
         $scope.findPhases();
         $scope.findActivities();
       } else {
-        $scope.notInIlsMessage = 'Please, place this app in an inquiry space to get visualise who is active in which inquiry phase.';
+        $scope.notInIlsMessage = 'Please, place this app in an inquiry space to visualise who is active in which inquiry phase.';
         $scope.$apply();
       }
-      gadgets.window.adjustHeight();
+      setTimeout(function() {
+        gadgets.window.adjustHeight();
+      }, 5000);
     });
   };
 

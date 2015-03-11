@@ -401,8 +401,8 @@ var saveUserName = function() {
 
 // Validates the entered username
 var checkUserName = function(){
-    app.user_name = $('#user_name').val();
-    if (app.user_name && /^\w+$/.test(app.user_name) && app.user_name.length<=14) {
+    app.user_name = $('#user_name').val().trim();
+    if (app.user_name && !/[\\/|?:*".<>%]/g.test(app.user_name) && app.user_name!="" && app.user_name.length<=14) {
         return app.user_name;
     }
     else{

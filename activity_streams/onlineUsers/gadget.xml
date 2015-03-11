@@ -36,6 +36,7 @@
     <div ng-controller="onlineUsersGadget" ng-init="init();">
       <div id="onlineUsers" class="ng-cloak">
         <p ng-show="notInIlsMessage">{{notInIlsMessage}}</p>
+        <img ng-show="notInIlsMessage" src="screenshot.png" alt="Screenshot of the time spent gadget" />
         <h2 ng-show="!notInIlsMessage"><ng-pluralize count="getTotalConnectedUsers()"
             when="{'0': 'Nobody is connected',
                    'one': '1 student is connected',
@@ -51,7 +52,7 @@
           <h3>{{phase.name}}</h3>
           <div class="nb-connected-students">{{phase.onlineUsers.length}}</div>
           <ul class="few" ng-class="getPhaseClass(phase.onlineUsers.length)">
-            <li id="user-{{user.id.replace('@', '-')}}" title="{{user.displayName}}" class="connected" ng-repeat="user in phase.onlineUsers | limitTo:21">
+            <li id="user-{{user.id.replace('@', '-')}}" class="connected" ng-repeat="user in phase.onlineUsers | limitTo:21">
               <div class="userImage" ng-if="user.avatar !== ''" back-img="{{user.avatar}}"></div>
               <div class="userImage" ng-if="user.avatar === ''">{{user.displayName | limitTo:1}}</div>
               <div class="userName">{{user.displayName}}</div>
@@ -63,7 +64,6 @@
     <script>
       head.ready(function () {
         //Scripts loaded
-        gadgets.window.adjustHeight();
       });
     </script>
   </body>
