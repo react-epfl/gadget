@@ -7,16 +7,16 @@
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
 
-    <Locale messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ALL_ALL.xml"/>
-    <Locale lang="fr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/fr_ALL.xml"/>
-    <Locale lang="de" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/de_ALL.xml"/>
-    <Locale lang="es" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/es_ALL.xml"/>
-    <Locale lang="ru" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ru_ALL.xml"/>
-    <Locale lang="uk" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/uk_ALL.xml"/>
-    <Locale lang="ar" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ar_ALL.xml"/>
-    <Locale lang="it" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/it_ALL.xml"/>
-    <Locale lang="gr" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/gr_ALL.xml"/>
-    <Locale lang="nl" messages="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/nl_ALL.xml"/>
+    <Locale messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ALL_ALL.xml"/>
+    <Locale lang="fr" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/fr_ALL.xml"/>
+    <Locale lang="de" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/de_ALL.xml"/>
+    <Locale lang="es" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/es_ALL.xml"/>
+    <Locale lang="ru" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ru_ALL.xml"/>
+    <Locale lang="uk" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/uk_ALL.xml"/>
+    <Locale lang="ar" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/ar_ALL.xml"/>
+    <Locale lang="it" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/it_ALL.xml"/>
+    <Locale lang="gr" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/gr_ALL.xml"/>
+    <Locale lang="nl" messages="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/message_bundles/nl_ALL.xml"/>
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -29,12 +29,12 @@
   ga('create', 'UA-60033764-1', 'auto');
   ga('send', 'pageview');
 </script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/head.js/head.min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/offline.js/offline.min.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/head.js/head.min.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/offline.js/offline.min.js"></script>
 
 <script type="text/javascript">
 //gadgets.util.registerOnLoadHandler(initialize);
-var production="http://graasp.epfl.ch";
+var production="http://shindig2.epfl.ch";
 var development="http://ask4research.info/golab";
 var local="";
 var server=production;
@@ -45,9 +45,9 @@ server+"/gadget/libs/jquery-ui/jquery-ui.js",
 server+"/gadget/libs/jquery.cookie.js",
 server+"/gadget/libs/underscore-min.js",
 server+"/gadget/libs/bootstrap3/js/bootstrap.min.js",
-server+"/ils_lib/metadata/MetadataHandler.js",
-server+"/ils_lib/applog/ActionLogger.js",
-server+"/ils_lib/main/ils_graaspeu.js",
+server+"/ils/metadata/MetadataHandler.js",
+server+"/ils/applog/ActionLogger.js",
+server+"/ils/main/ils_graaspeu.js",
 server+"/gadget/prod/ils_metawidget_graaspeu/app.js",
 server+"/gadget/prod/ils_metawidget_graaspeu/custom.js?",
 server+"/gadget/prod/ils_metawidget_graaspeu/data.js",
@@ -74,7 +74,7 @@ initIntervalTimer=setInterval(function(){
           <div class="navbar-header">
             <span id="title" title="__MSG_toggle_description_tooltip__" href="#"></span>
           </div>
-           <img id = "logout_button" title="__MSG_logout_label__" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/logout.png">
+           <img id = "logout_button" title="__MSG_logout_label__" src="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/logout.png">
            <span id = "hello_msg" href="" class="navbar-right"></span>
            </div>
 </nav>
@@ -100,8 +100,8 @@ initIntervalTimer=setInterval(function(){
 </div>
 <div id="loader" style="display:none;position:relative;top:0;bottom:0;left:0;right:0;height:100%;background-color:#5050D2;z-index:10000;" >
     <div id="inner_loader" style="position:relative;top:30%;margin-left:auto;margin-right:auto;max-width:510px;padding:0 10px;">
-        <img id="loader-image" class="centered block" style=" margin: 0 auto 30px;display:block" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/golab_logo_white_small_animated.gif">
-        <img id="loader-image-static" class="centered block" style="display:none;margin-bottom:30px;" src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/golab_logo_white_small.png">
+        <img id="loader-image" class="centered block" style=" margin: 0 auto 30px;display:block" src="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/golab_logo_white_small_animated.gif">
+        <img id="loader-image-static" class="centered block" style="display:none;margin-bottom:30px;" src="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/golab_logo_white_small.png">
         <div id="name_prompt" style="display:none" >
             <input type="text" id="user_name" style="border-radius:0px;" placeholder="__MSG_type_your_name_here__">
             <input type="text" id="password" style="display:none;border-radius:0px;" placeholder="__MSG_password_optional__">

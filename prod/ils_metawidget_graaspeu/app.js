@@ -4,7 +4,7 @@ var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
           , data: { view: "" }
-          , root_url: "http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/"
+          , root_url: "http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/"
           , user_name: ""
           , prefs: new gadgets.Prefs()
 }
@@ -120,7 +120,7 @@ var initialize_ils = function() {
          img = new Image();
          img.src = item.background.image;
          img_default= new Image();
-         img_default.src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/bg.jpg";
+         img_default.src="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/bg.jpg";
      }catch(err){
          app.backgroundImage="";
      }
