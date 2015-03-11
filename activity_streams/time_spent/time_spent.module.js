@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('timeSpentGadget', ['ngResource']);
+var app = angular.module('timeSpentGadget', ['ngResource', 'ui.bootstrap.datetimepicker', 'angularMoment']);
 
 app.filter('numberFixedLen', function () {
   return function (n, len) {
@@ -25,3 +25,17 @@ if (location.hostname === 'localhost' && location.port === '8080') {
 
 var socket = io.connect(hostToConnect);
 
+moment.locale('en', {
+    longDateFormat : {
+        LT: "H:mm",
+        LTS: "H:mm:ss",
+        L: "DD/MM/YYYY",
+        l: "D/M/YYYY",
+        LL: "MMMM Do YYYY",
+        ll: "MMM D YYYY",
+        LLL: "MMMM Do YYYY LT",
+        lll: "MMM D YYYY LT",
+        LLLL: "dddd, MMMM Do YYYY LT",
+        llll: "ddd, MMM D YYYY LT"
+    }
+});

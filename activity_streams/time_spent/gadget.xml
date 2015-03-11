@@ -13,7 +13,9 @@
   <head>
     <title>Time spent in phases</title>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="time_spent.css" />
+    <link rel="stylesheet" href="datetimepicker.css"/>
 
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
     <script type="text/javascript">
@@ -25,11 +27,14 @@
         "http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js",
         "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore.js",
         "http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js",
+        "http://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.8.3/angular-moment.min.js",
+        "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js",
         "http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js",
         pathToGadget + "time_spent.module.js",
         pathToGadget + "time_spent.spaces.service.js",
         pathToGadget + "time_spent.controller.js",
-        pathToGadget + "time_spent.backImg.directive.js");
+        pathToGadget + "time_spent.backImg.directive.js",
+        pathToGadget + "datetimepicker.js");
     </script>
   </head>
   <body>
@@ -44,11 +49,6 @@
           <input type="submit" ng-click="setUsersTimeout()" value="Apply" />
         </form>-->
         <form ng-show="!notInIlsMessage" name="timePeriod" novalidate>
-          <label for="startTime">Get data from </label>
-          <input type="datetime-local" id="startTime" name="startTime" ng-model="startTime" placeholder="yyyy-MM-ddTHH:mm:ss" />
-          <label for="endTime" ng-hide="noEndTime"> to </label>
-          <input type="datetime-local" id="endTime" name="endTime" ng-model="endTime" placeholder="yyyy-MM-ddTHH:mm:ss" ng-hide="noEndTime" />
-          <label id="nowLabel" ng-show="noEndTime">until now</label>
           <input
               type="submit"
               ng-click="fetchDataFromPeriod()"
@@ -56,14 +56,32 @@
                        ((!timePeriod.endTime.$error.datetimelocal && !noEndTime) || noEndTime) &&
                        ((endTime >= startTime && !noEndTime) || noEndTime)"
               value="Fetch" />
-          <br />
-          <input type="checkbox" id="noEndTime" ng-model="noEndTime" />
-          <label for="noEndTime">No end time</label>
+          <div class="dropdown">
+            <a class="dropdown-toggle" id="startTimeLabel" role="button" data-toggle="dropdown" data-target="#" href="">
+              Get data from <span class="date">{{startTime | amDateFormat:'dddd, MMMM Do YYYY [at] H:mm'}}</span>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="startTimeLabel">
+              <datetimepicker data-ng-model="startTime"
+                              data-datetimepicker-config="{ dropdownSelector: '#startTimeLabel' }"></datetimepicker>
+            </ul>
+          </div>
+
+          <div class="dropdown">
+            <a class="dropdown-toggle" id="endTimeLabel" role="button" data-toggle="dropdown" data-target="#" href="">
+              <span ng-show="noEndTime" ng-click="noEndTime = !noEndTime" class="date">until now</span>
+              <span ng-hide="noEndTime">to <span class="date">{{endTime | amDateFormat:'dddd, MMMM Do YYYY [at] H:mm'}}</span></span>
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="endTimeLabel">
+              <datetimepicker data-ng-model="endTime"
+                              data-datetimepicker-config="{ dropdownSelector: '#endTimeLabel' }"></datetimepicker>
+              <div id="untilNowLabel" ng-click="noEndTime = !noEndTime" ng-hide="noEndTime">Until now</div>
+            </ul>
+          </div>
           <div class="error" ng-show="timePeriod.startTime.$error.datetimelocal">Invalid start time</div>
           <div class="error" ng-show="timePeriod.endTime.$error.datetimelocal && !noEndTime">Invalid end time</div>
           <div class="error" ng-show="startTime > endTime && !noEndTime">Start time cannot be after end time</div>
         </form>
-        <table ng-show="!notInIlsMessage">
+        <table ng-show="!notInIlsMessage" class="timeSpent">
           <tr>
             <th></th>
             <th ng-repeat="phase in phases">{{phase.name}}</th>
