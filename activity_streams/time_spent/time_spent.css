@@ -1,17 +1,60 @@
 body {
   background-color: #5050d2;
-  color: white;
   font-family:"Trebuchet MS",Arial,Helvetica,sans-serif;
   margin-top:10px;
+}
+
+#timeSpent .datetimepicker span.hour {
+  font-size: 15px;
+}
+
+#timeSpent div.dropdown {
+  display: inline-block;
+}
+
+#timeSpent div.dropdown a.dropdown-toggle {
+  color: white;
+  text-decoration: none;
+}
+
+#timeSpent div.dropdown a.dropdown-toggle .date {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+#timeSpent .datetimepicker table tr td.active, #timeSpent .datetimepicker table tr td span.active {
+  background-color: #5050d2;
+  background-image: none;
+}
+
+#timeSpent #untilNowLabel {
+  text-align: center;
+  color: #333;
+  font-weight: bold;
+  width: 100px;
+  margin: auto;
+  padding: 5px;
+}
+
+#timeSpent #untilNowLabel:hover {
+  background-color: #eee;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
 }
 
 #timeSpent {
   margin: 0px;
   padding: 0px;
+  min-height: 400px;
 }
 
 #timeSpent *[ng-click] {
   cursor: pointer;
+}
+
+#timeSpent form {
+  color: white;
 }
 
 #timeSpent form input[type=text] {
@@ -19,31 +62,33 @@ body {
   padding-left: 10px;
 }
 
-#timeSpent table {
+#timeSpent table.timeSpent {
   margin-bottom: 20px;
   border-collapse: collapse;
   width: 100%;
+  color: white;
 }
 
-#timeSpent tr:nth-child(odd) td {
+#timeSpent table.timeSpent tr:nth-child(odd) td {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-#timeSpent th {
+#timeSpent table.timeSpent th {
+  text-align: center;
   padding: 5px;
 }
 
-#timeSpent td {
+#timeSpent table.timeSpent td {
   position: relative;
   text-align: center;
   padding: 3px;
 }
 
-#timeSpent td.userName {
+#timeSpent table.timeSpent td.userName {
   text-align: left;
 }
 
-#timeSpent td.userName:first-letter {
+#timeSpent table.timeSpent td.userName:first-letter {
     text-transform: uppercase;
 }
 
@@ -77,20 +122,24 @@ body {
 }
 
 #timeSpent form input[type=submit] {
-  background-color: #5050d2;
-  color: white;
-  border: 1px solid white;
+  border-width: 1px;
+  border-style: solid;
   height: 24px;
   font-size: 15px;
+  float: right;
+  background-color: #5050d2;
+  color: white;
+  border-color: white;
 }
 
 #timeSpent form input[type=submit]:hover {
   background-color: #6262FF;
+  color: white;
   border: 1px solid transparent;
 }
-
 #timeSpent form input[type=submit]:active {
   background-color: #6262FF;
+  color: white;
   border: 1px solid white;
 }
 
