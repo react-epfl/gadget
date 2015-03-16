@@ -1,0 +1,36 @@
+<Module>
+    <ModulePrefs title="Kinetic Molecular Theory II"
+                 title_url="http://create.nyu.edu/dream/login.php?play=simKMT2"
+                 author="María Jesús Rodríguez-Triana"
+                 author_email="maria.rodrigueztriana@epfl.ch"
+                 description="Kinetic Molecular Theory describes the behavior of tiny gas particles, which are too small to be seen even with the strongest microscope. Kinetic means motion, so the theory is all about particles moving!"
+                 height="525"
+                 screenshot=""
+                 thumbnail="http://create.nyu.edu/dream/images/DREAM_KMT2Tile.png">
+        <Require feature="opensocial-0.9" />
+        <Require feature="flash" />
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+	 <script type="text/javascript">
+		  // Play .swf file
+		  function displayFlash(){
+		    var url = "http://create.nyu.edu/dream/include/program/mmSimKMT2/kmt2.141001.swf";
+
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", {
+		      swf_version: 9,
+		      id: "lhcgame",
+		      width: 534,
+		      height: 835
+		    });
+		  }
+
+		  // When gadget first loads, display lhcgame.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
+
+	 <div id="flashcontainer" style="text-align: center;"></div>
+	 ]]>
+    </Content>
+</Module>
