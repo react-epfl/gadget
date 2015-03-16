@@ -1,0 +1,36 @@
+<Module>
+    <ModulePrefs title="Diffusion"
+                 title_url="http://create.nyu.edu/dream/login.php?play=simDiff"
+                 author="María Jesús Rodríguez-Triana"
+                 author_email="maria.rodrigueztriana@epfl.ch"
+                 description="Diffusion describes how particles of matter move through other liquids and gases (including air). Diffusion explains how the mass of particles and temperature are related to how quickly particles spread out over an area."
+                 height="525"
+                 screenshot=""
+                 thumbnail="http://create.nyu.edu/dream/images/DREAM_DiffTile.png">
+        <Require feature="opensocial-0.9" />
+        <Require feature="flash" />
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+	 <script type="text/javascript">
+		  // Play .swf file
+		  function displayFlash(){
+		    var url = "http://create.nyu.edu/dream/include/program/mmSimDiffusion/diffusion.141001.swf";
+
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", {
+		      swf_version: 9,
+		      id: "lhcgame",
+		      width: 534,
+		      height: 835
+		    });
+		  }
+
+		  // When gadget first loads, display lhcgame.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
+
+	 <div id="flashcontainer" style="text-align: center;"></div>
+	 ]]>
+    </Content>
+</Module>

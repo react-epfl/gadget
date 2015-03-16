@@ -5,33 +5,32 @@
                  author_email="maria.rodrigueztriana@epfl.ch"
                  description="The Gas Laws bring together temperature, volume and pressure and help us to see how these factors are related."
                  height="525"
-                 screenshot="http://create.nyu.edu/dream/images/DREAM_GasLawsTile.png"
-                 thumbnail="">
+                 screenshot=""
+                 thumbnail="http://create.nyu.edu/dream/images/DREAM_GasLawsTile.png">
         <Require feature="opensocial-0.9" />
+        <Require feature="flash" />
     </ModulePrefs>
     <Content type="html">
         <![CDATA[
 	 <script type="text/javascript">
-	 	function $(string)
-		{
-			return document.getElementById(string);
-		}
+		  // Play .swf file
+		  function displayFlash(){
+		    var url = "http://create.nyu.edu/dream/include/program/mmSimGasLaws/gaslaws.141001.swf";
 
-		//load frame
-		function loadFrame()
-		{
-			var srcString = "http://create.nyu.edu/dream/login.php?play=simGL";
-			var width = "750";
-			var height = "525";
-			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
-			gadgets.window.adjustHeight(); //so app resizes itself based on content
-		}
+		    // Play .swf file.
+		    gadgets.flash.embedFlash(url, "flashcontainer", {
+		      swf_version: 9,
+		      id: "lhcgame",
+		      width: 534,
+		      height: 835
+		    });
+		  }
 
-		gadgets.util.registerOnLoadHandler(loadFrame);
-		</script>
+		  // When gadget first loads, display lhcgame.
+		  gadgets.util.registerOnLoadHandler(displayFlash);
+	 </script>
 
-		<div id="container">
-		</div>
+	 <div id="flashcontainer" style="text-align: center;"></div>
 	 ]]>
     </Content>
 </Module>
