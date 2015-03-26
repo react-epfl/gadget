@@ -250,6 +250,12 @@ p {
     position: relative;
     max-width: 1020px;
     overflow: hidden;
+    margin: 0 auto;
+}
+
+#topWrapper{
+    background-color: #5050d2;
+    max-width: 1020px;
 }
 
 #myCustomBar{
@@ -364,9 +370,14 @@ p {
     background-color: #6262FF;
 }
 
-.hasChevrons{
+.customTop.hasChevrons{
+    max-width: 980px;
+}
+#ils_cycle.hasChevrons{
     margin: 0 20px!important;
 }
+
+
 
 .tabChevron{
     height: 100%;

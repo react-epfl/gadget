@@ -7,7 +7,7 @@ var applyNewLayout= function  () {
 
    $("#ils_phases .tab-pane").addClass("fade"); //Add Fade effect to tabs
    $("#ils_phases .tab-pane:first").addClass("in"); //Fade the tab in
-   $("#ils_cycle").wrap("<div id='customTopWrapper' class='customTop'></div>");
+   $("#ils_cycle").wrap("<div id='topWrapper'></div>").wrap("<div id='customTopWrapper' class='customTop'></div>");
 
     //When done, hide the loader and display content
         $("#main").show();
@@ -21,7 +21,7 @@ var applyNewLayout= function  () {
         });
 
 
-    myNavMenu = $('#customTopWrapper');  //gets the tabbed menu
+    myNavMenu = $('#topWrapper');  //gets the tabbed menu
     customBar =$('#myCustomBar'); //get the info bar
     customBarWrapper =$('#customBarWrapper'); //get the customBarWrapper
     faux = $('#fauxContainer'); //gets the faux container
@@ -137,7 +137,7 @@ var checkTabBarOverflow=function(){ //Check if tab bar has overflow
     var ils_cycle_bar=$("#ils_cycle");
     var ils_wrapper=$('#customTopWrapper');
     if (checkOverflow("current")&&!ils_cycle_bar.hasClass("hasChevrons")){
-        ils_cycle_bar.addClass("hasChevrons").parent("#customTopWrapper").prepend("<div id='leftChevron' class='tabChevron left disabled'/><div id='rightChevron' class='tabChevron right'/>");
+        ils_cycle_bar.addClass("hasChevrons").parent("#customTopWrapper").addClass("hasChevrons").prepend("<div id='leftChevron' class='tabChevron left disabled'/><div id='rightChevron' class='tabChevron right'/>");
 
         $('body')
             .on('click','#leftChevron',function (e) {
@@ -171,7 +171,7 @@ var checkTabBarOverflow=function(){ //Check if tab bar has overflow
                 }
             });
     }else if (!checkOverflow("initial")&&ils_cycle_bar.hasClass("hasChevrons")) {
-        ils_cycle_bar.removeClass("hasChevrons").parent("#customTopWrapper").children(".tabChevron").remove();
+        ils_cycle_bar.removeClass("hasChevrons").parent("#customTopWrapper").removeClass("hasChevrons").children(".tabChevron").remove();
         ils_cycle_bar.children().show();
     }
 
