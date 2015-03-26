@@ -793,14 +793,21 @@ var buildWindowDoc = function (parent, resource, is_center) {
 
             case "text/html":
                 $resourceToDisplay = $('<div></div>');
-                $resourceToDisplay.attr("class", "resource_content");
                 if (resource.content) {
+                    $resourceToDisplay.attr("class", "resource_content");
                     $resourceToDisplay.append(resource.content);
                 }else{
+                    $resourceToDisplay.attr("width: 100%");
+                    $resourceToDisplay.attr("height: 0px");
+                    $resourceToDisplay.attr("padding-bottom: 75%");
+                    $resourceToDisplay.attr("display: block");
                     var $code = $('<iframe seamless></iframe>');
-                    $code.attr("class", "resource_content");
                     $code.attr("src", itemUrl);
+                    $code.attr("display", "block");
                     $code.attr("width", "100%");
+                    $code.attr("height", "50%");
+                    $code.attr("margin-left", "auto");
+                    $code.attr("margin-right", "auto");
                     $resourceToDisplay.append($code);
                 }
                 break;
