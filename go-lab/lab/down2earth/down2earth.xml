@@ -11,7 +11,7 @@ Through this website, students can study the threat posed by asteroids and comet
 Using the Impact Calculator, students can create a virtual impact on Earth by changing the size, speed and composition of an approaching asteroid or comet. A selection of worksheets gives students the opportunity to learn more about asteroids and comets - their detection, orbits, deflection/destruction and the possibility of impacts - and the study of meteorites.
 
 Down2Earth uses a mix of resources, some new and some adapted from various other sources. Down2Earth is run by the Faulkes Telescope Project, supported by the National Museum of Wales and the Science Technology Facilities Council (STFC)."
-	 	height="720"
+	 	height="620"
 	 	screenshot="down2earth.png"
 	 	thumbnail="">
 	 	<Require feature="opensocial-0.9" />
@@ -49,7 +49,7 @@ Down2Earth uses a mix of resources, some new and some adapted from various other
 			}
 
 			var srcString = "http://simulator.down2earth.eu/input.html?lang=" + language;
-			var width = "920";
+			var width = "912";
 			var height = "620";
 			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
 			gadgets.window.adjustHeight(); //so app resizes itself based on content
