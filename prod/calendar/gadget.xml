@@ -6,8 +6,8 @@
                 description="Calendar app to assign events to dates"
                 width="500"
                 height="500"
-                thumbnail="http://graasp.epfl.ch/gadget/prod/calendar/thumbnail.png"
-                screenshot="http://graasp.epfl.ch/gadget/prod/calendar/screenshot.png">
+                thumbnail="http://shindig2.epfl.ch/gadget/prod/calendar/thumbnail.png"
+                screenshot="http://shindig2.epfl.ch/gadget/prod/calendar/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -362,7 +362,7 @@
   //initializing variables
   var needToSave = false;
   var file;
-  var root_url = "http://graasp.epfl.ch/gadget/prod/calendar/";
+  var root_url = "http://shindig2.epfl.ch/gadget/prod/calendar/";
   var tempDate = new Date();
   var day;
   var date = new Date();
@@ -376,7 +376,7 @@
   var selectedWeekDay = date.getDay();
   var viewMonth = date.getMonth();
   var viewYear = date.getFullYear();
-  var app = {context: "", viewerName: "", data: {days: [], months: []}, root_url: "http://graasp.epfl.ch/gadgets/prod/calendar/"};
+  var app = {context: "", viewerName: "", data: {days: [], months: []}, root_url: "http://shindig2.epfl.ch/gadgets/prod/calendar/"};
   //app.data = {days: [], months: []};
   var currEditDay = new DayClass(selectedYear, selectedMonth, selectedDay);
   var currEditDayPosition;
@@ -845,7 +845,7 @@
         }
       }
       file = file + "END:VCALENDAR\n";
-      window.open('http://graasp.epfl.ch/proxy/ical.json?filename=iCal_file&data='+escapeData(encodeURIComponent(JSON.stringify(file))));
+      window.open('http://shindig2.epfl.ch/proxy/ical.json?filename=iCal_file&data='+escapeData(encodeURIComponent(JSON.stringify(file))));
    
     }
     else{
