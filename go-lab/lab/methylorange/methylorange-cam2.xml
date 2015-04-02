@@ -4,7 +4,7 @@
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="Welcome to the online chemistry experiment. In this experiment you will synthesize methyl orange. Methyl orange is used as a dye in the textile industry. It is also used as an indicator for acid-base reactions. Methyl orange is an azoic color. The problem is that there are indications that these colors are carcinogenic and therefore controversial in the industry. The question is, how can we produce methyl orange in small scale and also produce a high yield and thereby reducing the possible risks? In this experiment you will try to produce high yields of methyl orange by flow chemistry."
-	 	height="510"
+	 	height="530"
 	 	screenshot="http://www.chem.vu.nl/en/Images/online%20sk%20exp_tcm66-262313.jpg"
 	 	thumbnail="http://www.chem.vu.nl/en/Images/online%20sk%20exp_tcm66-262313.jpg">
 	 </ModulePrefs>
@@ -21,9 +21,9 @@
 		{
 			var srcString = "http://pc-021445.clients.vu.nl/view/viewer_index.shtml";
 			var width = "800";
-			var height = "510";
+			var height = "520";
 			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
-			gadgets.window.adjustHeight(); //so app resizes itself based on content
+			//gadgets.window.adjustHeight(); //so app resizes itself based on content
 		}
 		
 		gadgets.util.registerOnLoadHandler(loadFrame);
