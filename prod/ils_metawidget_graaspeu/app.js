@@ -17,6 +17,7 @@ var ILS_subspaces;
 
 var initialize_user = function(){
     clearInterval(initIntervalTimer);
+    clearStorage();
     app.user_name = loadUserName();
     if (checkAnonymousLogin()){
         console.log("Anonymous login: "+app.user_name);
@@ -59,6 +60,11 @@ var initialize_user = function(){
         $("#enter_name_text").hide();
         $("#error_name_text").show();
     }
+}
+
+var clearStorage=function(){
+    sessionStorage.removeItem("_goLabCacheInfo_");
+    localStorage.removeItem("_goLabCacheInfo_");
 }
 
 // gets the data and calls build for container
