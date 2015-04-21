@@ -1,0 +1,24 @@
+<Module>
+	 <ModulePrefs title="Electromagnetic Field Energies in Capacitors and Inductors"
+	 	title_url="http://demonstrations.wolfram.com/ElectromagneticFieldEnergiesInCapacitorsAndInductors/"
+	 	author="María Jesús Rodríguez-Triana"
+	 	author_email="maria.rodrigueztriana@epfl.ch"
+	 	description="A capacitor with square plates of width 'a separated by a distance 'd' with a filler of dielectric constant (relative permittivity) 'k' has a capacitance given by 'C'. Typical values are in the range of picofarads (pF). A voltage 'V' can hold positive and negative charges 'q' on the plates of the capacitor while producing an internal electric field 'E'. Assuming idealized geometry, the energy of a charged capacitor equals (CV^2)/2. This energy can be considered to be stored in the electric field.
+
+Next consider an air-core inductor, again assuming idealized geometry. The relative permeability 'km' is approximated as 1. The inductance of a helical conducting coil, as shown in the graphic, is then given by 'L', where  is the number of turns. Typical values can be in the range of microhenries. Considered as a solenoid, the inductor produces a magnetic field 'B', when carrying a current 'I'. The energy of the inductor equals '(LI^2)/2', which implies a magnetic-field energy density.
+
+Combining the above results gives the well-known formula for the energy density of an electromagnetic field in a vacuum. This is valid for electric and magnetic fields from any sources, notably for electromagnetic radiation."
+	 	height="600"
+	 	screenshot="electromagnetism1.xml"
+	 	thumbnail="">
+	 	<Require feature="opensocial-0.9" />
+	 </ModulePrefs>
+	<Content type="html">
+		<![CDATA[
+			<script type='text/javascript' src='http://demonstrations.wolfram.com/javascript/embed.js' ></script>
+			<script type='text/javascript'>var demoObj = new DEMOEMBED(); demoObj.run('ElectromagneticFieldEnergiesInCapacitorsAndInductors', '', '463', '600');</script>
+			<div id='DEMO_ElectromagneticFieldEnergiesInCapacitorsAndInductors' align="center"></div>
+			<br />
+	 ]]>
+	</Content>
+</Module>
