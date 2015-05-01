@@ -37,7 +37,7 @@
 var production="http://shindig2.epfl.ch";
 var development="http://ask4research.info/golab";
 var local="";
-var server=production;
+var server="http://iamac146.epfl.ch";
 
 head.js ([
 server+"/gadget/libs/jquery-1.8.0.min.js",

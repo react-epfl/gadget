@@ -1,0 +1,136 @@
+<Module>
+    <ModulePrefs title="ILS content viewer"
+        author_email="mariarodrigueztriana@epfl.ch"
+        author="Maria Jesus Rodriguez Triana" 
+        description="Returns the structure of an ILS"
+        width="800"
+        height="800">
+        <Require feature="opensocial" />
+        <Require feature="osapi" />
+    </ModulePrefs>
+    <Content type="html" view="default,canvas,home,profile">
+        <![CDATA[
+            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery.cookie.js"></script>
+            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
+            <script type="text/javascript" src="http://iamac146.epfl.ch/ils_lib/main/ils_graaspeu.js"></script>
+            
+            <script type="text/javascript">
+
+
+                getData = function() {
+                    // id of the file that contains the list of jsons
+                    var dataSource = "554365a23ea97c547a3f379e";
+
+                    var found = 0;
+                   // var foundList = [];
+                    var empty = 0;
+                   // var emptyList = [];
+                    var unfound = 0;
+                   // var unfoundList = [];
+                    var finalList = [];
+
+                    ils.readResource(dataSource, function(resource){
+
+                        var brutContent =  JSON.parse(resource.content);
+                        //filter duplications
+                        var content = _.uniq(brutContent);
+
+                        $.each(content, function (i, ILSpace){
+                            ils.getSpaceBySpaceId(ILSpace._id, function(attributes){
+                                if (!attributes.error){
+                                    //ILS attributes
+                                    _.extend(ILSpace,attributes);
+
+                                    //phases, apps and resources
+                                    ils.getItemsBySpaceId(ILSpace._id, function(items){
+                                       if (!items.error){
+                                            var subspaces = _.filter(items, function(item){ return item.spaceType; } );
+                                            $.each(subspaces, function (j, subspace){
+                                                //subspaces, apps and resources inside of each phase
+                                                ils.getItemsBySpaceId(subspace.id, function(subitems){
+                                                    items[j].items=subitems;
+                                                });
+                                            });
+
+                                            ILSpace.items = items;
+                                            $('#of_foundList').append("<li>_id: " + ILSpace._id );
+                                            found ++;
+                                            //foundList.push(ILSpace._id);
+
+                                            if (items.size) {
+                                                $('#of_emptyList').append("<li>_id: " + ILSpace._id );
+                                                empty++;
+                                                //emptyList.push(ILSpace._id);
+                                            }
+                                       }
+                                    });
+
+                                    finalList.push(ILSpace);
+
+                                } else{
+                                    $('#of_unfoundList').append("<li>_id: " + ILSpace._id )
+                                    unfound++;
+                                    //unfoundList.push(ILSpace._id);
+                                }
+                            });
+                        });
+
+
+
+                        setTimeout(
+                            ils.createResource("extendedJsons", finalList, "", function(extendedResource){
+                                $('#if_name').append(resource.displayName);
+                                $('#if_url').append(resource.url);
+                                $('#if_numILS').append(brutContent.length);
+                                $('#of_numILS').append(content.length);
+                                $('#of_foundILSs').append(finalList);
+                                $('#of_emptyILSs').append(empty);
+                                $('#of_unfoundILSs').append(unfound);
+                                $('#of_name').append(extendedResource.displayName);
+                                $('#of_url').append(extendedResource.url);
+                            }), 80000);
+
+                        // TODO: filter ILSs
+                    });
+
+                };
+
+            </script>
+            <script type="text/javascript">
+                gadgets.util.registerOnLoadHandler(getData);
+            </script>
+
+          <br/>
+          <br/>
+          <a>1. - INPUT FILE</a>
+          <div id="if_name"><b>File name:</b> </div>
+          <div id="if_url"><b>File location:</b> </div>
+          <div id="if_numILS"><b>Number of ILSs:</b> </div>
+          <br/>
+          <br/>
+          <a>2. - OUTPUT FILE</a>
+          <div id="of_name"><b>File name:</b> </div>
+          <div id="of_url"><b>File location:</b> </div>
+          <div id="of_numILS"><b>Number of ILSs:</b> </div>
+
+          <div id="of_unfoundILSs"><b>Number of not-found ILSs:</b> </div>
+          <ul id="of_unfoundList"></ul>
+
+          <div id="of_emptyILSs"><b>Number of empty ILSs:</b> </div>
+          <ul id="of_emptyList"></ul>
+
+          <div id="of_foundILSs"><b>Number of found ILSs:</b> </div>
+          <ul id="of_foundList"></ul>
+
+          <br/>
+          <br/>
+          <br/>
+
+
+        ]]>
+
+    </Content>
+
+</Module>
+  
