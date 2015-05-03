@@ -1,0 +1,186 @@
+<Module>
+    <ModulePrefs title="ILS content viewer"
+        author_email="mariarodrigueztriana@epfl.ch"
+        author="Maria Jesus Rodriguez Triana" 
+        description="Returns the structure of an ILS"
+        width="800"
+        height="800">
+        <Require feature="opensocial" />
+        <Require feature="osapi" />
+    </ModulePrefs>
+    <Content type="html" view="default,canvas,home,profile">
+        <![CDATA[
+            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery.cookie.js"></script>
+            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
+            <script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+            
+            <script type="text/javascript">
+                var brutContentLength=0;
+                var nonDuplicatedLength=0;
+                var numFoundILSs = 0;
+                var numUnfoundILSs = 0;
+                var numEmptyILSs = 0;
+
+                getData = function() {
+                    // id of the file that contains the list of jsons
+                    var dataSource = "554365a23ea97c547a3f379e";
+
+                    ils.readResource(dataSource, function(resource){
+
+                        var brutContent =  JSON.parse(resource.content);
+                        brutContentLength = brutContent.length;
+
+                        //1. filter duplications
+                        var nonDuplicated = _.uniq(brutContent);
+                        nonDuplicatedLength = nonDuplicated.length;
+
+                        //2. check extend description of existing ILSs and extends the original data
+                        var existingILSs = [];
+                        $.each(nonDuplicated, function (i, ILSpace){
+                            ils.getSpaceBySpaceId(ILSpace._id, function(attributes){
+                                if (!attributes.error){
+
+                                    //2.a removes the item description, parentId, parentType, profileUrl, and thumbnailUrl to reduce the file size
+                                    delete attributes.description;
+                                    delete attributes.parentId;
+                                    delete attributes.parentType;
+                                    delete attributes.profileUrl;
+                                    delete attributes.thumbnailUrl;
+
+                                    //2.b ILS attributes
+                                    _.extend(ILSpace, attributes);
+
+                                    //2.c add the ILS content to the description
+                                    ils.getItemsBySpaceId(ILSpace._id, function(items){
+                                       if (!items.error){
+                                            //adds ILS content (just spaces/phases and apps)
+                                            $.each(items, function (j, item){
+                                                if(item.itemType || item.itemType=="Application"){
+                                                    //removes removes the item description, parentId, parentType, url, and token to reduce the file size
+                                                    delete item.description;
+                                                    delete item.parentId;
+                                                    delete item.parentType;
+                                                    delete item.url;
+                                                    delete item.token;
+
+                                                }else if (item.spaceType){
+                                                    //removes removes the item description, parentId, parentType, profileUrl, and thumbnailUrl to reduce the file size
+                                                    delete item.description;
+                                                    delete item.parentId;
+                                                    delete item.parentType;
+                                                    delete item.profileUrl;
+                                                    delete item.thumbnailUrl;
+
+                                                    //adds phase content (just apps)
+                                                    ils.getItemsBySpaceId(item.id, function(subitems){
+                                                        items[j].items=[];
+                                                        $.each(subitems, function (k, subitem){
+                                                            if(subitem.itemType=="Application"){
+                                                                //removes the item description to reduce the file size
+                                                                delete subitem.description;
+                                                                delete subitem.parentId;
+                                                                delete subitem.parentType;
+                                                                delete subitem.url;
+                                                                delete subitem.token;
+                                                                items[j].items.push(subitem);
+                                                            }
+                                                        });
+
+                                                    });
+
+                                                }
+                                            });
+                                            ILSpace.items = items;
+
+                                            if (!items.length || items.length==0) {
+                                                $('#of_emptyList').append("<li>_id: " + ILSpaceB._id );
+                                                numEmptyILSs++;
+                                            }
+                                       }
+                                    });
+
+
+                                    $('#of_foundList').append("<li>_id: " + ILSpace._id );
+                                    numFoundILSs++;
+
+                                    existingILSs.push(ILSpace);
+                                    console.log(ILSpace);
+
+//                                    ils.createResource("extendedJsons"+i, ILSpace, "", function(extendedResourceA){
+//                                        $('#of_name').append(extendedResourceA.displayName + "<br/>");
+//                                        $('#of_url').append(extendedResourceA.url + "<br/>");
+//                                    });
+
+                                } else{
+                                    $('#of_unfoundList').append("<li>_id: " + ILSpace._id )
+                                    numUnfoundILSs++;
+                                }
+                            });
+                        });
+
+                        $('#if_name').append(resource.displayName);
+                        $('#if_url').append(resource.url);
+                        $('#if_numILS').append(brutContentLength);
+
+                        console.log(existingILSs);
+
+                        ils.createResource("extendedJsons", existingILSs, "", function(extendedResource){
+                            $('#of_numILS').append(nonDuplicatedLength);
+                            $('#of_numFoundILSs').append(numFoundILSs);
+                            $('#of_numEmptyILSs').append(numEmptyILSs);
+                            $('#of_numUnfoundILSs').append(numUnfoundILSs);
+
+                            $('#of_name').append(extendedResource.displayName + "<br/>");
+                            $('#of_url').append(extendedResource.url + "<br/>");
+                        });
+
+
+                        $('#of_numILS').append(nonDuplicatedLength);
+                        $('#of_numFoundILSs').append(numFoundILSs);
+                        $('#of_numEmptyILSs').append(numEmptyILSs);
+                        $('#of_numUnfoundILSs').append(numUnfoundILSs);
+
+                    });
+
+                };
+
+            </script>
+            <script type="text/javascript">
+                gadgets.util.registerOnLoadHandler(getData);
+            </script>
+
+          <br/>
+          <br/>
+          <a>1. - INPUT FILE</a>
+          <div id="if_name"><b>File name:</b> </div>
+          <div id="if_url"><b>File location:</b> </div>
+          <div id="if_numILS"><b>Number of ILSs:</b> </div>
+          <br/>
+          <br/>
+          <a>2. - OUTPUT FILE</a>
+          <div id="of_name"><b>File name:</b> </div>
+          <div id="of_url"><b>File location:</b> </div>
+          <div id="of_numILS"><b>Number of ILSs:</b> </div>
+
+          <div id="of_numUnfoundILSs"><b>Number of not-found ILSs:</b> </div>
+          <ul id="of_unfoundList"></ul>
+
+          <div id="of_numEmptyILSs"><b>Number of empty ILSs:</b> </div>
+          <ul id="of_emptyList"></ul>
+
+          <div id="of_numFoundILSs"><b>Number of found ILSs:</b> </div>
+          <ul id="of_foundList"></ul>
+
+
+          <br/>
+          <br/>
+          <br/>
+
+
+        ]]>
+
+    </Content>
+
+</Module>
+  
