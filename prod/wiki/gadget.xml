@@ -10,7 +10,7 @@
                 screenshot="http://shindig2.epfl.ch/gadget/prod/wiki/screenshot.png">
     <Locale messages="./wiki_languages/ALL_ALL.xml"/>
     <Locale lang="es" messages="./wiki_languages/es_ALL.xml"/>
-    <Locale lang="de" messages="./wiki_languages/de_ALL.xml"/>
+    <Locale lang="nl" messages="./wiki_languages/nl_ALL.xml"/>
     <Locale lang="fr" messages="./wiki_languages/fr_ALL.xml"/>
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
