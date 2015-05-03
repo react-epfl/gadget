@@ -5,8 +5,8 @@
                author_email="evgeny.bogdanov@epfl.ch" 
                description="The RSS Gadget. Space owners can change rss for gadget. Space viewers can see it." 
                height="500"
-               thumbnail="http://graasp.epfl.ch/gadget/prod/rss/thumbnail.png"
-               screenshot="http://graasp.epfl.ch/gadget/prod/rss/screenshot.png">
+               thumbnail="http://shindig2.epfl.ch/gadget/prod/rss/thumbnail.png"
+               screenshot="http://shindig2.epfl.ch/gadget/prod/rss/screenshot.png">
     <Require feature="osapi" />
     <!--<Require feature="dynamic-height" />-->
     <Require feature="pubsub" />

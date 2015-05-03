@@ -6,8 +6,8 @@
                 description="The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
                 min-width="350"
                 height="500"
-                thumbnail="http://graasp.epfl.ch/gadget/prod/wiki/thumbnail.png"
-                screenshot="http://graasp.epfl.ch/gadget/prod/wiki/screenshot.png">
+                thumbnail="http://shindig2.epfl.ch/gadget/prod/wiki/thumbnail.png"
+                screenshot="http://shindig2.epfl.ch/gadget/prod/wiki/screenshot.png">
     <Locale messages="./wiki_languages/ALL_ALL.xml"/>
     <Locale lang="es" messages="./wiki_languages/es_ALL.xml"/>
     <Locale lang="de" messages="./wiki_languages/de_ALL.xml"/>
@@ -136,7 +136,7 @@
   $("#history").hide();
   changeCurrent(current, current);
   
-  var app = {context: "", viewerName: "", data: "", root_url: "http://graasp.epfl.ch/gadget/prod/wiki/"};
+  var app = {context: "", viewerName: "", data: "", root_url: "http://shindig2.epfl.ch/gadget/prod/wiki/"};
   //var app = {context: "", viewerName: "", data: "", root_url: "http://128.178.5.135/~sten/gadgets/wiki/"};
   
   var saved_text = "";

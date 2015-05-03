@@ -7,27 +7,27 @@
             description="A search widget for finding experts with domain-specific expertise. The dataset used is Mendeley corpus. This widget is developed in the context of the ROLE project, http://www.role-project.eu."
             height="330"
             width="1000"
-			thumbnail="http://graasp.epfl.ch/gadget/prod/magnifico/thumbnail.png"
-			screenshot="http://graasp.epfl.ch/gadget/prod/magnifico/screenshot.png"
+			thumbnail="http://shindig2.epfl.ch/gadget/prod/magnifico/thumbnail.png"
+			screenshot="http://shindig2.epfl.ch/gadget/prod/magnifico/screenshot.png"
             >
         <Require feature="osapi" />
         <Require feature="dynamic-height" />
     </ModulePrefs>
     <Content type="html" view="default"><![CDATA[
    	
-	<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
+	<link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
-	<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/bootstrap/js/bootstrap.min.js"></script>
 
 <div style="width:870px;margin-left:auto;margin-right:auto">
 <div class="navbar navbar-fixed-top">
 	  <div class="navbar-inner">
 	    <div class="container-fluid" style="width:870px;margin-left:auto;margin-right:auto">
 		  <center>
-			  <img src="http://graasp.epfl.ch/gadget/prod/magnifico/logo.png" height="62px" width="262px"/>
+			  <img src="http://shindig2.epfl.ch/gadget/prod/magnifico/logo.png" height="62px" width="262px"/>
 			  <input type = "text" id="query" name="query" style="width:540px; margin-top:25px; height: 30px" placeholder = "Enter expertise here." onkeyup = "catch_return_key()"/>
 			  <button id="search_btn" type="submit" class="btn btn-small btn-info"  style="margin-top:18px" onclick = "show_search_results()">
-				<img src="http://graasp.epfl.ch/gadget/prod/magnifico/logo-button.png" height="21px" width="25px">
+				<img src="http://shindig2.epfl.ch/gadget/prod/magnifico/logo-button.png" height="21px" width="25px">
 			  </button>
 		  </center>
 	    </div>
@@ -37,10 +37,10 @@
     <div class="content" id = "result_content">
     	<div id = "intro_text" style = "display: block; color: #999; font-size: x-large; text-align: center; height: 50px; padding-top: 60px">Discover people with expertise!</div>
     	<div id = "example_text" style = "text-align: center; color: #999; padding-bottom: 50px">Popular expertise: e-learning, computer graphics, recommender systems, data mining...</div>
-    	<img src="http://graasp.epfl.ch/gadget/prod/magnifico/loading.gif" id = "loading_img" height="62px" width="62px" style = "display: none; margin-left: 400px"/>
+    	<img src="http://shindig2.epfl.ch/gadget/prod/magnifico/loading.gif" id = "loading_img" height="62px" width="62px" style = "display: none; margin-left: 400px"/>
     	<div id = "error_msg" style="margin-top: 30px; display: none">
     		<div style = "float: left; margin-left: 200px">
-    		    <img src = "http://graasp.epfl.ch/gadget/prod/magnifico/Hehe.ico" id = "error_icon" height = "48px" width = "48px"/>
+    		    <img src = "http://shindig2.epfl.ch/gadget/prod/magnifico/Hehe.ico" id = "error_icon" height = "48px" width = "48px"/>
     		</div>
     		<div style = "float: left; margin-left: 15px; margin-top: 15px; text-align: center; font-size: large; font-weight: 500; color: #FF7F24">Oops! No experts were found. Please try to adjust your search query.</div>
     	</div>

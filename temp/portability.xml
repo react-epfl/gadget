@@ -133,7 +133,7 @@
         entry = list[i];
         var item = $('<div class="value"></div>');
         var name = $('<span class="space_name"></span>').html(entry.displayName);
-        var picUrl = entry.thumbnailUrl.replace("graasp.epfl.ch","localhost:3000")
+        var picUrl = entry.thumbnailUrl.replace("shindig2.epfl.ch","localhost:3000")
         var picture = $('<img class="space_picture"></img>').attr('src',picUrl);
         item.append(picture);
         item.append(name);

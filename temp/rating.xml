@@ -3,7 +3,7 @@
   <ModulePrefs title="Rating gadget" 
                 author_email="evgeny.bogdanov@epfl.ch" 
                 author="Evgeny Bogdanov" 
-                description="Click 'Rate' button, click the widget you want to rate and type your description. The rated widgets should emit 'click' events, when user clicks inside. See http://graasp.epfl.ch/gadget/rating.md for the changes required to be done in widgets that can be rated (or emitting 'click' events)."
+                description="Click 'Rate' button, click the widget you want to rate and type your description. The rated widgets should emit 'click' events, when user clicks inside. See http://shindig2.epfl.ch/gadget/rating.md for the changes required to be done in widgets that can be rated (or emitting 'click' events)."
                 width="500"
                 height="500">
     <Require feature="osapi" />
