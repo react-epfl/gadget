@@ -6,8 +6,8 @@
                 description="Widget that retrieves Twitter tweets."
                 width="350"
                 height="600"
-                thumbnail="http://graasp.epfl.ch/gadget/prod/twitter/thumbnail.png"
-                screenshot="http://graasp.epfl.ch/gadget/prod/twitter/screenshot.png">
+                thumbnail="http://shindig2.epfl.ch/gadget/prod/twitter/thumbnail.png"
+                screenshot="http://shindig2.epfl.ch/gadget/prod/twitter/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -164,7 +164,7 @@
 
 
 <script type="text/javascript">
-  var app = {context: "", viewerName: "", data: [], root_url: "http://graasp.epfl.ch/gadget/prod/twitter/"};
+  var app = {context: "", viewerName: "", data: [], root_url: "http://shindig2.epfl.ch/gadget/prod/twitter/"};
   var count = 0;
   $('input').bind('keypress', function(e) {
           if(e.keyCode==13){

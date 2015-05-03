@@ -23,7 +23,7 @@
     "provider":
     {
       "objectType": "ils",
-      "url": "http://graasp.epfl.ch/metawidget/1/b387b6f...",
+      "url": "http://shindig2.epfl.ch/metawidget/1/b387b6f...",
       "id": "0f8184db-53ba-4868-9208-896c3d7c25bb",
       "inquiryPhase": "orientation"
       "displayName": "name-of-ils"

@@ -3,13 +3,13 @@
   <ModulePrefs title="Apps view"
                 author_email="evgeny.bogdanov@epfl.ch"
                 author="Evgeny Bogdanov"
-                description="This functional skin takes all apps from a space and shows them in a grid layout that can be adapted to user's needs. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+                description="This functional skin takes all apps from a space and shows them in a grid layout that can be adapted to user's needs. At the moment, it works only in Graasp - http://shindig2.epfl.ch">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
-<link href="http://graasp.epfl.ch/gadget/prod/grid_view/app.css" rel="stylesheet" type="text/css">
+<link href="http://shindig2.epfl.ch/gadget/prod/grid_view/app.css" rel="stylesheet" type="text/css">
 
 <div id="container" onmouseover="adjustHeight();">
   <div id="not_owner" style="display:none">You are not a space owner. Your changes to apps arrangement will not be saved.</div>
@@ -31,11 +31,11 @@
   <div id="center"></div>
 </div>
 
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/jquery-ui-1.8.23.custom.min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/underscore-min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/grid_view/app.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/prod/grid_view/data.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery-ui-1.8.23.custom.min.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/prod/grid_view/app.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/prod/grid_view/data.js"></script>
 
 <script type="text/javascript">
 //gadgets.util.registerOnLoadHandler(initialize);

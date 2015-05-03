@@ -3,11 +3,11 @@
   <ModulePrefs title="Graph (demo)" 
                 author_email="evgeny.bogdanov@epfl.ch" 
                 author="Evgeny Bogdanov" 
-                description="Gadget to display data as graphs. Takes data from documents in a space and shows it on the graph. This is a demo gadget. The real gadget (http://graasp.epfl.ch/gadget/graph.xml) works only in spaces enabled containers (for example Graasp - http://graasp.epfl.ch )"
+                description="Gadget to display data as graphs. Takes data from documents in a space and shows it on the graph. This is a demo gadget. The real gadget (http://shindig2.epfl.ch/gadget/graph.xml) works only in spaces enabled containers (for example Graasp - http://shindig2.epfl.ch )"
                 width="500"
                 height="500"
-                thumbnail="http://graasp.epfl.ch/gadget/demo/graph/thumbnail.png"
-                screenshot="http://graasp.epfl.ch/gadget/demo/graph/screenshot.png">
+                thumbnail="http://shindig2.epfl.ch/gadget/demo/graph/thumbnail.png"
+                screenshot="http://shindig2.epfl.ch/gadget/demo/graph/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -20,12 +20,12 @@
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="http://graasp.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
+<!-- <script type="text/javascript" src="http://shindig2.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
 
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.common.core.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.common.tooltips.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.bar.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rgraph/RGraph.line.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/rgraph/RGraph.common.core.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/rgraph/RGraph.common.tooltips.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/rgraph/RGraph.bar.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/rgraph/RGraph.line.js"></script>
 
 <script type="text/javascript">
   function buildAllGraphs(data){

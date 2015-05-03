@@ -3,7 +3,7 @@
   <ModulePrefs title="Apps view"
                 author_email="evgeny.bogdanov@epfl.ch"
                 author="Evgeny Bogdanov"
-                description="This functional skin takes all apps from a space and shows them in a grid layout that can be adapted to user's needs. At the moment, it works only in Graasp - http://graasp.epfl.ch">
+                description="This functional skin takes all apps from a space and shows them in a grid layout that can be adapted to user's needs. At the moment, it works only in Graasp - http://shindig2.epfl.ch">
     <Require feature="dynamic-height" />
     <Require feature="shindig-container" />
   </ModulePrefs>

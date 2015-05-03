@@ -436,7 +436,7 @@ var isOwner = false;
 // gets the data and calls build for container
 var initialize = function() {
   //var d = getData(); webGLStart(d);
-  var urls = ['http://graasp.epfl.ch/images/logo/graaasp_logo.png']
+  var urls = ['http://shindig2.epfl.ch/images/logo/graaasp_logo.png']
   
   webGLStart(urls);  
   

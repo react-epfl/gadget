@@ -4,7 +4,7 @@ var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
           , data: { view: "" }
-          , root_url: "http://graasp.epfl.ch/gadget/prod/ils_metawidget/"
+          , root_url: "http://shindig2.epfl.ch/gadget/prod/ils_metawidget/"
           , user_name: ""
           , prefs: new gadgets.Prefs()
 }

@@ -12,8 +12,8 @@
     <Require feature="dynamic-height" />
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
-<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
-<link rel="stylesheet" href="http://graasp.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
+<link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 
 <!-- Style  configuration -->
 <style type="text/css">
@@ -65,9 +65,9 @@
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
 <!-- The dropzone.min.js library has been updated -->
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
 <!-- The ILS library has been included to work with the ILS and the VAULT space -->
-<script type="text/javascript" src="http://graasp.epfl.ch/ils_lib/main/ils.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/ils_lib/main/ils.js"></script>
 
 
 <script type="text/javascript">
