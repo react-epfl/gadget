@@ -6,7 +6,7 @@
                 description="This widget allows users to drag and drop files into a space. It also displays a list of existing resources in the space. It currently only works in Graasp.eu.">
     <Locale messages="./file_drop_languages/ALL_ALL.xml"/>
     <Locale lang="es" messages="./file_drop_languages/es_ALL.xml"/>
-    <Locale lang="de" messages="./file_drop_languages/de_ALL.xml"/>
+    <Locale lang="nl" messages="./file_drop_languages/nl_ALL.xml"/>
     <Locale lang="fr" messages="./file_drop_languages/fr_ALL.xml"/>
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
