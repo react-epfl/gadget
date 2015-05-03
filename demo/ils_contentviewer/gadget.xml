@@ -13,85 +13,134 @@
             <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
             <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery.cookie.js"></script>
             <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
-            <script type="text/javascript" src="http://iamac146.epfl.ch/ils_lib/main/ils_graaspeu.js"></script>
+            <script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
             
             <script type="text/javascript">
-
+                var brutContentLength=0;
+                var nonDuplicatedLength=0;
+                var numFoundILSs = 0;
+                var numUnfoundILSs = 0;
+                var numEmptyILSs = 0;
 
                 getData = function() {
                     // id of the file that contains the list of jsons
                     var dataSource = "554365a23ea97c547a3f379e";
 
-                    var found = 0;
-                   // var foundList = [];
-                    var empty = 0;
-                   // var emptyList = [];
-                    var unfound = 0;
-                   // var unfoundList = [];
-                    var finalList = [];
-
                     ils.readResource(dataSource, function(resource){
 
                         var brutContent =  JSON.parse(resource.content);
-                        //filter duplications
-                        var content = _.uniq(brutContent);
+                        brutContentLength = brutContent.length;
 
-                        $.each(content, function (i, ILSpace){
+                        //1. filter duplications
+                        var nonDuplicated = _.uniq(brutContent);
+                        nonDuplicatedLength = nonDuplicated.length;
+
+                        //2. check extend description of existing ILSs and extends the original data
+                        var existingILSs = [];
+                        $.each(nonDuplicated, function (i, ILSpace){
                             ils.getSpaceBySpaceId(ILSpace._id, function(attributes){
                                 if (!attributes.error){
-                                    //ILS attributes
-                                    _.extend(ILSpace,attributes);
 
-                                    //phases, apps and resources
+                                    //2.a removes the item description, parentId, parentType, profileUrl, and thumbnailUrl to reduce the file size
+                                    delete attributes.description;
+                                    delete attributes.parentId;
+                                    delete attributes.parentType;
+                                    delete attributes.profileUrl;
+                                    delete attributes.thumbnailUrl;
+
+                                    //2.b ILS attributes
+                                    _.extend(ILSpace, attributes);
+
+                                    //2.c add the ILS content to the description
                                     ils.getItemsBySpaceId(ILSpace._id, function(items){
                                        if (!items.error){
-                                            var subspaces = _.filter(items, function(item){ return item.spaceType; } );
-                                            $.each(subspaces, function (j, subspace){
-                                                //subspaces, apps and resources inside of each phase
-                                                ils.getItemsBySpaceId(subspace.id, function(subitems){
-                                                    items[j].items=subitems;
-                                                });
+                                            //adds ILS content (just spaces/phases and apps)
+                                            $.each(items, function (j, item){
+                                                if(item.itemType || item.itemType=="Application"){
+                                                    //removes removes the item description, parentId, parentType, url, and token to reduce the file size
+                                                    delete item.description;
+                                                    delete item.parentId;
+                                                    delete item.parentType;
+                                                    delete item.url;
+                                                    delete item.token;
+
+                                                }else if (item.spaceType){
+                                                    //removes removes the item description, parentId, parentType, profileUrl, and thumbnailUrl to reduce the file size
+                                                    delete item.description;
+                                                    delete item.parentId;
+                                                    delete item.parentType;
+                                                    delete item.profileUrl;
+                                                    delete item.thumbnailUrl;
+
+                                                    //adds phase content (just apps)
+                                                    ils.getItemsBySpaceId(item.id, function(subitems){
+                                                        items[j].items=[];
+                                                        $.each(subitems, function (k, subitem){
+                                                            if(subitem.itemType=="Application"){
+                                                                //removes the item description to reduce the file size
+                                                                delete subitem.description;
+                                                                delete subitem.parentId;
+                                                                delete subitem.parentType;
+                                                                delete subitem.url;
+                                                                delete subitem.token;
+                                                                items[j].items.push(subitem);
+                                                            }
+                                                        });
+
+                                                    });
+
+                                                }
                                             });
-
                                             ILSpace.items = items;
-                                            $('#of_foundList').append("<li>_id: " + ILSpace._id );
-                                            found ++;
-                                            //foundList.push(ILSpace._id);
 
-                                            if (items.size) {
-                                                $('#of_emptyList').append("<li>_id: " + ILSpace._id );
-                                                empty++;
-                                                //emptyList.push(ILSpace._id);
+                                            if (!items.length || items.length==0) {
+                                                $('#of_emptyList').append("<li>_id: " + ILSpaceB._id );
+                                                numEmptyILSs++;
                                             }
                                        }
                                     });
 
-                                    finalList.push(ILSpace);
+
+                                    $('#of_foundList').append("<li>_id: " + ILSpace._id );
+                                    numFoundILSs++;
+
+                                    existingILSs.push(ILSpace);
+                                    console.log(ILSpace);
+
+//                                    ils.createResource("extendedJsons"+i, ILSpace, "", function(extendedResourceA){
+//                                        $('#of_name').append(extendedResourceA.displayName + "<br/>");
+//                                        $('#of_url').append(extendedResourceA.url + "<br/>");
+//                                    });
 
                                 } else{
                                     $('#of_unfoundList').append("<li>_id: " + ILSpace._id )
-                                    unfound++;
-                                    //unfoundList.push(ILSpace._id);
+                                    numUnfoundILSs++;
                                 }
                             });
                         });
 
+                        $('#if_name').append(resource.displayName);
+                        $('#if_url').append(resource.url);
+                        $('#if_numILS').append(brutContentLength);
+
+                        console.log(existingILSs);
+
+                        ils.createResource("extendedJsons", existingILSs, "", function(extendedResource){
+                            $('#of_numILS').append(nonDuplicatedLength);
+                            $('#of_numFoundILSs').append(numFoundILSs);
+                            $('#of_numEmptyILSs').append(numEmptyILSs);
+                            $('#of_numUnfoundILSs').append(numUnfoundILSs);
+
+                            $('#of_name').append(extendedResource.displayName + "<br/>");
+                            $('#of_url').append(extendedResource.url + "<br/>");
+                        });
 
 
-                        setTimeout(
-                            ils.createResource("extendedJsons", finalList, "", function(extendedResource){
-                                $('#if_name').append(resource.displayName);
-                                $('#if_url').append(resource.url);
-                                $('#if_numILS').append(brutContent.length);
-                                $('#of_numILS').append(content.length);
-                                $('#of_foundILSs').append(finalList);
-                                $('#of_emptyILSs').append(empty);
-                                $('#of_unfoundILSs').append(unfound);
-                                $('#of_name').append(extendedResource.displayName);
-                                $('#of_url').append(extendedResource.url);
-                            }), 80000);
+                        $('#of_numILS').append(nonDuplicatedLength);
+                        $('#of_numFoundILSs').append(numFoundILSs);
+                        $('#of_numEmptyILSs').append(numEmptyILSs);
+                        $('#of_numUnfoundILSs').append(numUnfoundILSs);
 
-                        // TODO: filter ILSs
                     });
 
                 };
@@ -114,14 +163,15 @@
           <div id="of_url"><b>File location:</b> </div>
           <div id="of_numILS"><b>Number of ILSs:</b> </div>
 
-          <div id="of_unfoundILSs"><b>Number of not-found ILSs:</b> </div>
+          <div id="of_numUnfoundILSs"><b>Number of not-found ILSs:</b> </div>
           <ul id="of_unfoundList"></ul>
 
-          <div id="of_emptyILSs"><b>Number of empty ILSs:</b> </div>
+          <div id="of_numEmptyILSs"><b>Number of empty ILSs:</b> </div>
           <ul id="of_emptyList"></ul>
 
-          <div id="of_foundILSs"><b>Number of found ILSs:</b> </div>
+          <div id="of_numFoundILSs"><b>Number of found ILSs:</b> </div>
           <ul id="of_foundList"></ul>
+
 
           <br/>
           <br/>
