@@ -779,6 +779,7 @@ var buildWindowDoc = function (parent, resource, is_center) {
                 $resourceToDisplay.append($pdf);
                 break;
 
+            case "application/xhtml+xml":
             case "application/x-shockwave-flash":
                 $resourceToDisplay = $('<object></object>');
                 $resourceToDisplay.attr("class", "resource_content");
