@@ -51,6 +51,24 @@ function ($scope, Spaces) {
                                         showTickMarks: false}},
                         series:[{color:'#5FAB78', showMarker: false}]
                     });
+
+                    osapi.context.get().execute(function(context){
+                        var dataString = msg.payload.valuesArray.toString();
+                        var params = {
+                            "document": {
+                                "parentType": context.contextType,
+                                "parentSpaceId": context.contextId,
+                                "mimeType": "txt",
+                                "fileName": "voltageReading-"+msg.dateValid,
+                                "content": dataString,
+                                "metadata": "metadata"
+                                }
+                        };
+                        osapi.documents.create(params).execute(function(response){
+                            ;
+                        });
+                    });
+
                     $scope.activateGraph = true;
                     if(elements != 20) {
                         cyclicPlotBuffer.push({
