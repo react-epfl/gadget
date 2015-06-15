@@ -15,7 +15,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="time_spent.css" />
-    <link rel="stylesheet" href="datetimepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="datetimepicker.css" />
 
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
     <script type="text/javascript">
