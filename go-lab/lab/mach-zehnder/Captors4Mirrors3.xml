@@ -355,7 +355,7 @@ $('#compteur1').click(function() {
 
 $('#compteur2').click(function() {
  if(change === true) {
-  $("#compteur2").text(parseFloat((probabilite(transmited,total)).toFixed(2))+"%");
+  $("#compteur2").text(parseFloat((probabilite(reflected,total)).toFixed(2))+"%");
   $("#compteur2").css('font-size', '0.4em');
   change = false;
 } else {
@@ -366,7 +366,7 @@ $('#compteur2').click(function() {
 });
 $('#compteur3').click(function() {
   if(change === true) {
-  $("#compteur3").text(parseFloat((probabilite(transmited,total)).toFixed(2))+"%");
+  $("#compteur3").text(parseFloat((probabilite(transmited2,total)).toFixed(2))+"%");
   $("#compteur3").css('font-size', '0.4em');
   change = false;
 } else {
@@ -377,7 +377,7 @@ $('#compteur3').click(function() {
 });
 $('#compteur4').click(function() {
 if(change === true) {
-  $("#compteur4").text(parseFloat((probabilite(transmited,total)).toFixed(2))+"%");
+  $("#compteur4").text(parseFloat((probabilite(reflected2,total)).toFixed(2))+"%");
   $("#compteur4").css('font-size', '0.4em');
   change = false;
 } else {

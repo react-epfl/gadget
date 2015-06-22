@@ -295,7 +295,7 @@ $('#compteur1').click(function() {
 
 $('#compteur2').click(function() {
  if(change === true) {
-  $("#compteur2").text(parseFloat((probabilite(transmited,total)).toFixed(2))+"%");
+  $("#compteur2").text(parseFloat((probabilite(reflected,total)).toFixed(2))+"%");
   $("#compteur2").css('font-size', '0.4em');
   change = false;
 } else {
