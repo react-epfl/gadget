@@ -8,7 +8,7 @@
                 height="100%">
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
-    <link href="./css/physics.css" rel="stylesheet">
+    <link href="http://shindig2.epfl.ch/gadget/go-lab/lab/mach-zehnder/css/physics.css" rel="stylesheet">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <div id="vis" class = "gadget4">
