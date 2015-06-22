@@ -12,7 +12,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <div id="vis" class="gadget2">
-  <img id="miroir" src=s class = " miroir " />
+  <img id="miroir" src="./img/miroir2.png" class = " miroir " />
   <img id="miroir2" src="./img/miroir2.png" class = " miroir " />
   <img id="miroir3" src="./img/miroir2.png" class = " miroir " />
   <div id="compteur" class = "compteur unselectable"></div>
