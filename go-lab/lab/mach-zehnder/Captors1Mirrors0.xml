@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Physique app" 
+                author_email="w.myszkrowski@gmail.com" 
+                author="Wojciech myszkrowski" 
+                description="Physique app to describe photons behevior"
+                width="100%"
+                height="100%">
+
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://www.jasondavies.com/animated-bezier/media/js/jquery.min.js"></script>
+    <script src="http://www.jasondavies.com/animated-bezier/media/js/d3.v2.min.js"></script>
+<div id="vis">
+  <div id="compteur1" class="unselectable"></div>
+  <div id="compteur" class="unselectable"></div>
+  <img id="reset" src="./img/reset.svg" style="width:30px;height:30px" class="unselectable" />
+</div>
+<style type="text/css">
+#vis {
+  width: 100%;
+  height: 500px;
+  margin: 0 auto;
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  transform-origin: 0 0;
+  -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+}
+#reset {
+  position: fixed;
+  bottom: 8%;
+  left:3.2%;
+}
+#compteur1 {
+  position: fixed;
+  top: 20%;
+  left: 77.78%;
+  margin: -20px 0 0 -7px;
+  color:#FFFFFF;
+  background-color: #5050D2;
+    height: 60px;
+    width: 60px;
+    line-height:60px;
+    text-align:center;
+    font-size: 25px;
+}
+#compteur {
+  width: 80px;
+  height: 50px;
+  position: fixed;
+  top: 20%;
+  left: 2.22%;
+  margin: -13px 0 0 9px;
+  color:#FFFFFF;
+  background-color :#5050D2;
+    font-size:20px;
+    text-align:center;
+    line-height:50px; 
+  }
+#compteur:after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  top: 19px;
+  padding: 2px;
+  width: 5px;
+  height: 5px;
+  background-color: #fff;
+  border-radius: 100%;
+}
+</style>
+<script type="text/javascript">
+var w = 900,
+    h = 500,
+    padding = 10,
+    straightPoints = [{x: 20, y: 100}, {x: 700, y: 100}],
+    line = d3.svg.line().x(x).y(y).interpolate("linear"),
+    n = 1,
+    stroke = d3.scale.category20b(),
+    orders = d3.range(4, n+4 );
+ 
+var vis = d3.select("#vis");
+
+var svg = vis
+  .append("svg")
+  .data(orders)
+  .attr("width", "100%")
+  .attr("height", "100%");
+
+var g = svg.append("g")
+  .data(function (d) { return [d]; })
+  .attr("transform", "translate(" + padding + "," + padding + ")");
+
+var path = g.append("path")
+  .data(function (d) { return [d]; })
+  .style("fill", "grey")
+  .style("stroke", "grey")
+  .attr("stroke-width", 5)
+  .attr("opacity", 0.2)
+  .attr("class", "straignt-line")
+  .attr("d", line(straightPoints));
+
+var circle = g.append("circle")
+  .style("fill", "blue")
+  .style("stroke", "blue")
+  .attr("opacity", 0)
+  .attr("r", 4)
+  .attr("cx", straightPoints[0].x)
+  .attr("cy", straightPoints[0].y);
+
+var transmited = 0;
+var total =0;
+
+function scalePoints(points, scale) {
+	var newPoints = [];
+	for (var i = 0; i < points.length; i++) {
+		newPoints[i] = {x: points[i].x * scale, y: points[i].y * scale};
+	}
+	return newPoints;
+} 
+
+function resize() {
+  var w = parseInt(d3.select("body").style("width")),
+      h = parseInt(d3.select("body").style("height"));
+
+  var wScale = w / 900;
+  var hScale = h / 500;
+  var scale = (wScale < hScale) ? wScale : hScale;
+  if (scale < 0.333) scale = 0.333;
+  // vis.attr("style", "-webkit-transform: scale(" + scale + "); -moz-transform: scale(" + scale + "); -ms-transform: scale(" + scale + "); transform: scale(" + scale + ");");
+     //straightPoints[1].y = h - 60;
+  var newPoints = scalePoints(straightPoints, scale);
+  path.attr("d", line(newPoints));
+  $('#vis').css({'height': 500 * scale, 'width': 900 * scale});
+}
+
+$(window).on('resize', resize);
+$(document).ready(function() {
+  resize();
+});
+
+
+var straightLine = function() {
+  circle.transition()
+    .duration(200)
+    .attr("cx", straightPoints[1].x)
+    .attr("cy", straightPoints[1].y)
+    .ease("linear")
+    transmited++;
+    total++;
+
+};
+
+var updateCounters = function () {
+  $("#compteur").text(total);
+  $("#compteur1").text(transmited);
+  if(transmited > 999) {
+  	$("#compteur1").css('font-size', '20px');
+  } else {
+  	$("#compteur1").css('font-size', '30px');
+  }
+  
+  $("#compteur").css('font-size', '20px');
+
+
+}
+var randomPath = function()  {
+  reseter();
+  straightLine();
+  updateCounters();
+  
+};
+
+var reseter = function() {
+  circle.attr("cx", straightPoints[0].x)
+        .attr("cy", straightPoints[0].y)
+}
+function changeColor() {
+
+  var change = function () {
+    $('#compteur1').css('color', 'white');
+    $('#compteur1').css('background-color', '#5050D2');
+  }
+  setTimeout(change, 300);
+  randomPath();
+  $('#compteur1').css('background-color', '#9698e2');
+
+}
+function shadowEffect () {
+
+	$("#compteur").css('box-shadow', '1px 1px 12px #080');
+
+}
+
+function probabilite() {
+	var prob  = 0;
+	if (transmited === 0) {
+	    prob = 0;
+	} else {
+		prob = transmited/total*100;
+	}
+	return prob;
+}
+var change = true;
+probabilite();
+$('#compteur1').click(function() {
+  if(change === true) {
+	$("#compteur1").text(probabilite()+"%");
+	$("#compteur1").css('font-size', '20px');
+  change = false;
+} else {
+  updateCounters();
+  change=true;
+}
+});
+
+function easy() {
+    changeColor();
+    shadowEffect();
+    $("#compteur").text(total);
+    $("#compteur").css('color','white');
+    setTimeout(function() {
+		$("#compteur").css('box-shadow', '1px 1px 12px #FFF');
+	},100)
+}
+
+var continueLoop = false;
+var currentLoop = 0;
+var loopDelay = 300;
+var timeoutId = 0;
+var eventFired = false;
+var clicked = false;
+
+var myFunction = function() {
+  if (continueLoop) {
+    eventFired = true;
+    if (loopDelay > 50) loopDelay = loopDelay - 10;
+   for (var i = 0; i < 100; i++) {
+    easy();
+ 
+  }
+    setTimeout(myFunction, loopDelay);
+  }
+}
+
+$(document).on('mousedown touchstart MSPointerDown', '#compteur', function() {
+  continueLoop = true;
+  clicked = true;
+  timeoutId = setTimeout(myFunction, 500);
+
+  $(window).one('mouseup mouseout touchend dragend dragstop dragleave MSPointerUp', function() {
+      if (clicked && !eventFired) easy();
+      clearTimeout(timeoutId);
+      continueLoop = false;
+      loopDelay = 300;
+      eventFired = false;
+      clicked = false;
+  });
+});
+
+$('#reset').click(function() {
+  var h = d3.select("circle");
+     h.transition()
+        .attr("cx",straightPoints[0].x)
+        .attr("cy",straightPoints[0].y)
+        .duration(0);
+      transmited=0;
+      total = 0;
+      updateCounters(); 
+
+});
+
+
+function x(d) { return d.x; }
+function y(d) { return d.y; }
+</script>
+
+     ]]></Content>
+</Module>
