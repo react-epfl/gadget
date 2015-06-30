@@ -9,7 +9,7 @@
     <Require feature="dynamic-height"/>
 </ModulePrefs>
 <Content type="html"><![CDATA[
-  <html ng-app="onlineUsersGadget">
+  <html>
   <head>
     <title>Online users</title>
 
@@ -63,6 +63,8 @@
     </div>
     <script>
       head.ready(function () {
+        // Manually bootstrap angular to avoid conflicts
+        angular.bootstrap(document, ['onlineUsersGadget']);
         //Scripts loaded
       });
     </script>

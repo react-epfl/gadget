@@ -9,7 +9,7 @@
     <Require feature="dynamic-height"/>
 </ModulePrefs>
 <Content type="html"><![CDATA[
-  <html ng-app="timeSpentGadget">
+  <html>
   <head>
     <title>Time spent in phases</title>
 
@@ -105,6 +105,8 @@
     </div>
     <script>
       head.ready(function () {
+        // Manually bootstrap angular to avoid conflicts
+        angular.bootstrap(document, ['timeSpentGadget']);
         //Scripts loaded
       });
     </script>
