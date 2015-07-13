@@ -1,0 +1,271 @@
+#vis {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 40px;
+  margin: auto;
+  }
+@media screen and (max-width: 600px), screen and (max-height: 333px) {
+  #vis {
+    font-size: 30px;
+  }
+}
+  
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#reset {
+  position: absolute;
+  bottom: 2.1%;
+  left:4%;
+  width:30px;
+  height:30px;
+
+}
+.gadget4 #longueur {
+  position: absolute;
+  top: 44%;
+  left: 30%;
+  height: 40px;
+  color : #5050D2;
+  font-size: 20px;
+}
+.gadget4 #triangle {
+    width:30px;
+    height:30px;
+    vertical-align:bottom;
+}
+@media screen and (max-width: 600px), screen and (max-height: 333px) {
+  #longueur {
+    height:20px
+    font-size: 10px;
+  }
+}
+#compteur {
+
+  top:24%;
+  left: 3.2%;
+  margin : -13px 0 0 -10px;
+  padding-right: 15px;
+}
+#compteur:after {
+  content: "";
+  position: absolute;
+  right: 6.25%;
+  top: 50%;
+  padding: 2px;
+  width: 5px;
+  margin-top: -5px;
+  height: 5px;
+  background-color: #fff;
+  border-radius: 100%;
+}
+.gadget1 #compteur {
+  top:19%;
+  left: 6%;
+  }
+.gadget3 #compteur {
+  top:16%;
+  left: 5.56%;
+}
+.gadget4 #compteur {
+  top:16%;
+  left: 5.56%;
+}
+@media screen and (max-width: 600px), screen and (max-height: 333px) {
+  #compteur {
+    width: 40px;
+    height: 40px;
+    left: 4.2%;
+    margin: -10px 0 0 -10px;
+    line-height: 40px;
+  }
+}
+.gadget4 #compteur1 {
+  top: 70%;
+  left: 81.11%;
+}
+.gadget4 #compteur2 {
+  top: 90%;
+  left: 65.56%;
+}
+.gadget3 #compteur1 {
+  top: 64%;
+  left: 81.11%;
+}
+.gadget3 #compteur2 {
+  top: 90%;
+  left: 65.56%;
+}
+
+.gadget2 #compteur1 {
+  top: 25%;
+  left:80.56%;
+}
+.gadget2 #compteur2 {
+  top:90%;
+  left:27%;
+}
+.gadget2 #compteur3 {
+  top: 60%;
+  left: 42.22%;
+}
+.gadget2 #compteur4 {
+  top: 55%;
+  left: 64.44%;
+}
+.gadget1 #compteur1 {
+ top: 19%;
+ left: 80%;
+}
+.gadget1 #compteur2 {
+ top: 80%;
+ left: 45%;
+}
+.compteur {
+    position: absolute;
+    margin: -18px 0 0 -22px;
+    color: #fff;
+    background-color :#5050D2;
+    height: 60px;
+    width: 60px;
+    line-height: 60px;
+    text-align: center;
+}
+@media screen and (max-width: 600px) , screen and (max-height: 333px) {
+  .compteur {
+    width: 40px;
+    height: 40px;
+    margin: -10px 0 0 -10px;
+    line-height: 40px;
+  }
+}
+
+.miroir {
+    position: absolute;
+    margin: -10px 0 0 -10px;
+    height: 40px;
+    width: 40px;
+    float: left;
+}
+.miroir2 {
+    position: absolute;
+    margin: -11px 0 0 -1px;
+    height: 40px;
+    width: 40px;
+    float: left;
+}
+.gadget4  #miroir {
+  top: 17%;
+  left: 22.78%;
+}
+.gadget4 #miroir2 {
+  top: 70%;
+  left: 65.56%;
+}
+.gadget4 #miroirNoir {
+    top: 17%;
+    left: 65.56%;
+}
+.gadget4 #miroirNoir2 {
+    top: 70%;
+    left: 22.27%;
+}
+.gadget4 #miroirNoir3 {
+    top: 36%;
+    left: 23.11%;
+}
+.gadget4  #miroirNoir4 {
+    top: 52%;
+    left: 22.67%;
+}
+.gadget4  #miroirNoir5 {
+    top: 35%;
+    left: 14.78%;
+}
+.gadget4  #miroirNoir6 {
+    top: 53%;
+    left: 14.22%;
+}
+.gadget3 #miroir {
+    top: 17%;
+    left: 22.78%;
+
+}
+.gadget3 #miroir2 {
+    top: 64%;
+    left: 65.56%;
+
+}
+.gadget3 #miroirNoir {
+    top: 17%;
+    left: 65.56%;
+
+}
+.gadget3 #miroirNoir2 {
+    top: 64%;
+    left: 22.27%;
+}
+.gadget2  #miroir {
+    top: 25%;
+    left: 26.67%;
+  }
+.gadget2  #miroir2 {
+    top: 25%;
+    left: 64.44%;
+}
+.gadget2  #miroir3 {
+  top: 60%;
+  left: 26.67%;
+}
+.gadget1 #miroir{
+ top: 19%;
+ left: 45%;
+}
+@media screen and (max-width: 600px), screen and (max-height: 333px) {
+  .miroir {
+    width: 30px;
+    height: 30px;
+    margin: -5px 0 0 -5px;
+  }
+}
+@media screen and (max-width: 600px), screen and (max-height: 333px) {
+  #miroirNoir5 {
+    width: 30px;
+    height: 30px;
+    margin: -5px 0 0 5px;
+  }
+  #miroirNoir6 {
+    width: 30px;
+    height: 30px;
+    margin: -5px 0 0 5px;
+  }
+}
+.gadget4 #add {
+  position: absolute;
+  top: 45%;
+  left:26.56%;
+  width: 20px;
+  height: 20px;
+  margin-left: -5px;
+  margin-top: -5px;
+
+}
+.gadget4 #substract {
+	position: absolute;
+	top: 45%;
+	left: 31.56;
+	width: 20px;
+    height: 11px;
+}
+@media screen and (max-width: 600px), screen and (max-height: 333px) {
+    #add {
+    width: 10px;
+    height: 10px;
+    }
+}

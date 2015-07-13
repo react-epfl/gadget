@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs title="Physique app" 
+                author_email="w.myszkrowski@gmail.com" 
+                author="Wojciech myszkrowski" 
+                description="Physique app to describe photons behevior"
+                width="100%"
+                height="100%">
+  </ModulePrefs>
+  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+    <link href="http://shindig2.epfl.ch/gadget/go-lab/lab/mach-zehnder/css/physics.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<div id="vis" class = " gadget1">
+  <img id="miroir" src="./img/miroir2.png" class = "miroir" />
+  <div id="compteur1" class = "compteur unselectable"></div>
+  <div id="compteur2" class = "compteur unselectable"></div>
+  <div id="compteur" class = "compteur unselectable"></div>
+  <img id="reset" src="./img/reset.svg" style="width:30px;height:30px" class = "unselectable"  />
+</div>
+<style type="text/css">
+
+</style>
+<script type="text/javascript">
+var w = 900,
+    h = 500,
+    t = 0,
+    padding = 10,
+    straightPoints = [{x: 90, y: 95}, {x: 700, y: 95}],
+    midPoint = [{x: 405, y: 95},{x: 405, y: 400 }],
+    line = d3.svg.line().x(x).y(y).interpolate("linear"),
+    n = 1,
+    stroke = d3.scale.category20b(),
+    orders = d3.range(4, n+4 );
+
+var vis = d3.select("#vis");
+
+var svg = vis
+  .append("svg")
+  .data(orders)
+  .attr("width", "100%")
+  .attr("height", "100%")
+  .append("g");
+
+var g = svg.append("g")
+  .data(function (d) { return [d]; })
+  .attr("transform", "translate(" + padding + "," + padding + ")");
+
+var path = g.append("path")
+  .data(function (d) { return [d]; })
+  .style("fill", "grey")
+  .style("stroke", "grey")
+  .attr("stroke-width", 5)
+  .attr("opacity", 0.2)
+  .attr("class", "straignt-line")
+  .attr("d", line(straightPoints));
+
+var Lpath = g.append("path")
+  .data(function (d) { return [d]; })
+  .style("fill", "grey")
+  .style("stroke", "grey")
+  .attr("stroke-width", 5)
+  .attr("opacity", 0.2)
+  .attr("class", "straignt-line")
+  .attr("d", line(midPoint));
+  
+
+var circle = g.append("circle")
+  .style("fill", "blue")
+  .style("stroke", "blue")
+  .attr("opacity", 0)
+  .attr("r", 4)
+  .attr("cx", straightPoints[0].x)
+  .attr("cy", straightPoints[0].y);
+
+function getScale () {
+  var w = parseInt(d3.select("body").style("width")),
+      h = parseInt(d3.select("body").style("height"));
+
+  var wScale = w / 900;
+  var hScale = h / 500;
+  var scale = (wScale < hScale) ? wScale : hScale;
+  if (scale < 0.222) scale = 0.222;
+  return scale;
+}
+
+function resize() {
+  var scale = getScale();
+  var w = parseInt(d3.select("body").style("width")),
+      h = parseInt(d3.select("body").style("height"));
+
+  //vis.attr("style", "-webkit-transform: scale(" + scale + "); -moz-transform: scale(" + scale + "); -ms-transform: scale(" + scale + "); transform: scale(" + scale + ");");
+     //straightPoints[1].y = h - 60;
+  var newPoints = scalePoints(straightPoints, scale);
+  var newPoints2 = scalePoints(midPoint,scale);
+  path.attr("d", line(newPoints));
+  Lpath.attr("d", line(newPoints2));
+$('#vis').css({'height': 500 * scale, 'width': 900 * scale});
+}
+$(window).on('resize', resize);
+$(document).ready(function() {
+  resize();
+});
+
+var transmited = 0;
+var reflected  = 0;
+var total = 0;
+
+function scalePoints(points, scale) {
+  var newPoints = [];
+  for (var i = 0; i < points.length; i++) {
+    newPoints[i] = {x: points[i].x * scale, y: points[i].y * scale};
+  }
+  return newPoints;
+} 
+
+var straightLine = function() {
+  circle.transition()
+    .duration(100)
+    .attr("cx", straightPoints[1].x)
+    .attr("cy", straightPoints[1].y)
+    .ease("linear")
+    .delay(200);
+    transmited++;
+    total++;
+
+};
+var lShapeFirst = function () {
+  circle.transition()
+    .duration(50)
+    .attr("cx",midPoint[0].x)
+    .attr("cy",midPoint[0].y)
+    .each("end", lShapeSecond)
+    .ease("linear");
+    reflected++;
+    total++;
+    
+};
+var lShapeSecond = function () {
+  circle.transition()
+    .duration(50)
+    .attr("cx",midPoint[1].x)
+    .attr("cy",midPoint[1].y)
+    .ease("linear");
+    
+};
+
+var updateCounters = function () {
+  $("#compteur").text(total);
+  $("#compteur1").text(transmited);
+  $("#compteur2").text(reflected);
+  if (total > 99 && total < 1000) {
+    $("#compteur").css('font-size', '0.7em');
+  } else if (total > 999) {
+    $("#compteur").css('font-size', '0.5em');
+  } else {
+    $("#compteur").css('font-size', '1em');
+  }
+  if (transmited > 99 && transmited < 1000) {
+    $("#compteur1").css('font-size', '0.7em');
+  } else if (transmited > 999) {
+    $("#compteur1").css('font-size', '0.5em');
+  } else {
+    $("#compteur1").css('font-size', '1em');
+  }
+   if (reflected > 99 && reflected < 1000) {
+    $("#compteur2").css('font-size', '0.7em');
+  } else if (reflected > 999) {
+    $("#compteur2").css('font-size', '0.5em');
+  } else {
+    $("#compteur2").css('font-size', '1em');
+  }
+}
+
+var randomPath = function()  {
+  reseter();
+  updateCounters();
+    
+};
+function shadowEffect () {
+
+  $("#compteur").css('box-shadow', '1px 1px 12px #080');
+
+}
+function changeColor() {
+  var magicNumber = Math.random();
+  if(magicNumber < 0.5 ) {
+
+    var change = function () {
+      $('#compteur1').css('color', 'white');
+      $('#compteur1').css('background-color', '#5050D2');
+    }
+    setTimeout(change, 500);
+    straightLine();
+    randomPath();
+    $('#compteur1').css('background-color', '#9698e2');
+  } else {  
+    var change2 = function () {
+      $('#compteur2').css('color', 'white');
+      $('#compteur2').css('background-color', '#5050D2');
+    }
+    setTimeout(change2, 500);
+    lShapeFirst();
+    randomPath();
+    $('#compteur2').css('background-color', '#9698e2');
+
+  }
+}
+function easy() {
+    changeColor();
+    shadowEffect();
+    $("#compteur").text(total);
+    $("#compteur").css('color','white');
+    setTimeout(function() {
+    $("#compteur").css('box-shadow', '1px 1px 12px #FFF');
+  },100)
+}
+
+var reseter = function() {
+  circle.attr("cx", straightPoints[0].x)
+        .attr("cy", straightPoints[0].y)
+}
+function probabilite(first,each) {
+  var prob  = 0;
+  if (first === 0) {
+      prob = 0;
+  } else {
+    prob = first/each*100;
+  }
+  return prob;
+}
+var change = true;
+$('#compteur1').click(function() {
+    if(change ===true) {
+    $("#compteur1").text(parseFloat((probabilite(transmited,total)).toFixed(2))+"%");
+    $("#compteur1").css('font-size', '0.4em');
+    change = false;
+  } else {
+    updateCounters();
+    change = true;
+  }
+});
+
+$('#compteur2').click(function() {
+    if(change ===true) {
+    $("#compteur2").text(parseFloat((probabilite(transmited,total)).toFixed(2))+"%");
+    $("#compteur2").css('font-size', '0.4em');
+    change = false;
+  } else {
+    updateCounters();
+    change = true;
+  }
+
+});
+
+var continueLoop = false;
+var currentLoop = 0;
+var loopDelay = 300;
+var timeoutId = 0;
+var eventFired = false;
+var clicked = false;
+
+var myFunction = function() {
+  if (continueLoop) {
+    eventFired = true;
+    if (loopDelay > 50) loopDelay = loopDelay - 10;
+   for (var i = 0; i < 100; i++) {
+    easy();
+ 
+  }
+    setTimeout(myFunction, loopDelay);
+  }
+}
+
+$(document).on('mousedown touchstart MSPointerDown', '#compteur', function() {
+  continueLoop = true;
+  clicked = true;
+  timeoutId = setTimeout(myFunction, 500);
+
+  $(window).one('mouseup mouseout touchend dragend dragstop dragleave MSPointerUp', function() {
+    if (clicked && !eventFired) easy();
+    clearTimeout(timeoutId);
+    continueLoop = false;
+    loopDelay = 300;
+    eventFired = false;
+    clicked = false;
+  });
+});
+
+$('#reset').click(function() {
+  var h = d3.select("circle");
+     h.transition()
+        .attr("cx",straightPoints[0].x)
+        .attr("cy",straightPoints[0].y)
+        .duration(0);
+      reflected=0;
+      transmited=0;
+      total = 0;
+      updateCounters();  
+});
+
+function x(d) { return d.x; }
+function y(d) { return d.y; }
+</script>
+
+     ]]></Content>
+</Module>

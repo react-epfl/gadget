@@ -4,7 +4,7 @@ var isOwner = false;
 var my = {};
 var app = { context: "", viewerName: ""
           , data: { view: "" }
-          , root_url: "http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/"
+          , root_url: "http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/"
           , user_name: ""
           , prefs: new gadgets.Prefs()
 }
@@ -17,6 +17,7 @@ var ILS_subspaces;
 
 var initialize_user = function(){
     clearInterval(initIntervalTimer);
+    clearStorage();
     app.user_name = loadUserName();
     if (checkAnonymousLogin()){
         console.log("Anonymous login: "+app.user_name);
@@ -59,6 +60,11 @@ var initialize_user = function(){
         $("#enter_name_text").hide();
         $("#error_name_text").show();
     }
+}
+
+var clearStorage=function(){
+    sessionStorage.removeItem("_goLabCacheInfo_");
+    localStorage.removeItem("_goLabCacheInfo_");
 }
 
 // gets the data and calls build for container
@@ -120,7 +126,7 @@ var initialize_ils = function() {
          img = new Image();
          img.src = item.background.image;
          img_default= new Image();
-         img_default.src="http://graasp.epfl.ch/gadget/prod/ils_metawidget_graaspeu/bg.jpg";
+         img_default.src="http://shindig2.epfl.ch/gadget/prod/ils_metawidget_graaspeu/bg.jpg";
      }catch(err){
          app.backgroundImage="";
      }
@@ -773,6 +779,7 @@ var buildWindowDoc = function (parent, resource, is_center) {
                 $resourceToDisplay.append($pdf);
                 break;
 
+            case "application/xhtml+xml":
             case "application/x-shockwave-flash":
                 $resourceToDisplay = $('<object></object>');
                 $resourceToDisplay.attr("class", "resource_content");
@@ -793,14 +800,21 @@ var buildWindowDoc = function (parent, resource, is_center) {
 
             case "text/html":
                 $resourceToDisplay = $('<div></div>');
-                $resourceToDisplay.attr("class", "resource_content");
                 if (resource.content) {
+                    $resourceToDisplay.attr("class", "resource_content");
                     $resourceToDisplay.append(resource.content);
                 }else{
+                    $resourceToDisplay.attr("width: 100%");
+                    $resourceToDisplay.attr("height: 0px");
+                    $resourceToDisplay.attr("padding-bottom: 75%");
+                    $resourceToDisplay.attr("display: block");
                     var $code = $('<iframe seamless></iframe>');
-                    $code.attr("class", "resource_content");
                     $code.attr("src", itemUrl);
+                    $code.attr("display", "block");
                     $code.attr("width", "100%");
+                    $code.attr("height", "50%");
+                    $code.attr("margin-left", "auto");
+                    $code.attr("margin-right", "auto");
                     $resourceToDisplay.append($code);
                 }
                 break;

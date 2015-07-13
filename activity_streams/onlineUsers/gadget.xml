@@ -9,7 +9,7 @@
     <Require feature="dynamic-height"/>
 </ModulePrefs>
 <Content type="html"><![CDATA[
-  <html ng-app="onlineUsersGadget">
+  <html>
   <head>
     <title>Online users</title>
 
@@ -17,15 +17,15 @@
 
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
     <script type="text/javascript">
-      var pathToGadget = "http://graasp.epfl.ch/gadget/activity_streams/onlineUsers/";
+      var pathToGadget = "http://shindig2.epfl.ch/gadget/activity_streams/onlineUsers/";
       head.load("http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.js",
-        "http://graasp.epfl.ch/gadget/libs/jquery.cookie.js",
+        "http://shindig2.epfl.ch/gadget/libs/jquery.cookie.js",
         "http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0/angular.js",
         "http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.0/angular-resource.js",
         "http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js",
         "http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore.js",
         "http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js",
-        "http://graasp.epfl.ch/ils_lib/main/ils_graaspeu.js",
+        "http://shindig2.epfl.ch/ils/main/ils_graaspeu.js",
         pathToGadget + "onlineUsers.module.js",
         pathToGadget + "onlineUsers.spaces.service.js",
         pathToGadget + "onlineUsers.controller.js",
@@ -63,6 +63,8 @@
     </div>
     <script>
       head.ready(function () {
+        // Manually bootstrap angular to avoid conflicts
+        angular.bootstrap(document, ['onlineUsersGadget']);
         //Scripts loaded
       });
     </script>

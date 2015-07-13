@@ -9,7 +9,7 @@
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
-  <Content view="preview" type="url" href="http://graasp.epfl.ch/gadget/previews/pad3d.png"/>
+  <Content view="preview" type="url" href="http://shindig2.epfl.ch/gadget/previews/pad3d.png"/>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
 <style type="text/css">
@@ -25,8 +25,8 @@
 <!-- <script type="text/javascript" src="http://shindig.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&debug=1&nocache=1"></script> -->
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
 
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/glMatrix-0.9.5.min.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/webgl-utils.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/glMatrix-0.9.5.min.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/webgl-utils.js"></script>
 
 <script id="shader-fs" type="x-shader/x-fragment">
     #ifdef GL_ES
@@ -436,7 +436,7 @@ var isOwner = false;
 // gets the data and calls build for container
 var initialize = function() {
   //var d = getData(); webGLStart(d);
-  var urls = ['http://graasp.epfl.ch/images/logo/graaasp_logo.png']
+  var urls = ['http://shindig2.epfl.ch/images/logo/graaasp_logo.png']
   
   webGLStart(urls);  
   

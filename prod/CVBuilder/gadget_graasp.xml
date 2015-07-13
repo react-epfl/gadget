@@ -6,8 +6,8 @@
                 description="multi tab form-style gaget to edit and export nicely typed Europass-compatible CVs"
                 width="500"
                 height="500"
-                thumbnail="http://graasp.epfl.ch/gadget/prod/CVBuilder/thumbnail.gif"
-                screenshot="http://graasp.epfl.ch/gadget/prod/CVBuilder/screenshot.png">
+                thumbnail="http://shindig2.epfl.ch/gadget/prod/CVBuilder/thumbnail.gif"
+                screenshot="http://shindig2.epfl.ch/gadget/prod/CVBuilder/screenshot.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -43,7 +43,7 @@ the CV builder, see http://opensocial-resources.googlecode.com/svn/spec/trunk/So
 <![CDATA[
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
-<script type="text/javascript" src="http://graasp.epfl.ch/gadget/libs/rating/jquery.rating.pack.js"></script>
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/rating/jquery.rating.pack.js"></script>
 
 
 <style type="text/css">
@@ -408,7 +408,7 @@ table{
 
 	// Skill rating : load stylesheets (hacky, problem in shindig in css with background:url(image.png))
 	var scriptElem = document.createElement('link');
-	scriptElem.setAttribute('href', "http://graasp.epfl.ch/gadget/libs/rating/jquery.rating.css");
+	scriptElem.setAttribute('href', "http://shindig2.epfl.ch/gadget/libs/rating/jquery.rating.css");
 	scriptElem.setAttribute('rel', "stylesheet");
 	scriptElem.setAttribute('type', "text/css");
 	document.body.appendChild(scriptElem); 
@@ -1081,7 +1081,7 @@ function save_to_pdf(){
 		// make Request
 		var filename=cvdata.identification.lastname;
 		console.log("opening window");
-		window.open('http://graasp.epfl.ch/proxy/cv.json?filename='+filename+'&data='+escapeData(encodeURIComponent(JSON.stringify(cvdata))));
+		window.open('http://shindig2.epfl.ch/proxy/cv.json?filename='+filename+'&data='+escapeData(encodeURIComponent(JSON.stringify(cvdata))));
 		
     });    
     
