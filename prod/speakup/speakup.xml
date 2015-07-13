@@ -1,0 +1,37 @@
+<Module>
+    <ModulePrefs title="SpeakUp"
+                 title_url="http://seance.epfl.ch/"
+                 author="María Jesús Rodríguez-Triana, Adrian Holzer"
+                 author_email="maria.rodrigueztriana@epfl.ch, adrian.holzer@epfl.ch"
+                 description="SpeakUp lets the audience anonymously share and rate each other's thoughts, answer the best ones."
+                 height="940"
+                 screenshot=""
+                 thumbnail="./icon350x350.jpeg">
+        <Require feature="opensocial-0.9" />
+    </ModulePrefs>
+    <Content type="html">
+        <![CDATA[
+	 <script type="text/javascript">
+	 	function $(string)
+		{
+			return document.getElementById(string); 
+		}
+
+		//load frame
+		function loadFrame()
+		{
+			var srcString = "http://seance.epfl.ch/";
+			var width = "100%";
+			var height = "940";
+			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" align="middle" src="'+srcString+'"></iframe>';
+			gadgets.window.adjustHeight(); //so app resizes itself based on content
+		}
+		
+		gadgets.util.registerOnLoadHandler(loadFrame);
+		</script>
+		
+		<div id="container">
+		</div>
+	 ]]>
+    </Content>
+</Module>
