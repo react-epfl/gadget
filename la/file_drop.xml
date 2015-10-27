@@ -57,7 +57,7 @@
   <form method="post" action="/" class="dropzone" id="file-dropzone" enctype = "multipart/form-data">
     <input id="request" type="hidden" name="request"></input>
   </form>
-  <div class="list_title">__MSG_resources_in_the_space__</div>
+  <div id = "title" class="list_title">__MSG_resources_in_the_space__</div>
   <table class="table table-hover doc_list"><tbody id="list"></tbody></table>
   <div id = "msg" class="msg"><div>
 </div>
@@ -71,7 +71,6 @@
 var app = {};
 var nameList = [];
 var context = {};
-var userResources = [];
 
 
 // gets the data and calls build for container
@@ -85,28 +84,29 @@ var initialize = function() {
 function getContext(){
   ils.getAppContextParameters(function(contextParameters){
     context = contextParameters;
-    if(context.provider.id != "undefined" && context.storageId != "undefined"){//The provider is an ILS with VAULT
-      ils.getVaultByIlsId(context.provider.id, function(vault) {
-          context.storageVisibility = vault.visibilityLevel;
-          getResourceList();
-      });
-    } else { // The resources will be retrieved from/stored in the current space
-      osapi.context.get().execute(function(space){
-        context.storageId = space.contextId;
-        context.storageType = space.contextType;
-        if(space.visibilityLevel){
-          context.storageVisibility = space.visibilityLevel;
-        }else{
-          context.storageVisibility = "public";
-        }
-        getResourceList();
-      });
+    if(context.provider.id != "undefined" && context.storageId != "undefined"){
+      //The provider is an ILS with VAULT
+      getResourceList();
+    } else {
+      //The app cannot be used
+      $('#title').text("__MSG_no_vault__");
+
+      // In case we want to enable the current space to retrieve from/stored in the files
+      //osapi.context.get().execute(function(space){
+      //  context.storageId = space.contextId;
+      //  context.storageType = space.contextType;
+      //  getResourceList();
+      //});
     }
   });
 }
 
+
 function getResourceList(){
-  ils.listFilesBySpaceId(context.storageId, function(resourceList) {
+  var userFilter = context.actor.id;
+  if (context.contextualActor && context.contextualActor.id) userFilter = context.contextualActor.id;
+  //if (settings="all_users") userFilter = "";
+  ils.filterVault(context.storageId, userFilter, "", "file","", "", "", "", function(resourceList) {
     build(resourceList);
   });
 }
@@ -151,11 +151,9 @@ function dropListener(){
         if (response.hasOwnProperty("result")) {
           $('#msg').text("");
           buildItem(response.result);
-          userResources.push(response.result.id);
           adjustHeight();
         }
       });
-
     }
   };
 }
@@ -172,16 +170,6 @@ function getQueryVariable(variable) {
   console.log('Query variable %s not found', variable);
 }
 
-function verifyFilename(filename, cb) {
-  ils.listFilesBySpaceId(context.storageId, function(resourceList) {
-    build(resourceList);
-    if (nameList.indexOf(filename)==-1) {
-      return cb(true);
-    }else{
-      return cb(false);
-    }
-  });
-}
 
 var adjustHeight = function() {
   gadgets.window.adjustHeight();
@@ -194,25 +182,14 @@ var build = function(documents) {
   if (documents.error || documents.length ==0) {
     $('#msg').text("__MSG_no_resource_found__");
   } else {
-    if(context.storageVisibility != "public" && userResources.length ==0){
-      $('#msg').text("__MSG_no_resource_found__");
-    }
     $.each(documents, function(key,value) {
       nameList.push(value.displayName);
-      if(value.visibilityLevel == "public" || userResources.indexOf(value.id)>-1){
-        buildItem(value);
-      }
+      buildItem(value);
     });
-
   }
 
   // resize the gadget
-  gadgets.window.adjustHeight();
-
-  // 2 seconds
-  setTimeout(adjustHeight,2000);
-  // 5 seconds
-  setTimeout(adjustHeight,5000);
+  adjustHeight();
 };
 
 
@@ -221,14 +198,11 @@ buildItem = function (doc) {
   var doc_el = $("<tr id='"+doc_id+"'></tr>");
 
   var doc_name = $('<td id="doc_name"></td>');
-  if(context.storageVisibility == "public"){
-    var download_link = $("<a target='_blank'></a>");
-    download_link.attr("href",doc.originUrl);
-    download_link.text(doc.displayName);
-    doc_name.append(download_link);
-  } else {
-    doc_name.text(doc.displayName);
-  }
+  var download_link = $("<a target='_blank'></a>");
+  //TODO the link doesn' work
+  download_link.attr("href",doc.originUrl);
+  download_link.text(doc.displayName);
+  doc_name.append(download_link);
   doc_el.append(doc_name);
 
   var update_time = $('<td id = "update_time"></td>');
@@ -236,13 +210,14 @@ buildItem = function (doc) {
   doc_el.append(update_time);
 
   app.list.prepend(doc_el);
+  adjustHeight();
 }
 
 
 </script>
 
 <script type="text/javascript">
-gadgets.util.registerOnLoadHandler(initialize);
+  gadgets.util.registerOnLoadHandler(initialize);
 </script>
 
 
