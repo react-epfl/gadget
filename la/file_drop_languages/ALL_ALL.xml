@@ -3,4 +3,7 @@
 	<msg name="no_resource_found">No resource was found in this space.</msg>
 	<msg name="file_name_warning">The file name already exists. Find a new name and drop the file again.</msg>
 	<msg name="no_vault">There is no Vault space available to store/retrieve the files.</msg>
+    <msg name="visibility">Set visibility in the student view:</msg>
+    <msg name="all_users">All dropped files are visible</msg>
+    <msg name="current_user">Only student own files are visible</msg>
 </messageblundle>
