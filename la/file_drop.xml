@@ -142,7 +142,8 @@ function getResourceList(){
        userFilter = context.contextualActor.id;
      }
   }
-  ils.filterVault(context.storageId, userFilter, "", "file","", "", "", "", function(resourceList) {
+  // filters by Vault, users to be considered, appId, and objectType
+  ils.filterVault(context.storageId, userFilter, context.generator.id, "file","", "", "", "", function(resourceList) {
     build(resourceList);
   });
 }
@@ -205,7 +206,7 @@ function getQueryVariable(variable) {
 function logAction(resourceId, fileName, actionType){
   ils.logAction(resourceId, "Resource", fileName, context.storageId, "Vault", actionType, function (action){
     if (action.error){
-        console.log("The action "+ actionType +" couldn't be logged");
+      console.log("The action "+ actionType +" couldn't be logged");
     }
   });
 }

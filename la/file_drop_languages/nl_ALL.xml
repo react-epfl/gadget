@@ -2,8 +2,8 @@
 	<msg name="resources_in_the_space">Bestanden in een space:</msg>
 	<msg name="no_resource_found">Er werden geen bestanden gevonden in deze space.</msg>
 	<msg name="file_name_warning">De bestandsnaam bestaat al. Hernoem het bestand en drop het opnieuw.</msg>
-	<msg name="no_vault">There is no Vault space available to store/retrieve the files.</msg>
-	<msg name="visibility">Set visibility in the student view:</msg>
-	<msg name="all_users">All dropped files are visible</msg>
-	<msg name="current_user">Only student own files are visible</msg>
+	<msg name="no_vault">Er bestaat geen Vault space om de bestanden te bewaren en in te laden.</msg>
+	<msg name="visibility">Zet de bestandszichtbaarheid in de student view:</msg>
+	<msg name="all_users">Studenten zien alle geüploade bestanden</msg>
+	<msg name="current_user">Studenten zien enkel hun eigen bestanden</msg>
 </messageblundle>
