@@ -1,5 +1,9 @@
 <messageblundle>
 	<msg name="resources_in_the_space">Ressources d’un espace:</msg>
-	<msg name="no_resource_found">Aucune ressource publique disponible dans cet espace.</msg>
+	<msg name="no_resource_found">Aucune ressource disponible dans cet espace.</msg>
 	<msg name="file_name_warning">Le nom de fichier existe déjà dans cet espace. Changez le nom et essayez à nouveau.</msg>
+	<msg name="no_vault">Il n'y a pas Vault espace où sauvegarder/retrouver des fichiers.</msg>
+	<msg name="visibility">Configurer la visibilité des fichiers dans la vue autonome:</msg>
+	<msg name="all_users">L'étudiant voit tous les fichiers</msg>
+	<msg name="current_user">L'étudiant ne voit que ses fichiers</msg>
 </messageblundle>
