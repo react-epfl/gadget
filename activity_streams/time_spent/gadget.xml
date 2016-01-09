@@ -96,8 +96,8 @@
             <td class="userName">
               {{user.displayName | limitTo:14}}
             </td>
-            <td ng-repeat="time in user.timeSpentIn">
-              <span ng-show="time.hours() > 0">{{time.hours() | numberFixedLen:2}}:</span>{{time.minutes() | numberFixedLen:2}}:{{time.seconds() | numberFixedLen:2}}
+            <td ng-repeat="phase in phases">
+              <span ng-show="user.timeSpentIn[phase.id].hours() > 0">{{user.timeSpentIn[phase.id].hours() | numberFixedLen:2}}:</span>{{user.timeSpentIn[phase.id].minutes() | numberFixedLen:2}}:{{user.timeSpentIn[phase.id].seconds() | numberFixedLen:2}}
             </td>
           </tr>
         </table>

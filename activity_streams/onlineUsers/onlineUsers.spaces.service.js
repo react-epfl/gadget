@@ -39,7 +39,10 @@ app.factory('Spaces', function () {
     ils.getIls(function(ils_space){
       osapi.activitystreams.get({contextId: ils_space.id, contextType: "@space", "minutes":"180"})
         .execute(function (actions) {
-        var accesses = _.filter(actions.list, function(action){ return action.verb == "accessed"; });
+        var accesses = _.filter(actions.list, function (action) {
+          return (action.verb === "accessed" || action.verb === "logged out") &&
+              action.target && action.target.objectType === "Space";
+        });
         var accessesByUser = _.toArray(_.groupBy(accesses, function(action){ return action.actor.id; }));
         var lastActionByUser = [];
         _.each(accessesByUser, function (userAccesses) {
