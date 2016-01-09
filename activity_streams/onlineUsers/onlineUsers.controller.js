@@ -9,11 +9,6 @@ function ($scope, $timeout, Spaces) {
   var usersIdleTimeout = {};
   var usersOfflineTimeout = {};
 
-  function connectUserToPhase(action) {
-    removeUserFromAllPhases(action);
-    addUserToPhase(action);
-  }
-
   function addUserToPhase(action) {
     var phaseToAddUser = _.find($scope.phases, function (phase) {
       return phase.id === action.target.id;
@@ -21,6 +16,7 @@ function ($scope, $timeout, Spaces) {
     $timeout(function() {
       //if phaseToAddUser is undefined, it means the phase is not in the gadget (e.g. for the root of the ILS)
       if (typeof phaseToAddUser !== 'undefined') {
+        removeUserFromAllPhases(action);
         //From the socket, the url of the gravatar is in action.actor.image
         //and from activitystreams, the url is in action.actor.image.url
         //Temparory workaround:
@@ -76,6 +72,17 @@ function ($scope, $timeout, Spaces) {
     }, offlineTimeout);
   }
 
+  function checkAndProcessAction(action) {
+    if (action.verb === 'accessed' && action.target && action.target.objectType === 'Space') {
+      var timeSinceLastAction = new Date().getTime() - new Date(action.published).getTime();
+      if (timeSinceLastAction <= offlineTimeout) {
+        addUserToPhase(action);
+      }
+    } else if (action.verb === 'logged out') {
+      removeUserFromAllPhases(action);
+    }
+  }
+
   $scope.setUsersTimeout = function() {
     offlineTimeout = $scope.minutes * 60000;
     idleTimeout = 0.9 * offlineTimeout;
@@ -90,10 +97,7 @@ function ($scope, $timeout, Spaces) {
         //Listening to the new actions
         socket.on('action_created', function (action) {
           resetUserTimeouts(action);
-
-          if (action.verb == 'accessed') {
-            connectUserToPhase(action);
-          }
+          checkAndProcessAction(action);
         });
 
         $scope.findPhases();
@@ -118,11 +122,7 @@ function ($scope, $timeout, Spaces) {
   $scope.findActivities = function () {
     Spaces.getActions(function (actions) {
       _.each(actions, function (action) {
-        var timeSinceLastAction = new Date().getTime() - new Date(action.published).getTime();
-        if (timeSinceLastAction <= offlineTimeout) {
-          addUserToPhase(action);
-          $scope.$apply();
-        }
+        checkAndProcessAction(action);
       });
     });
   };
@@ -146,6 +146,4 @@ function ($scope, $timeout, Spaces) {
     }
     return total;
   };
-
 });
-

@@ -19,8 +19,7 @@ function ($scope, Spaces) {
       var user = {
         id: action.actor.id,
         displayName: action.actor.displayName,
-        currentPhase: action.target.id,
-        lastAccess: action.published, // TODO: this attribute might not be necessary anymore.
+        currentPhase: null,
         lastAction: action.published,
         timeSpentIn: {},
         timeout: setTimeout(function () {
@@ -74,34 +73,20 @@ function ($scope, Spaces) {
     }
   }
 
-  /*function updateUserTimeSinceLastAccess(action) {
-    var userToUpdate = getUser(action);
-    if (typeof userToUpdate !== 'undefined') {
-      var timeToAdd = new Date(action.published).getTime() - new Date(userToUpdate.lastAccess).getTime();
-      addTimeToUser(userToUpdate, timeToAdd);
-      userToUpdate.lastAccess = action.published;
-      userToUpdate.currentPhase = action.target.id;
-    }
-  }*/
-
   function updateUserTimeSinceLastAction(action) {
     var userToUpdate = getUser(action);
     if (typeof userToUpdate !== 'undefined') {
       var fromTime = getFromTime(userToUpdate);
-
       var timeSinceLastAction = new Date(action.published).getTime() - fromTime.getTime();
+
+      userToUpdate.lastAction = action.published;
 
       if (timeSinceLastAction > offlineTimeout) {
         addTimeToUser(userToUpdate, offlineTimeout);
         userToUpdate.currentPhase = null;
       } else {
         addTimeToUser(userToUpdate, timeSinceLastAction);
-        userToUpdate.currentPhase = action.target.id;
-      }
-
-      userToUpdate.lastAction = action.published;
-      if (action.verb === 'accessed') {
-        userToUpdate.lastAccess = action.published;
+        changeUserCurrentPhase(action);
       }
     }
   }
@@ -128,9 +113,16 @@ function ($scope, Spaces) {
   }
 
   function changeUserCurrentPhase(action) {
-    var userToChangePhase = getUser(action);
-    userToChangePhase.lastAccess = action.published;
-    userToChangePhase.currentPhase = action.target.id;
+    if (action.target && action.target.objectType === 'Space') {
+      var userToChangePhase = getUser(action);
+      if (!userToChangePhase) return;
+
+      if (action.verb === 'accessed') {
+        userToChangePhase.currentPhase = action.target.id;
+      } else if (action.verb === 'logged out') {
+        userToChangePhase.currentPhase = null;
+      }
+    }
   }
 
   function computeLastTimeForEachUser() {
@@ -142,8 +134,6 @@ function ($scope, Spaces) {
         addTimeToUser(user, offlineTimeout);
         user.currentPhase = null;
       } else {
-        //var timeToAdd = new Date().getTime() - new Date(user.lastAccess).getTime();
-        //addTimeToUser(user, timeToAdd);
         addTimeToUser(user, timeSinceLastAction);
       }
     });
@@ -170,10 +160,12 @@ function ($scope, Spaces) {
     stopListeningForNewActions(); // To avoid duplicate listening
     socket.on('action_created', function (action) {
       resetUserTimeout(action);
-      if (action.verb == 'accessed') {
+      if (action.verb === 'accessed') {
         addUser(action, function() {
           changeUserCurrentPhase(action);
         });
+      } else if (action.verb === 'logged out') {
+        changeUserCurrentPhase(action);
       }
     });
   }
@@ -238,11 +230,6 @@ function ($scope, Spaces) {
 
     Spaces.getActions(startTime, endTime, function (actions) {
       _.each(actions, function (action) {
-        /*if (action.verb === 'accessed') {
-          addUser(action, function() {
-            updateUserTimeSinceLastAccess(action);
-          });
-        }*/
         addUser(action, function() {
           updateUserTimeSinceLastAction(action);
         });
@@ -268,4 +255,3 @@ function ($scope, Spaces) {
   };
 
 });
-
