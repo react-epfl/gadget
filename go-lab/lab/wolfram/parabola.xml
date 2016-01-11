@@ -1,0 +1,18 @@
+<Module>
+	 <ModulePrefs title="Parabola Calculator"
+	 	title_url="http://demonstrations.wolfram.com/ElectromagneticFieldEnergiesInCapacitorsAndInductors/"
+	 	author="María Jesús Rodríguez-Triana"
+	 	author_email="maria.rodrigueztriana@epfl.ch"
+	 	description="This lab analyses and plots a parabola by entering its equation."
+	 	height="50"
+	 	screenshot="parabola1.xml"
+	 	thumbnail="">
+	 	<Require feature="opensocial-0.9" />
+	 </ModulePrefs>
+	<Content type="html">
+		<![CDATA[
+			<script type="text/javascript" id="WolframAlphaScript98757bd26f3f735e1d8939d35c9f1201" src="//www.wolframalpha.com/widget/widget.jsp?id=98757bd26f3f735e1d8939d35c9f1201"></script>
+			<br />
+	 ]]>
+	</Content>
+</Module>
