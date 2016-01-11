@@ -4,7 +4,7 @@
 	 	author="María Jesús Rodríguez-Triana"
 	 	author_email="maria.rodrigueztriana@epfl.ch"
 	 	description="This lab analyses and plots a parabola by entering its equation."
-	 	height="100"
+	 	height="200"
 	 	screenshot="parabola1.xml"
 	 	thumbnail="">
 	 	<Require feature="opensocial-0.9" />
