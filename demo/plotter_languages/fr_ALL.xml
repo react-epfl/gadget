@@ -9,6 +9,6 @@
 <msg name="derivative_label">Dérivée</msg>
 <msg name="drag_label">Glisse moi</msg>
 <msg name="how_to">Comment écrire une fonction </msg>
-<msg name="expression">L'expression</msg>
-<msg name="syntax_error">ce n'est pas compréhensible. Voir le lien "comment écrire une fonction".</msg>
+<msg name="expression">L\'expression</msg>
+<msg name="syntax_error">ce n\'est pas compréhensible. Voir le lien "comment écrire une fonction".</msg>
 </messageblundle>
