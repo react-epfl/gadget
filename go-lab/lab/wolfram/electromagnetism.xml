@@ -16,7 +16,7 @@ Combining the above results gives the well-known formula for the energy density 
 	<Content type="html">
 		<![CDATA[
 			<script type='text/javascript' src='http://demonstrations.wolfram.com/javascript/embed.js' ></script>
-			<script type='text/javascript'>var demoObj = new DEMOEMBED(); demoObj.run('ElectromagneticFieldEnergiesInCapacitorsAndInductors', '', '463', '600');</script>
+			<script type='text/javascript'>var demoObj = new DEMOEMBED(); demoObj.run('ElectromagneticFieldEnergiesInCapacitorsAndInductors', '', '500', '900');</script>
 			<div id='DEMO_ElectromagneticFieldEnergiesInCapacitorsAndInductors' align="center"></div>
 			<br />
 	 ]]>
