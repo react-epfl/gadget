@@ -1,0 +1,89 @@
+
+<?xml version="1.0" encoding="UTF-8" ?><Module>
+<ModulePrefs title="Mach-Zehnder Interferometer" author_email="hagop.jamkojian@epfl.ch" author="Hagop Jamkojian" description="Mach-Zehnder Interferometer" height="600" width="800">
+<Require feature="opensocial-0.9"/>
+<Require feature="osapi"/>
+<Require feature="dynamic-height"/>
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mach-Zehnder Interferometer Lab</title>
+    <link rel="stylesheet" type="text/css" href="./css/slider.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css"/>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
+    <script type="text/javascript" src="./javascript/lib/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="./javascript/lib/canvasjs.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+    <script type="text/javascript" src="./javascript/app/app.js"></script>
+    <script type="text/javascript" src="./javascript/app/WebSocketController.js"></script>
+    
+</head>
+<body ng-app="WebsocketClient" >
+    <h1 class="text-center">Mach-Zehnder Interferometer Lab</h1>
+    <hr/><hr/>
+    <p>&nbsp;</p>
+    <div class="laserDiv" ng-controller="WebSocketController">
+        <label class="radio-inline"><input type="radio" name="optradio" value="classical" checked="true"><h4>Classical</h4></label>
+        <label class="radio-inline"><input type="radio" name="optradio" value="quantum" ><h4>Quantum</h4></label>
+        <br/><p></p><br/>
+        <button id="laserButton" class="btn-default" ng-click="laserClick()">Laser off</button>
+        <p></p><br/>
+
+        <div id="quantumDiv" ng-show="showQuantumDivFlag">
+            Filter: <br>
+            F1:   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" class="slider span2" data-slider-min="0" data-slider-max="90"
+                                           data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal"
+                                           data-slider-selection="after" data-slider-tooltip="hide" id="4"/>&nbsp;&nbsp;&nbsp;<span id="span4">0</span><span>&#xB0;</span><p></p><br/>
+            Beam Splitters: <br>
+            BS1:   &nbsp;&nbsp;&nbsp;<input type="text" class="slider span2" data-slider-min="0" data-slider-max="90"
+                   data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal"
+                   data-slider-selection="after" data-slider-tooltip="hide" id="1"/>&nbsp;&nbsp;&nbsp;<span id="span1">0</span><span>&#xB0;</span><br>
+            BS2:   &nbsp;&nbsp;&nbsp;<input type="text" class="slider span2" data-slider-min="0" data-slider-max="90"
+                   data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal"
+                   data-slider-selection="after" data-slider-tooltip="hide" id="2"/>&nbsp;&nbsp;&nbsp;<span id="span2">0</span><span>&#xB0;</span><br><p></p><br>
+            Piezo: &nbsp;&nbsp;<input type="text" class="piezoText" maxlength = "7" size="7" id="3"/>&nbsp;&nbsp;<span id="piezoError"></span><p>&nbsp;</p>
+        </div>
+
+        Photo Diode Voltage: &nbsp; <span id="photoDiodeVoltage">0</span>V <br/> <p></p><br/>
+        <button id="pauseButton" class="btn-warning" ng-click="pause()">Click to Start Graph</button> <br/><p></p>
+        <div id="chartContainer" style="height: 300px; width:100%;"></div>
+        <hr ng-show = "showMetadataButtonsFlag"/>
+
+        <div id = "metadataDiv"  ng-show="showMetadataButtonsFlag">
+            <button class="btn-default" ng-click="getClients()">
+                getClients
+            </button>
+            <button class="btn-default" ng-click="getSensorMetadata()">
+                getSensorMetadata
+            </button>
+            <button class="btn-default" ng-click="getSensorData()">
+                getSensorData
+            </button>
+            <button class="btn-default" ng-click="getActuatorMetadata()">
+                getActuatorMetadata
+            </button>
+            <button class="btn-default" ng-click="sendActuatorData()">
+                sendActuatorData
+            </button>
+            <br> <p></p>
+            <div id="messageDiv"></div>
+        </div>
+        <br/><p></p><br/>
+    </div>
+    <script>
+      head.ready(function () {
+        gadgets.window.adjustHeight();       
+      });
+    </script>
+</body>
+</html>
+]]>
+</Content>
+</Module>
