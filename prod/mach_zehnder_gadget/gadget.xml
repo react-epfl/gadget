@@ -33,7 +33,7 @@
         <label class="radio-inline"><input type="radio" name="optradio" value="classical" checked="true"><h4>Classical</h4></label>
         <label class="radio-inline"><input type="radio" name="optradio" value="quantum" ><h4>Quantum</h4></label>
         <br/><p></p><br/>
-        <button id="laserButton" class="btn-default" ng-click="laserClick()">Laser off</button>
+        <button id="laserButton" class="btn-default" ng-click="laserClick()">Turn Laser On</button>
         <p></p><br/>
 
         <div id="quantumDiv" ng-show="showQuantumDivFlag">
@@ -52,7 +52,7 @@
         </div>
 
         Photo Diode Voltage: &nbsp; <span id="photoDiodeVoltage">0</span>V <br/> <p></p><br/>
-        <button id="pauseButton" class="btn-warning" ng-click="pause()">Click to Start Graph</button> <br/><p></p>
+        <button id="pauseButton" class="btn-warning" ng-click="pause()">Click to Start Graph</button>  &nbsp;&nbsp;<button id="saveButton" class="btn-warning" ng-click="save()">Save Experiment Data</button><br/><p></p>
         <div id="chartContainer" style="height: 300px; width:100%;"></div>
         <hr ng-show = "showMetadataButtonsFlag"/>
 
