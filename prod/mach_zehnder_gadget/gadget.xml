@@ -13,17 +13,13 @@
     <title>Mach-Zehnder Interferometer Lab</title>
     <link rel="stylesheet" type="text/css" href="./css/slider.css"/>
     <link rel="stylesheet" type="text/css" href="./css/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap-responsive.css"/>
 
-    <script type="text/javascript" src="./javascript/lib/angular.js"></script>
-    <script type="text/javascript" src="./javascript/lib/jquery.js"></script>
-    <script type="text/javascript" src="./javascript/lib/FileSaver.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
     <script type="text/javascript" src="./javascript/lib/bootstrap-slider.js"></script>
     <script type="text/javascript" src="./javascript/lib/canvasjs.min.js"></script>
-    <script type="text/javascript" src="./javascript/lib/util.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
-    <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery.cookie.js"></script>
-    <script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
     <script type="text/javascript" src="./javascript/app/app.js"></script>
     <script type="text/javascript" src="./javascript/app/WebSocketController.js"></script>
