@@ -40,13 +40,13 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
                 }else{
                     $("#laserButton").toggleClass("btn-warning");
                     $("#laserButton").toggleClass("btn-default");
-                    $("#laserButton").html("Laser on");
+                    $("#laserButton").html("Turn Laser Off");
                 }
             }else{
                 if($('#laserButton').hasClass('btn-warning')){
                     $("#laserButton").toggleClass("btn-warning");
                     $("#laserButton").toggleClass("btn-default");
-                    $("#laserButton").html("Laser off");
+                    $("#laserButton").html("Turn Laser On");
                 }else{
                     //Do Nothing
                 }
@@ -152,17 +152,12 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         if(!$(this).hasClass("btn-warning")) {
             $("#laserButton").toggleClass("btn-warning");
             $("#laserButton").toggleClass("btn-default");
-            $("#laserButton").html("Laser on");
+            $("#laserButton").html("Turn Laser Off");
         }else{
             $("#laserButton").toggleClass("btn-warning");
             $("#laserButton").toggleClass("btn-default");
-            $("#laserButton").html("Laser off");
-            //to write to a text file uncomment the following
-            var blob = new Blob([results], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, "Experiment results on " + new Date());
-            results="";
-            dps.splice(0,dps.length);
-            xVal=0;
+            $("#laserButton").html("Turn Laser On");
+            
         }
         if($("#laserButton").hasClass("btn-warning")){
             ws.send("laser_power?"+1);
@@ -286,6 +281,15 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         }
         $("#pauseButton").toggleClass("btn-warning");
         $("#pauseButton").toggleClass("btn-default");
+    };
+
+    $scope.save = function(){
+        
+            var blob = new Blob([results], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "Experiment results on " + new Date());
+            results="";
+            dps.splice(0,dps.length);
+            xVal=0;
     };
 
 }]);
