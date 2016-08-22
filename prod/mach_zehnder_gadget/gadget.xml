@@ -1,5 +1,5 @@
-
-<?xml version="1.0" encoding="UTF-8" ?><Module>
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
 <ModulePrefs title="Mach-Zehnder Interferometer" author_email="hagop.jamkojian@epfl.ch" author="Hagop Jamkojian" description="Mach-Zehnder Interferometer" height="600" width="800">
 <Require feature="opensocial-0.9"/>
 <Require feature="osapi"/>
@@ -11,51 +11,68 @@
 <head>
     <meta charset="UTF-8">
     <title>Mach-Zehnder Interferometer Lab</title>
-    <link rel="stylesheet" type="text/css" href="./css/slider.css"/>
     <link rel="stylesheet" type="text/css" href="./css/bootstrap.css"/>
+    <link type="text/css" href="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="./css/slider.css"/>
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.js"></script>
     <script type="text/javascript" src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
-    <script type="text/javascript" src="./javascript/lib/bootstrap-slider.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.js"></script>
     <script type="text/javascript" src="./javascript/lib/canvasjs.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+    <script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/metadata/MetadataHandler.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/applog/ActionLogger.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.js"></script>
     <script type="text/javascript" src="./javascript/app/app.js"></script>
     <script type="text/javascript" src="./javascript/app/WebSocketController.js"></script>
     
 </head>
 <body ng-app="WebsocketClient" >
-    <h1 class="text-center">Mach-Zehnder Interferometer Lab</h1>
-    <hr/><hr/>
     <p>&nbsp;</p>
     <div class="laserDiv" ng-controller="WebSocketController">
         <label class="radio-inline"><input type="radio" name="optradio" value="classical" checked="true"><h4>Classical</h4></label>
         <label class="radio-inline"><input type="radio" name="optradio" value="quantum" ><h4>Quantum</h4></label>
         <br/><p></p><br/>
         <button id="laserButton" class="btn-default" ng-click="laserClick()">Turn Laser On</button>
-        <p></p><br/>
+        <p></p><br/><p></p><br/>
 
-        <div id="quantumDiv" ng-show="showQuantumDivFlag">
-            Filter: <br>
-            F1:   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" class="slider span2" data-slider-min="0" data-slider-max="90"
-                                           data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal"
-                                           data-slider-selection="after" data-slider-tooltip="hide" id="4"/>&nbsp;&nbsp;&nbsp;<span id="span4">0</span><span>&#xB0;</span><p></p><br/>
-            Beam Splitters: <br>
-            BS1:   &nbsp;&nbsp;&nbsp;<input type="text" class="slider span2" data-slider-min="0" data-slider-max="90"
-                   data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal"
-                   data-slider-selection="after" data-slider-tooltip="hide" id="1"/>&nbsp;&nbsp;&nbsp;<span id="span1">0</span><span>&#xB0;</span><br>
-            BS2:   &nbsp;&nbsp;&nbsp;<input type="text" class="slider span2" data-slider-min="0" data-slider-max="90"
-                   data-slider-step="1" data-slider-value="0" data-slider-orientation="horizontal"
-                   data-slider-selection="after" data-slider-tooltip="hide" id="2"/>&nbsp;&nbsp;&nbsp;<span id="span2">0</span><span>&#xB0;</span><br><p></p><br>
-            Piezo: &nbsp;&nbsp;<input type="text" class="piezoText" maxlength = "7" size="7" id="3"/>&nbsp;&nbsp;<span id="piezoError"></span><p>&nbsp;</p>
-        </div>
+        <div id="diagramDiv" style="position:relative">
+            <img id="diagramImage" src = "./mach_diagram.png"/>
+            <div ng-show="showQuantumDivFlag">
+                <div id="f1"></div>
+                <input id="value-inputf1" maxlength = "2" size="2"/>
+                <div id="bs1"></div>
+                <input id="value-inputbs1" maxlength = "2" size="2"/>
+                <div id="bs2"></div>
+                <input id="value-inputbs2" maxlength = "2" size="2"/>
+                <div id="piezo"></div>
+                <input id="value-inputpiezo" maxlength = "4" size="4"/><br/>
+                <span id="spanbs1">BS1</span>
+                <span id="spanbs2">BS2</span>
+                <span id="spanf1">Filter F1</span>
+                <span id="spanpiezo">Piezo</span>
+            </div>
+        </div><p></p><br/>
 
-        Photo Diode Voltage: &nbsp; <span id="photoDiodeVoltage">0</span>V <br/> <p></p><br/>
-        <button id="pauseButton" class="btn-warning" ng-click="pause()">Click to Start Graph</button>  &nbsp;&nbsp;<button id="saveButton" class="btn-warning" ng-click="save()">Save Experiment Data</button><br/><p></p>
-        <div id="chartContainer" style="height: 300px; width:100%;"></div>
-        <hr ng-show = "showMetadataButtonsFlag"/>
-
+        Photo Diode Voltage: &nbsp; <span id="photoDiodeVoltage" style="position:relative">0</span>V <br/> <p></p><br/>
+        <button id="saveButton" class="btn-warning" ng-click="save()">Save Experiment Data</button><br/><p></p>
+        <div id="chartContainer" ng-click="pause()" style="height: 300px; width:100%;"></div>
+        <style>
+            #liveFeedVideo{
+                position: absolute;
+                top : 33px;
+                left: 380px;
+                width: 200px;
+                height: 200px;
+            }
+        </style>
+        <!-- <video id="liveFeedVideo" autoplay>
+           <source src="movie.mp4" type="video/mp4">
+        </video> -->
         <div id = "metadataDiv"  ng-show="showMetadataButtonsFlag">
             <button class="btn-default" ng-click="getClients()">
                 getClients
@@ -79,7 +96,7 @@
     </div>
     <script>
       head.ready(function () {
-        gadgets.window.adjustHeight();       
+        gadgets.window.adjustHeight();   
       });
     </script>
 </body>
