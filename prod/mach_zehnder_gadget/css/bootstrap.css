@@ -6828,3 +6828,11 @@ input:checked + .sliderSwitch:before {
 .piezoText{
   color: #5050d2;
 }
+#liveFeedVideo{
+  position: absolute;
+  top : 55px;
+  left: 458px;
+  width: 150px;
+  height: 150px;
+  z-index: 20;
+}
