@@ -1,0 +1,11 @@
+<messageblundle>
+    <msg name="turn_laser_on">Allumer le Laser</msg>
+    <msg name="turn_laser_off">Éteindre le Laser</msg>
+    <msg name="classical">Classique</msg>
+    <msg name="quantum">Quantum</msg>
+    <msg name="photo_diode_voltage">Le Voltage de la Photodiode</msg>
+    <msg name="save_experiment_data">Enregistrer les Résultats Expérimentaux</msg>
+    <msg name="time">Le Temps</msg>
+    <msg name="voltage">Voltage</msg>
+    <msg name="graph_title">Le Voltage de la Photodiode au Cours des 10 Dernières Secondes</msg>
+</messageblundle>

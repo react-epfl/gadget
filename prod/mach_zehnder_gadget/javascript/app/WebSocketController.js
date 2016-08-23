@@ -10,6 +10,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
 
     $(document).ready(function() {
         pageIsLoaded = 1;
+        createChart();
     });
 
     //Establish Connection
@@ -259,13 +260,13 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
                 } else {
                     $('#laserButton').toggleClass('btn-warning');
                     $('#laserButton').toggleClass('btn-default');
-                    $('#laserButton').html('Turn Laser Off');
+                    $('#laserButton').html($scope.turn_laser_off);
                 }
             } else {
                 if ($('#laserButton').hasClass('btn-warning')) {
                     $('#laserButton').toggleClass('btn-warning');
                     $('#laserButton').toggleClass('btn-default');
-                    $('#laserButton').html('Turn Laser On');
+                    $('#laserButton').html($scope.turn_laser_on);
                 } else {
                     //Do Nothing
                 }
@@ -332,11 +333,11 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         if (!$(this).hasClass('btn-warning')) {
             $('#laserButton').toggleClass('btn-warning');
             $('#laserButton').toggleClass('btn-default');
-            $('#laserButton').html('Turn Laser Off');
+            $('#laserButton').html($scope.turn_laser_off);
         } else {
             $('#laserButton').toggleClass('btn-warning');
             $('#laserButton').toggleClass('btn-default');
-            $('#laserButton').html('Turn Laser On');  
+            $('#laserButton').html($scope.turn_laser_on);  
         }
         if ($('#laserButton').hasClass('btn-warning')) {
             ws.send('laser_power?'+1);
@@ -394,75 +395,76 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         $('.btn-default').removeClass('btn-warning');
         $(this).toggleClass('btn-warning');
     });
-
     //to generate the graph
     var dps = []; // dataPoints
-    var chart = new CanvasJS.Chart('chartContainer', {
-        title : {
-            text: "Photo Diode Voltage During the Last 10 Seconds",
-            fontColor: "white",
-            titleFont: "arial"
-        },
-        data: [ {
-            type: "line",
-            dataPoints: dps,
-            color : "white",
-            markerType: "none",
-            toolTipContent: "t = {x} (s) <br/> V = {y} (V)"
-        }],
-        toolTip : {
-            fontColor: "white",
-            backgroundColor: "#5050d2",
-            fontSize: 16
-        },
-        axisX : {
-            title: "Time (s)",
-            titleFontColor: "white",
-            tickColor: "white",
-            lineColor: "white",
-            lineThickness : 2,
-            labelFontColor: "white"
-        },
-        axisY : {
-            title: "Voltage (V)",
-            titleFontColor: "white",
-            gridColor: "white",
-            tickColor: "white",
-            lineColor: "white",
-            lineThickness : 2,
-            gridDashType: "dash",
-            labelFontColor: "white",
-            gridThickness:1
-        },
-        backgroundColor: "#6262FF"
-    });
-    var xVal = 0;
-    var updateInterval = 100;
-    var dataLength = 100; // number of dataPoints visible at any point
-    var updateChart = function() {
-        dps.push({
-            x: xVal,
-            y: sensorValue
+    function createChart() {
+        var chart = new CanvasJS.Chart('chartContainer', {
+            title : {
+                'text': "",
+                fontColor: "white",
+                titleFont: "arial"
+            },
+            data: [ {
+                type: "line",
+                dataPoints: dps,
+                color : "white",
+                markerType: "none",
+                toolTipContent: "t = {x} (s) <br/> V = {y} (V)"
+            }],
+            toolTip : {
+                fontColor: "white",
+                backgroundColor: "#5050d2",
+                fontSize: 16
+            },
+            axisX : {
+                title: $scope.time + " (s)",
+                titleFontColor: "white",
+                tickColor: "white",
+                lineColor: "white",
+                lineThickness : 2,
+                labelFontColor: "white"
+            },
+            axisY : {
+                title: $scope.voltage + " (V)",
+                titleFontColor: "white",
+                gridColor: "white",
+                tickColor: "white",
+                lineColor: "white",
+                lineThickness : 2,
+                gridDashType: "dash",
+                labelFontColor: "white",
+                gridThickness:1
+            },
+            backgroundColor: "#6262FF"
         });
-        example_content.dataPoints.push({
-            t: Math.round(Number(xVal)*10)/10,
-            V: sensorValue
-        });
-        results+= Math.round(Number(xVal)*10)/10 + ' , ' + sensorValue + '\n';
-        xVal+=0.1;
-        if (dps.length > dataLength)
-            dps.shift();
-        chart.render();
-    };
+        var xVal = 0;
+        var updateInterval = 100;
+        var dataLength = 100; // number of dataPoints visible at any point
+        var updateChart = function() {
+            dps.push({
+                x: xVal,
+                y: sensorValue
+            });
+            example_content.dataPoints.push({
+                t: Math.round(Number(xVal)*10)/10,
+                V: sensorValue
+            });
+            results+= Math.round(Number(xVal)*10)/10 + ' , ' + sensorValue + '\n';
+            xVal+=0.1;
+            if (dps.length > dataLength)
+                dps.shift();
+            chart.render();
+        };
 
-    // generates first set of dataPoints
-    updateChart();
-    // update chart after specified time.
-    setInterval(function() {
-        if (graphFlag)
-            updateChart();
-    }, updateInterval);
-
+        // generates first set of dataPoints
+        updateChart();
+        // update chart after specified time.
+        setInterval(function() {
+            if (graphFlag)
+                updateChart();
+        }, updateInterval);
+    }
+    
     //pause and resume graph
     //This is how to pause and resume through clicking on the graph
     $scope.pause = function() {
