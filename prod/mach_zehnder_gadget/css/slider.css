@@ -56,12 +56,13 @@
 }
 
 #piezo {
-    height: 90px;
+    height: 50px;
     width: 10px;
     z-index: 2;
 	position: absolute;
-	top: 200px;
-	left: 105px;
+	top: 228px;
+	left: 94px;
+	border:0px;
 }
 #piezo.noUi-vertical .noUi-handle {
     width: 0px;
@@ -76,7 +77,9 @@
     width: 0px;
     height: 0px;
 }
-
+#piezo.noUi-target{
+    border: 2px solid #D3D3D3;
+}
 .noUi-connect {
     background: #5050d2;
 }
@@ -101,8 +104,8 @@
     left: 159px;
 }
 #value-inputpiezo {
-	top: 280px;
-    left: 95px;
+	top: 245px;
+    left: 40px;
 }
 
 #spanbs1, #spanbs2, #spanf1, #spanpiezo {
@@ -128,5 +131,11 @@
 	left: 62px;
 }
 #diagramImage {
-	z-index : 1 ;
+	z-index : 1;
+}
+#mirrorImage {
+	z-index: 1;
+	position: absolute;
+	top: 218px;
+	left: 89px;
 }

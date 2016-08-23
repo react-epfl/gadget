@@ -28,7 +28,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     });
     var initialMetadata = {
           "id": "2e90ab41-2893-42ca-9169-b2dcd10285a6",
-          "published": "2014-11-12T09:27:14.186Z",
+          "published": "2016-08-22T13:09:28.395Z",
           "storageType": "vault",
           "storageId": "",
           "actor": {
@@ -43,20 +43,20 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
           },
           "generator": {
              "objectType": "application",
-             "url": window.location.href,
-             "id": "unknown",
+             "url": "http://shindig2.epfl.ch/gadget/prod/mach_zehnder_gadget/gadget.xml",
+             "id": "57adec0c1ce973e1f2aa9ca8",
              "displayName": "Mach Zehnder Interferometer"
          },
          "provider": {
              "objectType": "ils",
-             "url": window.location.href,
-             "id": "unknown",
-             "displayName": "unknown",
-             "inquiryPhase": "unknown"
+             "url": "http://graasp.eu/spaces/57adeba41ce973e1f2aa9c69",
+             "id": "57adeba41ce973e1f2aa9c69",
+             "displayName": "Mach Zehnder ILS",
+             "inquiryPhase": "Investigation"
          }
     };
     var example_metadata = {
-          "published": "2016-08-15T09:27:14.186Z",
+          "published": "2016-08-22T13:09:28.395Z",
           "storageType": "vault",
           "storageId": "",
           "actor": {
@@ -71,17 +71,17 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
           },
           "generator": {
             "objectType": "application",
-            "url": "http://128.178.96.66/GadgetTest/WebClients/gadget.xml#appId=57b1aa566afd990f54b07795&owner=57b1aa276afd990f54b0770d",
-            "id": null,
+            "url": "http://shindig2.epfl.ch/gadget/prod/mach_zehnder_gadget/gadget.xml",
+            "id": "57adec0c1ce973e1f2aa9ca8",
             "displayName": "Mach Zehnder Interferometer"
           },
           "provider": {
             "objectType": "ils",
-            "url": "http://graasp.eu/spaces/57b1aa276afd990f54b076fc",
-            "id": "57b1aa276afd990f54b076fc",
+            "url": "http://graasp.eu/spaces/57adeba41ce973e1f2aa9c69",
+            "id": "57adeba41ce973e1f2aa9c69",
             "displayName": "Test",
             "inquiryPhase": "Investigation",
-            "inquiryPhaseId": "57b1aa276afd990f54b0770d",
+            "inquiryPhaseId": "57adeba41ce973e1f2aa9c78",
             "inquiryPhaseName": "Investigation"
           }
         };
@@ -209,19 +209,20 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     valueInputpiezo = document.getElementById('value-inputpiezo');
     var piezo = document.getElementById('piezo');
     noUiSlider.create(piezo, {
-        start: [0, 3],
+        start: [0, 9],
         step: 0.01,
-        margin: 3,
+        margin: 9,
         connect: true,
         orientation: 'vertical',
         behaviour: 'drag-fixed',
         range: {
             'min': -3,
-            'max': 3
+            'max': 9
         }
     });
     piezo.noUiSlider.on('update', function(values, handle) {
         valueInputpiezo.value = values[0]*(-1);
+        $('#mirrorImage').css({'top' : (218-valueInputpiezo.value*2.66667), 'left' : (89+valueInputpiezo.value*2.66667)});
         if (pageIsLoaded==1) {
             ws.send('piezo_actuator?'+values[0]*(-1));
             var logObject = {
