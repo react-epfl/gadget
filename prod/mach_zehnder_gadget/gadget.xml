@@ -4,6 +4,10 @@
 <Require feature="opensocial-0.9"/>
 <Require feature="osapi"/>
 <Require feature="dynamic-height"/>
+<Locale messages="./mach_languages/ALL_ALL.xml"/>
+<Locale lang="es" messages="./mach_languages/es_ALL.xml"/>
+<Locale lang="fr" messages="./mach_languages/fr_ALL.xml"/>
+<Locale lang="de" messages="./mach_languages/de_ALL.xml"/>
 </ModulePrefs>
 <Content type="html">
 <![CDATA[
@@ -33,11 +37,11 @@
 </head>
 <body ng-app="WebsocketClient" >
     <p>&nbsp;</p>
-    <div class="laserDiv" ng-controller="WebSocketController">
-        <label class="radio-inline"><input type="radio" name="optradio" value="classical" checked="true"><h4>Classical</h4></label>
-        <label class="radio-inline"><input type="radio" name="optradio" value="quantum" ><h4>Quantum</h4></label>
+    <div class="laserDiv" ng-controller="WebSocketController" ng-init="turn_laser_on= '__MSG_turn_laser_on__'; turn_laser_off= '__MSG_turn_laser_off__'; graph_title= '__MSG_graph_title__';time= '__MSG_time__';voltage= '__MSG_voltage__';">
+        <label class="radio-inline"><input type="radio" name="optradio" value="classical" checked="true"><h4>__MSG_classical__</h4></label>
+        <label class="radio-inline"><input type="radio" name="optradio" value="quantum" ><h4>__MSG_quantum__</h4></label>
         <br/><p></p><br/>
-        <button id="laserButton" class="btn-default" ng-click="laserClick()">Turn Laser On</button>
+        <button id="laserButton" class="btn-default" ng-click="laserClick()">__MSG_turn_laser_on__</button>
         <p></p><br/><p></p><br/><p></p><br/><p></p>
         <img src="black.jpg" id="liveFeedVideo"/>
 
@@ -59,8 +63,8 @@
             <img src="mirror.png" id="mirrorImage"/>
         </div><p></p>
 
-        Photo Diode Voltage: &nbsp; <span id="photoDiodeVoltage" style="position:relative">0</span>V <br/> <p></p><br/>
-        <button id="saveButton" class="btn-warning" ng-click="save()">Save Experiment Data</button><br/><p></p>
+        __MSG_photo_diode_voltage__: &nbsp; <span id="photoDiodeVoltage" style="position:relative">0</span>V <br/> <p></p><br/>
+        <button id="saveButton" class="btn-warning" ng-click="save()">__MSG_save_experiment_data__</button><br/><p></p>
         <div id="chartContainer" ng-click="pause()" style="height: 300px; width:100%;"></div>
 
        <!-- <video id="liveFeedVideo" autoplay>
