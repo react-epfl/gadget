@@ -224,6 +224,8 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     piezo.noUiSlider.on('update', function(values, handle) {
         valueInputpiezo.value = values[0]*(-1);
         $('#mirrorImage').css({'top' : (218-valueInputpiezo.value*2.66667), 'left' : (89+valueInputpiezo.value*2.66667)});
+        $('#rayImage').css({'top' : (233-valueInputpiezo.value*4.3333)});
+        $('#ray2Image').css({'top' : (229-valueInputpiezo.value*4.3333)});
         if (pageIsLoaded==1) {
             ws.send('piezo_actuator?'+values[0]*(-1));
             var logObject = {
@@ -350,6 +352,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
              actionLogger.logStart(logObject);
         } else {
             ws.send('laser_power?'+0);
+            graphFlag = 0;
             //Log Activity
             var logObject = {
                 "objectType": "button",
@@ -397,6 +400,13 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     });
     //to generate the graph
     var dps = []; // dataPoints
+    for (i = 0; i < 10; i += 0.1){
+        dps.push({
+            x: i,
+            y: undefined
+        });
+    }
+
     function createChart() {
         var chart = new CanvasJS.Chart('chartContainer', {
             title : {
@@ -430,10 +440,11 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
                 gridColor: "white",
                 tickColor: "white",
                 lineColor: "white",
-                lineThickness : 2,
+                lineThickness: 2,
                 gridDashType: "dash",
                 labelFontColor: "white",
-                gridThickness:1
+                gridThickness: 1,
+                minimum: 0
             },
             backgroundColor: "#6262FF"
         });
@@ -441,10 +452,17 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         var updateInterval = 100;
         var dataLength = 100; // number of dataPoints visible at any point
         var updateChart = function() {
-            dps.push({
-                x: xVal,
-                y: sensorValue
-            });
+            if (xVal < 10) {
+                for (j = 0; j < 100 ; j++){
+                    if (dps[j].x == xVal)
+                        dps[j].y = sensorValue;
+                }
+            } else {
+                dps.push({
+                    x: xVal,
+                    y: sensorValue
+                });
+            }
             example_content.dataPoints.push({
                 t: Math.round(Number(xVal)*10)/10,
                 V: sensorValue
@@ -504,8 +522,6 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         var blob = new Blob([results], {type: 'text/plain;charset=utf-8'});
         saveAs(blob, 'Experiment results on ' + new Date());
         results = '';
-        dps.splice(0,dps.length);
-        xVal = 0;
         //Log Activity
         var logObject = {
             "objectType": "button",
