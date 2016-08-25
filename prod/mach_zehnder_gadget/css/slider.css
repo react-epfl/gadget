@@ -1,14 +1,14 @@
 #f1 {
-	height: 90px;
+	height: 50px;
 	width: 10px;
 	z-index: 2;
 	position: absolute;
-	top: 20px;
+	top: 40px;
 	left: 55px;
 }
 #f1.noUi-vertical .noUi-handle {
     width: 20px;
-    height: 10px;
+    height: 7px;
     top: -1px;
 }
 #f1.noUi-vertical .noUi-handle:before,
@@ -18,16 +18,16 @@
 }
 
 #bs1 {
-	height: 90px;
+	height: 50px;
 	width: 10px;
 	z-index: 2;
 	position: absolute;
-	top: 20px;
+	top: 40px;
 	left: 242px;
 }
 #bs1.noUi-vertical .noUi-handle {
     width: 20px;
-    height: 10px;
+    height: 7px;
     top: -1px;
 }
 #bs1.noUi-vertical .noUi-handle:before,
@@ -38,14 +38,14 @@
 
 #bs2 {
     height: 10px;
-    width: 90px;
+    width: 50px;
     z-index: 2;
 	position: absolute;
 	top: 160px;
-	left: 65px;
+	left: 89px;
 }
 #bs2.noUi-horizontal .noUi-handle {
-    width: 10px;
+    width: 7px;
     height: 20px;
     left: -1px;
 }
@@ -58,7 +58,7 @@
 #piezo {
     height: 50px;
     width: 10px;
-    z-index: 2;
+    z-index: 4;
 	position: absolute;
 	top: 228px;
 	left: 94px;
@@ -92,16 +92,16 @@
 }
 
 #value-inputf1 {
-	top: 114px;
+	top: 97px;
     left: 55px;
 }
 #value-inputbs1 {
-	top: 114px;
+	top: 97px;
     left: 242px;
 }
 #value-inputbs2 {
 	top: 155px;
-    left: 159px;
+    left: 145px;
 }
 #value-inputpiezo {
 	top: 245px;
@@ -115,16 +115,16 @@
     color: #5050d2;
 }
 #spanf1 {
-	top: 5px;
-	left: 40px;
+	top: 25px;
+	left: 30px;
 }
 #spanbs1 {
-	top: 5px;
-	left: 236px;
+	top: 25px;
+	left: 238px;
 }
 #spanbs2 {
 	top: 158px;
-	left: 37px;
+	left: 59px;
 }
 #spanpiezo {
 	top: 285px;
@@ -134,8 +134,34 @@
 	z-index : 1;
 }
 #mirrorImage {
-	z-index: 1;
+	z-index: 3;
 	position: absolute;
 	top: 218px;
 	left: 89px;
+}
+#s2Image {
+	z-index: 4;
+	position: absolute;
+	top: 205px;
+	left: 288px;
+}
+#rayImage {
+	z-index: 2;
+	position: absolute;
+	top: 233px;
+	left: 117px;
+}
+
+#ray2Image {
+	z-index: 2;
+	position: absolute;
+	top: 229px;
+	left: 351px;
+}
+
+#ray3Image {
+	z-index: 2;
+	position: absolute;
+	top: 233px;
+	left: 351px;
 }
