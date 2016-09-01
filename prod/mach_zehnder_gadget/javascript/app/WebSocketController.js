@@ -1,26 +1,122 @@
 myApp.controller('WebSocketController',['$scope', function($scope) {
 
-    //Create flags
+    //Create flags and variables
     var sensorValue=0;
     var graphFlag = 0;
     $scope.showQuantumDivFlag = 0;
     $scope.showMetadataButtonsFlag=0;
+    $scope.showFilterFlag = 0;
     var pageIsLoaded = 0;
     var actionLoggerReady = 0;
+    var connected = 0;
+    var VWS;
+    var FF;
 
+    //upon loading
     $(document).ready(function() {
         pageIsLoaded = 1;
         createChart();
+        //check if it is firefox
+        FF=(navigator.userAgent.search("Firefox") >= 0);
+        initialize();
+        initializeVideoSocket();
     });
+    //initializing the video web socket
+    var initializeVideoSocket = function() {
+        Vws = new WebSocket('ws://145.232.235.206:8888/WS_Video');
+        Vwsopen.Vws = Vws;
+        Vws.onopen = Vwsopen;
+        Vws.onmessage = Vwsmessage;
+        Vws.onclose = Vwsclose;
+
+        var SVGDoc=null; 
+        var myimage =new Image();
+
+        function Vwsopen(event) {
+            var sensorRequest = {
+                method: 'getSensorData',
+                sensorId: 'Video',
+                accessRole: 'controller'
+            }
+            var jsonRequest = JSON.stringify(sensorRequest);
+            Vws.send(jsonRequest);
+        }
+
+        function Vwsmessage(event) {
+            if (event.data instanceof Blob) {
+                var destinationCanvas = document.getElementById('mycanvas');
+                destinationCanvas.height="240";
+                destinationCanvas.width="320";
+                var destinationContext = destinationCanvas.getContext('2d');
+                var URL = window.URL || window.webkitURL;
+                if (FF) {
+                    myimage.src = URL.createObjectURL(event.data);
+                    destinationContext.drawImage(myimage, 0, 0);
+                }
+                else { 
+                destinationContext.drawImage(myimage, 0, 0);
+                myimage.src = URL.createObjectURL(event.data);
+                }
+            }
+        }
+
+        function Vwsclose(event) {
+        }
+    };
+
+    //initialise UI elemenets
+    var initialize = function() {
+        $scope.showQuantumDivFlag = 0;
+        var parts=[0,0,0,0,0,0];
+        if (parts[0]==1) {
+            if ($('#laserButton').hasClass('btn-warning')) {
+                //Do Nothing
+            } else {
+                $('#laserButton').toggleClass('btn-warning');
+                $('#laserButton').toggleClass('btn-default');
+                $('#laserButton').html($scope.turn_laser_off);
+            }
+        } else {
+            if ($('#laserButton').hasClass('btn-warning')) {
+                $('#laserButton').toggleClass('btn-warning');
+                $('#laserButton').toggleClass('btn-default');
+                $('#laserButton').html($scope.turn_laser_on);
+            } else {
+                //Do Nothing
+            }
+        }
+        //Set the obtained values to the DOM elements
+        bs1.noUiSlider.set(parts[1]);
+        bs2.noUiSlider.set(parts[2]);
+        f1.noUiSlider.set(parts[4]);
+        piezo.noUiSlider.set([(-1)*(parts[3]), (parts[3])*(-1)]);
+        valueInputbs1.value = parts[1];
+        valueInputbs2.value = parts[2];
+        valueInputf1.value = parts[4];
+        valueInputpiezo.value = parts[3];
+        $('#photoDiodeVoltage').html(parts[5]);
+    };
 
     //Establish Connection
-    var host = 'shindig2.epfl.ch';
-    var port = '8000';
+    var host = '145.232.235.206';
+    var port = '8888';
+
     var results = '';
     var ws = new WebSocket('ws://' + host + ':' + port);
     ws.onopen = function() { 
-        ws.send('laser_power?'+0); //Make sure the laser is off on startup
-        ws.send('getInitialData'); //Retrieve the initial situation of actuators
+        connected = 1;
+        console.log("connected")
+        //ws.send('laser_power?'+0); //Make sure the laser is off on startup
+        var sensorRequest = {
+            method: 'getSensorData',
+            sensorId: 'photodiode',
+            accessRole: 'controller'
+        }
+        jsonRequest = JSON.stringify(sensorRequest);
+        if (connected){
+            ws.send(jsonRequest);
+        }
+        //ws.send('getInitialData'); //Retrieve the initial situation of actuators
     };
     gadgets.window.adjustHeight();
     var currentUser;
@@ -100,14 +196,9 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     var actionLogger;
     new window.golab.ils.metadata.GoLabMetadataHandler(initialMetadata, function(shouldBeNull,metadataHandler) {
         actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);
-        actionLogger.setLoggingTarget("console");
+        actionLogger.setLoggingTarget("opensocial");
         actionLoggerReady =1 ;
     });
-
-    /*var Vws = new WebSocket("ws://IP:PORT/WS_Video");
-    var sensorRequest = { method: 'getSensorData', sensorId: 'Video', accessRole: 'controller' } 
-    var jsonRequest = JSON.stringify(sensorRequest); 
-    Vws.send(jsonRequest); */
 
     //Initialize DOM elements
     //Initializing and handling F1
@@ -127,15 +218,25 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     f1.noUiSlider.on('update', function(values, handle) {
         valueInputf1.value = Math.round(values[0]);
         if (pageIsLoaded==1) {
-            ws.send('filter_0?'+Math.round(values[0]));
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'duty2',
+                valueNames: "",
+                data: Math.round(values[0])+''
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            //if (connected)
+                //ws.send(jsonRequest);
             //Log Activity
             var logObject = {
                 "objectType": "slider",
                 "displayName":"filterSlider",
                 "content": Math.round(values[0])
             };
-            if (actionLoggerReady)
-                actionLogger.logChange(logObject);
+            //if (actionLoggerReady)
+                //actionLogger.logChange(logObject);
         }
     });
     valueInputf1.addEventListener('change', function() {
@@ -159,7 +260,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     bs1.noUiSlider.on('update', function(values, handle) {
         valueInputbs1.value = Math.round(values[0]);
         if (pageIsLoaded==1) {
-            ws.send('beam_splitter0?'+Math.round(values[0]));
+            //ws.send('beam_splitter0?'+Math.round(values[0]));
             //Log Activity
             var logObject = {
                 "objectType": "slider",
@@ -191,7 +292,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     bs2.noUiSlider.on('update', function(values, handle) {
         valueInputbs2.value = Math.round(values[0]);
         if (pageIsLoaded==1) {
-            ws.send('beam_splitter1?'+Math.round(values[0]));
+            //ws.send('beam_splitter1?'+Math.round(values[0]));
             //Log Activity
             var logObject = {
                 "objectType": "slider",
@@ -225,9 +326,9 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         valueInputpiezo.value = values[0]*(-1);
         $('#mirrorImage').css({'top' : (218-valueInputpiezo.value*2.66667), 'left' : (89+valueInputpiezo.value*2.66667)});
         $('#rayImage').css({'top' : (233-valueInputpiezo.value*4.3333)});
-        $('#ray2Image').css({'top' : (229-valueInputpiezo.value*4.3333)});
+        $('#ray2Image').css({'top' : (231-valueInputpiezo.value*4.3333)});
         if (pageIsLoaded==1) {
-            ws.send('piezo_actuator?'+values[0]*(-1));
+            //ws.send('piezo_actuator?'+values[0]*(-1));
             var logObject = {
                 "objectType": "slider",
                 "displayName":"piezo",
@@ -244,64 +345,35 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
 
     // Receive incoming messages
     ws.onmessage = function(event) {
-        if (event.data.charAt(1)=='?') {
-            //This part is reached only when initializing
-            //RESETING EVERYTHING ON START
-            ws.send('beam_splitter0?'+0);
-            ws.send('beam_splitter1?'+0);
-            ws.send('piezo_actuator?'+0);
-            ws.send('filter_0?'+0);
-            $scope.showQuantumDivFlag = 0;
-            var parts=[0,0,0,0,0,0];
-            //END OF RESET
-            // The code below shows how to get the data that is originally found in the actuator metadata
-            //var parts = event.data.split("?"); //UNCOMMENT THIS WHEN INITIAL DATA IS NEEDED and delete the above reset part
-            if (parts[0]==1) {
-                if ($('#laserButton').hasClass('btn-warning')) {
-                    //Do Nothing
-                } else {
-                    $('#laserButton').toggleClass('btn-warning');
-                    $('#laserButton').toggleClass('btn-default');
-                    $('#laserButton').html($scope.turn_laser_off);
-                }
-            } else {
-                if ($('#laserButton').hasClass('btn-warning')) {
-                    $('#laserButton').toggleClass('btn-warning');
-                    $('#laserButton').toggleClass('btn-default');
-                    $('#laserButton').html($scope.turn_laser_on);
-                } else {
-                    //Do Nothing
-                }
-            }
-            //Set the obtained values to the DOM elements
-            bs1.noUiSlider.set(parts[1]);
-            bs2.noUiSlider.set(parts[2]);
-            f1.noUiSlider.set(parts[4]);
-            piezo.noUiSlider.set([(-1)*(parts[3]), (parts[3])*(-1)]);
-            valueInputbs1.value = parts[1];
-            valueInputbs2.value = parts[2];
-            valueInputf1.value = parts[4];
-            valueInputpiezo.value = parts[3];
-            $('#photoDiodeVoltage').html(parts[5]);
-        } else
-            if (event.data.charAt(0)=='?') {
-                //This means that what is being received is a sensor data
-                sensorValue = Math.round(Number(event.data.slice(1))*10000)/10000;
-                $('#photoDiodeVoltage').html(sensorValue);
-            } else {
-                //Metadata request has been made
+        var data = event.data;
+        var msg;
+        try {
+            msg = JSON.parse(data);
+            if (msg.method=="getSensorMetadata" || msg.method=="getActuatorMetadata" || msg.method=="getClients" || msg.method=="sendActuatorData") {
+                //Metadata request has been made       
                 $scope.$apply(function() {
                     $('#messageDiv').html('<p>'+(event.data).split('\\n').join('<br>').split('\\t').join('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;')+'</p>');
                 });
+            } else {       
+                if (msg.method == "getSensorData") {
+                    //This means that what is being received is a sensor data
+                    if(msg.responseData){
+                        sensorValue = Math.round(Number(msg.responseData.data[0])*10000)/10000;
+                        $('#photoDiodeVoltage').html(sensorValue);
+                    }
+                }
             }
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     // Laser On and off button click.
     $scope.laserClick = function() {
         if ($('#laserButton').hasClass('btn-warning')) {
-            ws.send('laserOn');
+            //ws.send('laserOn');
         } else {
-            ws.send('laserOff');
+            //ws.send('laserOff');
         }
     };
 
@@ -342,7 +414,16 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
             $('#laserButton').html($scope.turn_laser_on);  
         }
         if ($('#laserButton').hasClass('btn-warning')) {
-            ws.send('laser_power?'+1);
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'power',
+                valueNames: "",
+                data: '1'
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            ws.send(jsonRequest);
             graphFlag = 1;
             //Log Activity
              var logObject = {
@@ -351,7 +432,17 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
              }
              actionLogger.logStart(logObject);
         } else {
-            ws.send('laser_power?'+0);
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'power',
+                valueNames: "",
+                data: '0'
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            ws.send(jsonRequest);
+            //ws.send('laser_power?'+0);
             graphFlag = 0;
             //Log Activity
             var logObject = {
@@ -366,10 +457,33 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     $('input[type=radio][name=optradio]').change(function() {
         if ($('input[name=optradio]:checked').val() == 'quantum') {
             $scope.showQuantumDivFlag = 1;
-            ws.send('beam_splitter0?' + valueInputbs1.value);
-            ws.send('beam_splitter1?' + valueInputbs2.value);
-            ws.send('piezo_actuator?' + valueInputpiezo.value);
-            ws.send('filter_0?' + valueInputf1.value);
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'duty2',
+                valueNames: "",
+                data: 3+''
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            if (connected)
+                ws.send(jsonRequest);
+
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'duty2',
+                valueNames: "",
+                //data: valueInputf1.value+''
+                data: 0+''
+            }
+            console.log(actuatorRequest);
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            setTimeout(function() { 
+                ws.send(jsonRequest);
+            }, 500);
+           
             //Log Activity
              var logObject = {
                 "objectType": "radioButton",
@@ -377,11 +491,33 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
              }
              actionLogger.logAccess(logObject);
         } else {
-            ws.send('beam_splitter0?'+0);
-            ws.send('beam_splitter1?'+0);
-            ws.send('piezo_actuator?'+0);
-            ws.send('filter_0?'+0);
             $scope.showQuantumDivFlag = 0;
+             var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'duty2',
+                valueNames: "",
+                data: 3+''
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            if (connected)
+                ws.send(jsonRequest);
+
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'duty2',
+                valueNames: "",
+                //data: valueInputf1.value+''
+                data: 0+''
+            }
+            console.log(actuatorRequest);
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            setTimeout(function() { 
+                ws.send(jsonRequest);
+            },500);
             //Log Activity
             var logObject = {
                 "objectType": "radioButton",
@@ -444,7 +580,8 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
                 gridDashType: "dash",
                 labelFontColor: "white",
                 gridThickness: 1,
-                minimum: 0
+                minimum: -10,
+                maximum: 10
             },
             backgroundColor: "#6262FF"
         });
