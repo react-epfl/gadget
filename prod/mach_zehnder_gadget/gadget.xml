@@ -61,6 +61,7 @@
                 <span id="spanbs1">BS1</span>
                 <span id="spanbs2">BS2</span>
                 <span id="spanf1" ng-show="showFilterFlag">Filter F1</span>
+                <img src="images/filter.png" id="filterImage"/>
             </div>
             <img src="images/mirror.png" id="mirrorImage"/>
             <img src="images/s2.png" id="s2Image"/>

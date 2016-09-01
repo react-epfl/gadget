@@ -165,3 +165,9 @@
 	top: 236px;
 	left: 351px;
 }
+#filterImage {
+	z-index: 2;
+	position: absolute;
+	top: 27px;
+	left: 48px;
+}
