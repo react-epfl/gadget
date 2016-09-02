@@ -453,6 +453,54 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         }
     });
 
+    //Handling piezo button changes
+    $('#piezoButton').click(function() {
+        if (!$(this).hasClass('btn-warning')) {
+            $('#piezoButton').toggleClass('btn-warning');
+            $('#piezoButton').toggleClass('btn-default');
+            $('#piezoButton').html('Deactivate Piezo');
+        } else {
+            $('#piezoButton').toggleClass('btn-warning');
+            $('#piezoButton').toggleClass('btn-default');
+            $('#piezoButton').html('Activate Piezo');  
+        }
+        if ($('#piezoButton').hasClass('btn-warning')) {
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'piezo',
+                valueNames: "",
+                data: '1'
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            ws.send(jsonRequest);
+            //Log Activity
+             var logObject = {
+                "objectType": "button",
+                "displayName":"piezoButton",
+             }
+             actionLogger.logStart(logObject);
+        } else {
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'piezo',
+                valueNames: "",
+                data: '0'
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            ws.send(jsonRequest);
+            //Log Activity
+            var logObject = {
+                "objectType": "button",
+                "displayName":"piezoButton",
+             }
+            actionLogger.logCancel(logObject);
+        }
+    });
+
     //Classical or Quantum
     $('input[type=radio][name=optradio]').change(function() {
         if ($('input[name=optradio]:checked').val() == 'quantum') {
