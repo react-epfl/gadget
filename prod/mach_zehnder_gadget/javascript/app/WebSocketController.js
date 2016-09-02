@@ -45,8 +45,8 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         function Vwsmessage(event) {
             if (event.data instanceof Blob) {
                 var destinationCanvas = document.getElementById('mycanvas');
-                destinationCanvas.height="240";
-                destinationCanvas.width="320";
+                destinationCanvas.height="150";
+                destinationCanvas.width="200";
                 var destinationContext = destinationCanvas.getContext('2d');
                 var URL = window.URL || window.webkitURL;
                 if (FF) {
@@ -54,6 +54,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
                     destinationContext.drawImage(myimage, 0, 0);
                 }
                 else { 
+                destinationContext.scale(0.625,0.625);
                 destinationContext.drawImage(myimage, 0, 0);
                 myimage.src = URL.createObjectURL(event.data);
                 }

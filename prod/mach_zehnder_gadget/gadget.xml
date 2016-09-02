@@ -43,7 +43,7 @@
         <br/><p></p><br/>
         <button id="laserButton" class="btn-default" ng-click="laserClick()">__MSG_turn_laser_on__</button> <br/><p></p>
         <button id="piezoButton" class="btn-default" ng-click="piezoClick()">Activate Piezo</button>
-        <p></p><br/><p></p><br/><p></p><br/><p></p><br/><p></p><br/><p></p><br/>
+        <p></p><br/><p></p>
         <div>
             <canvas id="mycanvas"  width="100" height="100" style="border: 2px solid #c3c3c3"> 13 </canvas>
         </div>
