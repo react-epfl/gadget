@@ -6830,7 +6830,7 @@ input:checked + .sliderSwitch:before {
 }
 #mycanvas{
   position: absolute;
-  top : 277px;
-  left: 548px;
+  top : 20px;
+  left: 408px;
   z-index: 20;
 }
