@@ -20,12 +20,13 @@
     <link rel="stylesheet" type="text/css" href="./css/slider.css"/>
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.0.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
     <script type="text/javascript" src="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.js"></script>
     <script type="text/javascript" src="./javascript/lib/canvasjs.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/MisterDr/JQuery-Glow/master/jquery.glow.js"></script>
     <script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/metadata/MetadataHandler.js"></script>
@@ -38,46 +39,37 @@
 <body ng-app="WebsocketClient" >
     <p>&nbsp;</p>
     <div class="laserDiv" ng-controller="WebSocketController" ng-init="turn_laser_on= '__MSG_turn_laser_on__'; turn_laser_off= '__MSG_turn_laser_off__'; graph_title= '__MSG_graph_title__';time= '__MSG_time__';voltage= '__MSG_voltage__';">
-        <label class="radio-inline"><input type="radio" name="optradio" value="classical" checked="true"><h4>__MSG_classical__</h4></label>
-        <label class="radio-inline"><input type="radio" name="optradio" value="quantum" ><h4>__MSG_quantum__</h4></label>
+        <label class="radio-inline"><input type="radio" name="optradio" value="classical" checked="true" id="classicalButton"><h4>__MSG_classical__</h4></label>
+        <label class="radio-inline"><input type="radio" name="optradio" value="quantum" id="quantumButton"><h4>__MSG_quantum__</h4></label>
         <br/><p></p><br/>
-        <button id="laserButton" class="btn-default" ng-click="laserClick()">__MSG_turn_laser_on__</button> <br/><p></p>
-        <button id="piezoButton" class="btn-default" ng-click="piezoClick()">Activate Piezo</button>
-        <p></p><br/><p></p>
-        <div>
-            <canvas id="mycanvas"  width="100" height="100" style="border: 2px solid #c3c3c3"> 13 </canvas>
-        </div>
 
         <div id="diagramDiv" style="position:relative">
-            <img id="diagramImage" src = "images/mach_diagram.png"/>
-            <div ng-show="showQuantumDivFlag">
-                <div id="f1" ng-show="showFilterFlag"></div>
-                <input id="value-inputf1" maxlength = "2" size="2" ng-show="showFilterFlag"/>
-                <div id="bs1"></div>
-                <input id="value-inputbs1" maxlength = "2" size="2"/>
-                <div id="bs2"></div>
-                <input id="value-inputbs2" maxlength = "2" size="2"/>
-                <div id="piezo"></div>
-                <input id="value-inputpiezo" maxlength = "4" size="4"/>
-                <span id="spanbs1">BS1</span>
-                <span id="spanbs2">BS2</span>
-                <span id="spanf1" ng-show="showFilterFlag">Filter F1</span>
-                <img src="images/filter.png" id="filterImage"/>
+            <div>
+            <canvas id="mycanvas"  width="100" height="100" style="border: 2px solid #c3c3c3"> 13 </canvas>
             </div>
+            <img id="diagramImage" src = "images/mach_diagram.png"/>
             <img src="images/mirror.png" id="mirrorImage"/>
             <img src="images/s2.png" id="s2Image"/>
-            <img src="images/ray.png" id="rayImage"/>
-            <img src="images/ray2.png" id="ray2Image"/>
-            <img src="images/ray2.png" id="ray3Image"/>
+            <img src="images/laserOff.png" id="laserOffImage" ng-click="laserClick()"/>
+            <img src="images/beamShutter.png" id="bs1Image" ng-click="bs1Clicked()"/>
+            <img src="images/beamShutter2.png" id="bs2Image" ng-click="bs2Clicked()"/>
+            <img src="images/filter.png" id="filterImage" ng-click="filterClicked()"/>
+            <div id="piezo"></div>
+            <img src="images/arrows.png" id="arrowsImage" ng-show="piezoIsActivated"/>
+            <div ng-show="laserIsOn">
+                <img src="images/ray.png" id="rayImage"/>
+                <img src="images/ray2.png" id="ray2Image"/>
+                <img src="images/ray2.png" id="ray3Image"/>
+                <img src="images/ray4.png" id="ray4Image"/>
+                <img src="images/ray5.png" id="ray5Image"/>
+                <img src="images/ray5.png" id="ray6Image"/>
+                <img src="images/ray7.png" id="ray7Image"/>
+            </div>
         </div><p></p>
 
         __MSG_photo_diode_voltage__: &nbsp; <span id="photoDiodeVoltage" style="position:relative">0</span>V <br/> <p></p><br/>
         <button id="saveButton" class="btn-warning" ng-click="save()">__MSG_save_experiment_data__</button><br/><p></p>
         <div id="chartContainer" ng-click="pause()" style="height: 300px; width:100%;"></div>
-
-       <!-- <video id="liveFeedVideo" autoplay>
-           <source src="movie.mp4" type="video/mp4">
-        </video> -->
         <div id = "metadataDiv"  ng-show="showMetadataButtonsFlag">
             <button class="btn-default" ng-click="getClients()">
                 getClients

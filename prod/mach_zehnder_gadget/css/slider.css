@@ -1,67 +1,10 @@
-#f1 {
-	height: 50px;
-	width: 10px;
-	z-index: 2;
-	position: absolute;
-	top: 40px;
-	left: 55px;
-}
-#f1.noUi-vertical .noUi-handle {
-    width: 20px;
-    height: 7px;
-    top: -1px;
-}
-#f1.noUi-vertical .noUi-handle:before,
-#f1.noUi-vertical .noUi-handle:after {
-	width: 0px;
-	height: 0px;
-}
-
-#bs1 {
-	height: 50px;
-	width: 10px;
-	z-index: 2;
-	position: absolute;
-	top: 40px;
-	left: 242px;
-}
-#bs1.noUi-vertical .noUi-handle {
-    width: 20px;
-    height: 7px;
-    top: -1px;
-}
-#bs1.noUi-vertical .noUi-handle:before,
-#bs1.noUi-vertical .noUi-handle:after {
-	width: 0px;
-	height: 0px;
-}
-
-#bs2 {
-    height: 10px;
-    width: 50px;
-    z-index: 2;
-	position: absolute;
-	top: 160px;
-	left: 89px;
-}
-#bs2.noUi-horizontal .noUi-handle {
-    width: 7px;
-    height: 20px;
-    left: -1px;
-}
-#bs2.noUi-horizontal .noUi-handle:before,
-#bs2.noUi-horizontal .noUi-handle:after {
-    width: 0px;
-    height: 0px;
-}
-
 #piezo {
-    height: 50px;
+    height: 40px;
     width: 10px;
     z-index: 4;
 	position: absolute;
-	top: 228px;
-	left: 94px;
+	top: 212px;
+	left: 78px;
 	border:0px;
 }
 #piezo.noUi-vertical .noUi-handle {
@@ -84,90 +27,92 @@
     background: #5050d2;
 }
 
-#value-inputf1, #value-inputbs1, #value-inputbs2, #value-inputpiezo {
-    position: absolute;
-    text-align: center;
-    font-size: 12;
-    color: #5050d2;
-}
-
-#value-inputf1 {
-	top: 97px;
-    left: 55px;
-}
-#value-inputbs1 {
-	top: 97px;
-    left: 242px;
-}
-#value-inputbs2 {
-	top: 155px;
-    left: 145px;
-}
-#value-inputpiezo {
-	top: 245px;
-    left: 40px;
-}
-
-#spanbs1, #spanbs2, #spanf1, #spanpiezo {
-	position: absolute;
-    text-align: center;
-    font-size: 12;
-    color: #5050d2;
-}
-#spanf1 {
-	top: 25px;
-	left: 30px;
-}
-#spanbs1 {
-	top: 25px;
-	left: 238px;
-}
-#spanbs2 {
-	top: 158px;
-	left: 59px;
-}
-#spanpiezo {
-	top: 285px;
-	left: 62px;
-}
 #diagramImage {
 	z-index : 1;
 }
 #mirrorImage {
 	z-index: 3;
 	position: absolute;
-	top: 218px;
-	left: 89px;
+	top: 200px;
+	left: 72px;
 }
 #s2Image {
 	z-index: 4;
 	position: absolute;
-	top: 205px;
-	left: 288px;
+	top: 188px;
+	left: 256px;
 }
 #rayImage {
 	z-index: 2;
 	position: absolute;
-	top: 233px;
-	left: 117px;
+	top: 215px;
+	left: 96px;
 }
 
 #ray2Image {
 	z-index: 2;
 	position: absolute;
-	top: 231px;
-	left: 351px;
+	top: 214px;
+	left: 316px;
 }
 
 #ray3Image {
 	z-index: 2;
 	position: absolute;
-	top: 236px;
-	left: 351px;
+	top: 218px;
+	left: 316px;
 }
-#filterImage {
+#ray4Image {
 	z-index: 2;
 	position: absolute;
-	top: 27px;
-	left: 48px;
+	top: 48px;
+	left: 127px;
+}
+#ray5Image {
+	z-index: 2;
+	position: absolute;
+	top: 59px;
+	left: 90px;
+}
+#ray6Image {
+	z-index: 2;
+	position: absolute;
+	top: 59px;
+	left: 278px;
+}
+#ray7Image {
+	z-index: 2;
+	position: absolute;
+	top: 56px;
+	left: 23px;
+}
+#filterImage {
+	z-index: 3;
+	position: absolute;
+	top: 20px;
+	left: 49px;
+}
+#laserOnImage, #laserOffImage {
+	z-index: 3;
+	position: absolute;
+	top: 41px;
+	left: 2px;
+}
+#bs1Image {
+	z-index: 3;
+	position: absolute;
+	top: 8px;
+	left: 180px;
+}
+#bs2Image {
+	z-index: 3;
+	position: absolute;
+	top: 128px;
+	left: 43px;
+}
+#arrowsImage {
+	z-index: 3;
+	position: absolute;
+	top: 223px;
+	left: 88px;
 }

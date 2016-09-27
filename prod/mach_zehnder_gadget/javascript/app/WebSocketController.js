@@ -3,9 +3,13 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     //Create flags and variables
     var sensorValue=0;
     var graphFlag = 0;
+    var bs1IsActivated = 0;
+    var bs2IsActivated = 0;
+    var filterIsActivated = 0;
+    $scope.piezoIsActivated = 0;
     $scope.showQuantumDivFlag = 0;
     $scope.showMetadataButtonsFlag=0;
-    $scope.showFilterFlag = 0;
+    $scope.laserIsOn = 0;
     var pageIsLoaded = 0;
     var actionLoggerReady = 0;
     var connected = 0;
@@ -45,8 +49,8 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         function Vwsmessage(event) {
             if (event.data instanceof Blob) {
                 var destinationCanvas = document.getElementById('mycanvas');
-                destinationCanvas.height="150";
-                destinationCanvas.width="200";
+                destinationCanvas.height="210";
+                destinationCanvas.width="280";
                 var destinationContext = destinationCanvas.getContext('2d');
                 var URL = window.URL || window.webkitURL;
                 if (FF) {
@@ -54,7 +58,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
                     destinationContext.drawImage(myimage, 0, 0);
                 }
                 else { 
-                destinationContext.scale(0.625,0.625);
+                destinationContext.scale(0.875,0.875);
                 destinationContext.drawImage(myimage, 0, 0);
                 myimage.src = URL.createObjectURL(event.data);
                 }
@@ -69,32 +73,8 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     var initialize = function() {
         $scope.showQuantumDivFlag = 0;
         var parts=[0,0,0,0,0,0];
-        if (parts[0]==1) {
-            if ($('#laserButton').hasClass('btn-warning')) {
-                //Do Nothing
-            } else {
-                $('#laserButton').toggleClass('btn-warning');
-                $('#laserButton').toggleClass('btn-default');
-                $('#laserButton').html($scope.turn_laser_off);
-            }
-        } else {
-            if ($('#laserButton').hasClass('btn-warning')) {
-                $('#laserButton').toggleClass('btn-warning');
-                $('#laserButton').toggleClass('btn-default');
-                $('#laserButton').html($scope.turn_laser_on);
-            } else {
-                //Do Nothing
-            }
-        }
         //Set the obtained values to the DOM elements
-        bs1.noUiSlider.set(parts[1]);
-        bs2.noUiSlider.set(parts[2]);
-        f1.noUiSlider.set(parts[4]);
         piezo.noUiSlider.set([(-1)*(parts[3]), (parts[3])*(-1)]);
-        valueInputbs1.value = parts[1];
-        valueInputbs2.value = parts[2];
-        valueInputf1.value = parts[4];
-        valueInputpiezo.value = parts[3];
         $('#photoDiodeVoltage').html(parts[5]);
     };
 
@@ -106,7 +86,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     var ws = new WebSocket('ws://' + host + ':' + port);
     ws.onopen = function() { 
         connected = 1;
-        console.log("connected")
+        console.log("connected");
         //ws.send('laser_power?'+0); //Make sure the laser is off on startup
         var sensorRequest = {
             method: 'getSensorData',
@@ -202,147 +182,23 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     });
 
     //Initialize DOM elements
-    //Initializing and handling F1
-    var valueInputf1 = document.getElementById('value-inputf1');
-    var f1 = document.getElementById('f1');
-    noUiSlider.create(f1, {
-        start: 0,
-        step: 1,
-        behaviour: 'tap',
-        connect: 'lower',
-        orientation: 'vertical',
-        range: {
-            'min':  0,
-            'max':  90
-        }
-    });
-    f1.noUiSlider.on('update', function(values, handle) {
-        valueInputf1.value = Math.round(values[0]);
-        if (pageIsLoaded==1) {
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'duty2',
-                valueNames: "",
-                data: Math.round(values[0])+''
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            //if (connected)
-                //ws.send(jsonRequest);
-            //Log Activity
-            var logObject = {
-                "objectType": "slider",
-                "displayName":"filterSlider",
-                "content": Math.round(values[0])
-            };
-            //if (actionLoggerReady)
-                //actionLogger.logChange(logObject);
-        }
-    });
-    valueInputf1.addEventListener('change', function() {
-        f1.noUiSlider.set(this.value);
-    });
-
-    //Initializing and handling BS1
-    var valueInputbs1 = document.getElementById('value-inputbs1');
-    var bs1 = document.getElementById('bs1');
-    noUiSlider.create(bs1, {
-        start: 0,
-        step: 1,
-        behaviour: 'tap',
-        connect: 'lower',
-        orientation: 'vertical',
-        range: {
-            'min':  0,
-            'max':  90
-        }
-    });
-    bs1.noUiSlider.on('update', function(values, handle) {
-        valueInputbs1.value = Math.round(values[0]);
-        if (pageIsLoaded==1) {
-            //ws.send('beam_splitter0?'+Math.round(values[0]));
-            //Log Activity
-            var logObject = {
-                "objectType": "slider",
-                "displayName":"beamSplitter0",
-                "content": Math.round(values[0])
-            };
-            if (actionLoggerReady)
-                actionLogger.logChange(logObject);
-        }
-    });
-    valueInputbs1.addEventListener('change', function() {
-        bs1.noUiSlider.set(this.value);
-    });
-
-    //Initializing and handling BS2
-    var valueInputbs2 = document.getElementById('value-inputbs2');
-    var bs2 = document.getElementById('bs2');
-    noUiSlider.create(bs2, {
-        start: 0,
-        step: 1,
-        behaviour: 'tap',
-        connect: 'lower',
-        orientation: 'horizontal',
-        range: {
-            'min':  0,
-            'max':  90
-        }
-    });
-    bs2.noUiSlider.on('update', function(values, handle) {
-        valueInputbs2.value = Math.round(values[0]);
-        if (pageIsLoaded==1) {
-            //ws.send('beam_splitter1?'+Math.round(values[0]));
-            //Log Activity
-            var logObject = {
-                "objectType": "slider",
-                "displayName":"beamSplitter1",
-                "content": Math.round(values[0])
-            };
-            if (actionLoggerReady)
-                actionLogger.logChange(logObject);
-        }
-    });
-    valueInputbs2.addEventListener('change', function() {
-        bs2.noUiSlider.set(this.value);
-    });
-
     //Initializing and handling Piezo
-    valueInputpiezo = document.getElementById('value-inputpiezo');
     var piezo = document.getElementById('piezo');
     noUiSlider.create(piezo, {
-        start: [0, 9],
+        start: [0, 15],
         step: 0.01,
-        margin: 9,
+        margin: 15,
         connect: true,
         orientation: 'vertical',
         behaviour: 'drag-fixed',
         range: {
             'min': -3,
-            'max': 9
+            'max': 15
         }
     });
-    piezo.noUiSlider.on('update', function(values, handle) {
-        valueInputpiezo.value = values[0]*(-1);
-        $('#mirrorImage').css({'top' : (218-valueInputpiezo.value*2.66667), 'left' : (89+valueInputpiezo.value*2.66667)});
-        $('#rayImage').css({'top' : (233-valueInputpiezo.value*4.3333)});
-        $('#ray2Image').css({'top' : (231-valueInputpiezo.value*4.3333)});
-        if (pageIsLoaded==1) {
-            //ws.send('piezo_actuator?'+values[0]*(-1));
-            var logObject = {
-                "objectType": "slider",
-                "displayName":"piezo",
-                "content": values[0]*(-1)
-            };
-            if (actionLoggerReady)
-                actionLogger.logChange(logObject);
-        }
-    });
-    valueInputpiezo.addEventListener('change', function() {
-        piezo.noUiSlider.set([(-1)*(this.value), (this.value-3)*(-1)]);
-    });
+    piezo.setAttribute('disabled', true);
     document.getElementById("piezo").style.transform = "rotate(45deg)";
+    document.getElementById("arrowsImage").style.transform = "rotate(45deg)";
 
     // Receive incoming messages
     ws.onmessage = function(event) {
@@ -366,15 +222,6 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
             }
         } catch (e) {
             console.log(e);
-        }
-    };
-
-    // Laser On and off button click.
-    $scope.laserClick = function() {
-        if ($('#laserButton').hasClass('btn-warning')) {
-            //ws.send('laserOn');
-        } else {
-            //ws.send('laserOff');
         }
     };
 
@@ -403,69 +250,245 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
         ws.send('sendActuatorData');
     };
 
-    //Handling laser button changes
-    $('#laserButton').click(function() {
-        if (!$(this).hasClass('btn-warning')) {
-            $('#laserButton').toggleClass('btn-warning');
-            $('#laserButton').toggleClass('btn-default');
-            $('#laserButton').html($scope.turn_laser_off);
-        } else {
-            $('#laserButton').toggleClass('btn-warning');
-            $('#laserButton').toggleClass('btn-default');
-            $('#laserButton').html($scope.turn_laser_on);  
-        }
-        if ($('#laserButton').hasClass('btn-warning')) {
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'power',
-                valueNames: "",
-                data: '1'
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            ws.send(jsonRequest);
-            graphFlag = 1;
-            //Log Activity
-             var logObject = {
-                "objectType": "button",
-                "displayName":"laserButton",
-             }
-             actionLogger.logStart(logObject);
-        } else {
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'power',
-                valueNames: "",
-                data: '0'
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            ws.send(jsonRequest);
-            //ws.send('laser_power?'+0);
-            graphFlag = 0;
-            //Log Activity
-            var logObject = {
-                "objectType": "button",
-                "displayName":"laserButton",
-             }
-            actionLogger.logCancel(logObject);
-        }
-    });
+    $scope.laserClick = function() {
+        if ($scope.laserIsOn) 
+            $scope.turnLaserOff();
+        else
+            $scope.turnLaserOn();
+    }
 
-    //Handling piezo button changes
-    $('#piezoButton').click(function() {
-        if (!$(this).hasClass('btn-warning')) {
-            $('#piezoButton').toggleClass('btn-warning');
-            $('#piezoButton').toggleClass('btn-default');
-            $('#piezoButton').html('Deactivate Piezo');
+    $scope.turnLaserOn = function() {
+        $scope.laserIsOn = 1;
+        $("#laserOffImage").glow({ radius: "5", color:"green"});
+        var actuatorRequest = {
+            authToken: 'skfjs343kjKJ',
+            method: 'sendActuatorData',
+            accessRole: 'controller',
+            actuatorId: 'power',
+            valueNames: "",
+            data: '1'
+        };
+        var jsonRequest = JSON.stringify(actuatorRequest);
+        ws.send(jsonRequest);
+        graphFlag = 1;
+        //Log Activity
+         var logObject = {
+            "objectType": "button",
+            "displayName":"laserButton",
+         }
+         actionLogger.logStart(logObject);
+    }
+    $scope.turnLaserOff = function() {
+        $scope.laserIsOn = 0; 
+        $("#laserOffImage").glow({ disable:true });
+        var actuatorRequest = {
+            authToken: 'skfjs343kjKJ',
+            method: 'sendActuatorData',
+            accessRole: 'controller',
+            actuatorId: 'power',
+            valueNames: "",
+            data: '0'
+        };
+        var jsonRequest = JSON.stringify(actuatorRequest);
+        ws.send(jsonRequest);
+        graphFlag = 0;
+        //Log Activity
+        var logObject = {
+            "objectType": "button",
+            "displayName":"laserButton",
+        };
+        actionLogger.logCancel(logObject);
+    }
+
+    $scope.bs1Clicked = function() {
+        if (bs1IsActivated) {
+            bs1IsActivated = 0;
+            $('#bs1Image').animate({top : '-=15px'});
+            $("#bs1Image").glow({ disable:true });
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'bs1',
+                valueNames: "",
+                data: '0'
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            ws.send(jsonRequest); 
+            //Log Activity
+            var logObject = {
+                "objectType": "image",
+                "displayName":"bs1Image",
+            };
+            actionLogger.logCancel(logObject);
         } else {
-            $('#piezoButton').toggleClass('btn-warning');
-            $('#piezoButton').toggleClass('btn-default');
-            $('#piezoButton').html('Activate Piezo');  
+            bs1IsActivated = 1;
+            $('#bs1Image').animate({top : '+=15px'});
+            $("#bs1Image").glow({ radius: "3", color:"green"});
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'bs1',
+                valueNames: "",
+                data: '1'
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            ws.send(jsonRequest); 
+            //Log Activity
+            var logObject = {
+                "objectType": "image",
+                "displayName":"bs1Image",
+             }
+            actionLogger.logStart(logObject);
         }
-        if ($('#piezoButton').hasClass('btn-warning')) {
+    }
+
+    $scope.bs2Clicked = function() {
+        if (bs2IsActivated) {
+            bs2IsActivated = 0;
+            $('#bs2Image').animate({left : '-=18px'});
+            $("#bs2Image").glow({ disable:true }); 
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'bs2',
+                valueNames: "",
+                data: '0'
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            ws.send(jsonRequest); 
+            //Log Activity
+            var logObject = {
+                "objectType": "image",
+                "displayName":"bs2Image",
+            };
+            actionLogger.logCancel(logObject);
+        } else {
+            bs2IsActivated = 1;
+            $('#bs2Image').animate({left : '+=18px'});
+            $("#bs2Image").glow({ radius: "3", color:"green"});
+            var actuatorRequest = {
+                authToken: 'skfjs343kjKJ',
+                method: 'sendActuatorData',
+                accessRole: 'controller',
+                actuatorId: 'bs2',
+                valueNames: "",
+                data: '1'
+            };
+            var jsonRequest = JSON.stringify(actuatorRequest);
+            ws.send(jsonRequest); 
+            //Log Activity
+            var logObject = {
+                "objectType": "image",
+                "displayName":"bs2Image",
+            };
+            actionLogger.logStart(logObject);
+        }
+    }
+
+    $scope.filterClicked = function() {
+        if (filterIsActivated) {
+            deactivateFilter();
+             //Log Activity
+            var logObject = {
+                "objectType": "image",
+                "displayName":"filterImage",
+            };
+            actionLogger.logCancel(logObject);
+            $('#classicalButton').prop('checked',true);
+            $('#quantumButton').prop('checked',false);
+        } else {
+            activateFilter();
+            //Log Activity
+            var logObject = {
+                "objectType": "image",
+                "displayName":"filterImage",
+            };
+            actionLogger.logStart(logObject);
+            $('#classicalButton').prop('checked',false);
+            $('#quantumButton').prop('checked',true);
+        }
+    }
+
+    function activateFilter() {
+        filterIsActivated = 1;
+        $('#filterImage').animate({top : '+=10px'});
+        $("#filterImage").glow({ radius: "2", color:"green"});
+
+        var actuatorRequest = {
+            authToken: 'skfjs343kjKJ',
+            method: 'sendActuatorData',
+            accessRole: 'controller',
+            actuatorId: 'duty2',
+            valueNames: "",
+            data: 3+''
+        };
+        var jsonRequest = JSON.stringify(actuatorRequest);
+        if (connected)
+            ws.send(jsonRequest);
+
+        var actuatorRequest = {
+            authToken: 'skfjs343kjKJ',
+            method: 'sendActuatorData',
+            accessRole: 'controller',
+            actuatorId: 'duty2',
+            valueNames: "",
+            data: 0+''
+        }
+        console.log(actuatorRequest);
+        var jsonRequest = JSON.stringify(actuatorRequest);
+        setTimeout(function() { 
+            ws.send(jsonRequest);
+        }, 500);
+    }
+
+    function deactivateFilter() {
+        filterIsActivated = 0;
+        $('#filterImage').animate({top : '-=10px'});
+        $("#filterImage").glow({ disable:true }); 
+
+        var actuatorRequest = {
+            authToken: 'skfjs343kjKJ',
+            method: 'sendActuatorData',
+            accessRole: 'controller',
+            actuatorId: 'duty2',
+            valueNames: "",
+            data: 3+''
+        };
+        var jsonRequest = JSON.stringify(actuatorRequest);
+        if (connected)
+            ws.send(jsonRequest);
+
+        var actuatorRequest = {
+            authToken: 'skfjs343kjKJ',
+            method: 'sendActuatorData',
+            accessRole: 'controller',
+            actuatorId: 'duty2',
+            valueNames: "",
+            //data: valueInputf1.value+''
+            data: 0+''
+        }
+        console.log(actuatorRequest);
+        var jsonRequest = JSON.stringify(actuatorRequest);
+        setTimeout(function() { 
+            ws.send(jsonRequest);
+        },500);
+    }
+
+    //Handling piezo image changes
+    $('#piezo').click(function() {
+        if (!$scope.piezoIsActivated) {
+            $scope.piezoIsActivated = 1;
+            $("#piezo").glow({ radius: "4", color:"green"});
+            piezo.noUiSlider.set([-3, 12]);
+            setTimeout(function() {
+                $('#mirrorImage').css({'top' : 197, 'left' : 75});
+                $('#rayImage').css('top', 209);
+                $('#ray2Image').css('top', 208);
+            }, 150);
+            $scope.$apply();
             var actuatorRequest = {
                 authToken: 'skfjs343kjKJ',
                 method: 'sendActuatorData',
@@ -477,12 +500,21 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
             var jsonRequest = JSON.stringify(actuatorRequest);
             ws.send(jsonRequest);
             //Log Activity
-             var logObject = {
+            var logObject = {
                 "objectType": "button",
                 "displayName":"piezoButton",
-             }
+            };
              actionLogger.logStart(logObject);
         } else {
+            $scope.piezoIsActivated = 0;
+            $("#piezo").glow({ disable:true });
+            piezo.noUiSlider.set([0, 15]); 
+            setTimeout(function() {
+                $('#mirrorImage').css({'top' : 200, 'left' : 72});
+                $('#rayImage').css('top', 215);
+                $('#ray2Image').css('top', 214);
+            }, 150);
+            $scope.$apply();
             var actuatorRequest = {
                 authToken: 'skfjs343kjKJ',
                 method: 'sendActuatorData',
@@ -497,7 +529,7 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
             var logObject = {
                 "objectType": "button",
                 "displayName":"piezoButton",
-             }
+            };
             actionLogger.logCancel(logObject);
         }
     });
@@ -505,74 +537,23 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
     //Classical or Quantum
     $('input[type=radio][name=optradio]').change(function() {
         if ($('input[name=optradio]:checked').val() == 'quantum') {
-            $scope.showQuantumDivFlag = 1;
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'duty2',
-                valueNames: "",
-                data: 3+''
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            if (connected)
-                ws.send(jsonRequest);
-
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'duty2',
-                valueNames: "",
-                //data: valueInputf1.value+''
-                data: 0+''
-            }
-            console.log(actuatorRequest);
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            setTimeout(function() { 
-                ws.send(jsonRequest);
-            }, 500);
-           
-            //Log Activity
-             var logObject = {
+            if (!filterIsActivated)
+                activateFilter();
+            var logObject = {
                 "objectType": "radioButton",
                 "displayName":"quantumButton",
              }
              actionLogger.logAccess(logObject);
+            
         } else {
-            $scope.showQuantumDivFlag = 0;
-             var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'duty2',
-                valueNames: "",
-                data: 3+''
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            if (connected)
-                ws.send(jsonRequest);
-
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'duty2',
-                valueNames: "",
-                //data: valueInputf1.value+''
-                data: 0+''
-            }
-            console.log(actuatorRequest);
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            setTimeout(function() { 
-                ws.send(jsonRequest);
-            },500);
-            //Log Activity
+            if (filterIsActivated)
+                deactivateFilter();
             var logObject = {
                 "objectType": "radioButton",
                 "displayName":"classicalButton",
             }
             actionLogger.logAccess(logObject);
+             
         }
         $scope.$apply();
         gadgets.window.adjustHeight();
@@ -688,19 +669,6 @@ myApp.controller('WebSocketController',['$scope', function($scope) {
             actionLogger.logCancel(logObject);
         }
     };
-
-    //This is how to pause and resume in case we have a button for that
-    /*$scope.pause = function(){
-        if ($("#pauseButton").hasClass("btn-warning")){
-            $("#pauseButton").html("Click to Pause Graph");
-            graphFlag = 1;
-        }else{
-            $("#pauseButton").html("Click to Resume Graph");
-            graphFlag = 0;
-        }
-        $("#pauseButton").toggleClass("btn-warning");
-        $("#pauseButton").toggleClass("btn-default");
-    };*/
 
     $scope.save = function() {
         if (currentUser!= undefined)

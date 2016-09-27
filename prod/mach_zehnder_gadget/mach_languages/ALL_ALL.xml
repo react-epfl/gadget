@@ -1,6 +1,4 @@
 <messageblundle>
-    <msg name="turn_laser_on">Turn Laser On</msg>
-    <msg name="turn_laser_off">Turn Laser Off</msg>
     <msg name="classical">Classical</msg>
     <msg name="quantum">Quantum</msg>
     <msg name="photo_diode_voltage">Photodiode Voltage</msg>
