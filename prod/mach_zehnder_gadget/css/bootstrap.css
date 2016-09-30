@@ -6829,8 +6829,5 @@ input:checked + .sliderSwitch:before {
   color: #5050d2;
 }
 #mycanvas{
-  position: absolute;
-  top : 20px;
-  left: 408px;
   z-index: 20;
 }
