@@ -1,0 +1,9 @@
+<messageblundle>
+    <msg name="student_view">Student View</msg>
+    <msg name="teacher_view">Teacher View</msg>
+    <msg name="my_progress">My Progress</msg>
+    <msg name="table_description">Below you can view the progress reported by your students</msg>
+    <msg name="student_name">Student Name</msg>
+    <msg name="progress">Progress</msg>
+    <msg name="modified">Modified</msg>
+</messageblundle>
