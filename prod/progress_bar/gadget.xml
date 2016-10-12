@@ -310,11 +310,11 @@
                                 $('table tbody').append('<tr><td>'+displayName+'</td><td>'+progress+'%</td><td>'+date+'</td></tr>');
                             }
                         });
-                        if (spinTimeout) clearTimeout(spinTimeout);
-                        $('.loader').remove();
-                        gadgets.window.adjustHeight();
-                        loadingStudents = false;
                     }
+                    if (spinTimeout) clearTimeout(spinTimeout);
+                    $('.loader').remove();
+                    gadgets.window.adjustHeight();
+                    loadingStudents = false;
                 });
             };
 
