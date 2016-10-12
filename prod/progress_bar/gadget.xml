@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs title="Progress Bar" author_email="hagop.jamkojian@epfl.ch" author="Hagop Jamkojian" height="600" width="800">
+<Require feature="opensocial-0.9"/>
+<Require feature="osapi"/>
+<Require feature="dynamic-height"/>
+<Locale messages="./ALL_ALL.xml"/>
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.js"></script>
+    <script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script type="text/javascript" src="http://shindig2.epfl.ch/ils/metadata/MetadataHandler.js"></script>
+    <script type="text/javascript" src="http://shindig2.epfl.ch/ils/applog/ActionLogger.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #5050d2;
+            font-size: 16px;
+            color: white;
+        }
+
+        .clearfix:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+
+        .panel {
+            display: none;
+            padding: 50px;
+        }
+        .panel.active {
+            display: block;
+        }
+
+        .view-select {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            background-color: #fff;
+        }
+        .view-select li {
+            display: block;
+            float: left;
+            margin: 0;
+            padding: 7px 10px;
+            color: #5050d2;
+            cursor: pointer;
+        }
+        .view-select li.active,
+        .view-select li.active:hover {
+            background-color: #5050d2;
+            color: #fff;
+        }
+        .view-select li:hover {
+            background-color: #9698e2;
+            color: #fff;
+        }
+
+        .slider-content {
+            height: 100px;
+        }
+        .title {
+            margin: 0;
+        }
+        #progressSlider {
+            width: 100%;
+            margin-top: 50px;
+        }
+        #progressSlider .noUi-handle {
+            width: 20px;
+            left: -10px;
+        }
+        #progressSlider .noUi-handle:after {
+            left: 10px;
+        } 
+        #progressSlider .noUi-handle:before {
+            left: 7px;
+        }
+        #progressSlider .noUi-connect {
+            background-color: white;
+        }
+        #progressSlider .noUi-base {
+            background-color: #9698e2;
+        }
+
+        .student-progress {
+            width: 100%;
+            text-align: left;
+        }
+        .student-progress tbody tr:nth-child(even) {
+            background-color: #9698e2;
+        }
+        .student-progress th {
+            position: relative;
+            width: 20%;
+            height: 40px;
+            background: white;
+            color: #5050d2;
+            padding: 5px;
+        }
+        .student-progress th:first-child,
+        .student-progress th:last-child {
+            width: 40%;
+        }
+        .student-progress td {
+            padding: 2px 5px;
+        }
+        .refresh-button {
+            cursor: pointer;
+            font-size: 30px;
+            position: absolute;
+            display: block;
+            top: 5px;
+            right: 5px;
+            line-height: 1;
+        }
+        .student-progress + .loader {
+            margin-top: 20px;
+        }
+
+        .loading {
+            overflow: hidden;
+        }
+
+        .loader {
+            font-size: 10px;
+            margin: 0 auto;
+            text-indent: -9999em;
+            width: 10em;
+            height: 10em;
+            border-radius: 50%;
+            background: #ffffff;
+            background: -moz-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+            background: -webkit-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+            background: -o-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+            background: -ms-linear-gradient(left, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+            background: linear-gradient(to right, #ffffff 10%, rgba(255, 255, 255, 0) 42%);
+            position: relative;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+        }
+        .loader:before {
+            width: 50%;
+            height: 50%;
+            background: #ffffff;
+            border-radius: 100% 0 0 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            content: '';
+        }
+        .loader:after {
+            background: #5050d2;
+            width: 75%;
+            height: 75%;
+            border-radius: 50%;
+            content: '';
+            margin: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+    </style>
+    
+</head>
+<body>
+    <ul class="panel view-select clearfix">
+        <li class="view-teacher">__MSG_teacher_view__</li>
+        <li class="view-student active">__MSG_student_view__</li>
+    </ul>
+
+    <div class="panel slider-content">
+        <h3 class="title">__MSG_my_progress__:</h3> 
+        <div id="progressSlider"></div>
+    </div>
+
+    <div class="panel teacher-content">
+        &nbsp;__MSG_table_description__: <br><br>
+        <table class="student-progress">
+            <thead>
+                <tr>
+                    <th>__MSG_student_name__</th>
+                    <th>__MSG_progress__</th>
+                    <th>__MSG_modified__ <span class="refresh-button">&#10227;</span></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel loading active">
+        <div class="loader"></div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            var spinTimeout;
+            function AnimateRotate (angle,repeat) {
+                var duration = 1400;
+                spinTimeout = setTimeout(function () {
+                    if(repeat && repeat == "infinite") {
+                        AnimateRotate(angle,repeat);
+                    } else if ( repeat && repeat > 1) {
+                        AnimateRotate(angle, repeat-1);
+                    }
+                },duration)    
+                var $elem = $('.loader');
+
+                $({deg: 0}).animate({deg: angle}, {
+                    duration: duration,
+                    easing: 'linear',
+                    step: function(now) {
+                        $elem.css({
+                            'transform': 'rotate('+ now +'deg)'
+                        });
+                    }
+                });
+            }
+            AnimateRotate(360,"infinite");
+
+            var teacherViewLoaded = false;
+            $('.view-select .view-teacher').click(function () {
+                if (!$(this).hasClass('active')) {
+                    $('.view-teacher, .teacher-content').addClass('active');
+                    $('.view-student, .slider-content').removeClass('active');
+                    if (!teacherViewLoaded) {
+                        $('table tbody').empty();
+                        $('.teacher-content').append('<div class="loader"></div>');
+                        if (spinTimeout) clearTimeout(spinTimeout);
+                        AnimateRotate(360,"infinite");
+                        getStudentPercentages();
+                    }
+                    gadgets.window.adjustHeight();
+                }
+            });
+            $('.view-select .view-student').click(function () {
+                if (!$(this).hasClass('active')) {
+                    $('.view-teacher, .teacher-content').removeClass('active');
+                    $('.view-student, .slider-content').addClass('active');
+                    gadgets.window.adjustHeight();
+                }
+            });
+    
+            gadgets.window.adjustHeight();
+
+            var progressSlider = document.getElementById('progressSlider');
+            noUiSlider.create(progressSlider, {
+                start: 0,
+                connect: [true, false],
+                step: 1,
+                tooltips: true,
+                range: {
+                  'min': 0,
+                  'max': 100
+                },
+                format: {
+                  to: function ( value ) {
+                    return value + '%';
+                  },
+                  from: function ( value ) {
+                    return value.replace('%', '');
+                  }
+                }
+            });
+            progressSlider.setAttribute('disabled', true);
+
+            var metadata;
+            var actionLogger;
+            var vaultFile;
+            var loadingStudents = false;
+
+            var getStudentPercentages = function () {
+                loadingStudents = true;
+                ils.filterVault(metadata.storageId, null, metadata.generator.id, null, null, null, null, null, function (resources) {
+                    if (resources.error) {
+                        loadingStudents = false;
+                        return console.error(resources.error);
+                    }
+
+                    teacherViewLoaded = true;
+                    if (resources.length) {
+                        resources.sort(function(a,b){
+                            return a.metadata.actor.displayName.toUpperCase().localeCompare(b.metadata.actor.displayName.toUpperCase());
+                        });
+                        $.each(resources, function(index, vaultFile) {
+                            if(vaultFile.metadata.actor.objectType == "graasp_student") {
+                                var displayName = vaultFile.metadata.actor.displayName;
+                                var actorId = vaultFile.metadata.actor.id;
+                                var date = new Date (vaultFile.updated);
+                                date = date.toLocaleString('en-GB');
+                                var progress = "";
+                                try {
+                                   progress = JSON.parse(vaultFile.content).progress;
+                                } catch (e) {
+                                    console.error(e);
+                                }
+                                $('table tbody').append('<tr><td>'+displayName+'</td><td>'+progress+'%</td><td>'+date+'</td></tr>');
+                            }
+                        });
+                        if (spinTimeout) clearTimeout(spinTimeout);
+                        $('.loader').remove();
+                        gadgets.window.adjustHeight();
+                        loadingStudents = false;
+                    }
+                });
+            };
+
+            $('.refresh-button').click(function () {
+                if (loadingStudents) return;
+                $('table tbody').empty();
+                $('.teacher-content').append('<div class="loader"></div>');
+                if (spinTimeout) clearTimeout(spinTimeout);
+                AnimateRotate(360,"infinite");
+                getStudentPercentages();
+            });
+
+            ils.getAppContextParameters(function (data) {
+                if (data.error) return console.error(data.error);
+                metadata = data;
+                metadata.target = {
+                    displayName: "Progress Bar",
+                    objectType: "Progress Bar"
+                };
+                new window.golab.ils.metadata.GoLabMetadataHandler(metadata, function (err, metadataHandler) {
+                    actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);
+                    actionLogger.setLoggingTarget("opensocial");
+                    progressSlider.removeAttribute('disabled');
+                });
+                if (metadata.actor.objectType == "graasp_editor") {
+                    $('.view-select').addClass('active');
+                }
+                ils.filterVault(metadata.storageId, metadata.actor.id, metadata.generator.id, null, null, null, null, null, function (resources) {
+                    if (resources.length) {
+                        vaultFile = resources[0];
+                        metadata.target.displayName = vaultFile.displayName;
+                        metadata.target.id = vaultFile.id;
+                        try {
+                            progressSlider.noUiSlider.set(JSON.parse(vaultFile.content).progress);
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+                    $('.loading').removeClass('active');
+                    $('.slider-content').addClass('active');
+                    gadgets.window.adjustHeight();
+                    if (spinTimeout) clearTimeout(spinTimeout);
+                });
+            });
+
+            var saveTimeout;
+            progressSlider.noUiSlider.on('change', function(value){
+                var newValue = parseInt(value[0].replace('%', ''),10);
+                var fileContent = {
+                    "progress": newValue
+                };
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(function () {
+                    if (!metadata) return;
+
+                    // save to vault
+                    if (vaultFile) {
+                        ils.updateResource (vaultFile.id, fileContent, metadata, function(resource) {
+                            if (resource.error) return console.error(resource.error);
+                        });
+                    } else {
+                        ils.createResource('progress', fileContent, metadata, function(resource) {
+                            if (resource.error) return console.error (resource.error)
+                            vaultFile = resource;
+                        });
+                    }
+
+                    // create action
+                    var logObject = {
+                        "objectType": "progressBar",
+                        "content": newValue
+                    };
+                    actionLogger.logChange(logObject);
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
+]]>
+</Content>
+</Module>
