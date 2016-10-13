@@ -339,10 +339,11 @@
                     actionLogger.setLoggingTarget("opensocial");
                     progressSlider.removeAttribute('disabled');
                 });
-                if (metadata.actor.objectType == "graasp_editor") {
+                if (metadata.actor.objectType == "graasp_editor" && !metadata.contextualActor) {
                     $('.view-select').addClass('active');
                 }
-                ils.filterVault(metadata.storageId, metadata.actor.id, metadata.generator.id, null, null, null, null, null, function (resources) {
+                var userId = (metadata.contextualActor) ? metadata.contextualActor.id : metadata.actor.id;
+                ils.filterVault(metadata.storageId, userId, metadata.generator.id, null, null, null, null, null, function (resources) {
                     if (resources.length) {
                         vaultFile = resources[0];
                         metadata.target.displayName = vaultFile.displayName;
