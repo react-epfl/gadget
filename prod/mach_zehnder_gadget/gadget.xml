@@ -16,13 +16,13 @@
     <meta charset="UTF-8">
     <title>Mach-Zehnder Interferometer Lab</title>
     <link rel="stylesheet" type="text/css" href="./css/bootstrap.css"/>
-    <link type="text/css" href="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.css" rel="stylesheet" />
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.5.1/nouislider.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="./css/slider.css"/>
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
-    <script type="text/javascript" src="https://cdn.rawgit.com/leongersen/noUiSlider/master/distribute/nouislider.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/8.5.1/nouislider.js"></script>
     <script type="text/javascript" src="./javascript/lib/canvasjs.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
@@ -70,26 +70,6 @@
         __MSG_photo_diode_voltage__: &nbsp; <span id="photoDiodeVoltage" style="position:relative">0</span>V <br/> <p></p><br/>
         <button id="saveButton" class="btn-warning" ng-click="save()">__MSG_save_experiment_data__</button><br/><p></p>
         <div id="chartContainer" ng-click="pause()" style="height: 300px; width:100%;"></div>
-        <div id = "metadataDiv"  ng-show="showMetadataButtonsFlag">
-            <button class="btn-default" ng-click="getClients()">
-                getClients
-            </button>
-            <button class="btn-default" ng-click="getSensorMetadata()">
-                getSensorMetadata
-            </button>
-            <button class="btn-default" ng-click="getSensorData()">
-                getSensorData
-            </button>
-            <button class="btn-default" ng-click="getActuatorMetadata()">
-                getActuatorMetadata
-            </button>
-            <button class="btn-default" ng-click="sendActuatorData()">
-                sendActuatorData
-            </button>
-            <br> <p></p>
-            <div id="messageDiv"></div>
-        </div>
-        <br/><p></p><br/>
     </div>
     <script>
       head.ready(function () {
