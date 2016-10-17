@@ -2,11 +2,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Automatic Gadget Generator</title>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>  
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
-    <script type="text/javascript" src="https://rawgit.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
+    <script type="text/javascript" src="http://rawgit.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
     <style>
         body {
             background-color: #5050d2;
@@ -48,7 +48,6 @@
         </script>
     </div>
 
-    
     <script>
         head.ready(function () {
             var ip;
@@ -64,9 +63,13 @@
             var experiments = [];
             var checkboxes = [];
             var configurationArray = 'var configurationArray = [];\n';
-            var slidersArray = 'var slidersArray = [ ';
+            var actuatorsArray = '';
+            var sensorsArray = 'var sensorsArray = [];\n';
             var initialOption;
+            var graasp = 1;
+
             $('#configurator').click(function() {
+                $('#generator').hide();
                 ip = $('#ipAddress').val();
                 port = $('#port').val();
                 ws = new WebSocket('ws://' + ip + ':' + port);
@@ -76,6 +79,11 @@
                 while (node.hasChildNodes()) {
                     node.removeChild(node.lastChild);
                 }
+
+                ws.onerror = function() {
+                    alert('Unable to connect. Please make sure you input the correct IP address and port number.');
+                }
+
                 ws.onopen = function() {
                     ws.send(JSON.stringify({ method: 'getExperiments'}));
                 };
@@ -88,14 +96,20 @@
                         if (msg.method == "getSensorMetadata") {
                             $.each(msg.sensors, function(index,sensor){
                                 if (allSensorsActuators.indexOf(sensor.sensorId)>(-1)){
-                                    if(sensor.values[0].type == 'boolean'){
-                                        booleanArray+= '\''+ sensor.sensorId +'\',';
-                                        body+= '<span id="span' + sensor.sensorId + '"><p></p>' + sensor.fullName+ '<br></span>\n<div id="'+ sensor.sensorId +'" class="led-green-off"></div>\n';
-                                    } else 
-                                        if (sensor.values[0].type == 'string') {
-                                            body+= '<span id="span'+sensor.sensorId+'"><p></p>'+sensor.fullName+ ': </span><span id="'+ sensor.sensorId +'">0</span>\n';
-                                        }
-
+                                    body += '<div id="'+sensor.sensorId+'Div">\n';
+                                    sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]= [];\n';
+                                    $.each(sensor.values, function(valueIndex, value) {
+                                        if (value.type)
+                                        sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]['+valueIndex+'] = "'+value.name+'";\n';
+                                        if(value.type == 'boolean'){
+                                            booleanArray+= '\''+ value.name +'\',';
+                                            body+= '<span id="span' + value.name + '"><p></p>' + value.name+ '<br></span>\n<div id="'+ value.name +'" class="led-green-off"></div>\n';
+                                        } else 
+                                            if (value.type == 'string') {
+                                                body+= '<span id="span'+value.name+'"><p></p>'+value.name+ ': </span><span id="'+ value.name +'">0</span>'+ value.unit +'\n';
+                                            }
+                                    });
+                                    body += '</div>\n';
                                     onOpen+= 'sensorRequest = {\n'+
                                         'method: \'getSensorData\',\n'+
                                         'sensorId: \''+ sensor.sensorId +'\',\n'+
@@ -105,82 +119,78 @@
                                         'ws.send(jsonRequest);\n';
                                 }
                             });
-
                             body+= '<p></p>\n';
                             onOpen+= '};\n';
                             booleanArray = booleanArray.substring(0, booleanArray.length - 1);
                             booleanArray+= '];\n';
                             createGadget();
-
                         } else {
                             if (msg.method == "getActuatorMetadata") {
                                 $.each(msg.actuators, function(index, actuator){
-                                    if (allSensorsActuators.indexOf(actuator.actuatorId)>(-1))
-                                        if (actuator.values[0].type=="boolean"){    
-                                            body+= '<span id="span'+ actuator.actuatorId + '"><p></p>' + actuator.fullName + ': &nbsp;</span><button class="btn" background-color="white" id="' + actuator.actuatorId + '">Turn On</button>\n';
-                                            
-                                            actuators+= '$(\'#' + actuator.actuatorId + '\').click(function() {\n'+
-                                                'var actuatorRequest = {\n'+
-                                                'authToken: \'skfjs343kjKJ\',\n'+
-                                                'method: \'sendActuatorData\',\n'+
-                                                'accessRole: \'controller\',\n'+
-                                                'actuatorId: \'' + actuator.actuatorId + '\',\n'+
-                                                'valueNames: "",\n'+
-                                                'data: \'0\'\n'+
-                                                '};\n'+
-                                                'var logObject = {\n'+
-                                                '"objectType": "boolean",\n'+
-                                                '"displayName":"'+ actuator.actuatorId +'",\n'+
-                                                '}\n'+
-                                                'if(!$(this).hasClass("button-on")){\n'+
-                                                'actuatorRequest.data = \'1\';\n'+
-                                                '$(this).html("Turn off");\n'+
-                                                '$(this).addClass("button-on");\n'+
-                                                'if (actionLoggerReady)\n'+
-                                                'actionLogger.logStart(logObject);\n'+
-                                                '} else {\n'+
-                                                '$(this).html("Turn on");\n'+
-                                                '$(this).removeClass("button-on");\n'+
-                                                'if (actionLoggerReady)\n'+
-                                                'actionLogger.logCancel(logObject);\n'+
-                                                '}\n'+
-                                                'var jsonRequest = JSON.stringify(actuatorRequest);\n'+
-                                                'if(connected)\n'+
-                                                'ws.send(jsonRequest);\n'+
-                                                '});\n\n';
-                                        } else 
-                                            if (actuator.values[0].type=="float") {
-                                                body+= '<div><p></p>'+actuator.fullName + ': &nbsp;&nbsp;<input id="' + actuator.actuatorId + '" type="text" data-slider-min="' + actuator.values[0].rangeMinimum + '" data-slider-max="' + actuator.values[0].rangeMaximum + '" data-slider-step="0.1" data-slider-value="0"/></div>\n';
-                                                slidersArray += '"' + actuator.actuatorId + '",';
-                                                actuators+= '$("#'+ actuator.actuatorId +'").slider();\n'+
-                                                    '$("#'+ actuator.actuatorId +'").on("change", function(slideEvt) {\n'+
+                                    if (allSensorsActuators.indexOf(actuator.actuatorId)>(-1)) {
+                                        body += '<div id="'+actuator.actuatorId+'Div">\n';
+                                        actuatorsArray += 'var '+actuator.actuatorId + 'Arr = []\n';
+                                        actuators += 'var '+actuator.actuatorId+'SendData = function () {\n'+
+                                            'var actuatorRequest = {\n'+
+                                            'authToken: \'skfjs343kjKJ\',\n'+
+                                            'method: \'sendActuatorData\',\n'+
+                                            'accessRole: \'controller\',\n'+
+                                            'actuatorId: \'' + actuator.actuatorId + '\',\n'+
+                                            'valueNames: "",\n'+
+                                            'data: '+ actuator.actuatorId + 'Arr\n'+
+                                            '};\n'+
+                                            'var jsonRequest = JSON.stringify(actuatorRequest);\n'+
+                                            'if(connected)\n'+
+                                            'ws.send(jsonRequest);\n'+
+                                            '};\n';
+                                        $.each(actuator.values, function(valueIndex, value){
+                                            if (value.type)
+                                            actuatorsArray += actuator.actuatorId + 'Arr[' + valueIndex + '] = 0; \n';
+                                            if (value.type=="boolean"){    
+                                                body+= '<span id="span'+ value.name + '"><p></p>' + value.name + ': &nbsp;</span><button class="btn" background-color="white" id="' + value.name + '">Turn On</button>\n';
+                                                actuators+= '$(\'#' + value.name + '\').click(function() {\n'+
                                                     'var logObject = {\n'+
-                                                    '"objectType": "slider",\n'+
-                                                    '"displayName":"'+ actuator.actuatorId +'",\n'+
-                                                    '"content": slideEvt.value.newValue\n'+
+                                                    '"objectType": "boolean",\n'+
+                                                    '"displayName":"'+ value.name +'",\n'+
                                                     '}\n'+
-                                                    'if(actionLoggerReady)\n'+
-                                                    'actionLogger.logChange(logObject);\n'+
-                                                    'var actuatorRequest = {\n'+
-                                                    'authToken: \'skfjs343kjKJ\',\n'+
-                                                    'method: \'sendActuatorData\',\n'+
-                                                    'accessRole: \'controller\',\n'+
-                                                    'actuatorId: \''+ actuator.actuatorId +'\',\n'+
-                                                    'valueNames: "",\n'+
-                                                    'data: \'\'+slideEvt.value.newValue\n'+
-                                                    '};\n'+
-                                                    'var jsonRequest = JSON.stringify(actuatorRequest);\n'+
-                                                    'if(connected)\n'+
-                                                    'ws.send(jsonRequest);\n'+
+                                                    'if(!$(this).hasClass("button-on")){\n'+
+                                                    actuator.actuatorId + 'Arr [' + valueIndex + '] = 1;\n'+
+                                                    '$(this).html("Turn off");\n'+
+                                                    '$(this).addClass("button-on");\n'+
+                                                    (graasp?'if (actionLoggerReady) actionLogger.logStart(logObject);\n':'')+
+                                                    '} else {\n'+
+                                                    actuator.actuatorId + 'Arr [' + valueIndex + '] = 0;\n'+
+                                                    '$(this).html("Turn on");\n'+
+                                                    '$(this).removeClass("button-on");\n'+
+                                                    (graasp?'if (actionLoggerReady) actionLogger.logCancel(logObject);\n':'')+
+                                                    '}\n'+
+                                                    actuator.actuatorId + 'SendData();\n'+
                                                     '});\n\n';
-                                            }
+                                            } else 
+                                                if (value.type=="float") {
+                                                    body+= '<p></p>'+value.name + ': &nbsp;&nbsp;<input id="' + value.name + '" type="text" data-slider-min="' + value.rangeMinimum + '" data-slider-max="' + value.rangeMaximum + '" data-slider-step="0.1" data-slider-value="0"/>\n';
+                                                    actuators+= '$("#'+ value.name +'").slider({formatter: function(§rrentVal){  return currentVal + "'+ value.unit +'" }});\n'+
+                                                        '$("#'+ value.name +'").on("change", function(slideEvt) {\n'+
+                                                        'var logObject = {\n'+
+                                                        '"objectType": "slider",\n'+
+                                                        '"displayName":"'+ value.name+'",\n'+
+                                                        '"content": slideEvt.value.newValue\n'+
+                                                        '}\n'+
+                                                        (graasp?'if(actionLoggerReady) actionLogger.logChange(logObject);\n':'')+
+                                                        actuator.actuatorId + 'Arr [' + valueIndex + '] = slideEvt.value.newValue;\n'+
+                                                        actuator.actuatorId + 'SendData();\n'+
+                                                        '});\n\n';
+                                                }
+                                        });
+                                        body += '</div>\n';
+                                    }
                                 });
                                 
-                                slidersArray = slidersArray.substring(0, slidersArray.length-1) + '];\n';
                                 body+= '<p></p><br>\n';
                                 ws.send(JSON.stringify({ method: 'getSensorMetadata'}));
                             } else {
                                 if (msg.method == "getExperiments") {
+                                    $("#experimentsDiv").append("Choose at least one configuration: <br>");
                                     experiments = msg.experiments;
                                     $.each(msg.experiments, function(index,experiment) {
                                         var checkbox = document.createElement('input');
@@ -188,15 +198,35 @@
                                         checkbox.id = experiment.experimentId;
                                         checkbox.value = experiment.experimentId;
                                         checkboxes.push(checkbox);
-
-                                        var label = document.createElement('label');
-                                        label.htmlFor = experiment.experimentId;
-                                        label.appendChild(document.createTextNode(experiment.fullName + " : " + experiment.description));
+                                        $("#experimentsDiv").append("<label>");
                                         $("#experimentsDiv").append(checkbox);
-                                        $("#experimentsDiv").append("  ");
-                                        $("#experimentsDiv").append(label);
-                                        $("#experimentsDiv").append("<br>");
+                                        $("#experimentsDiv").append("  " + experiment.fullName + " : " + experiment.description);
+                                        $("#experimentsDiv").append("</label><br>");
                                     });
+                                    $("#experimentsDiv").append("<p></p><br>");
+                                    $("#experimentsDiv").append("Choose your educational platform: <br>");
+
+                                    var graaspRadio = document.createElement('input');
+                                    graaspRadio.type = "radio";
+                                    graaspRadio.name = "optradio";
+                                    graaspRadio.id = "graasp";
+                                    graaspRadio.value = "graasp";
+                                    graaspRadio.checked = true;
+                                    $("#experimentsDiv").append("<label>");
+                                    $("#experimentsDiv").append(graaspRadio);
+                                    $("#experimentsDiv").append("  Graasp");
+                                    $("#experimentsDiv").append("</label>&emsp;");
+
+                                    var ltiRadio = document.createElement('input');
+                                    ltiRadio.type = "radio";
+                                    ltiRadio.name = "optradio";
+                                    ltiRadio.id = "lti";
+                                    ltiRadio.value = "lti";
+                                    $("#experimentsDiv").append("<label>");
+                                    $("#experimentsDiv").append(ltiRadio);
+                                    $("#experimentsDiv").append("  LTI Consumer");
+                                    $("#experimentsDiv").append("</label><br>");
+                                    $('#generator').show();
                                 }
                             }
                         }
@@ -204,57 +234,14 @@
                         console.log(e);
                     }
                 };
-
-                scriptHeader = '<script>\n'+
-                    'head.ready(function () {\n'+
-                    'gadgets.window.adjustHeight(); \n'+
-                    'var ip = "'+ ip +'";\n'+
-                    'var port = "'+ port +'";\n'+
-                    'var connected = 0;\n'+
-                    'var sensorRequest;\n'+
-                    'var ws = new WebSocket("ws://" + ip + ":" + port);\n'+
-                    'var initialMetadata = {\n'+
-                    '"id": "2e90ab41-2893-42ca-9169-b2dcd10285a6",\n'+
-                    '"published": "2016-08-22T13:09:28.395Z",\n'+
-                    '"storageType": "vault",\n'+
-                    '"storageId": "",\n'+
-                    '"actor": {\n'+
-                    '"objectType": "person",\n'+
-                    '"id": "id",\n'+
-                    '"displayName": "name"\n'+
-                    '},\n'+
-                    '"target": {\n'+
-                    '"objectType": "lab experiment",\n'+
-                    '"id": "unknown",\n'+
-                    '"displayName": "unknown"\n'+
-                    '},\n'+
-                    '"generator": {\n'+
-                    '"objectType": "application",\n'+
-                    '"url": "generator url",\n'+
-                    '"id": "generator id",\n'+
-                    '"displayName": "display name"\n'+
-                    '},\n'+
-                    '"provider": {\n'+
-                    '"objectType": "ils",\n'+
-                    '"url": "provider url",\n'+
-                    '"id": "provider id",\n'+
-                    '"displayName": "provider display name",\n'+
-                    '"inquiryPhase": "Investigation"\n'+
-                    '}\n'+
-                    '};\n'+
-                    '\n'+
-                    'var actionLogger;\n'+
-                    'var actionLoggerReady = 0;\n'+
-                    'new window.golab.ils.metadata.GoLabMetadataHandler(initialMetadata, function(shouldBeNull,metadataHandler) {\n'+
-                    'actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);\n'+
-                    'actionLogger.setLoggingTarget("opensocial");\n'+
-                    'actionLoggerReady =1 ;\n'+
-                    '});\n';
-
-                $('#generator').show();
             });
 
             $('#generator').click(function(){
+                if ($('input[name=optradio]:checked').val() == "graasp") {
+                    graasp = 1;
+                } else {
+                    graasp = 0;
+                }
                 var numOptions = 0;
                 $.each(checkboxes, function(index,checkbox){
                     if (checkbox.checked)
@@ -302,52 +289,40 @@
                     ws.send(JSON.stringify({ method: 'getActuatorMetadata'}));
                 }
             });
-            createGadget = function() {
-                    //this method is called whenever the sensor metadata is obtained
-                    var allSensorsActuatorsString = 'var allSensorsActuatorsArray = [ ';
-                    $.each(allSensorsActuators, function(index, element){
-                        allSensorsActuatorsString += '"'+ element + '",';
-                    });
-                    allSensorsActuatorsString = allSensorsActuatorsString.substring(0, allSensorsActuatorsString.length-1)+'];\n';
-                    
-                    var optChoice = "";
-                    if (!oneOptionOnlyFlag) {
-                        optChoice += "$('input[type=radio][name=optradio]').change(function() {\n"+
-                            "var chosenOption = $('input[name=optradio]:checked').val();\n"+
-                            'var logObject = {\n'+
-                            '"objectType": "radioButton",\n'+
-                            '"displayName": chosenOption\n'+
-                            '}\n'+
-                            'if (actionLoggerReady)\n'+
-                            'actionLogger.logAccess(logObject);\n'+
-                            'showHideElements(chosenOption);\n'+
-                            '});\n';
-                    }
 
-                    var gadget = header + body + scriptHeader + showHideElements + actuators + configurationArray + allSensorsActuatorsString + slidersArray + initialOption + optChoice + onOpen + booleanArray + onMessage + tail;
-                    
-                    var blob = new Blob([gadget], {type: 'text/plain;charset=utf-8'});
-                    saveAs(blob, 'gadget.xml');
-                    oneOptionOnlyFlag = 1;
-                    body = '<body>\n';
-                    actuators = '';
-                    onOpen = 'ws.onopen = function() { \n connected = 1; \n';
-                    booleanArray = 'var booleanArray = [ ';
-                    allSensorsActuators = [];
-                    configurationArray = 'var configurationArray = [];\n';
-                    slidersArray = 'var slidersArray = [ ';
-                    initialOption;
-                };
-                var header = '<?xml version="1.0" encoding="UTF-8" ?>\n'+
-                    '<Module>\n'+
-                    '<ModulePrefs>\n'+
-                    '<Require feature="opensocial-0.9"/>\n'+
-                    '<Require feature="osapi"/>\n'+
-                    '<Require feature="dynamic-height"/>\n'+
-                    '</ModulePrefs>\n'+
-                    '<Content type="html">\n'+
-                    '<![CDATA[\n'+
-                    '<html lang="en">\n'+
+            createGadget = function() {
+                //this method is called whenever the sensor metadata is obtained
+                var allSensorsActuatorsString = 'var allSensorsActuatorsArray = [ ';
+                $.each(allSensorsActuators, function(index, element){
+                    allSensorsActuatorsString += '"'+ element + '",';
+                });
+                allSensorsActuatorsString = allSensorsActuatorsString.substring(0, allSensorsActuatorsString.length-1)+'];\n';
+                var optChoice = "";
+                if (!oneOptionOnlyFlag) {
+                    optChoice += "$('input[type=radio][name=optradio]').change(function() {\n"+
+                        "var chosenOption = $('input[name=optradio]:checked').val();\n"+
+                        'var logObject = {\n'+
+                        '"objectType": "radioButton",\n'+
+                        '"displayName": chosenOption\n'+
+                        '}\n'+
+                        (graasp?'if (actionLoggerReady) actionLogger.logAccess(logObject);\n':'')+
+                        'showHideElements(chosenOption);\n'+
+                        '});\n';
+                }
+                var header = "";
+                
+                if (graasp)
+                    header = '<?xml version="1.0" encoding="UTF-8" ?>\n'+
+                        '<Module>\n'+
+                        '<ModulePrefs>\n'+
+                        '<Require feature="opensocial-0.9"/>\n'+
+                        '<Require feature="osapi"/>\n'+
+                        '<Require feature="dynamic-height"/>\n'+
+                        '</ModulePrefs>\n'+
+                        '<Content type="html">\n'+
+                        '<![CDATA[\n';
+
+                header += '<html lang="en">\n'+
                     '<head>\n'+
                     '<meta charset="UTF-8">\n'+
                     '<title>Add title here</title>\n'+
@@ -355,26 +330,32 @@
                     '<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>\n'+
                     '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/css/bootstrap-slider.css">\n'+
                     '\n'+
-                    '<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></scri'+'pt>\n'+
-                    '<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></scr'+'ipt>\n'+
-                    '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/bootstrap-slider.js"></scr'+'ipt>\n'+
-                    '<script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></scri'+'pt>\n'+
-                    '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></scri'+'pt>\n'+
-                    '<script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/metadata/MetadataHandler.js"></scri'+'pt>\n'+
-                    '<script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/applog/ActionLogger.js"></scri'+'pt>\n'+
-                    '<style>\n'+
+                    '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></scri'+'pt>\n'+
+                    '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/bootstrap-slider.js"></scr'+'ipt>\n';
+
+                if(graasp)
+                    header += 
+                        '<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></scr'+'ipt>\n'+
+                        '<script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></scri'+'pt>\n'+
+                        '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></scri'+'pt>\n'+
+                        '<script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/metadata/MetadataHandler.js"></scri'+'pt>\n'+
+                        '<script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/applog/ActionLogger.js"></scri'+'pt>\n';
+
+                header += '<style>\n'+
                     'body {\n'+
                     'font-size: 16px;\n'+
                     'line-height: 1.42857143;\n'+
-                    'color: #ffffff;\n'+
-                    'background-color: #5050d2;\n'+
                     'font-family:arial,sans-serif;\n'+
                     'margin-top:40px;\n'+
                     'margin-bottom:20px;\n'+
                     'padding-left: 50px;\n'+
-                    'padding-right: 50px;\n'+
-                    'color: white;\n'+
-                    '}\n'+
+                    'padding-right: 50px;\n';
+
+                if (graasp)
+                    header += 'color: white;\n'+
+                        'background-color: #5050d2;\n';
+
+                header+= '}\n'+
                     '.led-green-off {\n'+
                     'width: 24px;\n'+
                     'height: 24px;\n'+
@@ -384,72 +365,148 @@
                     '}\n'+
                     '.btn {\n'+
                     'background-color: white;\n'+
+                    'border: black 1px solid;\n'+
                     'color: black;\n'+
                     '}\n'+
                     '.button-on {\n'+
-                    'background-color: #6262FF;\n'+
+                    'background-color: ' + (graasp? '#6262FF' : 'CornflowerBlue') + ';\n'+
                     '}\n'+
                     'h4 { \n'+
                     'margin-top: 5px;\n'+
                     'margin-bottom: 0px;\n'+
                     'font-size: 16px;\n'+
-                    '}\n'+
-                    '</style>\n'+
+                    '}\n';
+
+                if (!graasp)
+                    header += ".slider-track {\n"+
+                        "background-image: -webkit-linear-gradient(top, lightGrey 0%, lightGrey 100%);\n"+
+                        "}\n"+
+                        ".slider-selection {\n"+
+                        "background-image: -webkit-linear-gradient(top, CornflowerBlue 0%, CornflowerBlue 100%);\n"+
+                        "}\n"+
+                        ".slider-handle {\n"+
+                        "background-image: -webkit-linear-gradient(top, CornflowerBlue 0%, CornflowerBlue 100%);\n"+
+                        "}\n";
+
+                header += '</style>\n'+
                     '</head>\n';
 
-                var onMessage = 'ws.onmessage = function(event) {\n'+
-                    'var data = event.data;\n'+
-                    'var msg;\n'+
-                    'try {\n'+
-                    'msg = JSON.parse(data);\n'+
-                    'if (msg.method == "getSensorData") {\n'+
-                    'if (msg.responseData) {\n'+
-                    'if (booleanArray.indexOf(msg.sensorId) > (-1)) {\n'+
-                    'if (msg.responseData.data[0]){\n'+
-                    '$("#"+msg.sensorId).css("background-color", "#228B22");\n'+
-                    '} else {\n'+
-                    '$("#"+msg.sensorId).css("background-color", "white");\n'+
-                    '}\n'+
-                    '} else {\n'+
-                    '$("#"+msg.sensorId).html(msg.responseData.data[0]);\n'+
-                    '}\n'+
-                    '}\n'+
-                    '}\n'+
-                    '} catch(e) {\n'+
-                    'console.log(e);\n'+
-                    '}\n'+
-                    '};\n';
+                scriptHeader = '<script>\n'+
+                    'head.ready(function () {\n'+
+                    'var ip = "'+ ip +'";\n'+
+                    'var port = "'+ port +'";\n'+
+                    'var connected = 0;\n'+
+                    'var sensorRequest;\n'+
+                    'var ws = new WebSocket("ws://" + ip + ":" + port);\n';
 
-                var showHideElements = 'var showHideElements = function (chosenOption) {\n'+
-                    '$.each(allSensorsActuatorsArray, function(index, element) {\n'+
-                    'if (configurationArray[chosenOption].indexOf(element)>(-1)) {\n'+
-                    'if(slidersArray.indexOf(element)>(-1)){\n'+
-                    '$("#"+element).parent().show();\n'+
-                    '} else {\n'+
-                    '$("#"+element).show();\n'+
-                    '$("#span"+element).show();\n'+
-                    '}\n'+
-                    '}\n'+
-                    'else {\n'+
-                    'if(slidersArray.indexOf(element)>(-1)){\n'+
-                    '$("#"+element).parent().hide();\n'+
-                    '} else {\n'+
-                    '$("#"+element).hide();\n'+
-                    '$("#span"+element).hide();\n'+
-                    '}\n'+
-                    '}\n'+
-                    '});\n'+
-                    '}\n';
+                if (graasp)    
+                    scriptHeader += 'gadgets.window.adjustHeight(); \n'+
+                        'var initialMetadata = {\n'+
+                        '"id": "2e90ab41-2893-42ca-9169-b2dcd10285a6",\n'+
+                        '"published": "2016-08-22T13:09:28.395Z",\n'+
+                        '"storageType": "vault",\n'+
+                        '"storageId": "",\n'+
+                        '"actor": {\n'+
+                        '"objectType": "person",\n'+
+                        '"id": "id",\n'+
+                        '"displayName": "name"\n'+
+                        '},\n'+
+                        '"target": {\n'+
+                        '"objectType": "lab experiment",\n'+
+                        '"id": "unknown",\n'+
+                        '"displayName": "unknown"\n'+
+                        '},\n'+
+                        '"generator": {\n'+
+                        '"objectType": "application",\n'+
+                        '"url": "generator url",\n'+
+                        '"id": "generator id",\n'+
+                        '"displayName": "display name"\n'+
+                        '},\n'+
+                        '"provider": {\n'+
+                        '"objectType": "ils",\n'+
+                        '"url": "provider url",\n'+
+                        '"id": "provider id",\n'+
+                        '"displayName": "provider display name",\n'+
+                        '"inquiryPhase": "Investigation"\n'+
+                        '}\n'+
+                        '};\n'+
+                        '\n'+
+                        'var actionLogger;\n'+
+                        'var actionLoggerReady = 0;\n'+
+                        'new window.golab.ils.metadata.GoLabMetadataHandler(initialMetadata, function(shouldBeNull,metadataHandler) {\n'+
+                        'actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);\n'+
+                        'actionLogger.setLoggingTarget("opensocial");\n'+
+                        'actionLoggerReady =1 ;\n'+
+                        '});\n';
 
                 var tail = '});\n'+
                     '</scri'+'pt>\n'+
                     '</body>\n'+
-                    '</html>\n'+
-                    ']]>\n'+
-                    '</Content>\n'+
-                    '</Module>\n';
+                    '</html>\n';
 
-      });
-    </script>
-</body>
+                if (graasp)
+                    tail += ']'+']>\n'+
+                        '</Content>\n'+
+                        '</Module>\n';
+
+                var gadget = header + body + scriptHeader + showHideElements + actuatorsArray + actuators + configurationArray + allSensorsActuatorsString + initialOption + optChoice + sensorsArray + onOpen + booleanArray + onMessage + tail;
+                var blob = new Blob([gadget], {type: 'text/plain;charset=utf-8'});
+
+                if (graasp)
+                    saveAs(blob, 'gadget.xml');
+                else
+                    saveAs(blob, 'gadget.html');
+
+                oneOptionOnlyFlag = 1;
+                body = '<body>\n';
+                actuators = '';
+                onOpen = 'ws.onopen = function() { \n connected = 1; \n';
+                booleanArray = 'var booleanArray = [ ';
+                allSensorsActuators = [];
+                configurationArray = 'var configurationArray = [];\n';
+                graasp = 1;
+                actuatorsArray = '';
+                sensorsArray = 'var sensorsArray = [];\n';
+            };
+
+            var onMessage = 'ws.onmessage = function(event) {\n'+
+                'var data = event.data;\n'+
+                'var msg;\n'+
+                'try {\n'+
+                'msg = JSON.parse(data);\n'+
+                'if (msg.method == "getSensorData") {\n'+
+                'if (msg.responseData) {\n'+
+                '$.each(msg.responseData.data, function(index, value) {\n'+
+                'valueName = sensorsArray[msg.sensorId][index];\n'+
+                'var valueVal = value[0]\n'+
+                'if (booleanArray.indexOf(valueName) > (-1)) {\n'+
+                'if (valueVal){\n'+
+                '$("#"+valueName).css("background-color", "#228B22");\n'+
+                '} else {\n'+
+                '$("#"+valueName).css("background-color", "white");\n'+
+                '}\n'+
+                '} else {\n'+
+                '$("#"+valueName).html(valueVal);\n'+
+                '}\n'+
+                '});\n'+
+                '}\n'+
+                '}\n'+
+                '} catch(e) {\n'+
+                'console.log(e);\n'+
+                '}\n'+
+                '};\n';
+
+            var showHideElements = 'var showHideElements = function (chosenOption) {\n'+
+                '$.each(allSensorsActuatorsArray, function(index, element) {\n'+
+                'if (configurationArray[chosenOption].indexOf(element)>(-1)) {\n'+
+                '$("#"+element+"Div").show();\n'+
+                '}\n'+
+                'else {\n'+
+                '$("#"+element+"Div").hide();\n'+
+                '}\n'+
+                '});\n'+
+                '}\n';
+            });
+        </script>
+    </body>
 </html>
