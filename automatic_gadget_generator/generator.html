@@ -3,16 +3,14 @@
     <meta charset="UTF-8">
     <title>Automatic Gadget Generator</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>  
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.js"></script>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="http://rawgit.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
     <style>
         body {
             background-color: #5050d2;
         }
-        #mainDiv{
-            margin-top: 20px;
+        #mainDiv {
+            margin-top: 40px;
             width: 800px ;
             height: 600px;
             font-size: 16px;
@@ -26,11 +24,14 @@
             color: white;
             overflow: hidden;
         }
+        #errorDiv {
+            margin-top: 10px;
+        }
         .btn {
             background-color: white;
             color: black;
         }
-        input{
+        input {
             color: black;
         }
     </style>
@@ -42,14 +43,15 @@
         <button class="btn" background-color="white" id="configurator">Get Configurations</button>
         <p></p><br/>
         <div id="experimentsDiv"></div><br>
-        <button class="btn" background-color="white" id="generator">Generate Gadget</button>
+        <button class="btn" background-color="white" id="generator">Download Gadget</button>
         <script>
             $('#generator').hide();
         </script>
+        <div id="errorDiv"></div>
     </div>
 
     <script>
-        head.ready(function () {
+        $(document).ready(function() {
             var ip;
             var port;
             var ws;
@@ -67,9 +69,13 @@
             var sensorsArray = 'var sensorsArray = [];\n';
             var initialOption;
             var graasp = 1;
+            var oneOptionAvailable = 0;
+            var metadata;
+            var saveToGraasp = 0;
 
             $('#configurator').click(function() {
                 $('#generator').hide();
+                $("#errorDiv").empty();
                 ip = $('#ipAddress').val();
                 port = $('#port').val();
                 ws = new WebSocket('ws://' + ip + ':' + port);
@@ -102,7 +108,7 @@
                                         if (value.type)
                                         sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]['+valueIndex+'] = "'+value.name+'";\n';
                                         if(value.type == 'boolean'){
-                                            booleanArray+= '\''+ value.name +'\',';
+                                            booleanArray+= '"'+ value.name +'",';
                                             body+= '<span id="span' + value.name + '"><p></p>' + value.name+ '<br></span>\n<div id="'+ value.name +'" class="led-green-off"></div>\n';
                                         } else 
                                             if (value.type == 'string') {
@@ -111,9 +117,9 @@
                                     });
                                     body += '</div>\n';
                                     onOpen+= 'sensorRequest = {\n'+
-                                        'method: \'getSensorData\',\n'+
-                                        'sensorId: \''+ sensor.sensorId +'\',\n'+
-                                        'accessRole: \'controller\'\n'+
+                                        'method: "getSensorData",\n'+
+                                        'sensorId: "'+ sensor.sensorId +'",\n'+
+                                        'accessRole: "controller"\n'+
                                         '}\n'+
                                         'jsonRequest = JSON.stringify(sensorRequest);\n'+
                                         'ws.send(jsonRequest);\n';
@@ -132,10 +138,10 @@
                                         actuatorsArray += 'var '+actuator.actuatorId + 'Arr = []\n';
                                         actuators += 'var '+actuator.actuatorId+'SendData = function () {\n'+
                                             'var actuatorRequest = {\n'+
-                                            'authToken: \'skfjs343kjKJ\',\n'+
-                                            'method: \'sendActuatorData\',\n'+
-                                            'accessRole: \'controller\',\n'+
-                                            'actuatorId: \'' + actuator.actuatorId + '\',\n'+
+                                            'authToken: "skfjs343kjKJ",\n'+
+                                            'method: "sendActuatorData",\n'+
+                                            'accessRole: "controller",\n'+
+                                            'actuatorId: "' + actuator.actuatorId + '",\n'+
                                             'valueNames: "",\n'+
                                             'data: '+ actuator.actuatorId + 'Arr\n'+
                                             '};\n'+
@@ -148,7 +154,7 @@
                                             actuatorsArray += actuator.actuatorId + 'Arr[' + valueIndex + '] = 0; \n';
                                             if (value.type=="boolean"){    
                                                 body+= '<span id="span'+ value.name + '"><p></p>' + value.name + ': &nbsp;</span><button class="btn" background-color="white" id="' + value.name + '">Turn On</button>\n';
-                                                actuators+= '$(\'#' + value.name + '\').click(function() {\n'+
+                                                actuators+= '$("#' + value.name + '").click(function() {\n'+
                                                     'var logObject = {\n'+
                                                     '"objectType": "boolean",\n'+
                                                     '"displayName":"'+ value.name +'",\n'+
@@ -169,7 +175,7 @@
                                             } else 
                                                 if (value.type=="float") {
                                                     body+= '<p></p>'+value.name + ': &nbsp;&nbsp;<input id="' + value.name + '" type="text" data-slider-min="' + value.rangeMinimum + '" data-slider-max="' + value.rangeMaximum + '" data-slider-step="0.1" data-slider-value="0"/>\n';
-                                                    actuators+= '$("#'+ value.name +'").slider({formatter: function(§rrentVal){  return currentVal + "'+ value.unit +'" }});\n'+
+                                                    actuators+= '$("#'+ value.name +'").slider({formatter: function(currentVal){  return currentVal + "'+ value.unit +'" }});\n'+
                                                         '$("#'+ value.name +'").on("change", function(slideEvt) {\n'+
                                                         'var logObject = {\n'+
                                                         '"objectType": "slider",\n'+
@@ -185,24 +191,32 @@
                                         body += '</div>\n';
                                     }
                                 });
-                                
                                 body+= '<p></p><br>\n';
                                 ws.send(JSON.stringify({ method: 'getSensorMetadata'}));
                             } else {
-                                if (msg.method == "getExperiments") {
-                                    $("#experimentsDiv").append("Choose at least one configuration: <br>");
-                                    experiments = msg.experiments;
-                                    $.each(msg.experiments, function(index,experiment) {
-                                        var checkbox = document.createElement('input');
-                                        checkbox.type = "checkbox";
-                                        checkbox.id = experiment.experimentId;
-                                        checkbox.value = experiment.experimentId;
-                                        checkboxes.push(checkbox);
-                                        $("#experimentsDiv").append("<label>");
-                                        $("#experimentsDiv").append(checkbox);
-                                        $("#experimentsDiv").append("  " + experiment.fullName + " : " + experiment.description);
-                                        $("#experimentsDiv").append("</label><br>");
-                                    });
+                                if (msg.method == "getExperiments" && msg.experiments.length>0) {
+                                    if (msg.experiments.length == 1) {
+                                        oneOptionAvailable = 1;
+                                        var experiment = msg.experiments[0];
+                                        experiments[0] = experiment;
+                                        $("#experimentsDiv").append("There is only one available configuration for this remote lab: <br>");
+                                        $("#experimentsDiv").append(experiment.fullName + " : " + experiment.description);
+                                    } else {
+                                        $("#experimentsDiv").append("Choose at least one configuration: <br>");
+                                        experiments = msg.experiments;
+                                        $.each(msg.experiments, function(index,experiment) {
+                                            var checkbox = document.createElement('input');
+                                            checkbox.type = "checkbox";
+                                            checkbox.id = experiment.experimentId;
+                                            checkbox.value = experiment.experimentId;
+                                            checkboxes.push(checkbox);
+                                            $("#experimentsDiv").append("<label>");
+                                            $("#experimentsDiv").append(checkbox);
+                                            $("#experimentsDiv").append("  " + experiment.fullName + " : " + experiment.description);
+                                            $("#experimentsDiv").append("</label><br>");
+                                        });
+                                    }
+                            
                                     $("#experimentsDiv").append("<p></p><br>");
                                     $("#experimentsDiv").append("Choose your educational platform: <br>");
 
@@ -237,21 +251,28 @@
             });
 
             $('#generator').click(function(){
+                $("#errorDiv").empty();
                 if ($('input[name=optradio]:checked').val() == "graasp") {
                     graasp = 1;
                 } else {
                     graasp = 0;
                 }
+
                 var numOptions = 0;
                 $.each(checkboxes, function(index,checkbox){
                     if (checkbox.checked)
                         numOptions++;
                 });
+
+                if (oneOptionAvailable)
+                    numOptions = 1;
+
                 if (numOptions > 1) {
                     oneOptionOnlyFlag = 0;
                 }
-                if (numOptions == 0){
-                    alert ("Please select at least one experiment");
+
+                if (numOptions == 0 && !oneOptionAvailable){
+                    $("#errorDiv").append("Please select at least one option")
                 } else {
                     var firstOne = 1;
                     $.each(experiments, function (index, experiment){
@@ -261,7 +282,7 @@
                                 if (checkbox.checked)
                                     experimentSelected = 1;
                         });
-                        if (experimentSelected) {
+                        if (experimentSelected || oneOptionAvailable) {
                             if (!oneOptionOnlyFlag) {
                                 body += '<label class="radio-inline"><input type="radio" name="optradio" value="'+experiment.experimentId+ (firstOne?'" checked="true"':'"') + ' id="' + experiment.experimentId + '"><h4>'+experiment.fullName+'</h4></label>\n';
                             }
@@ -447,15 +468,18 @@
                 if (graasp)
                     tail += ']'+']>\n'+
                         '</Content>\n'+
-                        '</Module>\n';
+                        '</Module>';
 
                 var gadget = header + body + scriptHeader + showHideElements + actuatorsArray + actuators + configurationArray + allSensorsActuatorsString + initialOption + optChoice + sensorsArray + onOpen + booleanArray + onMessage + tail;
-                var blob = new Blob([gadget], {type: 'text/plain;charset=utf-8'});
+                var blob = new Blob([gadget], {type: 'application/octet-stream'});
 
                 if (graasp)
                     saveAs(blob, 'gadget.xml');
                 else
                     saveAs(blob, 'gadget.html');
+
+                if (navigator.vendor && navigator.vendor.indexOf('Apple') > -1 && navigator.userAgent && !navigator.userAgent.match('CriOS'))
+                    alert('Please rename the downloaded file to ' + (graasp?'gadget.xml':'gadget.html'));
 
                 oneOptionOnlyFlag = 1;
                 body = '<body>\n';
@@ -467,6 +491,8 @@
                 graasp = 1;
                 actuatorsArray = '';
                 sensorsArray = 'var sensorsArray = [];\n';
+                oneOptionAvailable = 0;
+                saveToGraasp = 0;
             };
 
             var onMessage = 'ws.onmessage = function(event) {\n'+
