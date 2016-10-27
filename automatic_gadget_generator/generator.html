@@ -11,8 +11,6 @@
         }
         #mainDiv {
             margin-top: 40px;
-            width: 800px ;
-            height: 600px;
             font-size: 16px;
             line-height: 1.42857143;
             color: #ffffff;
@@ -30,19 +28,22 @@
         .btn {
             background-color: white;
             color: black;
+            margin: 15px 10px 0 0;
         }
         input {
             color: black;
+        }
+        #experimentsDiv {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div id="mainDiv">
-        IP Address: &nbsp; <input type="text" maxlength="15" size="15" id="ipAddress"/><br><p></p>
-        Port Number: &nbsp; <input type="text" maxlength="5" size="5" id="port"/><p></p><br>
-        <button class="btn" background-color="white" id="configurator">Get Configurations</button>
-        <p></p><br/>
-        <div id="experimentsDiv"></div><br>
+        <p>IP Address: &nbsp; <input type="text" maxlength="15" size="15" id="ipAddress"/></p>
+        <p>Port Number: &nbsp; <input type="text" maxlength="5" size="5" id="port"/></p>
+        <p><button class="btn" background-color="white" id="configurator">Get Configurations</button></p>
+        <div id="experimentsDiv"></div>
         <button class="btn" background-color="white" id="generator">Download Gadget</button>
         <script>
             $('#generator').hide();
@@ -64,20 +65,22 @@
             var allSensorsActuators = [];
             var experiments = [];
             var checkboxes = [];
-            var configurationArray = 'var configurationArray = [];\n';
+            var configurationArray = 'var configurationArray = [];\nvar dataValues = [];\ndataValues["time"] = 0;\n';
             var actuatorsArray = '';
             var sensorsArray = 'var sensorsArray = [];\n';
+            var videoCode = 'FF=(navigator.userAgent.search("Firefox") >= 0);\n';
             var initialOption;
             var graasp = 1;
             var oneOptionAvailable = 0;
-            var metadata;
-            var saveToGraasp = 0;
 
             $('#configurator').click(function() {
-                $('#generator').hide();
-                $("#errorDiv").empty();
                 ip = $('#ipAddress').val();
                 port = $('#port').val();
+                if (!ip || !port)
+                    return alert("Please enter an IP address and a port number.");
+                $('#generator').hide();
+                $('#experimentsDiv').show();
+                $("#errorDiv").empty();
                 ws = new WebSocket('ws://' + ip + ':' + port);
                 experiments = [];
                 checkboxes = [];
@@ -85,6 +88,7 @@
                 while (node.hasChildNodes()) {
                     node.removeChild(node.lastChild);
                 }
+                $('#experimentsDiv').append("<hr>");
 
                 ws.onerror = function() {
                     alert('Unable to connect. Please make sure you input the correct IP address and port number.');
@@ -103,26 +107,64 @@
                             $.each(msg.sensors, function(index,sensor){
                                 if (allSensorsActuators.indexOf(sensor.sensorId)>(-1)){
                                     body += '<div id="'+sensor.sensorId+'Div">\n';
-                                    sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]= [];\n';
-                                    $.each(sensor.values, function(valueIndex, value) {
-                                        if (value.type)
-                                        sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]['+valueIndex+'] = "'+value.name+'";\n';
-                                        if(value.type == 'boolean'){
-                                            booleanArray+= '"'+ value.name +'",';
-                                            body+= '<span id="span' + value.name + '"><p></p>' + value.name+ '<br></span>\n<div id="'+ value.name +'" class="led-green-off"></div>\n';
-                                        } else 
-                                            if (value.type == 'string') {
-                                                body+= '<span id="span'+value.name+'"><p></p>'+value.name+ ': </span><span id="'+ value.name +'">0</span>'+ value.unit +'\n';
+                                    if (sensor.webSocketType == 'binary' && sensor.singleWebSocketRecommended == true) {
+                                        body += '<br><canvas id="' + sensor.sensorId + '" width="100" height="100" style="border: 2px solid #c3c3c3"></canvas><br>\n';
+                                        videoCode += sensor.sensorId + 'ws = new WebSocket ("ws://' + ip + ':' + port + '/' + sensor.values[0].unit + '");\n'+
+                                            'var myImage' + sensor.sensorId + ' = new Image();\n'+
+                                            sensor.sensorId + 'ws.onopen = function(event) {\n'+
+                                            'var sensorRequest = {\n'+
+                                            'method: "getSensorData",\n'+
+                                            'sensorId: "' + sensor.sensorId + '",\n'+
+                                            'accessRole: "controller"\n'+
+                                            '}\n'+
+                                            'var jsonRequest = JSON.stringify(sensorRequest);\n'+
+                                            sensor.sensorId + 'ws.send(jsonRequest);\n'+
+                                            '}\n'+
+                                            sensor.sensorId + 'ws.onmessage = function(event) {\n'+
+                                            'if (event.data instanceof Blob) {\n'+
+                                            'var destinationCanvas = document.getElementById("' + sensor.sensorId + '");\n'+
+                                            'destinationCanvas.height="240";\n'+
+                                            'destinationCanvas.width="320";\n'+
+                                            'var destinationContext = destinationCanvas.getContext("2d");\n'+
+                                            'var URL = window.URL || window.webkitURL;\n'+
+                                            'if (FF) {\n'+
+                                            'myImage' + sensor.sensorId + '.src = URL.createObjectURL(event.data);\n'+
+                                            'destinationContext.drawImage(myImage' + sensor.sensorId + ', 0, 0);\n'+
+                                            '}\n'+
+                                            'else { \n'+
+                                            'destinationContext.drawImage(myImage' + sensor.sensorId + ', 0, 0);\n'+
+                                            'myImage' + sensor.sensorId + '.src = URL.createObjectURL(event.data);\n'+
+                                            '}\n'+
+                                            '}\n'+
+                                            '}\n'+
+                                            sensor.sensorId + 'ws.onclose = function(event) { };\n';
+                                    } else {
+                                        sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]= [];\n';
+                                        $.each(sensor.values, function(valueIndex, value) {
+                                            if (value.type) {
+                                                sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]['+valueIndex+'] = "'+value.name+'";\n'+
+                                                    'dataSet.dataSourceColumns.push({unit:""})\n'+
+                                                    'dataSet.dataTable.cols.push({id:"'+value.name+'",label:"'+value.name+'",pattern:"", type:"number"})\n';
                                             }
-                                    });
+                                            if(value.type == 'boolean') {
+                                                booleanArray+= '"'+ value.name +'",';
+                                                body+= '<span id="span' + value.name + '"><p></p>' + value.name+ '<br></span>\n<div id="'+ value.name +'" class="led-green-off"></div>\n';
+                                                sensorsArray+= 'dataValues["'+value.name+'"] = 0;\n';
+                                            } else 
+                                                if (value.type == 'string') {
+                                                    body+= '<span id="span'+value.name+'"><p></p>'+value.name+ ': </span><span id="'+ value.name +'">0</span>'+ value.unit +'\n';
+                                                    sensorsArray+= 'dataValues["'+value.name+'"] = 0;\n';
+                                                }
+                                        });
+                                        onOpen+= 'sensorRequest = {\n'+
+                                            'method: "getSensorData",\n'+
+                                            'sensorId: "'+ sensor.sensorId +'",\n'+
+                                            'accessRole: "controller"\n'+
+                                            '}\n'+
+                                            'jsonRequest = JSON.stringify(sensorRequest);\n'+
+                                            'ws.send(jsonRequest);\n';
+                                    }
                                     body += '</div>\n';
-                                    onOpen+= 'sensorRequest = {\n'+
-                                        'method: "getSensorData",\n'+
-                                        'sensorId: "'+ sensor.sensorId +'",\n'+
-                                        'accessRole: "controller"\n'+
-                                        '}\n'+
-                                        'jsonRequest = JSON.stringify(sensorRequest);\n'+
-                                        'ws.send(jsonRequest);\n';
                                 }
                             });
                             body+= '<p></p>\n';
@@ -150,8 +192,11 @@
                                             'ws.send(jsonRequest);\n'+
                                             '};\n';
                                         $.each(actuator.values, function(valueIndex, value){
-                                            if (value.type)
-                                            actuatorsArray += actuator.actuatorId + 'Arr[' + valueIndex + '] = 0; \n';
+                                            if (value.type) {
+                                                actuatorsArray += actuator.actuatorId + 'Arr[' + valueIndex + '] = 0; \n';
+                                                actuators += 'dataSet.dataSourceColumns.push({unit:""})\n'+
+                                                    'dataSet.dataTable.cols.push({id:"'+value.name+'",label:"'+value.name+'",pattern:"", type:"number"})\n';
+                                            }
                                             if (value.type=="boolean"){    
                                                 body+= '<span id="span'+ value.name + '"><p></p>' + value.name + ': &nbsp;</span><button class="btn" background-color="white" id="' + value.name + '">Turn On</button>\n';
                                                 actuators+= '$("#' + value.name + '").click(function() {\n'+
@@ -163,15 +208,18 @@
                                                     actuator.actuatorId + 'Arr [' + valueIndex + '] = 1;\n'+
                                                     '$(this).html("Turn off");\n'+
                                                     '$(this).addClass("button-on");\n'+
+                                                    'dataValues["'+value.name+'"] = 1;\n'+
                                                     (graasp?'if (actionLoggerReady) actionLogger.logStart(logObject);\n':'')+
                                                     '} else {\n'+
                                                     actuator.actuatorId + 'Arr [' + valueIndex + '] = 0;\n'+
                                                     '$(this).html("Turn on");\n'+
                                                     '$(this).removeClass("button-on");\n'+
+                                                    'dataValues["'+value.name+'"] = 0;\n'+
                                                     (graasp?'if (actionLoggerReady) actionLogger.logCancel(logObject);\n':'')+
                                                     '}\n'+
                                                     actuator.actuatorId + 'SendData();\n'+
-                                                    '});\n\n';
+                                                    '});\n'+
+                                                    'dataValues["'+value.name+'"] = 0;\n';
                                             } else 
                                                 if (value.type=="float") {
                                                     body+= '<p></p>'+value.name + ': &nbsp;&nbsp;<input id="' + value.name + '" type="text" data-slider-min="' + value.rangeMinimum + '" data-slider-max="' + value.rangeMaximum + '" data-slider-step="0.1" data-slider-value="0"/>\n';
@@ -182,10 +230,12 @@
                                                         '"displayName":"'+ value.name+'",\n'+
                                                         '"content": slideEvt.value.newValue\n'+
                                                         '}\n'+
+                                                        'dataValues["'+value.name+'"] = slideEvt.value.newValue;\n'+
                                                         (graasp?'if(actionLoggerReady) actionLogger.logChange(logObject);\n':'')+
                                                         actuator.actuatorId + 'Arr [' + valueIndex + '] = slideEvt.value.newValue;\n'+
                                                         actuator.actuatorId + 'SendData();\n'+
-                                                        '});\n\n';
+                                                        '});\n'+
+                                                        'dataValues["'+value.name+'"] = 0;\n';
                                                 }
                                         });
                                         body += '</div>\n';
@@ -240,7 +290,7 @@
                                     $("#experimentsDiv").append(ltiRadio);
                                     $("#experimentsDiv").append("  LTI Consumer");
                                     $("#experimentsDiv").append("</label><br>");
-                                    $('#generator').show();
+                                    $('#generator, #graaspGenerator').show();
                                 }
                             }
                         }
@@ -333,7 +383,7 @@
                 var header = "";
                 
                 if (graasp)
-                    header = '<?xml version="1.0" encoding="UTF-8" ?>\n'+
+                    header = '<?xml version="1.0" encoding="UTF-8"?>\n'+
                         '<Module>\n'+
                         '<ModulePrefs>\n'+
                         '<Require feature="opensocial-0.9"/>\n'+
@@ -359,8 +409,8 @@
                         '<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></scr'+'ipt>\n'+
                         '<script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></scri'+'pt>\n'+
                         '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></scri'+'pt>\n'+
-                        '<script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/metadata/MetadataHandler.js"></scri'+'pt>\n'+
-                        '<script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/applog/ActionLogger.js"></scri'+'pt>\n';
+                        '<script type="text/javascript" src="http://shindig2.epfl.ch/ils/metadata/MetadataHandler.js"></scri'+'pt>\n'+
+                        '<script type="text/javascript" src="http://shindig2.epfl.ch/ils/applog/ActionLogger.js"></scri'+'pt>\n';
 
                 header += '<style>\n'+
                     'body {\n'+
@@ -409,8 +459,17 @@
                         "background-image: -webkit-linear-gradient(top, CornflowerBlue 0%, CornflowerBlue 100%);\n"+
                         "}\n";
 
+                if (graasp)
+                    header += '#saveButton {\n'+
+                        'background-color: green;\n'+
+                        'color: white;\n'+
+                        '}\n';
+
                 header += '</style>\n'+
                     '</head>\n';
+
+                if (graasp)
+                    body += '<button class="btn" background-color="green" id="saveButton">Save Data</button><span id="saveIndicator" display="none"></span>';
 
                 scriptHeader = '<script>\n'+
                     'head.ready(function () {\n'+
@@ -418,46 +477,26 @@
                     'var port = "'+ port +'";\n'+
                     'var connected = 0;\n'+
                     'var sensorRequest;\n'+
-                    'var ws = new WebSocket("ws://" + ip + ":" + port);\n';
+                    'var ws = new WebSocket("ws://" + ip + ":" + port);\n'+
+                    'var dataSet = {dataSourceColumns : [{unit:"s"}], dataTable: {cols: [{id:"time", label:"time", pattern:"", type:"number"}], rows:[] } }\n';
 
                 if (graasp)    
                     scriptHeader += 'gadgets.window.adjustHeight(); \n'+
-                        'var initialMetadata = {\n'+
-                        '"id": "2e90ab41-2893-42ca-9169-b2dcd10285a6",\n'+
-                        '"published": "2016-08-22T13:09:28.395Z",\n'+
-                        '"storageType": "vault",\n'+
-                        '"storageId": "",\n'+
-                        '"actor": {\n'+
-                        '"objectType": "person",\n'+
-                        '"id": "id",\n'+
-                        '"displayName": "name"\n'+
-                        '},\n'+
-                        '"target": {\n'+
-                        '"objectType": "lab experiment",\n'+
-                        '"id": "unknown",\n'+
-                        '"displayName": "unknown"\n'+
-                        '},\n'+
-                        '"generator": {\n'+
-                        '"objectType": "application",\n'+
-                        '"url": "generator url",\n'+
-                        '"id": "generator id",\n'+
-                        '"displayName": "display name"\n'+
-                        '},\n'+
-                        '"provider": {\n'+
-                        '"objectType": "ils",\n'+
-                        '"url": "provider url",\n'+
-                        '"id": "provider id",\n'+
-                        '"displayName": "provider display name",\n'+
-                        '"inquiryPhase": "Investigation"\n'+
-                        '}\n'+
-                        '};\n'+
-                        '\n'+
                         'var actionLogger;\n'+
                         'var actionLoggerReady = 0;\n'+
-                        'new window.golab.ils.metadata.GoLabMetadataHandler(initialMetadata, function(shouldBeNull,metadataHandler) {\n'+
+                        'var metadata;\n'+
+                        'ils.getAppContextParameters(function(data){\n'+
+                        'if (data.error)    return;\n'+
+                        'metadata = data;\n'+
+                        'if (!metadata.storageId)\n'+
+                        'metadata.storageId = metadata.provider.inquiryPhaseId;\n'+
+                        'metadata.target.objectType = "dataSet";\n'+
+                        'metadata.target.displayName = "Lab Experiment";\n'+
+                        'new window.golab.ils.metadata.GoLabMetadataHandler(metadata, function(shouldBeNull,metadataHandler) {\n'+
                         'actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);\n'+
                         'actionLogger.setLoggingTarget("opensocial");\n'+
-                        'actionLoggerReady =1 ;\n'+
+                        'actionLoggerReady = 1;\n'+
+                        '});\n'+
                         '});\n';
 
                 var tail = '});\n'+
@@ -470,7 +509,7 @@
                         '</Content>\n'+
                         '</Module>';
 
-                var gadget = header + body + scriptHeader + showHideElements + actuatorsArray + actuators + configurationArray + allSensorsActuatorsString + initialOption + optChoice + sensorsArray + onOpen + booleanArray + onMessage + tail;
+                var gadget = header + body + scriptHeader + showHideElements + configurationArray + actuatorsArray + actuators  + allSensorsActuatorsString + initialOption + optChoice + sensorsArray + onOpen + booleanArray + (graasp?updateContent:'') + videoCode + onMessage + tail;
                 var blob = new Blob([gadget], {type: 'application/octet-stream'});
 
                 if (graasp)
@@ -487,13 +526,29 @@
                 onOpen = 'ws.onopen = function() { \n connected = 1; \n';
                 booleanArray = 'var booleanArray = [ ';
                 allSensorsActuators = [];
-                configurationArray = 'var configurationArray = [];\n';
+                configurationArray = 'var configurationArray = [];\nvar dataValues = [];\ndataValues["time"] = 0;\n';
                 graasp = 1;
                 actuatorsArray = '';
                 sensorsArray = 'var sensorsArray = [];\n';
                 oneOptionAvailable = 0;
-                saveToGraasp = 0;
+                videoCode = 'FF=(navigator.userAgent.search("Firefox") >= 0);';
             };
+
+            var updateContent = 'window.setInterval(function() {\n'+
+                'var newValues = {c:[]};\n'+
+                '$.each(dataSet.dataTable.cols, function(index,column){\n'+
+                'newValues.c.push({v:dataValues[column.id],f:dataValues[column.id]});\n'+
+                '});\n'+
+                'dataSet.dataTable.rows.push(newValues);\n'+
+                'dataValues["time"] = dataValues["time"] + 1;\n'+
+                '},1000);\n'+
+                '$("#saveButton").click(function(){\n'+
+                'ils.createResource ("experimentdata", dataSet, metadata, function(resource){\n'+
+                'if (resource.error) return console.error (resource.error);\n'+
+                '$("#saveIndicator").html("&nbsp;&nbsp Experiment Data Saved !");\n'+
+                'setTimeout(function() { $("#saveIndicator").html(""); }, 1500);\n'+
+                '});\n'+
+                '});\n'; 
 
             var onMessage = 'ws.onmessage = function(event) {\n'+
                 'var data = event.data;\n'+
@@ -504,7 +559,8 @@
                 'if (msg.responseData) {\n'+
                 '$.each(msg.responseData.data, function(index, value) {\n'+
                 'valueName = sensorsArray[msg.sensorId][index];\n'+
-                'var valueVal = value[0]\n'+
+                'var valueVal = value\n'+
+                'dataValues[valueName] = valueVal;\n'+
                 'if (booleanArray.indexOf(valueName) > (-1)) {\n'+
                 'if (valueVal){\n'+
                 '$("#"+valueName).css("background-color", "#228B22");\n'+
