@@ -1,0 +1,60 @@
+@charset "utf-8";
+/* CSS Document */
+
+.urlLeftControls{
+	margin-left:20px;
+	float: left; 
+	width: 0px;
+}
+.urlCenterControls{
+	margin-left:60px;
+	margin-right:60px;
+}
+.urlRightControls{
+	float: right; 
+	width: 50px;
+	
+}
+.urlInput{
+	width:100%;
+}
+
+
+.imc_widgetFrame hr{
+	margin-top: 0px;
+}
+
+.imc_widgetFrame textarea{
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:small;
+}
+
+.imc_widgetFrame label{
+	font-size:smaller;
+	padding-left:20px;
+}
+
+
+.navigation{
+	height:30px;
+	margin-bottom:10px;
+}
+
+.browserWindow{
+	width:100%;
+	margin-bottom:10px;	
+}
+
+#textBrowserWindow{
+	height:390px;
+}
+
+#mediaBrowserWindow{
+	height:440px;
+}
+
+.bottom_buttons{
+	margin-top:5px;
+	height:40px;
+}
+

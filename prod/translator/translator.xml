@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+  <ModulePrefs 
+  	title="Translator" 
+	title_url="" 
+	description="A widget which query different dictionary services" 
+	author="Daniel Dahrendorf" 
+	author_email="daniel.dahrendorf@im-c.de" 
+	author_affiliation="" 
+	author_location="Germany" 
+	category="education" 
+	thumbnail="__MSG_thumbnail__" 
+	screenshot="__MSG_screenshot__" 
+	height="650">
+	<Require feature="pubsub" />
+    <Require feature="setprefs"/>
+    <Require feature="dynamic-height"/>
+	<Require feature="tabs" />
+  </ModulePrefs>
+  <UserPref name="preferredSourceLanguage" datatype="hidden" default_value="en"/>
+  <UserPref name="preferredTargetLanguage" datatype="hidden" default_value="en"/>
+  <Content type="html">
+    <![CDATA[
+	<link href="./translator.css" 
+		rel="stylesheet" type="text/css"/>
+	<link href="../translator/imcWidgets.css" 
+		rel="stylesheet" type="text/css"/>
+	
+	<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="./openapp.js"></script>
+	<script type="text/javascript">		
+		var tabs = new gadgets.TabSet(__MODULE_ID__, "Translator");
+		google.load("language", "1");
+		
+		function init () {
+			 tabs.addTab("Translator", {
+			   contentContainer: document.getElementById("translator_tab")
+			});
+			tabs.addTab("Help", {
+			   contentContainer: document.getElementById("help_tab")
+			});	
+
+			var src = document.getElementById('src');
+			var dst = document.getElementById('dst');
+			var optionIndex = 0;
+			var prefs = new _IG_Prefs();
+			var preferredSourceLanguage = prefs.getString("preferredSourceLanguage");
+			var preferredTargetLanguage = prefs.getString("preferredTargetLanguage");
+			 
+			for (l in google.language.Languages) {
+				var lng = l.toLowerCase();
+				var lngCode = google.language.Languages[l];
+				if (google.language.isTranslatable(lngCode) 
+					&& (lngCode=="de" || lngCode=="en" || lngCode=="fr" 
+						|| lngCode=="es" || lngCode=="zh-CN" || lngCode=="sv" || lngCode=="nl")) {
+				  src.options.add(new Option(lng, lngCode));
+				  dst.options.add(new Option(lng, lngCode));
+				  
+				  //if we found the preferred source language select it
+				  if (preferredSourceLanguage == lngCode) {
+				  	src.options.selectedIndex = optionIndex;
+				  }
+
+				  //if we found the preferred target language select it
+				  if (preferredTargetLanguage == lngCode) {
+				  	dst.options.selectedIndex = optionIndex;
+				  }
+
+				  optionIndex++;
+				}
+			 }
+			 			
+			 google.language.getBranding('googleBranding', { type : 'vertical' });
+			 subscribe();
+			 gadgets.window.adjustHeight();
+		}
+		
+	    function loadCss (url) {
+	    	//create and append a link node in head
+		    var headID = document.getElementsByTagName("head")[0];         
+			var cssNode = document.createElement('link');
+			cssNode.type = 'text/css';
+			cssNode.rel = 'stylesheet';
+			cssNode.href = url;
+			cssNode.media = 'screen';
+			headID.appendChild(cssNode);
+	    }
+		
+		function subscribe () {
+			gadgets.openapp.connect(termReceived);
+		}
+
+		function termReceived (envelope, message) {
+			// Require its a select event
+			if (envelope.event === "select") {
+			
+				// Require namespaced-properties
+				if (envelope.type === "namespaced-properties") {
+				
+					// Require that http://www.role-project.eu/rdf/words/term is set			
+					if (typeof message["http://www.role-project.eu/rdf/words/term"] !== "undefined") {
+					
+						document.getElementById('source').value = 
+							message["http://www.role-project.eu/rdf/words/term"];
+							
+						submitChange();
+					
+					}
+				}
+			}
+		}
+
+		function changeSrcLanguageOption (option) {
+			gadgets.Prefs().set("preferredSourceLanguage", option[option.selectedIndex].value);
+		}
+
+		function changeDstLanguageOption (option) {
+			var prefs = new _IG_Prefs();
+			prefs.set("preferredTargetLanguage", option[option.selectedIndex].value);
+		}
+		
+		function submitChange () {
+			var translationBody = document.getElementById("translation_body");
+			translationBody.innerHTML = "";
+			var definitionBody = document.getElementById("definition_body");
+			definitionBody.innerHTML = "";
+
+			//get values
+			var value = document.getElementById('source').value;
+			var src = document.getElementById('src').value;
+			var dest = document.getElementById('dst').value;
+			
+			//only submit if the term isnt empty
+			if (value != "") {	
+				submitToTransltrTranslation(value,src,dest);
+				submitToYandexTranslation(value,src,dest);
+				submitToWikipedia(value,src,dest);
+			}
+			return false;
+		}
+		
+		function submitToYandexTranslation (value,src,dest) {
+			var params = {};
+			params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.DOM;
+			params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+			
+			var url = "https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20161031T091943Z.b4cc70488cc72d6c.c8d459b631a846a400533b12757944005a97a323&text="+ 
+				value.split(" ").join("%20") + "&lang=" + src + "-" + dest;
+			gadgets.io.makeRequest(url, yandexTranslationHandler, params);
+		}
+		
+		function yandexTranslationHandler (obj) {
+			try {
+				addResultToTranslation("Yandex", JSON.parse(obj.text).text[0].toLowerCase());
+			} catch (e) {
+				console.log(e);
+			}
+		}
+		
+		function submitToWikipedia (value,src,dest) {
+			var params = {};
+			params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.DOM;
+			params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+			
+			var host = "en.wikipedia.org";
+			if(src == "en") {
+				host = "en.wikipedia.org";
+			} else if(src == "de") {
+				host = "de.wikipedia.org";
+			} else if(src == "es") {
+				host = "es.wikipedia.org";
+			} else if(src == "fr") {
+				host = "fr.wikipedia.org";
+			} else if(src == "zh-CN") {
+				host = "zh.wikipedia.org";
+			} else if(src == "sv") {
+				host = "sv.wikipedia.org";
+			} else if(src == "nl") {
+				host = "nl.wikipedia.org";
+			}
+					
+			var get  = "/w/api.php?action=opensearch&format=xml&search="+_esc(value);
+			var url = "http://"+host+get;
+			gadgets.io.makeRequest(url, wikipediaHandler, params);
+		}
+		
+		function wikipediaHandler (obj) {
+			var searchSuggestion = obj.data.childNodes[0];
+			var query  = searchSuggestion.childNodes[0];
+			var section = searchSuggestion.childNodes[1];
+			
+			for (var i=0;i<section.childNodes.length && i < 3;i++) {	
+				var tmpNode = section.childNodes[i];
+
+				if (tmpNode.nodeName == "Item") {
+					var definition = new Object();
+					definition.text = "";
+					definition.description= "";
+					definition.url= "";
+					definition.imageUrl = "";
+					
+					for (var j=0;j<tmpNode.childNodes.length;j++) {
+						if (tmpNode.childNodes[j].nodeName == "Text")
+							definition.text = tmpNode.childNodes[j].firstChild.nodeValue;
+						
+						if (tmpNode.childNodes[j].nodeName == "Description")
+							definition.description = tmpNode.childNodes[j].firstChild.nodeValue;
+						
+						if (tmpNode.childNodes[j].nodeName == "Url")
+							definition.url = tmpNode.childNodes[j].firstChild.nodeValue;
+						
+						if (tmpNode.childNodes[j].nodeName == "Image"){
+							definition.imageUrl = tmpNode.childNodes[j].attributes[0].nodeValue;
+						}
+					}
+					addResultToDefinition("Wikipedia", definition.text, 
+						definition.description, definition.url, definition.imageUrl);
+				}
+			}
+		}
+		
+		function submitToTransltrTranslation (value,src,dest) {
+			var params = {};
+			params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.DOM;
+			params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET
+			var url = createTransltrURL(value, src, dest);
+			
+			gadgets.io.makeRequest(url, transltrTranslationHandler, params);		
+		}
+		
+		function createTransltrURL (term, lang1, lang2) {
+			var urlArray = [];
+			urlArray.push("http://www.transltr.org/api/translate?",
+					"to="+lang2+"&from="+lang1,
+					"&text=" + term.split(" ").join("%20"));
+			
+			return urlArray.join("");
+		}
+		
+		function transltrTranslationHandler (obj) {		
+			try {
+				addResultToTranslation("Transltr.org", JSON.parse(obj.text).translationText.toLowerCase());
+			} catch (e) {
+				console.log(e);
+			}
+		}
+		
+		function addResultToTranslation (src,word) {
+			var resultBody = document.getElementById("translation_body");
+			addResult(src,"",word,"","",resultBody);
+		}
+		
+		function addResultToDefinition (src,word,description,url,imageUrl) {
+			var resultBody = document.getElementById("definition_body");
+			addResult(src,word,description,url,imageUrl, resultBody);
+		}
+		
+		function addResult (src,word,description,url,imageUrl, resultBody) {
+			resultBody.innerHTML += '<span style=\"font-weight:bold;\">'+src+'</span> ';
+			if (word != "") 
+				resultBody.innerHTML += '('+word+')';
+	
+			resultBody.innerHTML += ":&nbsp;" +(description!=""&&description?description:"Not found"); 
+			
+			if (url != "")
+				resultBody.innerHTML += '<br/><a href="'+ url +'" target="blank">link</a>';
+			
+			if(imageUrl != "")
+				resultBody.innerHTML += '<br/><img src="'+ imageUrl +'" />';
+					
+			resultBody.innerHTML += "<br/><br/>";
+		}
+		
+		gadgets.util.registerOnLoadHandler(init);	
+	</script>
+	
+	<!-- TAB 1 -->
+	<div id="translator_tab" style="display:none">		
+		<div class="imc_widget_frame" style="height:630px;">			
+			<div class="imc_widgetContent">
+				<div id="main">
+					<form class="query-box" onsubmit="return submitChange();">
+						<label>term / sentence</label>
+						<div>
+							<div style="float:right">
+								<a 	class="text_button"
+									onClick="submitChange(); return false;">
+									<span><span style="width:100px;">Translate</span></span>
+								</a>
+							</div>
+							<div style="margin-right:115px;">
+								<input class="query-input" id="source" type="text"
+							 		autocomplete="off" value="" style="width:100%;"/>
+							 </div>
+						 </div>
+						
+						<br/>
+						<label>language</label>
+						<div>
+							<select class="imc_select" name="src" id="src" onChange="changeSrcLanguageOption(this)"></select>
+							>>
+							<select class="imc_select" name="dst" id="dst" onChange="changeDstLanguageOption(this)"></select>
+						</div>	
+					</form>
+				</div>
+				<label>results</label>
+				<div style="height:440px; overflow:scroll; background-color: #fff; padding:5px;">
+					<div id="results">
+					  <div id="translation_title">Translation:</div>
+					  <hr/>
+					  <div id="translation_body"></div>
+					  <div id="definition_title">Definition:</div>
+					  <hr/>
+					  <div id="definition_body"></div>
+					  <div id="branding"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	  
+	<!-- TAB 2 -->
+	<div id="help_tab" style="display:none">
+		<div class="imc_widget_frame" style="height:630px;">
+			<div style="margin-left:10px; margin-right:10px;  padding: 1px 10px 5px 10px; background:white;">
+				<p>The Translator widget allows a user to translate terms or sentences. 
+				It translates either a term which was entered from the user or a received term item. 
+				Different Web services have been combined for the translation process:</p>
+				<ul>
+					<li>Wikipedia for definitions.</li>
+					<li>Transltr and Yandex for translations</li>
+				</ul>
+				<p>At the moment the following languages are supported: Chinese (simplified) Dutch, 
+				English, French, German, Spanish and Swedish. 
+				The language pool could be extended to all languages supported by the services above.</p>
+			</div>
+		</div>
+	</div>
+	
+	<div class="imc_WidgetFooter" style="width:100%">
+			<div class="imc_WidgetFooter_Logo"></div>
+			<div class="role_WidgetFooter_Logo"></div>
+			<div style="width:105px"></div>			
+	</div>
+	  ]]>
+  </Content>
+</Module>
