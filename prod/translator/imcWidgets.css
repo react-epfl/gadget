@@ -1,0 +1,210 @@
+@CHARSET "ISO-8859-1";
+a img {
+	border:0;
+}
+
+.imc_widget_frame{
+	padding-top:10px;
+	font-family: Verdana;
+	font-size: 11px;
+	color: #333333;
+	background: url('http://shindig2.epfl.ch/gadget/prod/translator/images/general/main_bg_alternative.png') no-repeat top left;
+	height: 100%;
+	position: relative;
+}
+	/* general link layout */
+a:link { 
+	font-family: Verdana;
+	font-size: 11px;
+	color: #4A5F85;
+	text-decoration: none;
+}
+a:visited { 
+	font-family: Verdana;
+	font-size: 11px;
+	color: #4A5F85;
+	text-decoration: none;
+}
+a:hover, a:active { 
+	font-family: Verdana;
+	font-size: 11px;
+	color: #4A5F85;
+	text-decoration: none;
+}
+/* table layout */
+table{
+	border-collapse: collapse;
+		
+}
+
+table th {
+	font-family: Verdana;
+	font-size: 11px;
+	color: #fff;
+	font-weight:bold;
+	
+	padding: 5px 0 0 4px;
+	text-align: left;
+	
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/table/tablehead_p.png'å) repeat-x;
+}
+
+.imc_widget_frame table tr {
+	font-family: Verdana;
+	font-size: 11px;
+	color: #000;
+	padding: 5px 0 0 4px;
+	text-align: left;
+	
+	background: white;	
+}	
+	
+/* button layout */
+a.text_button {
+	/* Sliding right image */
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_r_n.png') no-repeat scroll top right; 
+	display: block;
+	float: left;
+	height: 20px; /* CHANGE THIS VALUE ACCORDING TO IMAGE HEIGHT */
+	margin-right: 0px;
+	padding-right: 4px; /* CHENGE THIS VALUE ACCORDING TO RIGHT IMAGE WIDTH */
+	/* FONT PROPERTIES */
+	text-decoration: none;
+	color: #000000;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:11px;
+	cursor:pointer;
+}
+
+a.text_button span {
+	/* Background left image */ 
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_l_n.png') no-repeat; 
+	display: block;
+	line-height: 20px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
+	padding: 0px 0px 0px 4px;
+}
+
+a.text_button span span{
+	/* Background middle image */ 
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_m_n.png') repeat-x; 
+	display: block;
+	line-height: 20px; /* CHANGE THIS VALUE ACCORDING TO BUTTONG HEIGHT */
+	padding: 0px 0px 0px 0px;
+	text-align:center;;
+}
+
+a.text_button:hover{
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_r_h.png') no-repeat scroll top right;
+}
+
+a.text_button:hover span{
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_l_h.png') no-repeat;
+}
+
+a.text_button:hover span span{
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_m_h.png') repeat-x; 
+}
+
+a.text_button:active{
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_r_a.png') no-repeat scroll top right;
+}
+
+a.text_button:active span{
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_l_a.png') no-repeat;
+}
+
+a.text_button:active span span{
+	background: transparent url('http://shindig2.epfl.ch/gadget/prod/translator/images/buttons/button_m_a.png') repeat-x; 
+}
+
+input{
+	font-family: Verdana;
+	font-size: 11px;
+	color: #000;
+}
+textarea{
+	font-family: Verdana;
+	font-size: 11px;
+	color: #000;
+}
+
+.imc_select{
+	font-family: Verdana;
+	font-size: 11px;
+	color: #000;	
+}
+
+.imc_widget_header{
+	background: url('http://shindig2.epfl.ch/gadget/prod/translator/images/popups_layer/layer_header.png') repeat-x;
+	height: 31px;	
+}
+
+.imc_logo{
+	background: url('http://shindig2.epfl.ch/gadget/prod/translator/images/general/imc_logo_wof_small.png') no-repeat;
+	height:29px;
+	width:59px;
+	position: absolute;
+	top: 1px;
+	left: 2px;
+}
+
+.imc_widgetContent{
+	padding: 5px;
+	margin-bottom: 30px;
+}
+
+.imc_WidgetFooter{
+	position: absolute;
+	right:0px;
+	bottom:0px;
+	font-size: 20px; 
+	font-weight: bold;
+}
+
+.imc_loginBox{
+	color: #fff;
+	background: url('http://shindig2.epfl.ch/gadget/prod/translator/images/loginbox_content_bg.png') no-repeat;
+	padding:8px 5px 0 5px;
+	margin:auto;
+	width: 174px;
+	margin-top:50px;
+	height:152px;	
+}
+
+.imc_loginBox input{
+	width:164px;
+	margin-bottom:4px;	
+	border:0;
+}
+
+.imc_loginBox hr{
+	color: #575F6C;
+	background-color: #575F6C;
+	height: 1px;
+	margin: 10px 0 11px -5px;
+	width:171px;
+	border:0 ;
+}
+
+.imc_WidgetFooter_Logo {
+    background: url('http://shindig2.epfl.ch/gadget/prod/translator/images/general/imc_logo_small.png') no-repeat;
+ 	height:29px;
+ 	width:59px;
+ 	float:left;
+ 	margin-left:10px;
+}
+.sabine_WidgetFooter_Logo {
+    background: url('http://shindig2.epfl.ch/gadget/prod/translator/images/sabine/sabine-verySmall-15px.png') no-repeat;
+ 	height:15px;
+ 	width:74px;
+ 	float:right;
+ 	margin-right:10px;
+}
+
+.role_WidgetFooter_Logo {
+     background: url('http://shindig2.epfl.ch/gadget/prod/translator/images/role/ROLE_logo.gif') no-repeat;
+ 	height:45px;
+ 	width:110px;
+ 	float:right;
+ 	margin-right:10px;
+}

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs title="Appear In" author_email="hagop.jamkojian@epfl.ch" author="Hagop Jamkojian" height="600" width="800">
+<Require feature="opensocial-0.9"/>
+<Require feature="osapi"/>
+<Require feature="setprefs"/>
+<Require feature="dynamic-height"/>
+</ModulePrefs>
+<UserPref name="preferredDictionaryLanguage" datatype="hidden" default_value=""/>
+<Content type="html">
+<![CDATA[
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thesaurus</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #5050d2;
+            padding: 15px 20px 0 10px;
+        }
+        #mainDiv {
+            font-size: 16px;
+            line-height: 1.42857143;
+            color: #ffffff;
+            background-color: #5050d2;
+            font-family:arial,sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        .btn {
+            background-color: white;
+            color: black;
+            margin: 0 0 0 10px;
+        }
+        input {
+            color: black;
+        }
+        .inputMissing {
+            border: red 1.5px solid;
+        }
+        #resultsDiv {
+            margin-top: 20px;
+            margin-left: 20px;
+            font-size: 16px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="#mainDiv">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="button" id="languageDropdown" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span id="chosenLanguageSpan">Language </span><span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="javascript: changeLanguage('English');">English</a></li>
+                            <li><a href="javascript: changeLanguage('French');">French</a></li>
+                            <li><a href="javascript: changeLanguage('German');">German</a></li>
+                            <li><a href="javascript: changeLanguage('Spanish');">Spanish</a></li>
+                            <li><a href="javascript: changeLanguage('Italian');">Italian</a></li>
+                            <li><a href="javascript: changeLanguage('Russian');">Russian</a></li>
+                        </ul>
+                    </div><!-- /btn-group -->
+                    <input type="text" id="keyword" class="form-control" aria-label="..."/>
+                    <div class="input-group-btn">
+                        <button type="button" id="searchButton" class="btn btn-default">
+                            <span class="glyphicon glyphicon-search"></span> Search
+                        </button>
+                    </div>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+        </div><!-- /.row -->
+        <div id="resultsDiv"></div>
+    </div>
+    <script type="text/javascript">
+        var chosenLanguage = "";
+        var changeLanguage = function (language) {
+            $("#chosenLanguageSpan").html(language + "  ");
+            prefs.set("preferredDictionaryLanguage", language);
+            switch (language) {
+                case "English":
+                    chosenLanguage = "en-en";
+                    break;
+                case "French":
+                    chosenLanguage = "fr-fr";
+                    break;
+                case "German":
+                    chosenLanguage = "de-de";
+                    break;
+                case "Spanish":
+                    chosenLanguage = "es-es";
+                    break;
+                case "Italian":
+                    chosenLanguage = "it-it";
+                    break;
+                case "Russian":
+                    chosenLanguage = "ru-ru"; 
+                    break;
+                default:
+                    chosenLanguage = "";  
+            }
+            $("#languageDropdown").removeClass("inputMissing");
+            $("#keyword").focus();
+        }
+
+        var prefs = new _IG_Prefs();
+        var preferredDictionaryLanguage = prefs.getString("preferredDictionaryLanguage");
+        if (preferredDictionaryLanguage != "")
+            changeLanguage(preferredDictionaryLanguage);
+        else {
+            osapi.apps.get({contextId: "@self", params: {initialize:true}}).execute(function (response) {
+                var lang = "";
+                if (response.ils)
+                    lang = response.ils.lang;
+                else    
+                    lang = response.user.language;
+
+                switch(lang) {
+                    case "en":
+                        lang = "English";
+                        break;
+                    case "fr":
+                        lang = "French";
+                        break;
+                    case "de":
+                        lang = "German";
+                        break;
+                    case "es":
+                        lang = "Spanish";
+                        break;
+                    case "it":
+                        lang = "Italian";
+                        break;
+                    case "ru":
+                        lang = "Russian";
+                        break;
+                    default:
+                        lang = "";
+                }
+                if (lang != "")
+                    changeLanguage(lang);
+            });
+        }
+
+        $("#searchButton").click(function () {
+            thesaurusSearch();
+        });
+
+        $("#keyword").keypress(function (event) {
+            if (event.which == 13)
+                thesaurusSearch();
+        }) ;
+
+        var thesaurusSearch = function () {
+            $("#resultsDiv").empty();
+            if (chosenLanguage == "") {
+                $("#languageDropdown").addClass("inputMissing");
+            } else {
+                if ($("#keyword").val() == "") {
+                    $("#keyword").focus();
+                } else {
+                    var params = {};
+                    params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.DOM;
+                    params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;
+                    
+                    var url = "https://dictionary.yandex.net/api/v1/dicservice.json/lookup?key=dict.1.1.20161101T081302Z.7cdae604d5ef27de.6cb0cbd9131a80e241f6bb801d99dbdabdb27fa7&lang=" + chosenLanguage + "&text=" + $("#keyword").val().split(" ").join("%20");
+                    gadgets.io.makeRequest(url, thesaurusHandler, params);
+                }
+            }
+        }
+
+        var thesaurusHandler = function (obj) {
+            try {
+                var def = JSON.parse(obj.text).def;
+                if (def.length == 0) {
+                    $("#resultsDiv").append("No results found.");
+                } else {
+                    var defObj = def[0];
+                    if (defObj.ts)
+                        $("#resultsDiv").append("<p>Pronounciation: "+defObj.ts+"</p>");
+                    var count = 0;
+                    var tr = defObj.tr;
+                    while (tr[count] && count < 10) {
+                        $("#resultsDiv").append("<p><b>"+(count+1)+". "+ defObj.text + " (" + tr[count].pos + "):</b>&nbsp;" + tr[count].text + "</p>");
+                        count++;
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+                $("#resultsDiv").append("Error");
+            }
+        }
+    </script>
+</body>
+</html>
+]]>
+</Content>
+</Module>
