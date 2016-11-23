@@ -1,8 +1,8 @@
 <messageblundle>
-    <msg name="classical">Clásico</msg>
-    <msg name="quantum">Cuántico</msg>
+    <msg name="qualitative">Estudio Cualitativo</msg>
+    <msg name="quantitative">Estudio Cuantitativo</msg>
     <msg name="photo_diode_voltage">Voltaje Fotodiodo</msg>
-    <msg name="save_experiment_data">Guardar Los Resultados Experimentales</msg>
+    <msg name="save_experiment_data">Guardar</msg>
     <msg name="time">Tiempo</msg>
     <msg name="voltage">Voltaje</msg>
     <msg name="graph_title">Voltaje Fotodiodo Durante los últimos 10 Segundos</msg>
