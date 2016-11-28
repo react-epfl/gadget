@@ -76,9 +76,8 @@ h4 {
   padding: 7px;
 }
 .gadget4 #screen {
-  top: 66%;
-  left: 83.4%;
-  opacity: 0.8;
+  top: 67%;
+  left: 82.4%;
 }
 .laser, .photodiode {
   position: absolute;
@@ -97,6 +96,7 @@ h4 {
   background-color :#5050D2;
   height: 90px;
   width: 11px;
+  opacity: 0.8;
   line-height: 60px;
   text-align: center;
 }
@@ -224,6 +224,12 @@ h4 {
 }
 .noUi-horizontal .noUi-tooltip {
   bottom: -135%;
+}
+@media only screen and (max-width: 800px) {
+  .gadget4 #screen {
+    top: 66%;
+    left: 83.4%;
+  }
 }
 @media only screen and (max-width: 600px), screen and (max-height: 333px) {
   #laser {
