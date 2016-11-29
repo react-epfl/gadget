@@ -25,8 +25,12 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         firstChange = 1,
         glowCount = 0,
         quantitative = 0,
+        camera1Active = 0,
+        camera2Active = 0,
         enableCamera1 = 0,
         enableCamera2 = 0,
+        controller = 0,
+        infCase = 0,
         w = 860,
         h = 500,
         t = 0,
@@ -140,7 +144,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
       .attr("class", "straight-line")
       .attr("d", line(last));
 
-    function getScale () {
+    function getScale() {
         w = parseInt(d3.select("body").style("width"));
         var h = parseInt(d3.select("body").style("height"));
         if (w<172)
@@ -170,7 +174,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         return scale;
     }
 
-    function resize () {
+    function resize() {
         var scale = getScale();
         var newPoints = scalePoints(first, scale);
         var newPoints2 = scalePoints(verticalLeft, scale);
@@ -236,7 +240,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
     }
 
-    function scalePoints (points, scale) {
+    function scalePoints(points, scale) {
       var newPoints = [];
       for (var i = 0; i < points.length; i++) {
         newPoints[i] = {x: points[i].x * scale, y: points[i].y * scale};
@@ -260,17 +264,6 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 accessRole: 'controller'
             }
             jsonRequest = JSON.stringify(sensorRequest);
-            if (connected)
-                ws.send(jsonRequest);
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'power',
-                valueNames: "",
-                data: [0]
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
             if (connected)
                 ws.send(jsonRequest);
             var sensorRequest = {
@@ -299,37 +292,61 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                         } else {
                             if (msg.responseData) {
                                 var Q_Size = parseFloat(msg.responseData.Q_Size);
+                                if (Q_Size == 0) {
+                                    if (!camera1Active) {
+                                        enableCamera1 = 0;
+                                        $('#camera1Span').show();
+                                    }
+                                    if (!camera2Active) {
+                                        enableCamera2 = 0;
+                                        $('#camera2Span').show();
+                                    }
+                                    if ($('input[name=optradio]:checked').val() == 'quantitative') {
+                                        $('#chartContainer').css({'display':'block'});
+                                        $('#video1').css({'display':'none'});
+                                    } else {
+                                        $('#chartContainer').css({'display':'none'});
+                                        $('#video1').css({'display':'block'});
+                                    }
+                                    if (!controller) {
+                                        setTimeout (function() {
+                                            configureSD($scope.laserIsOn, bs1IsActivated, bs2IsActivated, parseFloat(piezoVoltageSlider.noUiSlider.get()[0]), filterIsActivated);
+                                        }, 700);
+                                        controller = 1;
+                                    }
+                                }
                                 if (Q_Size == 0 && (parseFloat(msg.responseData.Q_Est) > 130 || msg.responseData.Q_Est == "Inf")) {
                                     $('#diagramDiv').css({'opacity':'1'});
                                     $('#diagramDiv').css({'pointer-events':'auto'});
                                     $('#queueInformation').html('Connected');
+                                    if (!infCase)
+                                        infCase = 1;
                                 }
                                 var Q_Est = parseFloat(msg.responseData.Q_Est);
                                 if (Q_Size == 0 && Q_Est < 120) {
+                                    infCase = 0;
                                     $('#diagramDiv').css({'opacity':'1'});
                                     $('#diagramDiv').css({'pointer-events':'auto'});
                                     $('#queueInformation').html('Connected<br>My turn will end in: ' + (''+(120 - Q_Est)).split('.')[0] + ' seconds.');
                                     if (Q_Est > 118) {
                                         setTimeout(function() {
-                                            myTurn = 0;
-                                            var actuatorRequest = {
-                                                authToken: 'skfjs343kjKJ',
-                                                method: 'sendActuatorData',
-                                                accessRole: 'controller',
-                                                actuatorId: 'power',
-                                                valueNames: "",
-                                                data: [0]
-                                            };
-                                            var jsonRequest = JSON.stringify(actuatorRequest);
-                                            if (connected)
-                                                ws.send(jsonRequest);
+                                            sendActuatorData('power', [0]);
                                         }, 2500);
                                     }
                                 }
                                 if (Q_Size != 0) {
                                     $('#diagramDiv').css({'opacity':'0.8'});
                                     $('#diagramDiv').css({'pointer-events':'none'});
-                                    $('#queueInformation').html('Waiting<br>There ' + (Q_Size==1?'is ':'are ') + Q_Size + (Q_Size==1?' person ':' people ') + 'before me.<br>Estimated waiting time: ' + ('' + ((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)).split('.')[0] + ' seconds.');
+                                    if (infCase)
+                                        $('#queueInformation').html('Waiting<br>There ' + (Q_Size==1?'is ':'are ') + Q_Size + (Q_Size==1?' person ':' people ') + 'before me.<br>Estimated waiting time: ' + ('' + ((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)).split('.')[0] + ' seconds.<br>The last change you made will be <br>applied when it is your turn again');
+                                    else
+                                        $('#queueInformation').html('Waiting<br>There ' + (Q_Size==1?'is ':'are ') + Q_Size + (Q_Size==1?' person ':' people ') + 'before me.<br>Estimated waiting time: ' + ('' + ((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)).split('.')[0] + ' seconds.');
+                                    $('#chartContainer').css({'display':'none'});
+                                    $('#video1').css({'display':'block'});
+                                    enableCamera1 = 1;
+                                    enableCamera2 = 1;
+                                    $('#camera1Span, #camera2Span').hide();
+                                    controller = 0;
                                 }
                             }
                         }
@@ -339,6 +356,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 console.log(e);
             }
         };
+
+        ws.onclose = function(event) {
+        }
     }
 
     var initializeVideoSocket = function() {
@@ -377,6 +397,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                         myimage.src = URL.createObjectURL(event.data);
                     }
             }
+        }
+
+        function Vwsclose(event) {
         }
     };
 
@@ -417,6 +440,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                     }
             }
         }
+
+        function VWSIRclose(event) {
+        }
     };
 
     ils.getAppContextParameters(function(data) {
@@ -430,6 +456,28 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             actionLoggerReady =1 ;
         });
     });
+
+    var configureSD = function(laser, bs1, bs2, piezo, filter) {
+        sendActuatorData('power', [laser]);
+        sendActuatorData('bs1', [bs1]);
+        sendActuatorData('bs2', [bs2]);
+        sendActuatorData('piezo', [piezo]);
+        sendActuatorData('filter', [filter]);
+    }
+
+    var sendActuatorData = function (actuator, actuatorValue) {
+        var actuatorRequest = {
+            authToken: 'skfjs343kjKJ',
+            method: 'sendActuatorData',
+            accessRole: 'controller',
+            actuatorId: actuator,
+            valueNames: '',
+            data: actuatorValue
+        };
+        var jsonRequest = JSON.stringify(actuatorRequest);
+        if (connected)
+            ws.send(jsonRequest);
+    }
 
     var example_content = { 
         "dataPoints": [
@@ -462,17 +510,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         lastPath.attr('opacity',0.3);
         if (quantitative)
             quantPath.style("fill", "green").style("stroke", "green");
-        var actuatorRequest = {
-            authToken: 'skfjs343kjKJ',
-            method: 'sendActuatorData',
-            accessRole: 'controller',
-            actuatorId: 'power',
-            valueNames: "",
-            data: [1]
-        };
-        var jsonRequest = JSON.stringify(actuatorRequest);
-        if (connected)
-            ws.send(jsonRequest);
+        sendActuatorData('power', [1]);
         graphFlag = 1;
         //Log Activity
          var logObject = {
@@ -496,17 +534,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         triBottomPath.attr('opacity',0);
         quantPath.style("fill", "white").style("stroke", "white");
         lastPath.attr('opacity',0);
-        var actuatorRequest = {
-            authToken: 'skfjs343kjKJ',
-            method: 'sendActuatorData',
-            accessRole: 'controller',
-            actuatorId: 'power',
-            valueNames: "",
-            data: [0]
-        };
-        var jsonRequest = JSON.stringify(actuatorRequest);
-        if (connected)
-            ws.send(jsonRequest);
+        sendActuatorData('power', [0]);
         graphFlag = 0;
         //Log Activity
         var logObject = {
@@ -525,17 +553,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             setTimeout (function() {
                 resize();
             }, 300);
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'bs1',
-                valueNames: "",
-                data: [0]
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            if (connected)
-                ws.send(jsonRequest); 
+            sendActuatorData('bs1', [0]);
             //Log Activity
             var logObject = {
                 "objectType": "image",
@@ -550,17 +568,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             setTimeout (function() {
                 resize();
             }, 300);
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'bs1',
-                valueNames: "",
-                data: [1]
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            if (connected)
-                ws.send(jsonRequest); 
+            sendActuatorData('bs1', [1]);
             //Log Activity
             var logObject = {
                 "objectType": "image",
@@ -579,17 +587,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             setTimeout (function() {
                 resize();
             }, 300);
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'bs2',
-                valueNames: "",
-                data: [0]
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            if (connected)
-                ws.send(jsonRequest); 
+            sendActuatorData('bs2', [0]);
             //Log Activity
             var logObject = {
                 "objectType": "image",
@@ -604,17 +602,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             setTimeout (function() {
                 resize();
             }, 300);
-            var actuatorRequest = {
-                authToken: 'skfjs343kjKJ',
-                method: 'sendActuatorData',
-                accessRole: 'controller',
-                actuatorId: 'bs2',
-                valueNames: "",
-                data: [1]
-            };
-            var jsonRequest = JSON.stringify(actuatorRequest);
-            if (connected)
-                ws.send(jsonRequest); 
+            sendActuatorData('bs2', [1]);
             //Log Activity
             var logObject = {
                 "objectType": "image",
@@ -635,15 +623,6 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             };
             if (actionLoggerReady)
                 actionLogger.logCancel(logObject);
-            setTimeout (function() {
-                secondPath.attr('stroke-dasharray',"0,0");
-                horizontalTopPath.attr('stroke-dasharray',"0,0");
-                verticalLeftPath.attr('stroke-dasharray',"0,0");
-                hortizontalBottomPath.attr('stroke-dasharray',"0,0");
-                verticalRightPath.attr('stroke-dasharray',"0,0");
-                quantPath.attr('stroke-dasharray',"0,0");
-                lastPath.attr('stroke-dasharray',"0,0");
-            }, 300);
         } else {
             activateFilter();
             //Log Activity
@@ -653,15 +632,6 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             };
             if (actionLoggerReady)
                 actionLogger.logStart(logObject);
-            setTimeout (function() {
-                secondPath.attr('stroke-dasharray',"10,10");
-                horizontalTopPath.attr('stroke-dasharray',"5,15");
-                verticalLeftPath.attr('stroke-dasharray',"5,15");
-                hortizontalBottomPath.attr('stroke-dasharray',"5,15");
-                verticalRightPath.attr('stroke-dasharray',"5,15");
-                quantPath.attr('stroke-dasharray',"5,15");
-                lastPath.attr('stroke-dasharray',"5,15");
-            }, 300);
         }
         setTimeout (function() {
             resize();
@@ -672,60 +642,32 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         filterIsActivated = 1;
         $("#filterImage").animate({'margin-top' : '2.2%'});
         $("#filterImage").glow({ radius: "2", color:"green"});
-        var actuatorRequest = {
-            authToken: 'skfjs343kjKJ',
-            method: 'sendActuatorData',
-            accessRole: 'controller',
-            actuatorId: 'filter',
-            valueNames: "",
-            data: [1]
-        };
-        var jsonRequest = JSON.stringify(actuatorRequest);
-        if (connected)
-            ws.send(jsonRequest);
-        var actuatorRequest = {
-            authToken: 'skfjs343kjKJ',
-            method: 'sendActuatorData',
-            accessRole: 'controller',
-            actuatorId: 'filter',
-            valueNames: "",
-            data: [0]
-        }
-        var jsonRequest = JSON.stringify(actuatorRequest);
-        setTimeout(function() { 
-            if (connected)
-                ws.send(jsonRequest);
-        }, 500);
+        setTimeout (function() {
+            secondPath.attr('stroke-dasharray',"10,10");
+            horizontalTopPath.attr('stroke-dasharray',"5,15");
+            verticalLeftPath.attr('stroke-dasharray',"5,15");
+            hortizontalBottomPath.attr('stroke-dasharray',"5,15");
+            verticalRightPath.attr('stroke-dasharray',"5,15");
+            quantPath.attr('stroke-dasharray',"5,15");
+            lastPath.attr('stroke-dasharray',"5,15");
+        }, 300);
+        sendActuatorData('filter', [1]);
     }
 
     function deactivateFilter() {
         filterIsActivated = 0;
         $("#filterImage").animate({'margin-top' : '0%'});
         $("#filterImage").glow({ disable:true });
-        var actuatorRequest = {
-            authToken: 'skfjs343kjKJ',
-            method: 'sendActuatorData',
-            accessRole: 'controller',
-            actuatorId: 'filter',
-            valueNames: "",
-            data: [1]
-        };
-        var jsonRequest = JSON.stringify(actuatorRequest);
-        if (connected)
-            ws.send(jsonRequest);
-        var actuatorRequest = {
-            authToken: 'skfjs343kjKJ',
-            method: 'sendActuatorData',
-            accessRole: 'controller',
-            actuatorId: 'filter',
-            valueNames: "",
-            data: [0]
-        }
-        var jsonRequest = JSON.stringify(actuatorRequest);
-        setTimeout(function() { 
-            if (connected)
-                ws.send(jsonRequest);
-        },500);
+        setTimeout (function() {
+            secondPath.attr('stroke-dasharray',"0,0");
+            horizontalTopPath.attr('stroke-dasharray',"0,0");
+            verticalLeftPath.attr('stroke-dasharray',"0,0");
+            hortizontalBottomPath.attr('stroke-dasharray',"0,0");
+            verticalRightPath.attr('stroke-dasharray',"0,0");
+            quantPath.attr('stroke-dasharray',"0,0");
+            lastPath.attr('stroke-dasharray',"0,0");
+        }, 300);
+        sendActuatorData('filter', [0]);
     }
 
     var piezoVoltageSlider = document.getElementById('piezoVoltageSlider');
@@ -760,38 +702,32 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
         if(actionLoggerReady) 
             actionLogger.logChange(logObject);
-        var actuatorRequest = {
-            authToken: 'skfjs343kjKJ',
-            method: 'sendActuatorData',
-            accessRole: 'controller',
-            actuatorId: 'piezo',
-            valueNames: "",
-            data: [slideValue]
-        };
-        var jsonRequest = JSON.stringify(actuatorRequest);
-        if (connected)
-            ws.send(jsonRequest);
+        sendActuatorData('piezo', [slideValue]);
     });
 
     $scope.camera1Clicked = function() {
-        if (!enableCamera1) {
+        if (!camera1Active) {
             enableCamera1 = 1;
+            camera1Active = 1;
             $('#camera1Span').hide();
             $("#camera1Image").glow({radius: "3", color: "green"});
         } else {
             enableCamera1 = 0;
+            camera1Active = 0;
             $('#camera1Span').show();
             $("#camera1Image").glow({disable: true});
         }
     }
 
     $scope.camera2Clicked = function() {
-        if (!enableCamera2) {
+        if (!camera2Active) {
             enableCamera2 = 1;
+            camera2Active = 1;
             $('#camera2Span').hide();
             $("#camera2Image").glow({radius: "3", color: "green"});
         } else {
             enableCamera2 = 0;
+            camera2Active = 0;
             $('#camera2Span').show();
             $("#camera2Image").glow({disable: true});
         }
@@ -926,7 +862,6 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 dps.shift();
             chart.render();
         };
-
         updateChart();
         setInterval(function() {
             if (graphFlag && quantitative)
@@ -983,6 +918,11 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
            "experimentTime": moment()
         };
     };
+
+    window.onbeforeunload = function() {
+        if (controller) 
+            configureSD(0, 0, 0, 0, 0);
+    }
 
     $(document).ready(function() {
         gadgets.window.adjustHeight();
