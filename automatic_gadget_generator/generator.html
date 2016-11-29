@@ -109,7 +109,7 @@
                                     body += '<div id="'+sensor.sensorId+'Div">\n';
                                     if (sensor.webSocketType == 'binary' && sensor.singleWebSocketRecommended == true) {
                                         body += '<br><canvas id="' + sensor.sensorId + '" width="100" height="100" style="border: 2px solid #c3c3c3"></canvas><br>\n';
-                                        videoCode += sensor.sensorId + 'ws = new WebSocket ("ws://' + ip + ':' + port + '/' + sensor.values[0].unit + '");\n'+
+                                        videoCode += sensor.sensorId + 'ws = new WebSocket ("ws://' + ip + ':' + port + '/' + 'WS_Video' + '");\n'+
                                             'var myImage' + sensor.sensorId + ' = new Image();\n'+
                                             sensor.sensorId + 'ws.onopen = function(event) {\n'+
                                             'var sensorRequest = {\n'+
@@ -491,7 +491,7 @@
                         'if (!metadata.storageId)\n'+
                         'metadata.storageId = metadata.provider.inquiryPhaseId;\n'+
                         'metadata.target.objectType = "dataSet";\n'+
-                        'metadata.target.displayName = "Lab Experiment";\n'+
+                        'metadata.target.displayName = "Experiment_" + Date.now();\n'+
                         'new window.golab.ils.metadata.GoLabMetadataHandler(metadata, function(shouldBeNull,metadataHandler) {\n'+
                         'actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);\n'+
                         'actionLogger.setLoggingTarget("opensocial");\n'+

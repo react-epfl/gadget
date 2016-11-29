@@ -86,15 +86,15 @@
             <div id="screenshotDiv">
                 <div id="stepOne">
                     <b>Step 1: </b><span>Copy the above link<br></span>
-                    <img src="./screenshots/screenshot1"/><br>
+                    <img src="http://shindig2.epfl.ch/gadget/automatic_gadget_generator/screenshots/screenshot1.png"/><br>
                 </div>
-                <img id="changeVisibility" src ="./screenshots/screenshot5"/><br><p><p>
+                <img id="changeVisibility" src ="http://shindig2.epfl.ch/gadget/automatic_gadget_generator/screenshots/screenshot5.png"/><br><p><p>
                 <b>Step 2: </b>Go to the space where you want to add the app and click on the plus icon<br>
-                <img src="./screenshots/screenshot2"/><br><p></p>
+                <img src="http://shindig2.epfl.ch/gadget/automatic_gadget_generator/screenshots/screenshot2.png"/><br><p></p>
                 <b>Step 3: </b>Click on "Add App"<br>
-                <img src="./screenshots/screenshot3"/><br><p></p>
+                <img src="http://shindig2.epfl.ch/gadget/automatic_gadget_generator/screenshots/screenshot3.png"/><br><p></p>
                 <b>Step 4: </b>Paste the copied link and add the app<br>
-                <img src="./screenshots/screenshot4"/><br>
+                <img src="http://shindig2.epfl.ch/gadget/automatic_gadget_generator/screenshots/screenshot4.png"/><br>
             </div>
         </div>
     </div>
@@ -171,7 +171,7 @@
                                     body += '<div id="'+sensor.sensorId+'Div">\n';
                                     if (sensor.webSocketType == 'binary' && sensor.singleWebSocketRecommended == true) {
                                         body += '<br><canvas id="' + sensor.sensorId + '" width="100" height="100" style="border: 2px solid #c3c3c3"></canvas><br>\n';
-                                        videoCode += sensor.sensorId + 'ws = new WebSocket ("ws://' + ip + ':' + port + '/' + sensor.values[0].unit + '");\n'+
+                                        videoCode += sensor.sensorId + 'ws = new WebSocket ("ws://' + ip + ':' + port + '/' + 'WS_Video' + '");\n'+
                                             'var myImage' + sensor.sensorId + ' = new Image();\n'+
                                             sensor.sensorId + 'ws.onopen = function(event) {\n'+
                                             'var sensorRequest = {\n'+
@@ -580,7 +580,7 @@
                         'if (!metadata.storageId)\n'+
                         'metadata.storageId = metadata.provider.inquiryPhaseId;\n'+
                         'metadata.target.objectType = "dataSet";\n'+
-                        'metadata.target.displayName = "Lab Experiment";\n'+
+                        'metadata.target.displayName = "Experiment_" + Date.now();\n'+
                         'new window.golab.ils.metadata.GoLabMetadataHandler(metadata, function(shouldBeNull,metadataHandler) {\n'+
                         'actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);\n'+
                         'actionLogger.setLoggingTarget("opensocial");\n'+
