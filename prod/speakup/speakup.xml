@@ -1,37 +1,146 @@
 <Module>
-    <ModulePrefs title="SpeakUp"
-                 title_url="http://seance.epfl.ch/"
-                 author="María Jesús Rodríguez-Triana, Adrian Holzer"
-                 author_email="maria.rodrigueztriana@epfl.ch, adrian.holzer@epfl.ch"
-                 description="SpeakUp lets the audience anonymously share and rate each other's thoughts, answer the best ones."
-                 height="940"
-                 screenshot=""
-                 thumbnail="./icon350x350.jpeg">
-        <Require feature="opensocial-0.9" />
-    </ModulePrefs>
-    <Content type="html">
-        <![CDATA[
-	 <script type="text/javascript">
-	 	function $(string)
-		{
-			return document.getElementById(string); 
-		}
+  <ModulePrefs
+      title="SpeakUp"
+      title_url="http://speakup.info/"
+      author="Alex Wild"
+      author_email="alex.wild@epfl.ch"
+      height="500"
+      description="Let your audience share and rate each other's questions to answer the best ones."
+      thumbnail="./icon350x350.jpeg">
+    <Require feature="osapi"/>
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+      <head>
+        <style>
+          body {
+            background-color: transparent;
+          }
+          #speakup {
+            display: block;
+            width: 100%;
+            height: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+          }
+          #error {
+            margin: 20px;
+            padding: 10px;
+            background-color: #f2dede;
+            color: #a94442;
+          }
+          .hidden {
+            display: none;
+          }
+        </style>
+      </head>
+      <body>
+        <iframe id="speakup" seamless></iframe>
+        <div id="error" class="hidden"></div>
+        <script src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+        <script>
+          (function () {
+            var errorEl = document.getElementById('error');
+            var handleError = function (err) {
+              console.error(err);
+              if (!errorEl) return;
 
-		//load frame
-		function loadFrame()
-		{
-			var srcString = "http://seance.epfl.ch/";
-			var width = "100%";
-			var height = "940";
-			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" align="middle" src="'+srcString+'"></iframe>';
-			gadgets.window.adjustHeight(); //so app resizes itself based on content
-		}
-		
-		gadgets.util.registerOnLoadHandler(loadFrame);
-		</script>
-		
-		<div id="container">
-		</div>
-	 ]]>
-    </Content>
+              errorEl.innerHTML = err;
+              errorEl.setAttribute('class', '');
+              speakupEl.setAttribute('class', 'hidden');
+            };
+
+            var speakupEl = document.getElementById('speakup');
+            if (!speakupEl || !ils) {
+              return handleError('Unable to initialise the SpeakUp application');
+            }
+
+            var speakupUrl = (window.location.hostname === 'localhost') ?
+                'http://localhost:5000/' : 'http://web.speakup.info/';
+            var appContext;
+            var lang;
+
+            var getLang = function () {
+              return (appContext && appContext.provider && appContext.provider.lang) || 'en';
+            };
+
+            var getRoomConfig = function () {
+              return appContext && appContext.generator && appContext.generator.configuration &&
+                  appContext.generator.configuration.content;
+            };
+
+            var getNickname = function () {
+              return appContext && appContext.actor && appContext.actor.displayName;
+            };
+
+            var parseJson = function (jsonString) {
+              try {
+                return JSON.parse(jsonString);
+              } catch (err) {
+                return;
+              }
+            };
+
+            var redirectToRoom = function (roomConfig) {
+              if (typeof roomConfig === 'string') roomConfig = parseJson(roomConfig);
+              if (!roomConfig) return handleError('Room config missing or incorrectly formatted');
+              if (!roomConfig.roomId) return handleError('Unable to find room');
+
+              var nickname = getNickname();
+              var roomUrl = speakupUrl + 'ng/room/' + roomConfig.roomId +
+                  '?embedded=true&lang=' + lang;
+              if (nickname && roomConfig.nicknameRequired) {
+                roomUrl += '&nickname=' + encodeURIComponent(nickname);
+              }
+
+              speakupEl.setAttribute('src', roomUrl);
+            };
+
+            window.addEventListener('message', function (event) {
+              var roomConfig = parseJson(event.data);
+
+              if (!roomConfig || !roomConfig.roomId) {
+                return console.error('Unable to load room config');
+              }
+
+              // save room config to app metadata
+              var metadata = appContext;
+              metadata.id = metadata.generator.id
+              metadata.target = metadata.generator;
+              metadata.published = new Date().toISOString();
+
+              ils.setAppConfiguration(roomConfig, metadata, function (response) {
+                if (response && response.error) return console.error('Error saving app config');
+
+                // open room
+                redirectToRoom(roomConfig);
+              });
+            });
+
+            ils.getAppContextParameters(function (context) {
+              appContext = context;
+              lang = getLang();
+              var roomConfig = getRoomConfig();
+
+              if (roomConfig) {
+                // open room
+                redirectToRoom(roomConfig);
+              } else {
+                // load create room page
+                speakupEl.onload = function () {
+                  speakupEl.contentWindow.postMessage('useThisDomain', speakupUrl);
+                };
+                var createRoomUrl = speakupUrl + 'create-room?embedded=true&lang=' + lang;
+                speakupEl.setAttribute('src', createRoomUrl);
+              }
+            });
+          })();
+        </script>
+      </body>
+    ]]>
+  </Content>
 </Module>
