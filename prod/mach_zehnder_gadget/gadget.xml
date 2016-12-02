@@ -44,7 +44,6 @@
                 <label class="radio-inline"><input type="radio" name="optradio" value="quantitative" id="quantitativeButton"><h4>__MSG_quantitative__</h4></label>
             </div>
         </p>
-        <span id="queueInformation">Not Connected</span>
         <div id="diagramDiv">
             <div id="vis" class="gadget4">
                 <img id="miroir" src="./images/miroir2.png" class="miroir"/>
@@ -63,6 +62,19 @@
                 <div id="laser" class="laser unselectable" ng-click="laserClick()"></div>
                 <div id="piezoVoltageDiv">
                     <div id="piezoVoltageSlider"></div>
+                </div>
+                <div id="changesDiv">
+                    The last change that you made will be<br>applied when it is your turn again
+                </div>
+                <div id="queueInformation">
+                    <div id="statusLED"></div>
+                    <div id="humansDiv"></div>
+                    <br>
+                    <div class="clock-wrap">
+                        <div class="clock">
+                            <div class="clock__time"></div>
+                        </div>
+                    </div>                   
                 </div>
             </div>
         </div>
