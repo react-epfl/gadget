@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://create.nyu.edu/dream/include/program/mmSimPhaseChange1/pc1.141001.swf";
+		    var url = "http://create.nyu.edu/dream/apps/mmSimPhaseChange1/pc1.141001.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {
