@@ -41,7 +41,7 @@
       <body>
         <iframe id="speakup" seamless></iframe>
         <div id="error" class="hidden"></div>
-        <script src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+        <script src="//shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
         <script>
           (function () {
             var errorEl = document.getElementById('error');
@@ -60,7 +60,7 @@
             }
 
             var speakupUrl = (window.location.hostname === 'localhost') ?
-                'http://localhost:5000/' : 'http://web.speakup.info/';
+                '//localhost:5000/' : '//web.speakup.info/';
             var appContext;
             var lang;
 
@@ -100,7 +100,18 @@
               speakupEl.setAttribute('src', roomUrl);
             };
 
+            var validOrigins = [
+              'http://localhost:5000',
+              'http://web.speakup.info',
+              'https://web.speakup.info'
+            ];
+            var isValidOrigin = function (origin) {
+              return validOrigins.indexOf(origin) > -1;
+            };
+
             window.addEventListener('message', function (event) {
+              if (!isValidOrigin(event.origin)) return;
+
               var roomConfig = parseJson(event.data);
 
               if (!roomConfig || !roomConfig.roomId) {
@@ -132,7 +143,7 @@
               } else {
                 // load create room page
                 speakupEl.onload = function () {
-                  speakupEl.contentWindow.postMessage('useThisDomain', speakupUrl);
+                  speakupEl.contentWindow.postMessage('useThisDomain', '*');
                 };
                 var createRoomUrl = speakupUrl + 'create-room?embedded=true&lang=' + lang;
                 speakupEl.setAttribute('src', createRoomUrl);
