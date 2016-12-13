@@ -229,7 +229,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         triBottomPath.attr("d", line(newPoints8));
         quantPath.attr("d", line(newPoints9));
         lastPath.attr("d", line(newPoints5));
-        $('#vis').css({'height': 460 * scale, 'width': 860 * scale});
+        $('#vis').css({'height': 500 * scale, 'width': 860 * scale});
         $('#diagramDiv').css({'height': 500 * scale, 'width': 860 * scale});
         $('#saveButton').css({'font-size': (scale * 16) + 'px'})
         var videoWidth = $('#video1').width();
@@ -310,7 +310,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                                     }
                                     if (!controller) {
                                         setTimeout (function() {
-                                            configureSD($scope.laserIsOn, bs1IsActivated, bs2IsActivated, parseFloat(piezoVoltageSlider.noUiSlider.get()[0]), filterIsActivated);
+                                            configureSD($scope.laserIsOn, bs1IsActivated, bs2IsActivated, [parseFloat(piezoVoltageSlider.noUiSlider.get()[0]),0], filterIsActivated);
                                         }, 700);
                                         controller = 1;
                                     }
@@ -318,7 +318,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                                 if (Q_Size == 0 && (parseFloat(msg.responseData.Q_Est) > 130 || msg.responseData.Q_Est == "Inf")) {
                                     $('#diagramDiv').css({'opacity':'1'});
                                     $('#diagramDiv').css({'pointer-events':'auto'});
-                                    $('#queueInformation').html('Connected');
+                                    $('#statusLED').css({'background-color':'green'});
+                                    $('#humansDiv').empty();
+                                    $('.clock-wrap').css({'display':'none'});
                                     if (!infCase)
                                         infCase = 1;
                                 }
@@ -327,7 +329,14 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                                     infCase = 0;
                                     $('#diagramDiv').css({'opacity':'1'});
                                     $('#diagramDiv').css({'pointer-events':'auto'});
-                                    $('#queueInformation').html('Connected<br>My turn will end in: ' + (''+(120 - Q_Est)).split('.')[0] + ' seconds.');
+                                    $('#statusLED').css({'background-color':'green'});
+                                    $('#humansDiv').empty();
+                                    $('.clock-wrap').css({'display':'block'});
+                                    var m = Math.floor((120 - Math.floor(Q_Est)) / 60);
+                                    var s = (120 - Math.floor(Q_Est)) % 60;
+                                    var TimeString = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+                                    TimeString = '<span>' + TimeString.split('').join('</span><span>') + '</span>';
+                                    $('.clock__time').html(TimeString);
                                     if (Q_Est > 118) {
                                         setTimeout(function() {
                                             sendActuatorData('power', [0]);
@@ -337,10 +346,24 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                                 if (Q_Size != 0) {
                                     $('#diagramDiv').css({'opacity':'0.8'});
                                     $('#diagramDiv').css({'pointer-events':'none'});
-                                    if (infCase)
-                                        $('#queueInformation').html('Waiting<br>There ' + (Q_Size==1?'is ':'are ') + Q_Size + (Q_Size==1?' person ':' people ') + 'before me.<br>Estimated waiting time: ' + ('' + ((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)).split('.')[0] + ' seconds.<br>The last change you made will be <br>applied when it is your turn again');
-                                    else
-                                        $('#queueInformation').html('Waiting<br>There ' + (Q_Size==1?'is ':'are ') + Q_Size + (Q_Size==1?' person ':' people ') + 'before me.<br>Estimated waiting time: ' + ('' + ((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)).split('.')[0] + ' seconds.');
+                                    $('#statusLED').css({'background-color':'yellow'});
+                                    $('#humansDiv').empty();
+                                    for (i = 0; i < Q_Size; i++) {
+                                        $('#humansDiv').append('<img class="human" src="http://shindig2.epfl.ch/gadget/prod/mach_zehnder_gadget/images/human.png"/>');
+                                    }
+                                    $('.clock-wrap').css({'display':'block'});
+                                    var m = Math.floor(Math.floor(((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)) / 60);
+                                    var s = Math.floor(((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)) % 60;
+                                    var TimeString = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+                                    TimeString = '<span>' + TimeString.split('').join('</span><span>') + '</span>';
+                                    $('.clock__time').html(TimeString);
+                                    if (infCase) {
+                                        $('#changesDiv').css({'display':'block'});
+                                        setTimeout(function() {
+                                            $('#changesDiv').css({'display':'none'});
+                                        }, 5000);
+                                        infCase = 0;
+                                    }
                                     $('#chartContainer').css({'display':'none'});
                                     $('#video1').css({'display':'block'});
                                     enableCamera1 = 1;
@@ -358,6 +381,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         };
 
         ws.onclose = function(event) {
+            $('#statusLED').css({'background-color':'red'});
         }
     }
 
@@ -461,7 +485,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         sendActuatorData('power', [laser]);
         sendActuatorData('bs1', [bs1]);
         sendActuatorData('bs2', [bs2]);
-        sendActuatorData('piezo', [piezo]);
+        sendActuatorData('piezo', piezo);
         sendActuatorData('filter', [filter]);
     }
 
@@ -563,7 +587,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 actionLogger.logCancel(logObject);
         } else {
             bs1IsActivated = 1;
-            $("#beamShutter1Image").animate({'margin-top' : '2.5%'});
+            $("#beamShutter1Image").animate({'margin-top' : '-2.5%'});
             $("#beamShutter1Image").glow({ radius: "3", color:"green"});
             setTimeout (function() {
                 resize();
@@ -597,7 +621,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 actionLogger.logCancel(logObject);
         } else {
             bs2IsActivated = 1;
-            $("#beamShutter2Image").animate({'margin-top' : '-2.5%'});
+            $("#beamShutter2Image").animate({'margin-top' : '2.5%'});
             $("#beamShutter2Image").glow({ radius: "3", color:"green"});
             setTimeout (function() {
                 resize();
@@ -640,7 +664,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
 
     function activateFilter() {
         filterIsActivated = 1;
-        $("#filterImage").animate({'margin-top' : '2.2%'});
+        $("#filterImage").animate({'margin-top' : '-2.5%'});
         $("#filterImage").glow({ radius: "2", color:"green"});
         setTimeout (function() {
             secondPath.attr('stroke-dasharray',"10,10");
@@ -702,7 +726,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
         if(actionLoggerReady) 
             actionLogger.logChange(logObject);
-        sendActuatorData('piezo', [slideValue]);
+        sendActuatorData('piezo', [slideValue, 0]);
     });
 
     $scope.camera1Clicked = function() {
@@ -786,7 +810,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
 
     var dps = []; // dataPoints
     var chart;
-    for (i = 0; i < 10; i += 0.1) {
+    for (i = 0; i < 20; i += 0.1) {
         dps.push({
             x: i,
             y: undefined
@@ -831,18 +855,19 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 gridDashType: "dash",
                 labelFontColor: "white",
                 gridThickness: 1,
-                minimum: -10,
-                maximum: 10
+                minimum: -1,
+                maximum: 5,
+                interval: 1
             },
             backgroundColor: "#6262FF"
         });
         var xVal = 0,
             updateInterval = 100,
-            dataLength = 100; // number of dataPoints visible at any point
+            dataLength = 200; // number of dataPoints visible at any point
 
         var updateChart = function() {
-            if (xVal < 10) {
-                for (j = 0; j < 100 ; j++){
+            if (xVal < 20) {
+                for (j = 0; j < 200 ; j++){
                     if (dps[j].x == xVal)
                         dps[j].y = sensorValue;
                 }
@@ -921,7 +946,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
 
     window.onbeforeunload = function() {
         if (controller) 
-            configureSD(0, 0, 0, 0, 0);
+            configureSD(0, 0, 0, [0,0], 0);
     }
 
     $(document).ready(function() {
@@ -932,5 +957,6 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         initializeSocket();
         initializeVideoSocket();
         initializeVideoIRSocket();
+        $scope.turnLaserOn();
     });
 }]);
