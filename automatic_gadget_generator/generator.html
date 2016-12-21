@@ -50,7 +50,6 @@
         </script>
         <div id="errorDiv"></div>
     </div>
-
     <script>
         $(document).ready(function() {
             var ip;
@@ -73,6 +72,7 @@
             var graasp = 1;
             var oneOptionAvailable = 0;
 
+            //The following function is executed when the user clicks on "Get Configurations" button
             $('#configurator').click(function() {
                 ip = $('#ipAddress').val();
                 port = $('#port').val();
@@ -81,10 +81,12 @@
                 $('#generator').hide();
                 $('#experimentsDiv').show();
                 $("#errorDiv").empty();
+                //initiate a Web Socket connection with the Smart Device
                 ws = new WebSocket('ws://' + ip + ':' + port);
                 experiments = [];
                 checkboxes = [];
                 var node = document.getElementById("experimentsDiv");
+                //clear the already existing (if any) list of experiments, to add a new one afterwards
                 while (node.hasChildNodes()) {
                     node.removeChild(node.lastChild);
                 }
@@ -95,6 +97,7 @@
                 }
 
                 ws.onopen = function() {
+                    //upon opening the Web Socket, make a call to the getExperiments service to acquire the list of experiments supported by the Smart Device
                     ws.send(JSON.stringify({ method: 'getExperiments'}));
                 };
 
@@ -105,10 +108,13 @@
                         msg = JSON.parse(data);
                         if (msg.method == "getSensorMetadata") {
                             $.each(msg.sensors, function(index,sensor){
+                                //check if the currently iterated sensor is used by any of the selected experiments
                                 if (allSensorsActuators.indexOf(sensor.sensorId)>(-1)){
                                     body += '<div id="'+sensor.sensorId+'Div">\n';
+                                    //if the websocket type is binary then the sensor is a video component
                                     if (sensor.webSocketType == 'binary' && sensor.singleWebSocketRecommended == true) {
                                         body += '<br><canvas id="' + sensor.sensorId + '" width="100" height="100" style="border: 2px solid #c3c3c3"></canvas><br>\n';
+                                        //initiate a separate websocket connection for each video
                                         videoCode += sensor.sensorId + 'ws = new WebSocket ("ws://' + ip + ':' + port + '/' + 'WS_Video' + '");\n'+
                                             'var myImage' + sensor.sensorId + ' = new Image();\n'+
                                             sensor.sensorId + 'ws.onopen = function(event) {\n'+
@@ -141,12 +147,14 @@
                                     } else {
                                         sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]= [];\n';
                                         $.each(sensor.values, function(valueIndex, value) {
+                                            //create the UI component for each value of the sensor
                                             if (value.type) {
                                                 sensorsArray += 'sensorsArray["'+sensor.sensorId+'"]['+valueIndex+'] = "'+value.name+'";\n'+
                                                     'dataSet.dataSourceColumns.push({unit:""})\n'+
                                                     'dataSet.dataTable.cols.push({id:"'+value.name+'",label:"'+value.name+'",pattern:"", type:"number"})\n';
                                             }
                                             if(value.type == 'boolean') {
+                                                //a boolean sensor value is represented as an LED indicator
                                                 booleanArray+= '"'+ value.name +'",';
                                                 body+= '<span id="span' + value.name + '"><p></p>' + value.name+ '<br></span>\n<div id="'+ value.name +'" class="led-green-off"></div>\n';
                                                 sensorsArray+= 'dataValues["'+value.name+'"] = 0;\n';
@@ -156,6 +164,7 @@
                                                     sensorsArray+= 'dataValues["'+value.name+'"] = 0;\n';
                                                 }
                                         });
+                                        //populating the getSensorData request packets that will be sent to the Smart Device
                                         onOpen+= 'sensorRequest = {\n'+
                                             'method: "getSensorData",\n'+
                                             'sensorId: "'+ sensor.sensorId +'",\n'+
@@ -175,9 +184,11 @@
                         } else {
                             if (msg.method == "getActuatorMetadata") {
                                 $.each(msg.actuators, function(index, actuator){
+                                    //check if the currently iterated actuator is used by any of the selected experiments
                                     if (allSensorsActuators.indexOf(actuator.actuatorId)>(-1)) {
                                         body += '<div id="'+actuator.actuatorId+'Div">\n';
                                         actuatorsArray += 'var '+actuator.actuatorId + 'Arr = []\n';
+                                        //create the sendActuatorData packet for that actuator
                                         actuators += 'var '+actuator.actuatorId+'SendData = function () {\n'+
                                             'var actuatorRequest = {\n'+
                                             'authToken: "skfjs343kjKJ",\n'+
@@ -192,12 +203,14 @@
                                             'ws.send(jsonRequest);\n'+
                                             '};\n';
                                         $.each(actuator.values, function(valueIndex, value){
+                                            //create the javascript code and the UI component for each value of the actuator
                                             if (value.type) {
                                                 actuatorsArray += actuator.actuatorId + 'Arr[' + valueIndex + '] = 0; \n';
                                                 actuators += 'dataSet.dataSourceColumns.push({unit:""})\n'+
                                                     'dataSet.dataTable.cols.push({id:"'+value.name+'",label:"'+value.name+'",pattern:"", type:"number"})\n';
                                             }
-                                            if (value.type=="boolean"){    
+                                            if (value.type=="boolean"){
+                                                //a boolean actuator value is displayed as a button that can be turned on and off  
                                                 body+= '<span id="span'+ value.name + '"><p></p>' + value.name + ': &nbsp;</span><button class="btn" background-color="white" id="' + value.name + '">Turn On</button>\n';
                                                 actuators+= '$("#' + value.name + '").click(function() {\n'+
                                                     'var logObject = {\n'+
@@ -222,6 +235,7 @@
                                                     'dataValues["'+value.name+'"] = 0;\n';
                                             } else 
                                                 if (value.type=="float") {
+                                                    //a float actuator value is displayed as a slider
                                                     body+= '<p></p>'+value.name + ': &nbsp;&nbsp;<input id="' + value.name + '" type="text" data-slider-min="' + value.rangeMinimum + '" data-slider-max="' + value.rangeMaximum + '" data-slider-step="0.1" data-slider-value="0"/>\n';
                                                     actuators+= '$("#'+ value.name +'").slider({formatter: function(currentVal){  return currentVal + "'+ value.unit +'" }});\n'+
                                                         '$("#'+ value.name +'").on("change", function(slideEvt) {\n'+
@@ -242,16 +256,19 @@
                                     }
                                 });
                                 body+= '<p></p><br>\n';
+                                //make a call to the getSensorMetadata service
                                 ws.send(JSON.stringify({ method: 'getSensorMetadata'}));
                             } else {
                                 if (msg.method == "getExperiments" && msg.experiments.length>0) {
                                     if (msg.experiments.length == 1) {
+                                        //for only one available experiment, automatically make it the default choice
                                         oneOptionAvailable = 1;
                                         var experiment = msg.experiments[0];
                                         experiments[0] = experiment;
                                         $("#experimentsDiv").append("There is only one available configuration for this remote lab: <br>");
                                         $("#experimentsDiv").append(experiment.fullName + " : " + experiment.description);
                                     } else {
+                                        //for multiple available experiments, create a checkbox for each one
                                         $("#experimentsDiv").append("Choose at least one configuration: <br>");
                                         experiments = msg.experiments;
                                         $.each(msg.experiments, function(index,experiment) {
@@ -266,10 +283,9 @@
                                             $("#experimentsDiv").append("</label><br>");
                                         });
                                     }
-                            
                                     $("#experimentsDiv").append("<p></p><br>");
                                     $("#experimentsDiv").append("Choose your educational platform: <br>");
-
+                                    //allow users to choose their educational platform by creating radio buttons graasp and lti consumer
                                     var graaspRadio = document.createElement('input');
                                     graaspRadio.type = "radio";
                                     graaspRadio.name = "optradio";
@@ -280,7 +296,6 @@
                                     $("#experimentsDiv").append(graaspRadio);
                                     $("#experimentsDiv").append("  Graasp");
                                     $("#experimentsDiv").append("</label>&emsp;");
-
                                     var ltiRadio = document.createElement('input');
                                     ltiRadio.type = "radio";
                                     ltiRadio.name = "optradio";
@@ -299,7 +314,8 @@
                     }
                 };
             });
-
+            
+            //clicking on either "Download Gadget" button will result in the execution of this function
             $('#generator').click(function(){
                 $("#errorDiv").empty();
                 if ($('input[name=optradio]:checked').val() == "graasp") {
@@ -307,26 +323,24 @@
                 } else {
                     graasp = 0;
                 }
-
                 var numOptions = 0;
+                //check the number of experiments that were selected
                 $.each(checkboxes, function(index,checkbox){
                     if (checkbox.checked)
                         numOptions++;
                 });
-
                 if (oneOptionAvailable)
                     numOptions = 1;
-
                 if (numOptions > 1) {
                     oneOptionOnlyFlag = 0;
                 }
-
                 if (numOptions == 0 && !oneOptionAvailable){
                     $("#errorDiv").append("Please select at least one option")
                 } else {
                     var firstOne = 1;
                     $.each(experiments, function (index, experiment){
                         var experimentSelected = 0;
+                        //check if the current experiment is selected
                         $.each(checkboxes, function (index2, checkbox){
                             if (checkbox.value == experiment.experimentId)
                                 if (checkbox.checked)
@@ -334,12 +348,14 @@
                         });
                         if (experimentSelected || oneOptionAvailable) {
                             if (!oneOptionOnlyFlag) {
+                                //in the case of multiple experiments, add each one as a separate tab in the generated UI
                                 body += '<label class="radio-inline"><input type="radio" name="optradio" value="'+experiment.experimentId+ (firstOne?'" checked="true"':'"') + ' id="' + experiment.experimentId + '"><h4>'+experiment.fullName+'</h4></label>\n';
                             }
                             if (firstOne) {
                                 initialOption = 'var initialOption = "' + experiment.experimentId + '";\nshowHideElements(initialOption);\n';
                                 firstOne = 0;
                             }
+                            //populate the configuration array that contains the sensor and actuator ids of each experiment
                             configurationArray += 'configurationArray["'+experiment.experimentId+'"] = [ ';
                             $.each (experiment.actuators, function (actuatorIndex, actuator){
                                 configurationArray += '"'+ actuator.actuatorId + '",';
@@ -354,15 +370,14 @@
                             configurationArray = configurationArray.substring(0, configurationArray.length - 1) + '];\n';
                         }
                     });
-
                     if (!oneOptionOnlyFlag)
                         body += '<p></p><br>\n';
+                    //make a call to the getActuatorMetadata service
                     ws.send(JSON.stringify({ method: 'getActuatorMetadata'}));
                 }
             });
 
             createGadget = function() {
-                //this method is called whenever the sensor metadata is obtained
                 var allSensorsActuatorsString = 'var allSensorsActuatorsArray = [ ';
                 $.each(allSensorsActuators, function(index, element){
                     allSensorsActuatorsString += '"'+ element + '",';
@@ -381,7 +396,7 @@
                         '});\n';
                 }
                 var header = "";
-                
+                //add header information including the scripts and stylesheet links required by the gnenerated UI, in addition to the xml statements for the gadget to work on graasp
                 if (graasp)
                     header = '<?xml version="1.0" encoding="UTF-8"?>\n'+
                         '<Module>\n'+
@@ -392,7 +407,6 @@
                         '</ModulePrefs>\n'+
                         '<Content type="html">\n'+
                         '<![CDATA[\n';
-
                 header += '<html lang="en">\n'+
                     '<head>\n'+
                     '<meta charset="UTF-8">\n'+
@@ -403,7 +417,6 @@
                     '\n'+
                     '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></scri'+'pt>\n'+
                     '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.2.0/bootstrap-slider.js"></scr'+'ipt>\n';
-
                 if(graasp)
                     header += 
                         '<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.min.js"></scr'+'ipt>\n'+
@@ -411,7 +424,6 @@
                         '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></scri'+'pt>\n'+
                         '<script type="text/javascript" src="http://shindig2.epfl.ch/ils/metadata/MetadataHandler.js"></scri'+'pt>\n'+
                         '<script type="text/javascript" src="http://shindig2.epfl.ch/ils/applog/ActionLogger.js"></scri'+'pt>\n';
-
                 header += '<style>\n'+
                     'body {\n'+
                     'font-size: 16px;\n'+
@@ -421,11 +433,9 @@
                     'margin-bottom:20px;\n'+
                     'padding-left: 50px;\n'+
                     'padding-right: 50px;\n';
-
                 if (graasp)
                     header += 'color: white;\n'+
                         'background-color: #5050d2;\n';
-
                 header+= '}\n'+
                     '.led-green-off {\n'+
                     'width: 24px;\n'+
@@ -447,7 +457,6 @@
                     'margin-bottom: 0px;\n'+
                     'font-size: 16px;\n'+
                     '}\n';
-
                 if (!graasp)
                     header += ".slider-track {\n"+
                         "background-image: -webkit-linear-gradient(top, lightGrey 0%, lightGrey 100%);\n"+
@@ -458,19 +467,15 @@
                         ".slider-handle {\n"+
                         "background-image: -webkit-linear-gradient(top, CornflowerBlue 0%, CornflowerBlue 100%);\n"+
                         "}\n";
-
                 if (graasp)
                     header += '#saveButton {\n'+
                         'background-color: green;\n'+
                         'color: white;\n'+
                         '}\n';
-
                 header += '</style>\n'+
                     '</head>\n';
-
                 if (graasp)
                     body += '<button class="btn" background-color="green" id="saveButton">Save Data</button><span id="saveIndicator" display="none"></span>';
-
                 scriptHeader = '<script>\n'+
                     'head.ready(function () {\n'+
                     'var ip = "'+ ip +'";\n'+
@@ -479,7 +484,7 @@
                     'var sensorRequest;\n'+
                     'var ws = new WebSocket("ws://" + ip + ":" + port);\n'+
                     'var dataSet = {dataSourceColumns : [{unit:"s"}], dataTable: {cols: [{id:"time", label:"time", pattern:"", type:"number"}], rows:[] } }\n';
-
+                //if the target environment is graasp, then obtain the metadata and initialize the action logger
                 if (graasp)    
                     scriptHeader += 'gadgets.window.adjustHeight(); \n'+
                         'var actionLogger;\n'+
@@ -498,20 +503,17 @@
                         'actionLoggerReady = 1;\n'+
                         '});\n'+
                         '});\n';
-
                 var tail = '});\n'+
                     '</scri'+'pt>\n'+
                     '</body>\n'+
                     '</html>\n';
-
                 if (graasp)
                     tail += ']'+']>\n'+
                         '</Content>\n'+
                         '</Module>';
-
+                //combine all the previously populated strings into one complete gadget code
                 var gadget = header + body + scriptHeader + showHideElements + configurationArray + actuatorsArray + actuators  + allSensorsActuatorsString + initialOption + optChoice + sensorsArray + onOpen + booleanArray + (graasp?updateContent:'') + videoCode + onMessage + tail;
                 var blob = new Blob([gadget], {type: 'application/octet-stream'});
-
                 if (graasp)
                     saveAs(blob, 'gadget.xml');
                 else
@@ -519,7 +521,6 @@
 
                 if (navigator.vendor && navigator.vendor.indexOf('Apple') > -1 && navigator.userAgent && !navigator.userAgent.match('CriOS'))
                     alert('Please rename the downloaded file to ' + (graasp?'gadget.xml':'gadget.html'));
-
                 oneOptionOnlyFlag = 1;
                 body = '<body>\n';
                 actuators = '';
@@ -533,7 +534,8 @@
                 oneOptionAvailable = 0;
                 videoCode = 'FF=(navigator.userAgent.search("Firefox") >= 0);';
             };
-
+            
+            //the following code enables saving the experimental results in order to view them in the DataViewer app
             var updateContent = 'window.setInterval(function() {\n'+
                 'var newValues = {c:[]};\n'+
                 '$.each(dataSet.dataTable.cols, function(index,column){\n'+
@@ -549,7 +551,7 @@
                 'setTimeout(function() { $("#saveIndicator").html(""); }, 1500);\n'+
                 '});\n'+
                 '});\n'; 
-
+            //the following code handles the getSensorData response messages that are received from the Smart Device
             var onMessage = 'ws.onmessage = function(event) {\n'+
                 'var data = event.data;\n'+
                 'var msg;\n'+
@@ -577,7 +579,7 @@
                 'console.log(e);\n'+
                 '}\n'+
                 '};\n';
-
+            //the following code allows switching between the different experiments
             var showHideElements = 'var showHideElements = function (chosenOption) {\n'+
                 '$.each(allSensorsActuatorsArray, function(index, element) {\n'+
                 'if (configurationArray[chosenOption].indexOf(element)>(-1)) {\n'+
