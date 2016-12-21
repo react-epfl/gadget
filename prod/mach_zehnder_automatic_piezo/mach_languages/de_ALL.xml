@@ -1,0 +1,9 @@
+<messageblundle>
+    <msg name="qualitative">Qualitative Untersuchung</msg>
+    <msg name="quantitative">Quantitative Untersuchung</msg>
+    <msg name="photo_diode_voltage">Photodiode Voltzahl</msg>
+    <msg name="save_experiment_data">Speichern</msg>
+    <msg name="time">Zeit</msg>
+    <msg name="voltage">Voltzahl</msg>
+    <msg name="graph_title">Photodiode Voltzahl Während der Letzten 10 Sekunden</msg>
+</messageblundle>
