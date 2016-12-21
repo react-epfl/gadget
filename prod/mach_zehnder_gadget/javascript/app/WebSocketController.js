@@ -4,7 +4,10 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
     $scope.showQuantumDivFlag = 0;
     $scope.showMetadataButtonsFlag = 0;
     $scope.laserIsOn = 0;
+    var dataSet = {dataSourceColumns:[{unit:"s"},{unit:""},{unit:""},{unit:""},{unit:""},{unit:""},{unit:""}], dataTable:{"cols":[{"id":"time","label":"time","pattern":"","type":"number"},{"id":"laserPower","label":"laserPower","pattern":"","type":"number"},{"id":"beamShutter1","label":"beamShutter1","pattern":"","type":"number"},{"id":"beamShutter2","label":"beamShutter2","pattern":"","type":"number"},{"id":"piezoVoltage","label":"piezoVoltage","pattern":"","type":"number"},{"id":"piezoAutomatic","label":"piezoAutomatic","pattern":"","type":"number"},{"id":"photodiodeVoltage","label":"photodiodeVoltage","pattern":"","type":"number"}]}};
+    dataSet.dataTable.rows = [];
     var sensorValue = 0,
+        piezoValue = 0,
         graphFlag = 0,
         bs1IsActivated = 0,
         bs2IsActivated = 0,
@@ -19,6 +22,8 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         VWSIR,
         FF,
         host = '172.22.11.2', //145.232.235.206
+        //host = '10.224.37.245',
+        host = '145.232.235.206',
         port = '8888',
         results = '',
         w,
@@ -40,12 +45,13 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         horizontalTop = [{x: 193, y: 85}, {x: 511, y: 85}],
         horizontalTop2 = [{x: 193, y: 85}, {x: 362, y: 85}],
         verticalLeft = [{x: 196, y: 85},{x: 196, y: 356}],
-        horizontalBottom = [{x:196 , y:350},{x:600 , y:350}],
+        horizontalBottom = [{x:196 , y:350},{x:511 , y:350}],
         horizontalBottom2 = [{x:196 , y:350},{x:362 , y:350}],
         verticalRight = [{x:511, y:85},{x:511, y:350}],
         tri = [{x:600 , y:350}, {x:681 , y:375}, {x:681 , y:325}],
         triQuant = [{x:600 , y:350}, {x:681 , y:350}],
         quant = [{x:681, y:350}, {x:750, y:350}],
+        trap = [{x:511 , y:350}, {x:511 , y:415}],
         last = [{x:511 , y:350}, {x:600 , y:350}],
         empty = [{x:0, y:0}, {x:0, y:0}],
         line = d3.svg.line().x(x).y(y).interpolate("linear"),
@@ -132,9 +138,33 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
       .style("fill", "white")
       .style("stroke", "white")
       .attr("stroke-width", 5)
-      .attr("opacity", 0.6)
+      .attr("opacity", 0.4)
       .attr("class", "straight-line-quant")
       .attr("d", line(quant));
+    var trapPathRight = g.append("path")
+      .data(function (d) { return [d]; })
+      .style("fill", "green")
+      .style("stroke", "green")
+      .attr("stroke-width", 5)
+      .attr("opacity", 0)
+      .attr("class", "straight-line")
+      .attr("d", line(trap));
+    var trapPathBottom = g.append("path")
+      .data(function (d) { return [d]; })
+      .style("fill", "green")
+      .style("stroke", "green")
+      .attr("stroke-width", 5)
+      .attr("opacity", 0)
+      .attr("class", "straight-line-bottom2")
+      .attr("d", line(trap));
+    var lastPath2 = g.append("path")
+      .data(function (d) { return [d]; })
+      .style("fill", "green")
+      .style("stroke", "green")
+      .attr("stroke-width", 5)
+      .attr("opacity", 0)
+      .attr("class", "straight-line-bottom")
+      .attr("d", line(last));
     var lastPath = g.append("path")
       .data(function (d) { return [d]; })
       .style("fill", "green")
@@ -191,6 +221,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             var newPoints1 = scalePoints(horizontalTop, scale);
             var newPoints4 = scalePoints(verticalRight, scale);
             var newPoints5 = scalePoints(last, scale);
+            var newPoints11 = scalePoints(trap, scale);
             if (!filterIsActivated) 
                 var newPoints7 = scalePoints(tri, scale);
             else
@@ -200,9 +231,12 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             var newPoints4 = scalePoints(empty, scale);
             var newPoints5 = scalePoints(empty, scale);
             var newPoints7 = scalePoints(empty, scale);
+            var newPoints11 = scalePoints(empty, scale);
         }
         if (!bs2IsActivated) {
             var newPoints3 = scalePoints(horizontalBottom, scale);
+            var newPoints10 = scalePoints(last, scale);
+            var newPoints12 = scalePoints(trap, scale);
             if (!filterIsActivated) 
                 var newPoints8 = scalePoints(tri, scale);
             else
@@ -211,14 +245,16 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         else {
             var newPoints3 = scalePoints(horizontalBottom2, scale);
             var newPoints8 = scalePoints(empty, scale);
+            var newPoints10 = scalePoints(empty, scale);
+            var newPoints12 = scalePoints(empty, scale);
         }
         if (bs1IsActivated && bs2IsActivated)
             $(".straight-line-quant").attr("opacity", 0);
         else
             if (bs1IsActivated || bs2IsActivated)
-                $(".straight-line-quant").attr("opacity", 0.3);
+                $(".straight-line-quant").attr("opacity", 0.2);
             else
-                $(".straight-line-quant").attr("opacity", 0.6);
+                $(".straight-line-quant").attr("opacity", 0.4);
         firstPath.attr("d", line(newPoints));
         secondPath.attr("d", line(newPoints6));
         horizontalTopPath.attr("d", line(newPoints1));
@@ -228,8 +264,11 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         triRightPath.attr("d", line(newPoints7));
         triBottomPath.attr("d", line(newPoints8));
         quantPath.attr("d", line(newPoints9));
+        trapPathRight.attr("d", line(newPoints11));
+        trapPathBottom.attr("d", line(newPoints12));
+        lastPath2.attr("d", line(newPoints10));
         lastPath.attr("d", line(newPoints5));
-        $('#vis').css({'height': 460 * scale, 'width': 860 * scale});
+        $('#vis').css({'height': 500 * scale, 'width': 860 * scale});
         $('#diagramDiv').css({'height': 500 * scale, 'width': 860 * scale});
         $('#saveButton').css({'font-size': (scale * 16) + 'px'})
         var videoWidth = $('#video1').width();
@@ -293,24 +332,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                             if (msg.responseData) {
                                 var Q_Size = parseFloat(msg.responseData.Q_Size);
                                 if (Q_Size == 0) {
-                                    if (!camera1Active) {
-                                        enableCamera1 = 0;
-                                        $('#camera1Span').show();
-                                    }
-                                    if (!camera2Active) {
-                                        enableCamera2 = 0;
-                                        $('#camera2Span').show();
-                                    }
-                                    if ($('input[name=optradio]:checked').val() == 'quantitative') {
-                                        $('#chartContainer').css({'display':'block'});
-                                        $('#video1').css({'display':'none'});
-                                    } else {
-                                        $('#chartContainer').css({'display':'none'});
-                                        $('#video1').css({'display':'block'});
-                                    }
                                     if (!controller) {
                                         setTimeout (function() {
-                                            configureSD($scope.laserIsOn, bs1IsActivated, bs2IsActivated, parseFloat(piezoVoltageSlider.noUiSlider.get()[0]), filterIsActivated);
+                                            configureSD($scope.laserIsOn, bs1IsActivated, bs2IsActivated, [parseFloat(piezoVoltageSlider.noUiSlider.get()[0]),0, 0], [filterIsActivated, enableCamera1]);
                                         }, 700);
                                         controller = 1;
                                     }
@@ -318,7 +342,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                                 if (Q_Size == 0 && (parseFloat(msg.responseData.Q_Est) > 130 || msg.responseData.Q_Est == "Inf")) {
                                     $('#diagramDiv').css({'opacity':'1'});
                                     $('#diagramDiv').css({'pointer-events':'auto'});
-                                    $('#queueInformation').html('Connected');
+                                    $('#statusLED').css({'background-color':'green'});
+                                    $('#humansDiv').empty();
+                                    $('.clock-wrap').css({'display':'none'});
                                     if (!infCase)
                                         infCase = 1;
                                 }
@@ -327,7 +353,14 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                                     infCase = 0;
                                     $('#diagramDiv').css({'opacity':'1'});
                                     $('#diagramDiv').css({'pointer-events':'auto'});
-                                    $('#queueInformation').html('Connected<br>My turn will end in: ' + (''+(120 - Q_Est)).split('.')[0] + ' seconds.');
+                                    $('#statusLED').css({'background-color':'green'});
+                                    $('#humansDiv').empty();
+                                    $('.clock-wrap').css({'display':'block'});
+                                    var m = Math.floor((120 - Math.floor(Q_Est)) / 60);
+                                    var s = (120 - Math.floor(Q_Est)) % 60;
+                                    var TimeString = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+                                    TimeString = '<span>' + TimeString.split('').join('</span><span>') + '</span>';
+                                    $('.clock__time').html(TimeString);
                                     if (Q_Est > 118) {
                                         setTimeout(function() {
                                             sendActuatorData('power', [0]);
@@ -337,16 +370,25 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                                 if (Q_Size != 0) {
                                     $('#diagramDiv').css({'opacity':'0.8'});
                                     $('#diagramDiv').css({'pointer-events':'none'});
-                                    if (infCase)
-                                        $('#queueInformation').html('Waiting<br>There ' + (Q_Size==1?'is ':'are ') + Q_Size + (Q_Size==1?' person ':' people ') + 'before me.<br>Estimated waiting time: ' + ('' + ((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)).split('.')[0] + ' seconds.<br>The last change you made will be <br>applied when it is your turn again');
-                                    else
-                                        $('#queueInformation').html('Waiting<br>There ' + (Q_Size==1?'is ':'are ') + Q_Size + (Q_Size==1?' person ':' people ') + 'before me.<br>Estimated waiting time: ' + ('' + ((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)).split('.')[0] + ' seconds.');
-                                    $('#chartContainer').css({'display':'none'});
-                                    $('#video1').css({'display':'block'});
-                                    enableCamera1 = 1;
-                                    enableCamera2 = 1;
-                                    $('#camera1Span, #camera2Span').hide();
+                                    $('#statusLED').css({'background-color':'yellow'});
+                                    $('#humansDiv').empty();
+                                    for (i = 0; i < Q_Size; i++) {
+                                        $('#humansDiv').append('<img class="human" src="http://shindig2.epfl.ch/gadget/prod/mach_zehnder_gadget/images/human.png"/>');
+                                    }
+                                    $('.clock-wrap').css({'display':'block'});
+                                    var m = Math.floor(Math.floor(((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)) / 60);
+                                    var s = Math.floor(((120-(Q_Est - 120 * Q_Size)) + (Q_Size - 1) * 120)) % 60;
+                                    var TimeString = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+                                    TimeString = '<span>' + TimeString.split('').join('</span><span>') + '</span>';
+                                    $('.clock__time').html(TimeString);
                                     controller = 0;
+                                    if (infCase) {
+                                        $('#changesDiv').css({'display':'block'});
+                                        setTimeout(function() {
+                                            $('#changesDiv').css({'display':'none'});
+                                        }, 5000);
+                                        infCase = 0;
+                                    }
                                 }
                             }
                         }
@@ -358,11 +400,12 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         };
 
         ws.onclose = function(event) {
+            $('#statusLED').css({'background-color':'red'});
         }
     }
 
     var initializeVideoSocket = function() {
-        Vws = new WebSocket('ws://172.22.11.2:8888/WS_Video');
+        Vws = new WebSocket('ws://' + host + ':' + port + '/WS_Video');
         Vwsopen.Vws = Vws;
         Vws.onopen = Vwsopen;
         Vws.onmessage = Vwsmessage;
@@ -382,12 +425,15 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
 
         function Vwsmessage(event) {
             if (event.data instanceof Blob) {
-                var destinationCanvas = document.getElementById('mycanvas2');
-                destinationCanvas.height="210";
-                destinationCanvas.width="280";
-                var destinationContext = destinationCanvas.getContext('2d');
-                var URL = window.URL || window.webkitURL;
+                if (enableCamera1)
+                    var destinationCanvas = document.getElementById('mycanvas');
                 if (enableCamera2)
+                    var destinationCanvas = document.getElementById('mycanvas2');
+                if (enableCamera2 || enableCamera1) {
+                    destinationCanvas.height = '210';
+                    destinationCanvas.width = '280';
+                    var destinationContext = destinationCanvas.getContext('2d');
+                    var URL = window.URL || window.webkitURL;
                     if (FF) {
                         myimage.src = URL.createObjectURL(event.data);
                         destinationContext.drawImage(myimage, 0, 0);
@@ -396,6 +442,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                         destinationContext.drawImage(myimage, 0, 0);
                         myimage.src = URL.createObjectURL(event.data);
                     }
+                }
             }
         }
 
@@ -403,52 +450,12 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
     };
 
-    var initializeVideoIRSocket = function() {
-        VWSIR = new WebSocket('ws://172.22.11.2:8888/WS_Video');
-        VWSIRopen.VWSIR = VWSIR;
-        VWSIR.onopen = VWSIRopen;
-        VWSIR.onmessage = VWSIRmessage;
-        VWSIR.onclose = VWSIRclose;
-        var SVGDoc=null; 
-        var myimage =new Image();
-
-        function VWSIRopen(event) {
-            var sensorRequest = {
-                method: 'getSensorData',
-                sensorId: 'VideoIR',
-                accessRole: 'controller'
-            }
-            var jsonRequest = JSON.stringify(sensorRequest);
-            VWSIR.send(jsonRequest);
-        }
-
-        function VWSIRmessage(event) {
-            if (event.data instanceof Blob) {
-                var destinationCanvas = document.getElementById('mycanvas');
-                destinationCanvas.height="210";
-                destinationCanvas.width="280";
-                var destinationContext = destinationCanvas.getContext('2d');
-                var URL = window.URL || window.webkitURL;
-                if (enableCamera1)
-                    if (FF) {
-                        myimage.src = URL.createObjectURL(event.data);
-                        destinationContext.drawImage(myimage, 0, 0);
-                    }
-                    else { 
-                        destinationContext.drawImage(myimage, 0, 0);
-                        myimage.src = URL.createObjectURL(event.data);
-                    }
-            }
-        }
-
-        function VWSIRclose(event) {
-        }
-    };
-
     ils.getAppContextParameters(function(data) {
         if (data.error) return console.error(data.error);
         metadata = data;
         currentUser = metadata.actor.displayName;
+        metadata.target.objectType = "dataSet";
+        metadata.target.displayName = "Experiment_" + Date.now();
         //Initialize action logger
         new window.golab.ils.metadata.GoLabMetadataHandler(metadata, function(err,metadataHandler) {
             actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);
@@ -461,8 +468,8 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         sendActuatorData('power', [laser]);
         sendActuatorData('bs1', [bs1]);
         sendActuatorData('bs2', [bs2]);
-        sendActuatorData('piezo', [piezo]);
-        sendActuatorData('filter', [filter]);
+        sendActuatorData('piezo', piezo);
+        sendActuatorData('filter', filter);
     }
 
     var sendActuatorData = function (actuator, actuatorValue) {
@@ -499,15 +506,18 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
     $scope.turnLaserOn = function() {
         $scope.laserIsOn = 1;
         $('#laser').addClass('active');
-        firstPath.attr('opacity',0.3);
-        secondPath.attr('opacity',0.3);
-        horizontalTopPath.attr('opacity',0.3);
-        verticalLeftPath.attr('opacity',0.3);
-        hortizontalBottomPath.attr('opacity',0.3);
-        verticalRightPath.attr('opacity',0.3);
-        triRightPath.attr('opacity',0.3);
-        triBottomPath.attr('opacity',0.3);
-        lastPath.attr('opacity',0.3);
+        firstPath.attr('opacity', 0.6);
+        secondPath.attr('opacity', 0.6);
+        horizontalTopPath.attr('opacity', 0.4);
+        verticalLeftPath.attr('opacity', 0.4);
+        hortizontalBottomPath.attr('opacity', 0.4);
+        verticalRightPath.attr('opacity', 0.4);
+        triRightPath.attr('opacity', 0.2);
+        triBottomPath.attr('opacity', 0.2);
+        trapPathRight.attr('opacity', 0.2);
+        trapPathBottom.attr('opacity', 0.2);
+        lastPath2.attr('opacity', 0.2);
+        lastPath.attr('opacity', 0.2);
         if (quantitative)
             quantPath.style("fill", "green").style("stroke", "green");
         sendActuatorData('power', [1]);
@@ -533,6 +543,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         triRightPath.attr('opacity',0);
         triBottomPath.attr('opacity',0);
         quantPath.style("fill", "white").style("stroke", "white");
+        trapPathRight.attr('opacity', 0);
+        trapPathBottom.attr('opacity', 0);
+        lastPath2.attr('opacity',0);
         lastPath.attr('opacity',0);
         sendActuatorData('power', [0]);
         graphFlag = 0;
@@ -563,7 +576,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 actionLogger.logCancel(logObject);
         } else {
             bs1IsActivated = 1;
-            $("#beamShutter1Image").animate({'margin-top' : '2.5%'});
+            $("#beamShutter1Image").animate({'margin-top' : '-2.5%'});
             $("#beamShutter1Image").glow({ radius: "3", color:"green"});
             setTimeout (function() {
                 resize();
@@ -597,7 +610,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 actionLogger.logCancel(logObject);
         } else {
             bs2IsActivated = 1;
-            $("#beamShutter2Image").animate({'margin-top' : '-2.5%'});
+            $("#beamShutter2Image").animate({'margin-top' : '2.5%'});
             $("#beamShutter2Image").glow({ radius: "3", color:"green"});
             setTimeout (function() {
                 resize();
@@ -640,7 +653,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
 
     function activateFilter() {
         filterIsActivated = 1;
-        $("#filterImage").animate({'margin-top' : '2.2%'});
+        $("#filterImage").animate({'margin-top' : '-2.5%'});
         $("#filterImage").glow({ radius: "2", color:"green"});
         setTimeout (function() {
             secondPath.attr('stroke-dasharray',"10,10");
@@ -649,9 +662,12 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             hortizontalBottomPath.attr('stroke-dasharray',"5,15");
             verticalRightPath.attr('stroke-dasharray',"5,15");
             quantPath.attr('stroke-dasharray',"5,15");
+            trapPathRight.attr('stroke-dasharray',"5,15");
+            trapPathBottom.attr('stroke-dasharray',"5,15");
+            lastPath2.attr('stroke-dasharray',"5,15");
             lastPath.attr('stroke-dasharray',"5,15");
         }, 300);
-        sendActuatorData('filter', [1]);
+        sendActuatorData('filter', [1, enableCamera1]);
     }
 
     function deactivateFilter() {
@@ -665,24 +681,29 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             hortizontalBottomPath.attr('stroke-dasharray',"0,0");
             verticalRightPath.attr('stroke-dasharray',"0,0");
             quantPath.attr('stroke-dasharray',"0,0");
+            trapPathRight.attr('stroke-dasharray',"0,0");
+            trapPathBottom.attr('stroke-dasharray',"0,0");
+            lastPath2.attr('stroke-dasharray',"0,0");
             lastPath.attr('stroke-dasharray',"0,0");
         }, 300);
-        sendActuatorData('filter', [0]);
+        sendActuatorData('filter', [0, enableCamera1]);
     }
 
     var piezoVoltageSlider = document.getElementById('piezoVoltageSlider');
     noUiSlider.create(piezoVoltageSlider, {
         start: 0,
         connect: [true, false],
-        step: 0.1,
+        step: 0.02,
+        orientation: 'vertical',
+        direction: 'rtl',
         tooltips: true,
         range: {
           'min': 0,
-          'max': 3
+          'max': 5
         },
         format: {
           to: function ( value ) {
-            return (value!="0"?parseFloat(Math.round(value * 100) / 100).toFixed(1):0) + 'V';
+            return (value!="0"?parseFloat(Math.round(value * 100) / 100).toFixed(2):0) + 'V';
           },
           from: function ( value ) {
             return value.replace('V', '');
@@ -692,9 +713,11 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
 
     piezoVoltageSlider.noUiSlider.on('update', function(value){
         var slideValue = parseFloat(value[0].replace('V', ''));
-        var translateValue = (w / 796) * (slideValue * 8) / 3;
-        $(".gadget4 #miroirNoir2").velocity({translateY: (-1) * (translateValue / 2) + "px", translateX: + (translateValue / 2) + "px"}, {duration: 1})
-        $(".straight-line-bottom").velocity({translateY: (-1) * (translateValue) + "px"}, {duration: 1});
+        piezoValue = slideValue;
+        var translateValue = (w / 796) * (slideValue * 8) / (5 * 2);
+        $(".gadget4 #miroirNoir2").velocity({translateY: (-1) * (translateValue / 2) + "px", translateX: + (translateValue / 2) + "px"}, {duration: 0})
+        $(".straight-line-bottom").velocity({translateY: (-1) * (translateValue) + "px"}, {duration: 0});
+        $(".straight-line-bottom2").velocity({translateY: (-1) * (translateValue) + "px", translateX: (-1) * (translateValue) + "px"}, {duration: 0});
         var logObject = {
             "objectType": "slider",
             "displayName":"piezoVoltageSlider",
@@ -702,18 +725,27 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
         if(actionLoggerReady) 
             actionLogger.logChange(logObject);
-        sendActuatorData('piezo', [slideValue]);
+        sendActuatorData('piezo', [slideValue, 0, 0]);
     });
 
     $scope.camera1Clicked = function() {
         if (!camera1Active) {
+          setTimeout( function (){
             enableCamera1 = 1;
+          }, 2400);
             camera1Active = 1;
             $('#camera1Span').hide();
-            $("#camera1Image").glow({radius: "3", color: "green"});
+            $("#camera1Image").glow({radius: "7", color: "green"});
+            sendActuatorData('filter', [filterIsActivated, 1]);
+            if (camera2Active) {
+                $scope.camera2Clicked();
+                displayBlackScreen('mycanvas2');
+            }
         } else {
             enableCamera1 = 0;
             camera1Active = 0;
+            if (!FF)
+                displayBlackScreen('mycanvas');
             $('#camera1Span').show();
             $("#camera1Image").glow({disable: true});
         }
@@ -721,16 +753,35 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
 
     $scope.camera2Clicked = function() {
         if (!camera2Active) {
+          setTimeout( function (){
             enableCamera2 = 1;
+          }, 2400);
             camera2Active = 1;
             $('#camera2Span').hide();
-            $("#camera2Image").glow({radius: "3", color: "green"});
+            $("#camera2Image").glow({radius: "7", color: "green"});
+            sendActuatorData('filter', [filterIsActivated, 0]);
+            if (camera1Active) {
+                $scope.camera1Clicked();
+                displayBlackScreen('mycanvas');
+            }
         } else {
             enableCamera2 = 0;
             camera2Active = 0;
+            if (!FF)
+                displayBlackScreen('mycanvas2');
             $('#camera2Span').show();
             $("#camera2Image").glow({disable: true});
         }
+    }
+
+    var displayBlackScreen = function(screenName) {
+        var destinationCanvas = document.getElementById(screenName);
+        destinationCanvas.height = '210';
+        destinationCanvas.width = '280';
+        var destinationContext = destinationCanvas.getContext('2d');
+        var myimage = new Image();
+        myimage.src = '';
+        destinationContext.drawImage(myimage, 0, 0);
     }
 
     $('input[type=radio][name=optradio]').change(function() {
@@ -740,7 +791,12 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 quantPath.style("fill", "green").style("stroke", "green");
             $('#chartContainer').css({'display':'block'});
             $('#video1').css({'display':'none'});
+            $('#camera1Image').css({'display': 'none'});
             $('.gadget4 #photodiode').css({'display':'block'});
+            if (!camera2Active) 
+                $scope.camera2Clicked();
+            if (camera1Active)
+                $scope.camera1Clicked();
             if (firstChange) {
                 $('.gadget4 #arrowImage').show();
                 firstChange = 0;
@@ -773,6 +829,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             quantPath.style("fill", "white").style("stroke", "white");
             $('#chartContainer').css({'display':'none'});
             $('#video1').css({'display':'block'});
+            $('#camera1Image').css({'display': 'block'});
             $('.gadget4 #photodiode').css({'display':'none'});
             var logObject = {
                 "objectType": "radioButton",
@@ -831,8 +888,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 gridDashType: "dash",
                 labelFontColor: "white",
                 gridThickness: 1,
-                minimum: -10,
-                maximum: 10
+                minimum: 0.2,
+                maximum: 0.45,
+                interval: 0.05
             },
             backgroundColor: "#6262FF"
         });
@@ -852,10 +910,15 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                     y: sensorValue
                 });
             }
-            example_content.dataPoints.push({
-                t: Math.round(Number(xVal)*10)/10,
-                V: sensorValue
-            });
+            var newRow = {c: []};
+            newRow.c.push({v:Math.round(Number(xVal)*10)/10, f:Math.round(Number(xVal)*10)/10});
+            newRow.c.push({v: $scope.laserIsOn, f: $scope.laserIsOn});
+            newRow.c.push({v: bs1IsActivated, f: bs1IsActivated });
+            newRow.c.push({v: bs2IsActivated, f: bs2IsActivated});
+            newRow.c.push({v: piezoValue, f: piezoValue});
+            newRow.c.push({v: 0, f: 0});
+            newRow.c.push({v: sensorValue, f: sensorValue});
+            dataSet.dataTable.rows.push(newRow);
             results+= Math.round(Number(xVal)*10)/10 + ' , ' + sensorValue + '\n';
             xVal+=0.1;
             if (dps.length > dataLength)
@@ -867,7 +930,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             if (graphFlag && quantitative)
                 updateChart();
         }, updateInterval);
-        $('#chartContainer').append('<button id="saveButton" class="btn-warning" ng-click="save()">' + $scope.saveText + '</button>');
+        $('#chartContainer').append('<button id="saveButton" class="btn-warning" ng-click="$scope.save()">' + $scope.saveText + '</button>');
     }
     
     $scope.pause = function() {
@@ -890,7 +953,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
     };
 
-    $scope.save = function() {
+    $('#chartContainer').on('click', '#saveButton', function() {
         if (currentUser!= undefined)
             example_content.userName = currentUser;
         var blob = new Blob([results], {type: 'text/plain;charset=utf-8'});
@@ -904,24 +967,16 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         if (actionLoggerReady)
             actionLogger.logSend(logObject);
         if (metadata) {
-            ils.createResource('test', example_content, metadata,function(resource) {
+            ils.createResource('test', dataSet, metadata,function(resource) {
                 if (resource.error) return console.error(resource.error);
+                dataSet.dataTable.rows = [];
             });
         }
-        example_content = { 
-           "dataPoints": [
-              {
-                "t": 0,
-                "V": 0,
-              }
-           ],
-           "experimentTime": moment()
-        };
-    };
+    });
 
     window.onbeforeunload = function() {
         if (controller) 
-            configureSD(0, 0, 0, 0, 0);
+            configureSD(0, 0, 0, [0, enableCamera1], [0, 0, 0]);
     }
 
     $(document).ready(function() {
@@ -931,6 +986,8 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         FF=(navigator.userAgent.search("Firefox") >= 0);
         initializeSocket();
         initializeVideoSocket();
-        initializeVideoIRSocket();
+        $scope.turnLaserOn();
+        $scope.bs1Clicked();
+        $scope.bs2Clicked();
     });
 }]);
