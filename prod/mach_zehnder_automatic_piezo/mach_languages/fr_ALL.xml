@@ -1,0 +1,9 @@
+<messageblundle>
+    <msg name="qualitative">Visualisation écran</msg>
+    <msg name="quantitative">Visualisation écran et mesures photodiodes</msg>
+    <msg name="photo_diode_voltage">Le Voltage de la Photodiode</msg>
+    <msg name="save_experiment_data">Enregistrer</msg>
+    <msg name="time">temps</msg>
+    <msg name="voltage">tension</msg>
+    <msg name="graph_title">Le Voltage de la Photodiode au Cours des 10 Dernières Secondes</msg>
+</messageblundle>

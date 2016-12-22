@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs title="Mach-Zehnder Interferometer" author_email="hagop.jamkojian@epfl.ch" author="Hagop Jamkojian" description="Mach-Zehnder Interferometer" height="600" width="800">
+<Require feature="opensocial-0.9"/>
+<Require feature="osapi"/>
+<Require feature="dynamic-height"/>
+<Locale messages="./mach_languages/ALL_ALL.xml"/>
+<Locale lang="es" messages="./mach_languages/es_ALL.xml"/>
+<Locale lang="fr" messages="./mach_languages/fr_ALL.xml"/>
+<Locale lang="de" messages="./mach_languages/de_ALL.xml"/>
+</ModulePrefs>
+<Content type="html">
+<![CDATA[
+<html lang="en">
+<head>
+    <!--GUI2-->
+    <meta charset="UTF-8">
+    <title>Mach-Zehnder Interferometer Lab</title>
+    <link rel="stylesheet" type="text/css" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/prod/mach_zehnder_automatic_piezo/css/style.css"/>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/9.0.0/nouislider.min.js"></script>
+    <script type="text/javascript" src="./javascript/lib/canvasjs.min.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/julianshapiro/velocity/master/velocity.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/headjs/1.0.3/head.min.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/MisterDr/JQuery-Glow/master/jquery.glow.js"></script>
+    <script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/metadata/MetadataHandler.js"></script>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/go-lab/ils/master/applog/ActionLogger.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.js"></script>
+    <script type="text/javascript" src="./javascript/app/app.js"></script>
+    <script type="text/javascript" src="./javascript/app/WebSocketController.js"></script>
+</head>
+<body ng-app="WebsocketClient" >
+    <div id="laserDiv" ng-controller="WebSocketController" ng-init="graph_title= '__MSG_graph_title__';time= '__MSG_time__';voltage= '__MSG_voltage__'; saveText = '__MSG_save_experiment_data__';">
+        <p>
+            <div id="optionsDiv">
+                <label class="radio-inline"><input type="radio" name="optradio" value="qualitative" checked="true" id="qualitativeButton"><h4>__MSG_qualitative__</h4></label>
+                <label class="radio-inline"><input type="radio" name="optradio" value="quantitative" id="quantitativeButton"><h4>__MSG_quantitative__</h4></label>
+            </div>
+        </p>
+        <div id="diagramDiv">
+            <div id="vis" class="gadget4">
+                <img id="miroir" src="./images/miroir2.png" class="miroir"/>
+                <img id="miroir2" src="./images/miroir3.png" class="miroir"/>
+                <img id="miroirNoir" src="./images/miroirNoir.png" class="miroir"/>
+                <img id="miroirNoir2" src="./images/miroirPiezo.png" class="miroir"/>
+                <img id="filterImage" src="./images/filter.png" ng-click="filterClicked()"/>
+                <img id="camera1Image" src="./images/cam1.png" ng-click="camera1Clicked()"/>
+                <img id="camera2Image" src="./images/cam2.png" ng-click="camera2Clicked()"/>
+                <img id="beamShutter1Image" src="./images/beamShutter1.png" ng-click="bs1Clicked()"/>
+                <img id="beamShutter2Image" src="./images/beamShutter2.png" ng-click="bs2Clicked()"/>
+                <img id="lensImage" src="./images/lens.png"/>
+                <img id="arrowImage" src="./images/arrow.png"/>
+                <div id="screen" class="screen unselectable"></div>
+                <div id="trap" class="trap unselectable"></div>
+                <div id="photodiode" class="photodiode unselectable"></div>
+                <div id="laser" class="laser unselectable" ng-click="laserClick()"></div>
+                <div id="piezoVoltageDiv">
+                    <div id="piezoVoltageSlider"></div>
+                </div>
+                <div id="piezoFrequencyDiv">
+                    <div id="piezoFrequencySlider"></div>
+                </div>
+                <div id="changesDiv">
+                    The last change that you made will be<br>applied when it is your turn again
+                </div>
+                <div id="queueInformation">
+                    <div id="statusLED"></div>
+                    <div id="humansDiv"></div>
+                    <br>
+                    <div class="clock-wrap">
+                        <div class="clock">
+                            <div class="clock__time"></div>
+                        </div>
+                    </div>                   
+                </div>
+            </div>
+        </div>
+        <div id="resultsDiv">
+            <div id="videosDiv">
+                <div id="chartContainer" style="width:50%; float:left;"></div>
+                <div id="video1">
+                    <span id="camera1Span">Camera 1</span>
+                    <canvas id="mycanvas" style="border: 2px solid #c3c3c3"> 13 </canvas>
+                </div>
+                <div id="video2">
+                    <span id="camera2Span">Camera 2</span>
+                    <canvas id="mycanvas2" style="border: 2px solid #c3c3c3"> 13 </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+]]>
+</Content>
+</Module>
