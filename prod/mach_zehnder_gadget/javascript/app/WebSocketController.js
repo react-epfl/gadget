@@ -4,6 +4,8 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
     $scope.showQuantumDivFlag = 0;
     $scope.showMetadataButtonsFlag = 0;
     $scope.laserIsOn = 0;
+    var dataSet = {dataSourceColumns:[{unit:"s"},{unit:""},{unit:""},{unit:""},{unit:""},{unit:""},{unit:""}], dataTable:{"cols":[{"id":"time","label":"time","pattern":"","type":"number"},{"id":"laserPower","label":"laserPower","pattern":"","type":"number"},{"id":"beamShutter1","label":"beamShutter1","pattern":"","type":"number"},{"id":"beamShutter2","label":"beamShutter2","pattern":"","type":"number"},{"id":"piezoVoltage","label":"piezoVoltage","pattern":"","type":"number"},{"id":"piezoAutomatic","label":"piezoAutomatic","pattern":"","type":"number"},{"id":"photodiodeVoltage","label":"photodiodeVoltage","pattern":"","type":"number"}]}};
+    dataSet.dataTable.rows = [];
     var sensorValue = 0,
         graphFlag = 0,
         bs1IsActivated = 0,
@@ -20,7 +22,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         FF,
         host = '172.22.11.2', //145.232.235.206
         //host = '10.224.37.245',
-        //host = '145.232.235.206',
+        host = '145.232.235.206',
         port = '8888',
         results = '',
         w,
@@ -293,6 +295,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
     var initializeSocket = function() {
         ws = new WebSocket('ws://' + host + ':' + port);
         ws.onopen = function() { 
+
             connected = 1;
             var sensorRequest = {
                 method: 'getSensorData',
@@ -310,6 +313,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             jsonRequest = JSON.stringify(sensorRequest);
             if (connected) 
                 ws.send(jsonRequest);
+            
         };
 
         ws.onmessage = function(event) {
@@ -504,6 +508,10 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                         myimage.src = URL.createObjectURL(event.data);
                     }
             }
+            else {
+              initializeVideoIRSocket();
+              console.log("video restarted");
+            }
         }
 
         function VWSIRclose(event) {
@@ -514,6 +522,8 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         if (data.error) return console.error(data.error);
         metadata = data;
         currentUser = metadata.actor.displayName;
+        metadata.target.objectType = "dataSet";
+        metadata.target.displayName = "Experiment_" + Date.now();
         //Initialize action logger
         new window.golab.ils.metadata.GoLabMetadataHandler(metadata, function(err,metadataHandler) {
             actionLogger = new window.ut.commons.actionlogging.ActionLogger(metadataHandler);
@@ -767,8 +777,10 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
     });
 
+    var piezoValue = 0;
     piezoVoltageSlider.noUiSlider.on('update', function(value){
         var slideValue = parseFloat(value[0].replace('V', ''));
+        piezoValue = slideValue;
         var translateValue = (w / 796) * (slideValue * 8) / 3;
         $(".gadget4 #miroirNoir2").velocity({translateY: (-1) * (translateValue / 2) + "px", translateX: + (translateValue / 2) + "px"}, {duration: 0})
         $(".straight-line-bottom").velocity({translateY: (-1) * (translateValue) + "px"}, {duration: 0});
@@ -887,7 +899,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
         $scope.$apply();
     });
-
+    
     var dps = []; // dataPoints
     var chart;
     for (i = 0; i < 10; i += 0.1) {
@@ -936,7 +948,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 labelFontColor: "white",
                 gridThickness: 1,
                 minimum: 0.2,
-                maximum: 0.4,
+                maximum: 0.45,
                 interval: 0.05
             },
             backgroundColor: "#6262FF"
@@ -957,10 +969,17 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                     y: sensorValue
                 });
             }
-            example_content.dataPoints.push({
-                t: Math.round(Number(xVal)*10)/10,
-                V: sensorValue
-            });
+            //data viewer
+            var newRow = {c: []};
+            newRow.c.push({v:Math.round(Number(xVal)*10)/10, f:Math.round(Number(xVal)*10)/10});
+            newRow.c.push({v: $scope.laserIsOn, f: $scope.laserIsOn});
+            newRow.c.push({v: bs1IsActivated, f: bs1IsActivated });
+            newRow.c.push({v: bs2IsActivated, f: bs2IsActivated});
+            newRow.c.push({v: piezoValue, f: piezoValue});
+            newRow.c.push({v: 0, f: 0});
+            newRow.c.push({v: sensorValue, f: sensorValue});
+            dataSet.dataTable.rows.push(newRow);
+
             results+= Math.round(Number(xVal)*10)/10 + ' , ' + sensorValue + '\n';
             xVal+=0.1;
             if (dps.length > dataLength)
@@ -972,7 +991,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             if (graphFlag && quantitative)
                 updateChart();
         }, updateInterval);
-        $('#chartContainer').append('<button id="saveButton" class="btn-warning" ng-click="save()">' + $scope.saveText + '</button>');
+        $('#chartContainer').append('<button id="saveButton" class="btn-warning" ng-click="$scope.save()">' + $scope.saveText + '</button>');
     }
     
     $scope.pause = function() {
@@ -995,7 +1014,9 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         }
     };
 
-    $scope.save = function() {
+    
+
+    $('#chartContainer').on('click', '#saveButton', function() {
         if (currentUser!= undefined)
             example_content.userName = currentUser;
         var blob = new Blob([results], {type: 'text/plain;charset=utf-8'});
@@ -1009,20 +1030,12 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         if (actionLoggerReady)
             actionLogger.logSend(logObject);
         if (metadata) {
-            ils.createResource('test', example_content, metadata,function(resource) {
+            ils.createResource('test', dataSet, metadata,function(resource) {
                 if (resource.error) return console.error(resource.error);
+                dataSet.dataTable.rows = [];
             });
         }
-        example_content = { 
-           "dataPoints": [
-              {
-                "t": 0,
-                "V": 0,
-              }
-           ],
-           "experimentTime": moment()
-        };
-    };
+    });
 
     window.onbeforeunload = function() {
         if (controller) 

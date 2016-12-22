@@ -253,12 +253,12 @@ h4 {
 }
 .gadget4 #filterImage {
   position: absolute;
-  pointer-events: none;
   height: 54px;
   width: 18px;
   top: 21.5%;
   left: 17%;
   cursor: pointer;
+  pointer-events: none;
 }
 .gadget4 #beamShutter1Image {
   position: absolute;
