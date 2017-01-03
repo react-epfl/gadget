@@ -61,6 +61,7 @@
         }
 
         gadgets.util.registerOnLoadHandler(init);
+        gadgets.window.adjustHeight();
     </script>
  ]]>
 </Content>
