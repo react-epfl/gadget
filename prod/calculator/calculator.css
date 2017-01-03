@@ -1,0 +1,40 @@
+html,
+body {
+  height: 359px;
+  background-color: transparent;
+}
+#calculator {
+  display: block;
+  width: 240px;
+  margin: 0 auto;
+}
+.jc,
+.jc--display,
+.jc--button:hover {
+  border-radius: 0;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.jc {
+  background-color: #fff;
+  border: 1px solid #5050d2;
+}
+.jc--display {
+  margin: 3px 3px 7px;
+  padding: 0 10px 15px;
+  background-color: #5050d2;
+  border: none;
+  color: #fff;
+}
+.jc--button {
+  background: #5050d2;
+  border: none;
+  color: #fff;
+}
+.jc--button:active {
+  background: #5050d2;
+  box-shadow: inset 0 0 5px #333;
+  -moz-box-shadow: inset 0 0 5px #333;
+  -webkit-box-shadow: inset 0 0 5px #333;
+}

@@ -1,0 +1,27 @@
+<!-- Based on https://github.com/thinkthroughmath/javascript-calculator -->
+<Module>
+  <ModulePrefs
+    title="Calculator"
+    author="Alex Wild"
+    author_email="alex.wild@epfl.ch"
+    height="359"
+    width="240">
+  </ModulePrefs>
+  <Content type="html">
+    <![CDATA[
+      <head>
+        <link href="javascript-calculator-theme-classic.min.css" rel="stylesheet" type="text/css" />
+        <link href="calculator.css" rel="stylesheet" type="text/css" />
+      </head>
+      <body>
+        <div id="calculator"></div>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>
+        <script src="ttm-coffeescript-utilities.min.js" type="text/javascript"></script>
+        <script src="ttm-coffeescript-math.min.js" type="text/javascript"></script>
+        <script src="javascript-calculator.min.js" type="text/javascript"></script>
+        <script src="calculator.js" type="text/javascript"></script>
+      </body>
+    ]]>
+  </Content>
+</Module>
