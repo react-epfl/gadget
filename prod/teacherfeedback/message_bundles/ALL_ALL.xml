@@ -1,0 +1,5 @@
+<messagebundle>
+  <msg name="type_here">Please type your feedback here</msg>
+  <msg name="waiting_feedback">Waiting for teacher's feedback</msg>
+  <msg name="teacher_prompt">In order to provide your feedback, please, open the link of the standalone user (available in the members section), go to the phase where the app has been located and enter your comments.</msg>
+</messagebundle>
