@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module>
+    <ModulePrefs
+            title="teacherFeedback"
+            description="Just a simple teacher feedback app"
+            author="Alexandros Trichos"
+            author_email="alexandros.trichos@gmail.com"
+            directory_title="TeacherFeed"
+            screenshot="http://ask4research.info/golab/notepad/inputbox/img/notepad_ss.png"
+            thumbnail="http://ask4research.info/golab/notepad/inputbox/img/notepad_tn.png"
+            >
+        <Require feature="dynamic-height"/>
+        <Require feature="setprefs" />
+        <Require feature="osapi" />
+
+        <Locale messages="message_bundles/ALL_ALL.xml"/>
+    </ModulePrefs>
+
+
+    <Content type="html"><![CDATA[
+
+<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/head.js/head.min.js"></script>
+
+<script type="text/javascript">
+
+var urlPrefix = "";
+      if (typeof gadgets === "undefined") {
+          console.log("TeacherFeed App: Registering window-loadhandler.");
+          } else {
+          console.log("TeacherFeed App: Registering gadgets-loadhandler.");
+          var url = gadgets.util.getUrlParameters().url;
+          urlPrefix = url.substring(0, url.lastIndexOf("/")+1);
+          }
+
+head.js ([
+ "http://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js",
+ "http://shindig2.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js",
+ "http://shindig2.epfl.ch/gadget/libs/jquery.cookie.js",
+ "http://shindig2.epfl.ch/gadget/libs/underscore-min.js",
+ "http://shindig2.epfl.ch/ils/main/ils_graaspeu.js",
+ "http://shindig2.epfl.ch/ils/metadata/MetadataHandler.js",
+ "http://shindig2.epfl.ch/ils/storage/StorageHandler.js",
+ "http://shindig2.epfl.ch/ils/applog/ActionLogger.js",
+ urlPrefix+"teacherFeed.js",
+ urlPrefix+"teacherFeed.css",
+ urlPrefix+"jquery.dataTables.min.css",
+ urlPrefix+"jquery.dataTables_themeroller.css",
+ urlPrefix+"jquery.dataTables.min.js"
+],
+function(){
+    setTimeout(initialize,500);
+
+});
+</script>
+<div id="main_content" style="display:none">
+    <textarea id="scratchpad_text"  style="display:none" disabled="true" class='autoExpand' maxlength=""  placeholder=""></textarea>
+    <div id="scratchpad_input_teacher" class="teacher" style="display:none"><p>__MSG_teacher_prompt__</p>
+ </div>
+</div>
+
+]]></Content>
+</Module>

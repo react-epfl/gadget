@@ -1,0 +1,255 @@
+
+body,html{
+    overflow: hidden;
+    font-family: 'SuisseIntl', 'Helvetica', 'Arial', Sans-Serif!important;
+    background-color: rgba(235, 235, 235, 0);
+    min-height:5em;
+}
+
+#button_select>button{
+    color: #5050d2;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 20px;
+    margin-right: 5px;
+    padding: 10px;
+    outline: 0px;
+}
+#button_select>button.active{
+    background-color: #5050d2;
+    color: white;
+}
+#button_select>button:hover{
+    background-color: #5050d2;
+    color: white;
+}
+
+
+#scratchpad_text {
+    width: 100%;
+    min-height: 3em;
+    margin: 0px;
+    padding: 5px;
+    border: none;
+    resize: none;
+    font-size: 20px;
+    background-color: #DAE8FF;
+    color: #060606;
+    font-family: Verdana;
+    overflow: hidden;
+}
+#scratchpad_text::-webkit-input-placeholder {
+    color: rgba(6, 6, 6, 0.53);
+}
+
+#scratchpad_text:-moz-placeholder { /* Firefox 18- */
+    color: rgba(6, 6, 6, 0.53);
+}
+
+#scratchpad_text::-moz-placeholder {  /* Firefox 19+ */
+    color: rgba(6, 6, 6, 0.53);
+}
+
+#scratchpad_text:-ms-input-placeholder {
+    color: rgba(6, 6, 6, 0.53);
+}
+#scratchpad_text::-webkit-input-placeholder {
+    color: rgba(221, 75, 57, 0.53);
+}
+
+#scratchpad_text:disabled:-moz-placeholder { /* Firefox 18- */
+    color: rgba(221, 75, 57, 0.53);
+}
+
+#scratchpad_text:disabled::-moz-placeholder {  /* Firefox 19+ */
+    color: rgba(221, 75, 57, 0.53);
+}
+
+#scratchpad_text:disabled:-ms-input-placeholder {
+    color: rgba(221, 75, 57, 0.53);
+}
+#scratchpad_text:focus {
+    outline: none !important;
+    border:none;
+}
+
+#scratchpad_text:disabled {
+    background-color: #fff4e8;
+}
+
+#connection_alert{
+    background-color: #76D6FF;
+    border: 2px solid #75D5FD;
+    border-radius: 14px;
+    bottom: 0;
+    box-shadow: 6px 8px 10px #4FAFD7;
+    color: #136AB0;
+    font-family: "Trebuchet MS", Verdana, Geneva, Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    left: 0;
+    margin: auto;
+    max-height: 240px;
+    min-width: 280px;
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    top: 0;
+    vertical-align: middle;
+    width: 50%;
+    z-index: 100;
+    display: none;
+}
+
+#connection_alert > span{
+    background-color: #E9FCFF;
+    border: 1px solid #70D0F8;
+    border-radius: 8px;
+    box-shadow: 6px 8px 8px #4CACD4;
+    display: block;
+    margin: 11px 10px;
+    padding: 14px 20px;
+
+}
+#connection_alert > span > h1{
+
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+}
+
+#connection_alert > span > p{
+    margin: 30px 0 5px;
+}
+
+#connection_alert > p{
+    font-size: 13px;
+    font-style: italic;
+    line-height: 35px;
+    opacity: 0.7;
+    padding: 0 30px;
+}
+
+
+#status_indicator{
+    background-size: cover;
+    border-radius: 12px;
+    bottom: 8%;
+    height: 40px;
+    opacity: 0.7;
+    position: fixed;
+    right: 3%;
+    width: 40px;
+    display: none;
+}
+
+#status_indicator > img{
+    width:100%;
+    height:100%;
+}
+
+#status_indicator > #network{
+}
+
+#status_indicator > #user{
+}
+
+#status_indicator .hidden{
+    display: none;
+}
+
+.no_errors{
+    background-color: #39A033;
+}
+
+.errors{
+    background-color: #FF2F40;
+}
+
+/* Input Results START */
+
+#scratchpad_input_teacher{
+display: table;
+    width: 100%;
+}
+#inputTable_wrapper{
+    margin-top: 10px;
+}
+.inputResults{
+    color: #000000;
+    display: table-cell;
+    font-size: 18px;
+    padding: 10px 7px;
+}
+
+.inputEntry{
+    display: table-row;
+    width:100%;
+}
+
+
+.studentName{
+    max-width: 150px;
+    padding-right: 20px;
+}
+
+.studentName::before{
+}
+.date{
+    width:90px;
+    text-align: center;
+}
+.inputText{
+    min-width:400px;
+}
+
+.white{
+    background-color: #ffffff;
+}
+
+.blue{
+    background-color: #6a6aec;
+}
+
+.gray{
+    background-color: #eeeeee;
+}
+
+.red{
+    background-color: #ee595c;
+}
+.green{
+    background-color: #6bee63;
+
+}
+.magenta{
+    background-color: #ee96da;
+
+}
+.orange{
+    background-color: #eebc64;
+}
+
+.inputText.gray{
+    /*background-color: #d4d4d4;*/
+}
+.inputText.blue{
+    background-color: #7575f7;
+}
+.inputText.red{
+    background-color: rgba(238, 89, 92, 0.5);
+}
+.inputText.green{
+    background-color: rgba(107, 238, 99, 0.5);
+
+}
+.inputText.magenta{
+    background-color: rgba(238, 150, 218, 0.5);
+
+}
+.inputText.orange{
+    background-color: rgba(238, 188, 100, 0.5);
+}
+/* Input Results END */
