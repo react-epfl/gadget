@@ -1,350 +1,97 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Module>
-  <ModulePrefs title="Wiki gadget" 
-                author_email="jad.naoum@epfl.ch" 
-                author="Jad Naoum" 
-                description="The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
-                min-width="350"
-                height="500"
-                thumbnail="http://shindig2.epfl.ch/gadget/prod/wiki/thumbnail.png"
-                screenshot="http://shindig2.epfl.ch/gadget/prod/wiki/screenshot.png">
-    <Locale messages="./wiki_languages/ALL_ALL.xml"/>
-    <Locale lang="es" messages="./wiki_languages/es_ALL.xml"/>
-    <Locale lang="nl" messages="./wiki_languages/nl_ALL.xml"/>
-    <Locale lang="fr" messages="./wiki_languages/fr_ALL.xml"/>
+  <ModulePrefs
+      title="Shared Wiki"
+      author_email="alex.wild@epfl.ch"
+      author="Alex Wild, Jad Naoum"
+      description="The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
+      min-width="350"
+      height="500"
+      thumbnail="http://shindig2.epfl.ch/gadget/prod/wiki/thumbnail.png"
+      screenshot="http://shindig2.epfl.ch/gadget/prod/wiki/screenshot.png">
+    <Locale messages="./ALL_ALL.xml"/>
     <Require feature="osapi" />
-    <Require feature="dynamic-height" />
   </ModulePrefs>
-  <Content type="html" view="default,canvas,home,profile"><![CDATA[
+  <Content type="html" view="default,canvas,home,profile">
+    <![CDATA[
+      <head>
+        <link rel="stylesheet" type="text/css" href="wiki.css">
+        <script type="text/javascript">
+          // hack to stop Shindig from removing CSS3 rules
+          var stylesheetElem = document.createElement('style');
+          stylesheetElem.setAttribute('type', 'text/css');
+          stylesheetElem.innerHTML = '.tab.active ~ .loading.active {display: none;}';
+          document.head.appendChild(stylesheetElem);
+        </script>
+      </head>
+      <body>
+        <ul class="nav">
+          <li id="preview-nav" class="nav-link">__MSG_preview_label__</li>
+          <li id="editor-nav" class="nav-link">__MSG_edit_label__</li>
+          <li id="history-nav" class="nav-link">__MSG_history_label__</li>
+        </ul>
 
-    
+        <div class="content">
+          <div id="preview" class="tab preview"></div>
 
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
-<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+          <div id="editor" class="tab editor">
+            <textarea id="text-area"></textarea>
+            <div class="buttons">
+              <button id="save-button" class="button">__MSG_save_label__</button>
+            </div>
+          </div>
 
-<style type="text/css">
-  
-  input{
-    cursor:pointer;
-  }
-  
-  #table{
-    border-spacing: 20px;
-    width: 100%;
-    vertical-align: top;
-    margin-top: 0;
-    table-layout: fixed;
-  }
-  
-  #name{
-    width: 23%;
-    text-align: left;
-  }
-  
-  #entry{
-    width: 54%;
-    text-align: left;
-  }
-  
-  #date{
-    width: 23%;
-    text-align: left;
-  }
+          <div id="history" class="tab history">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>__MSG_username__</th>
+                  <th>__MSG_content__</th>
+                  <th>__MSG_date__</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div class="buttons">
+              <button id="load-more-button" class="button">__MSG_load_more_label__</button>
+              <button id="clear-button" class="button clear-button">__MSG_clear_history_label__</button>
+            </div>
+          </div>
 
-  #edit{
-    margin-right: 17px;
-  }
-  
-  li.button{
-    display: inline;
-    position: relative;
-    right: 35;
-    background: none repeat scroll 0 0 #FEFEFE;
-    border: 1px solid #AAAAAA;
-    border-radius: 5px 5px 5px 5px;
-    color: #777777;
-    cursor: pointer;
-    font-size: 12px;
-    margin-right: 10px;
-    padding: 3px;
-    text-align: center;
-    width: 60px;
-    float: left;
-    font-weight: bold;
-  }
-  
-  div{
-    clear: left;
-  }
-  
-  img{
-    cursor: pointer;
-  }
-  
-  .button:hover{
-    background-color: #C8C8C8;
-    color: black;
-  }
-  
-  .active{
-    background-color: #C8C8C8;
-    color: black;
-  }
-  
-  not_active{
-    background-color: #FEFEFE;
-    color: #777777;
-  }
-  
-  #everything{
-    margin-left: 20px;
-    margin-top: 20px;
-  }
-  
-</style>
-<div id = "everything">
-<ul>
-  <li id = "view_tab" class = "button active" onclick = "view()">__MSG_view_label__</li>
-  <li id = "edit_tab" class = "button" onclick = "edit()">__MSG_edit_label__</li>
-  <li id = "history_tab" class = "button" onclick = "history()">__MSG_history_label__</li>
-</ul>
-<br />
+          <div id="loading" class="tab loading active">
+            <div class="loading-message">__MSG_loading__</div>
+          </div>
+        </div>
 
-<div id = "view"></div>
+        <div id="error" class="error-notification">
+          <div id="error-close" class="error-close">&#x2715;</div>
+          <div id="error-message" class="error-message"></div>
+        </div>
 
-<div id = "edit">
-  <br />
-  <textarea id = "text_area"></textarea>
-  <br />
-  <input type="button" value ="__MSG_save_label__" id = "save_button" onclick = "saving()">
-</div>
-
-<div id = "history">
-  <br />
-  <table id = "table" rules = "rows" frame = "hsides">
-  <div id = "arrow"></div>
-  <input type="button" value ="__MSG_clear_history_label__" id = "clear_button" onclick = "clearHistory()">
-</div>
-</div>
-
-<script type="text/javascript">
-  //initializing variables
-  var counter = 0;
-  var current_tab = "view_tab";
-  var current = "view";
-  $("#edit").hide();
-  $("#history").hide();
-  changeCurrent(current, current);
-  
-  var app = {context: "", viewerName: "", data: "", root_url: "http://shindig2.epfl.ch/gadget/prod/wiki/"};
-  //var app = {context: "", viewerName: "", data: "", root_url: "http://128.178.5.135/~sten/gadgets/wiki/"};
-  
-  var saved_text = "";
-  
-  function view(){
-    changeCurrentTab(current_tab, "view_tab");
-    changeCurrent(current, "view");
-  }
-  
-  function edit(){
-    changeCurrentTab(current_tab, "edit_tab");
-    changeCurrent(current, "edit");    
-    
-    //Check runtinymce() to see what happens after it initializes. (continueEdit is called)
-    runTinyMCE();
-    
-    if(tinymce.activeEditor != null)
-      tinymce.activeEditor.setContent($("#view").html());
-  }
-  
-  function continueEdit(){
-    tinymce.execCommand('mceFocus',false,'text_area');
-    tinymce.activeEditor.setContent($("#view").html());
-  }
-  
-  function saving(){
-    saved_text = tinymce.activeEditor.getContent({format : 'raw'});
-    tinymce.activeEditor.setContent("");
-    changeCurrentTab(current_tab, "view_tab");
-    changeCurrent(current, "view");
-    
-    //showing the entered text 
-    $("#view").replaceWith("<div id = 'view'>" + saved_text + "</div>");
-    
-    //retrieve the array of entries 
-    var dataObj = {viewer_name: app.viewerName, data: saved_text, 
-      date:  get_date()}    
-    osapi.appdata.get({userId: app.context}).execute(function(data){
-      var history = (data && data[app.context]) ? JSON.parse(data[app.context]["history"]) : [];
-      history.push(dataObj);
-      
-      // save data to the array of entries
-      osapi.appdata.update({userId: app.context, 
-      data: {"history": JSON.stringify(history)}}).execute(function() {
-    });
-      });
-  }
-  
-  function history(){
-    changeCurrentTab(current_tab, "history_tab");
-    changeCurrent(current, "history");
-    
-    //Erasing the old history
-    $("#table").replaceWith("<table id = 'table' rules = 'rows' frame = 'hsides'><tr><th id ='name'>__MSG_viewer_name__</th><th id='entry'>Entry</th><th id = 'date'>__MSG_date__</th></tr></table>");
-    
-    // get appdata
-    osapi.appdata.get({userId: app.context}).execute(function(data){
-      data = data[app.context];
-      if (data) {
-        data = JSON.parse(data["history"]);
-        for(i=data.length-1; i>=data.length-5; i--){
-          if(i>-1)
-            $("#table").append(printHistoryItem(data[i]));
-        }
-        counter = data.length - 6;  
-      };
-
-      $("#arrow").replaceWith("<div id = 'arrow'><p id = 'more_history'><img src = '"+app.root_url+"arrow.png' onclick = 'more()' style = 'position:absolute; left: 50%'></p></div>");
-      $("#table").insertBefore("#arrow");
-    });
-  }
-  
-  function clearHistory(){
-    if(!confirm("__MSG_clear_history_verification__")){return ""};
-    saved_text = $("#view").html();
-    osapi.appdata['delete']({
-      userId: app.context,
-      keys: ['history']
-    }).execute(function(response){
-        //showing the entered text 
-        $("#view").replaceWith("<div id = 'view'>" + saved_text + "</div>");
-
-        //retrieve the array of entries 
-        var dataObj = {viewer_name: app.viewerName, data: saved_text, 
-          date:  get_date()}    
-        osapi.appdata.get({userId: app.context}).execute(function(data){
-          var history = (data && data[app.context]) ? JSON.parse(data[app.context]["history"]) : [];
-          history.push(dataObj);
-          // save data to the array of entries
-          osapi.appdata.update({userId: app.context, 
-          data: {"history": JSON.stringify(history)}}).execute(function() {
-        });
-          });
-          $("#view").hide();
-          history();
-    });
-  }
-  
-  function more(){
-    osapi.appdata.get({userId: app.context}).execute(function(data){
-      data = data[app.context];
-      if (data) {
-        data = JSON.parse(data["history"]);  
-      };
-      for(i=counter; i>=counter-4; i--){
-        if(i>-1)
-          $("#table").append(printHistoryItem(data[i]));
-      }
-      $("#arrow").replaceWith("<div id = 'arrow'><p id = 'more_history'><img src = '"+app.root_url+"arrow.png' onclick = 'more()' style = 'position:absolute; left: 50%'></p></div>");
-      $("#table").insertBefore("#arrow");
-      counter = counter - 5;
-    });
-  }
-  
-  function printHistoryItem(history_item){
-    return "<tr><td>" + history_item.viewer_name + "</td><td>" + 
-    history_item.data + "</td><td>" + history_item.date + "</td></tr>";
-  }
-  
-  function changeCurrentTab(older, newer){
-  	$("#" + older).attr("class", "button not_active");
-    $("#" + newer).attr("class", "button active");
-    current_tab = newer;
-  }
-  
-  function changeCurrent(older, newer){
-    $("#" + older).hide();
-    $("#" + newer).show();
-    current = newer;
-  }
-  
-  function get_date(){
-    var currentTime = new Date();
-    
-    var hours = currentTime.getHours();
-    var minutes = currentTime.getMinutes();
-    return(currentTime.toDateString().substring(4,15) + " -" + hours + ":" + minutes + "-");
-  }
-  
-</script>
-
-
-
-
-<script type="text/javascript" >
-  function loadScript(scriptURL) {
-      var scriptElem = document.createElement('SCRIPT');
-      scriptElem.setAttribute('type', 'text/javascript');
-      scriptElem.setAttribute('src', scriptURL);
-      document.body.appendChild(scriptElem);
-  };
-  loadScript(app.root_url+"tinymce/tinymce.min.js");
-  
-  function runTinyMCE(){
-      var prefs = new gadgets.Prefs();
-      var lang = prefs.getLang();
-      var selected_language = "en_GB";
-      if(lang){
-        selected_language = lang;
-      }
-    tinymce.init({
-            mode : "textareas",
-            theme : "modern",
-            plugins: "table",
-            tools: "inserttable",
-            oninit: continueEdit,
-            language : selected_language
-    });
-  }
-  
-  var initialize = function() {
-    // batch: get viewer and context for gadget
-    var batch = osapi.newBatch();
-    batch.add('viewer', osapi.people.getViewer());
-    if (osapi.context) { // only for spaces extended container
-      batch.add('context', osapi.context.get());
-    } else {
-      batch.add('context', osapi.people.getOwner());    
-    }
-    batch.execute(function(data){
-      app.viewer = data.viewer;
-      app.viewerName = app.viewer.displayName;
-
-      var contextId = "@owner"
-      var contextType = "@user"
-      if (osapi.context) { // only for spaces extended container
-        contextId = data.context.contextId
-        contextType = data.context.contextType      
-      }
-      var prefix = (contextType === "@space") ? "s_" : "";
-      app.context = prefix + contextId;
-
-      // getting the last entered text and displaying it
-      osapi.appdata.get({userId: app.context}).execute(function(data){
-              data = data[app.context];
-              if (data) {
-                data = JSON.parse(data["history"]);
-                $("#view").replaceWith("<div id = 'view'>" + data[data.length-1].data + "</div>");
-                saved_text = data[data.length-1].data;
-              };
-            });
-    });
-  };
-  
-
-  setTimeout(initialize,500);
-</script >
-    
-
-  ]]></Content>
+        <script type="text/javascript" src="//shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+        <script type="text/javascript">
+          var wikiTranslations = {
+            loading: '__MSG_loading__',
+            preview_label: '__MSG_preview_label__',
+            edit_label: '__MSG_edit_label__',
+            history_label: '__MSG_history_label__',
+            save_label: '__MSG_save_label__',
+            username: '__MSG_username__',
+            content: '__MSG_content__',
+            date: '__MSG_date__',
+            load_more_label: '__MSG_load_more_label__',
+            clear_history_label: '__MSG_clear_history_label__',
+            clear_history_verification: '__MSG_clear_history_verification__',
+            discard_changes_verification: '__MSG_discard_changes_verification__',
+            error_loading_app: '__MSG_error_loading_app__',
+            error_loading_content: '__MSG_error_loading_content__',
+            error_updating_content: '__MSG_error_updating_content__',
+            error_saving: '__MSG_error_saving__',
+            error_clearing_history: '__MSG_error_clearing_history__'
+          };
+        </script>
+        <script type="text/javascript" src="wiki.js"></script>
+      </body>
+    ]]>
+  </Content>
 </Module>

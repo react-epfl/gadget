@@ -1,0 +1,19 @@
+<messageblundle>
+  <msg name="loading">Loading</msg>
+  <msg name="preview_label">Preview</msg>
+  <msg name="edit_label">Edit</msg>
+  <msg name="history_label">History</msg>
+  <msg name="save_label">Save</msg>
+  <msg name="username">Username</msg>
+  <msg name="content">Content</msg>
+  <msg name="date">Date</msg>
+  <msg name="load_more_label">Load more</msg>
+  <msg name="clear_history_label">Clear history</msg>
+  <msg name="clear_history_verification">Are you sure you want to clear the history?</msg>
+  <msg name="discard_changes_verification">Your changes will be lost. Are you sure you want to change tab?</msg>
+  <msg name="error_loading_app">Error loading the application</msg>
+  <msg name="error_loading_content">Error loading the content</msg>
+  <msg name="error_updating_content">Error updating the content</msg>
+  <msg name="error_saving">Unable to save the content</msg>
+  <msg name="error_clearing_history">Unable to clear the history</msg>
+</messageblundle>

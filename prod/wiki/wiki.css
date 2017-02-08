@@ -1,0 +1,119 @@
+﻿body {
+  margin: 0;
+  padding: 2rem 0 0;
+  border: 1px solid #5050d2;
+  box-sizing: border-box;
+}
+
+.nav {
+  margin: -2rem 0 0;
+  padding: 0;
+  background-color: #5050d2;
+  color: #fff;
+  list-style: none;
+}
+.nav-link {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.nav-link.active {
+  background-color: #fff;
+  color: #5050d2;
+}
+
+.content {
+  padding: 2rem;
+  max-height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.tab {
+  display: none;
+}
+.tab.active {
+  display: block;
+}
+
+table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  text-align: left;
+}
+table th,
+table td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+}
+table td {
+  vertical-align: top;
+}
+table tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+table tbody tr:nth-child(odd) {
+  background-color: #eee;
+}
+
+.buttons {
+  margin-top: 2rem;
+}
+
+.button {
+  padding: 0.2rem 1rem;
+  background-color: #5050d2;
+  border: none;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+.button.disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+.button:focus {
+  outline: none;
+}
+.clear-button {
+  float: right;
+  background-color: #a94442;
+}
+
+.loading-message {
+  padding: 0.5rem 1rem;
+  background-color: #d9edf7;
+  border: 1px solid #bce8f1;
+  color: #31708f;
+  text-align: center;
+}
+
+.error-notification {
+  position: fixed;
+  top: 3rem;
+  right: -20rem;
+  width: 20rem;
+  max-width: 90%;
+  padding: 0.5rem 3rem 0.5rem 1rem;
+  box-sizing: border-box;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  border-right: none;
+  color: #a94442;
+  transition: right 0.5s;
+}
+.error-notification.active {
+  right: 0;
+}
+.error-close {
+  display: block;
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  width: 1.125rem;
+  line-height: 1.125rem;
+  text-align: center;
+  cursor: pointer;
+}
