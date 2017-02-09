@@ -7,6 +7,7 @@
   var historyLimit = historyIncrement;
   var checkEditorModified = false;
   var currentTab;
+  var appContext;
 
   var loadScript = function (scriptURL) {
     // load scripts from JS to avoid Shindig rendering them
@@ -122,10 +123,39 @@
     return content;
   };
 
-  var loadHistoryFromVault = function (cb) {
-    if (!metadata.storageId || !metadata.generator || !metadata.generator.id) {
+  var loadHistoryFromAppData = function (cb) {
+    // try to get the old app-data format for backwards compatibility
+    var spaceId = metadata.provider && metadata.provider.inquiryPhaseId;
+    if (!spaceId || spaceId === 'undefined') spaceId = metadata.provider && metadata.provider.id;
+    if (!spaceId || spaceId === 'undefined') {
       return cb('The app requested data before it initialised');
     }
+
+    var spaceContextId = 's_' + spaceId;
+
+    osapi.appdata.get({userId: spaceContextId}).execute(function (data) {
+      if (data && data.error) return cb(data.error);
+
+      // if history app-data doesn't exist return an empty history array
+      if (!data || !data[spaceContextId] || !data[spaceContextId].history ||
+          data[spaceContextId].history.length === 0) {
+        return cb(null, []);
+      }
+
+      // parse history data found in app-data
+      var history = JSON.parse(data[spaceContextId].history);
+
+      return cb(null, history);
+    });
+  };
+
+  var loadHistoryFromVault = function (cb) {
+    if (!metadata.generator || !metadata.generator.id) {
+      return cb('The app requested data before it initialised');
+    }
+
+    // no vault available
+    if (!metadata.storageId) return loadHistoryFromAppData(cb);
 
     // query vault for resources created by this app
     ils.filterVault(metadata.storageId, null, metadata.generator.id, null, null, null, null, null,
@@ -139,27 +169,9 @@
         // get history object
         var history = getHistoryFromResource(vaultResource);
 
-        return cb(null, history);
+        cb(null, history);
       } else {
-        // try to get the old app-data format for backwards compatibility
-        var spaceId = metadata.provider.inquiryPhaseId;
-        if (!spaceId || spaceId === 'undefined') spaceId = metadata.provider.id;
-        var spaceContextId = 's_' + spaceId;
-
-        osapi.appdata.get({userId: spaceContextId}).execute(function (data) {
-          if (data && data.error) return cb(data.error);
-
-          // if history app-data doesn't exist return an empty history array
-          if (!data || !data[spaceContextId] || !data[spaceContextId].history ||
-              data[spaceContextId].history.length === 0) {
-            return cb(null, []);
-          }
-
-          // parse history data found in app-data
-          var appDataHistory = JSON.parse(data[spaceContextId].history);
-
-          return cb(null, appDataHistory);
-        });
+        loadHistoryFromAppData(cb);
       }
     });
   };
@@ -289,6 +301,7 @@
   };
 
   var saveContent = function () {
+    if (!metadata.storageId) return;
     if (!tinymce.activeEditor) {
       return displayError(wikiTranslations.error_saving, 'TinyMCE is not active');
     }
@@ -422,6 +435,19 @@
     });
   };
 
+  var hideEditor = function (reason) {
+    // hide the editor
+    document.getElementById('text-area').style.display = 'none';
+    document.getElementById('editor-buttons').style.display = 'none';
+
+    // display a warning message
+    if (reason === 'vault') {
+      document.getElementById('no-vault').style.display = 'block';
+    } else if (reason === 'permission') {
+      document.getElementById('no-permission').style.display = 'block';
+    }
+  };
+
   var loadEditor = function () {
     // display loading message
     changeTab('loading');
@@ -437,7 +463,16 @@
       var langPref = prefs.getLang();
       var lang = getSupportedLang(langPref);
 
-      if (tinymce.activeEditor) {
+      var userType = metadata.actor && metadata.actor.objectType;
+      var canEdit = (['graasp_editor', 'graasp_student'].indexOf(userType) > -1);
+
+      if (!metadata.storageId) {
+        // no vault space
+        hideEditor('vault');
+      } else if (!canEdit) {
+        // no permission
+        hideEditor('permission');
+      } else if (tinymce.activeEditor) {
         // update the existing editor
         updateEditorContent(editorContent);
       } else {
@@ -528,6 +563,7 @@
     if (data.error) return displayError(wikiTranslations.error_loading_app, data.error);
 
     // keep app context in memory
+    appContext = ils.identifyContext();
     metadata = data;
 
     // log opening of app
