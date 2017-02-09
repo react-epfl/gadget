@@ -82,11 +82,30 @@ table tbody tr:nth-child(odd) {
   background-color: #a94442;
 }
 
-.loading-message {
+.message {
   padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+}
+
+.info-message {
   background-color: #d9edf7;
-  border: 1px solid #bce8f1;
+  border-color: #bce8f1;
   color: #31708f;
+}
+
+.warning-message {
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+  color: #8a6d3b;
+}
+
+.error-message {
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  color: #a94442;
+}
+
+.loading-message {
   text-align: center;
 }
 
@@ -96,12 +115,9 @@ table tbody tr:nth-child(odd) {
   right: -20rem;
   width: 20rem;
   max-width: 90%;
-  padding: 0.5rem 3rem 0.5rem 1rem;
+  padding-right: 3rem;
   box-sizing: border-box;
-  background-color: #f2dede;
-  border: 1px solid #ebccd1;
   border-right: none;
-  color: #a94442;
   transition: right 0.5s;
 }
 .error-notification.active {
@@ -116,4 +132,8 @@ table tbody tr:nth-child(odd) {
   line-height: 1.125rem;
   text-align: center;
   cursor: pointer;
+}
+
+.editor .warning-message {
+  display: none;
 }
