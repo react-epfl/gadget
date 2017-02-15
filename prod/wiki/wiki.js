@@ -17,6 +17,29 @@
     document.body.appendChild(scriptElem);
   };
 
+  var hideError = function () {
+    // hide error message
+    document.getElementById('error').classList.remove('active');
+  };
+
+  var logError = function (errMessage, errDetails) {
+    // log error message and additional details
+    console.error(errMessage);
+    if (errDetails) console.error(errDetails);
+  };
+
+  var hideErrorTimeout;
+  var displayError = function (errMessage, errDetails) {
+    // display and log error message
+    document.getElementById('error').classList.add('active');
+    document.getElementById('error-message').innerHTML = errMessage;
+    logError(errMessage, errDetails);
+
+    // hide error message automatically after 5s
+    clearTimeout(hideErrorTimeout);
+    hideErrorTimeout = setTimeout(hideError, 5000);
+  };
+
   var logAction = function (verb) {
     // create action
     var published = new Date().toISOString();
@@ -35,10 +58,10 @@
     };
 
     // send action
-    osapi.activitystreams.create(params).execute(function (response) {
-      if (!response || !response.id || response.error) {
-        console.error('Error logging the ' + verb + ' action');
-        if (response.error) console.error(response.error);
+    osapi.activitystreams.create(params).execute(function (data) {
+      if (!data || !data.id || data.error) {
+        var errDetails = data && data.error;
+        logError('Error logging the ' + verb + ' action', errDetails);
       }
     });
   };
@@ -52,6 +75,7 @@
 
     // add active class to specified tab and content
     if (tabName === 'loading') {
+      // add active class to the loading tab after 0.3s to try and avoid showing it
       loadingTabTimeout = setTimeout(function () {
         document.getElementById(tabName).classList.add('active');
       }, 300);
@@ -64,24 +88,6 @@
     currentTab = tabName;
   };
 
-  var hideError = function () {
-    // hide error message
-    document.getElementById('error').classList.remove('active');
-  };
-
-  var hideErrorTimeout;
-  var displayError = function (errMessage, errDetails) {
-    // display and log error message
-    document.getElementById('error').classList.add('active');
-    document.getElementById('error-message').innerHTML = errMessage;
-    console.error(errMessage);
-    if (errDetails) console.error(errDetails);
-
-    // hide error message automatically after 5s
-    clearTimeout(hideErrorTimeout);
-    hideErrorTimeout = setTimeout(hideError, 5000);
-  };
-
   var getContentFromHistory = function (history) {
     if (!history || history.length === 0) return '';
 
@@ -92,47 +98,23 @@
   };
 
   var getHistoryFromResource = function (resource) {
-    // update metadata for saving
-    if (metadata.target) {
-      metadata.target.displayName = resource.displayName;
-      metadata.target.id = resource.id;
-    }
-
     var history = [];
     if (resource.content) {
       // convert string to history object
       history = JSON.parse(JSON.parse(resource.content));
     }
 
-    // update/reset data for history tab
-    historyStore = history;
-    historyLimit = historyIncrement;
-
     return history;
   };
 
-  var getContentFromResource = function (resource) {
-    // get history
-    var history = getHistoryFromResource(resource);
-
-    if (history.length === 0) return '';
-
-    // return latest content
-    var content = getContentFromHistory(history);
-
-    return content;
-  };
-
   var loadHistoryFromAppData = function (cb) {
-    // try to get the old app-data format for backwards compatibility
     var spaceId = metadata.provider && metadata.provider.inquiryPhaseId;
     if (!spaceId || spaceId === 'undefined') spaceId = metadata.provider && metadata.provider.id;
-    if (!spaceId || spaceId === 'undefined') {
-      return cb('The app requested data before it initialised');
-    }
+    if (!spaceId || spaceId === 'undefined') return cb('Parent space not available');
 
     var spaceContextId = 's_' + spaceId;
 
+    // try to get the old app-data format for backwards compatibility
     osapi.appdata.get({userId: spaceContextId}).execute(function (data) {
       if (data && data.error) return cb(data.error);
 
@@ -150,12 +132,7 @@
   };
 
   var loadHistoryFromVault = function (cb) {
-    if (!metadata.generator || !metadata.generator.id) {
-      return cb('The app requested data before it initialised');
-    }
-
-    // no vault available
-    if (!metadata.storageId) return loadHistoryFromAppData(cb);
+    if (!metadata.storageId) return cb('Vault space not available');
 
     // query vault for resources created by this app
     ils.filterVault(metadata.storageId, null, metadata.generator.id, null, null, null, null, null,
@@ -166,14 +143,35 @@
         // use the first resource returned from the vault
         var vaultResource = resources[0];
 
+        // update metadata for saving
+        if (!metadata.target) metadata.target = {};
+        metadata.target.displayName = vaultResource.displayName;
+        metadata.target.id = vaultResource.id;
+
         // get history object
         var history = getHistoryFromResource(vaultResource);
 
         cb(null, history);
       } else {
+        // try to load existing app-data for backwards compatibility
         loadHistoryFromAppData(cb);
       }
     });
+  };
+
+  var loadHistory = function (cb) {
+    if (appContext !== 'other' && (!metadata.generator || !metadata.generator.id)) {
+      return cb('The app requested data before it initialised');
+    }
+
+    // load history from the correct location
+    if (appContext === 'ils') {
+      loadHistoryFromVault(cb);
+    } else if (appContext === 'space') {
+      loadHistoryFromAppData(cb);
+    } else {
+      cb(null, historyStore);
+    }
   };
 
   var createVaultResource = function (content, cb) {
@@ -247,7 +245,7 @@
     return historyRecordEl;
   };
 
-  var updateHistoryContent = function (history) {
+  var updateHistoryTable = function (history) {
     // clear table
     var historyTableBodyEl = document.querySelector('.history-table tbody');
     historyTableBodyEl.innerHTML = '';
@@ -287,49 +285,89 @@
     return date + '/' + month + '/' + year + ' ' + hours + ':' + minutes + ':' + seconds + ' GMT';
   };
 
-  var prepareAndShowPreview = function (err, resource) {
-    if (err) return displayError(wikiTranslations.error_saving, err);
+  var saveContentToAppData = function (history, cb) {
+    if (!metadata.provider || !metadata.provider.inquiryPhaseId) {
+      return cb('Parent space not available');
+    }
 
-    // update preview
-    var content = getContentFromResource(resource);
-    updatePreviewContent(content);
-    checkEditorModified = false;
-    changeTab('preview');
+    // create or update app-data for the app
+    var spaceContext = 's_' + metadata.provider.inquiryPhaseId;
+    osapi.appdata
+      .update({
+        userId: spaceContext,
+        data: {
+          history: JSON.stringify(history)
+        }
+      })
+      .execute(function (data) {
+        if (data && data.error) return cb(data.error);
 
-    // log updating the app content
-    logAction('update');
+        cb(null, history);
+      });
   };
 
-  var saveContent = function () {
-    if (!metadata.storageId) return;
+  var saveContentToVault = function (history, cb) {
+    var vaultResourceContent = JSON.stringify(history);
+
+    // check if a resource exists for updating or if a new resource should be created
+    var saveFn = (metadata.target && metadata.target.id) ?
+        updateVaultResource : createVaultResource;
+    saveFn(vaultResourceContent, function (err, savedResource) {
+      if (err) return cb(err);
+
+      var history = getHistoryFromResource(savedResource);
+      cb(null, history);
+    });
+  };
+
+  var saveContent = function (content, history, cb) {
+    // create history entry
+    var timestamp = getDate();
+    var dataObj = {
+      viewer_name: (metadata.actor && metadata.actor.displayName) || '',
+      data: content,
+      date: timestamp
+    };
+
+    // add content to history
+    if (!history) history = [];
+    history.push(dataObj);
+
+    // save or return history
+    if (appContext === 'ils') {
+      saveContentToVault(history, cb);
+    } else if (appContext === 'space') {
+      saveContentToAppData(history, cb);
+    } else {
+      cb(null, history);
+    }
+  };
+
+  var save = function () {
     if (!tinymce.activeEditor) {
       return displayError(wikiTranslations.error_saving, 'TinyMCE is not active');
     }
 
-    // load latest vault data
-    loadHistoryFromVault(function(err, history) {
+    // load latest data
+    loadHistory(function(err, history) {
       if (err) return displayError(wikiTranslations.error_saving, err);
 
-      // add current content to history
+      // get content from editor
       var currentContent = tinymce.activeEditor.getContent({format: 'raw'});
-      var timestamp = getDate();
-      var dataObj = {
-        viewer_name: metadata.actor && metadata.actor.displayName,
-        data: currentContent,
-        date: timestamp
-      };
 
-      if (!history) history = [];
-      history.push(dataObj);
-      var vaultResourceContent = JSON.stringify(history);
+      // save current content
+      saveContent(currentContent, history, function (err, history) {
+        if (err) return displayError(wikiTranslations.error_saving, err);
 
-      if (metadata.target && metadata.target.id) {
-        // update the existing vault resource
-        updateVaultResource(vaultResourceContent, prepareAndShowPreview);
-      } else {
-        // create a new vault resource
-        createVaultResource(vaultResourceContent, prepareAndShowPreview);
-      }
+        // update preview
+        var savedContent = getContentFromHistory(history);
+        updatePreviewContent(savedContent);
+        checkEditorModified = false;
+        changeTab('preview');
+
+        // log updating the app content
+        logAction('update');
+      });
     });
   };
 
@@ -337,27 +375,20 @@
     // confirm with the user that they want to delete the history
     if (!confirm(wikiTranslations.clear_history_verification)) return;
 
-    loadHistoryFromVault(function(err, history) {
+    // load latest data
+    loadHistory(function(err, history) {
       if (err) return displayError(wikiTranslations.error_clearing_history, err);
 
-      // create a new history array with the latest data
-      var latestContent = (history.length > 0) ? history.pop().data : '';
-      var timestamp = getDate();
-      var dataObj = {
-        viewer_name: metadata.actor && metadata.actor.displayName,
-        data: latestContent,
-        date: timestamp
-      };
-      var newHistory = [dataObj];
-      var vaultResourceContent = JSON.stringify(newHistory);
+      // get the latest data from history
+      var latestContent = (history.length > 0) ? history[history.length - 1].data : '';
 
-      // remove history from the vault resource
-      updateVaultResource(vaultResourceContent, function (err, savedResource) {
-        if (err) return displayError(wikiTranslations.error_clearing_history, err);
+      // save latest content
+      saveContent(latestContent, [], function (err, savedHistory) {
+        if (err) return displayError(wikiTranslations.error_saving, err);
 
         // update history in app
-        var savedHistory = getHistoryFromResource(savedResource);
-        updateHistoryContent(savedHistory);
+        historyStore = savedHistory;
+        updateHistoryTable(savedHistory);
 
         // log clearing history
         logAction('clear');
@@ -370,7 +401,7 @@
 
     // load additional history entries incrementally
     historyLimit += historyIncrement;
-    updateHistoryContent(historyStore);
+    updateHistoryTable(historyStore);
   };
 
   // languages taken from the TinyMCE langs directory
@@ -418,12 +449,12 @@
     return 'en';
   };
 
-  var loadPreview = function () {
+  var loadPreviewTab = function () {
     // display loading message
     changeTab('loading');
 
     // get the latest content
-    loadHistoryFromVault(function (err, history) {
+    loadHistory(function (err, history) {
       if (err) displayError(wikiTranslations.error_loading_content, err);
 
       // update the preview
@@ -435,25 +466,17 @@
     });
   };
 
-  var hideEditor = function (reason) {
-    // hide the editor
-    document.getElementById('text-area').style.display = 'none';
-    document.getElementById('editor-buttons').style.display = 'none';
-
+  var displayEditorWarning = function (reason) {
     // display a warning message
-    if (reason === 'vault') {
-      document.getElementById('no-vault').style.display = 'block';
-    } else if (reason === 'permission') {
-      document.getElementById('no-permission').style.display = 'block';
-    }
+    document.getElementById('no-' + reason).style.display = 'block';
   };
 
-  var loadEditor = function () {
+  var loadEditorTab = function () {
     // display loading message
     changeTab('loading');
 
     // get the latest content
-    loadHistoryFromVault(function (err, history) {
+    loadHistory(function (err, history) {
       if (err) displayError(wikiTranslations.error_loading_content, err);
 
       var editorContent = getContentFromHistory(history);
@@ -466,13 +489,19 @@
       var userType = metadata.actor && metadata.actor.objectType;
       var canEdit = (['graasp_editor', 'graasp_student'].indexOf(userType) > -1);
 
-      if (!metadata.storageId) {
+      // display warning messages
+      if (appContext === 'ils' && !metadata.storageId) {
         // no vault space
-        hideEditor('vault');
-      } else if (!canEdit) {
+        displayEditorWarning('vault');
+      } else if (appContext === 'other') {
+        // no storage
+        displayEditorWarning('storage');
+      } else if (appContext === 'space' && !canEdit) {
         // no permission
-        hideEditor('permission');
-      } else if (tinymce.activeEditor) {
+        displayEditorWarning('permission');
+      }
+
+      if (tinymce.activeEditor) {
         // update the existing editor
         updateEditorContent(editorContent);
       } else {
@@ -498,16 +527,20 @@
     });
   };
 
-  var loadHistory = function () {
+  var loadHistoryTab = function () {
     // display loading message
     changeTab('loading');
 
     // get the latest content
-    loadHistoryFromVault(function (err, history) {
+    loadHistory(function (err, history) {
       if (err) displayError(wikiTranslations.error_loading_content, err);
 
+      // update/reset data for history tab
+      historyStore = history;
+      historyLimit = historyIncrement;
+
       // update the history table
-      updateHistoryContent(history);
+      updateHistoryTable(history);
 
       // display the tab
       changeTab('history');
@@ -538,16 +571,16 @@
     checkEditorModified = false;
 
     // load the specified tab
-    if (tabName === 'preview') return loadPreview();
-    if (tabName === 'editor') return loadEditor();
-    if (tabName === 'history') return loadHistory();
+    if (tabName === 'preview') return loadPreviewTab();
+    if (tabName === 'editor') return loadEditorTab();
+    if (tabName === 'history') return loadHistoryTab();
   };
 
   // setup interactions
   document.getElementById('preview-nav').onclick = function () {loadTab('preview');};
   document.getElementById('editor-nav').onclick = function () {loadTab('editor');};
   document.getElementById('history-nav').onclick = function () {loadTab('history');};
-  document.getElementById('save-button').onclick = saveContent;
+  document.getElementById('save-button').onclick = save;
   document.getElementById('load-more-button').onclick = loadMoreHistory;
   document.getElementById('clear-button').onclick = clearHistory;
   document.getElementById('error-close').onclick = hideError;
@@ -563,13 +596,20 @@
     if (data.error) return displayError(wikiTranslations.error_loading_app, data.error);
 
     // keep app context in memory
-    appContext = ils.identifyContext();
     metadata = data;
+    if (metadata.provider && metadata.provider.ilsRef) {
+      appContext = 'ils';
+    } else if (metadata.provider && metadata.provider.inquiryPhaseId &&
+        metadata.provider.inquiryPhaseId !== 'undefined') {
+      appContext = 'space';
+    } else {
+      appContext = 'other';
+    }
 
     // log opening of app
     logAction('access');
 
     // load the default tab
-    loadPreview();
+    loadPreviewTab();
   });
 })();
