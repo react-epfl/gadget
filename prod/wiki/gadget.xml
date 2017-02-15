@@ -37,6 +37,7 @@
           <div id="editor" class="tab editor">
             <div id="no-permission" class="message warning-message">__MSG_error_no_permission__</div>
             <div id="no-vault" class="message warning-message">__MSG_error_no_vault__</div>
+            <div id="no-storage" class="message warning-message">__MSG_error_no_storage__</div>
             <textarea id="text-area"></textarea>
             <div id="editor-buttons" class="buttons">
               <button id="save-button" class="button">__MSG_save_label__</button>
@@ -90,8 +91,9 @@
             error_updating_content: '__MSG_error_updating_content__',
             error_saving: '__MSG_error_saving__',
             error_clearing_history: '__MSG_error_clearing_history__',
+            error_no_permission: '__MSG_error_no_permission__',
             error_no_vault: '__MSG_error_no_vault__',
-            error_no_permission: '__MSG_error_no_permission__'
+            error_no_storage: '__MSG_error_no_storage__'
           };
         </script>
         <script type="text/javascript" src="wiki.js"></script>

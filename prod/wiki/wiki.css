@@ -136,4 +136,5 @@ table tbody tr:nth-child(odd) {
 
 .editor .warning-message {
   display: none;
+  margin-bottom: 1rem;
 }

@@ -16,6 +16,7 @@
   <msg name="error_updating_content">Error updating the content</msg>
   <msg name="error_saving">Unable to save the content</msg>
   <msg name="error_clearing_history">Unable to clear the history</msg>
-  <msg name="error_no_vault">Unable to save changes without a vault space</msg>
   <msg name="error_no_permission">You do not have permission to edit the wiki</msg>
+  <msg name="error_no_vault">Unable to store content without a vault space</msg>
+  <msg name="error_no_storage">Unable to store content in preview mode</msg>
 </messageblundle>
