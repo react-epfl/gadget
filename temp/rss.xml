@@ -11,7 +11,7 @@
 
 <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAArYowhPTyKQn7tayyo_1sixT2yXp_ZAY8_ufC3CFXhHIE1NvwkxS_b5dYAqSj_axhktZy0hCXbg1lLA"></script>
 <script type="text/javascript" src="http://scripts.lrlab.to/opensocial-jquery-1.3.2.5.min.js"></script>
-<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+<script type="text/javascript" src="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/open-app/openapp.js"></script>
 <script type="text/javascript" src="/lib/openapp/openapp.js"></script>
 
 <script type="text/javascript">

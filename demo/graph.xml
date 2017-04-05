@@ -9,7 +9,7 @@
     <Optional feature="openapp" />
   </ModulePrefs>
   <Content type="html"><![CDATA[
-<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+<script type="text/javascript" src="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/open-app/openapp.js"></script>
  <script type="text/javascript" src="http://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js"></script>
 	<style>
 	@import "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css";
