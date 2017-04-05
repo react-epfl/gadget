@@ -104,7 +104,7 @@ fieldset{
 <div id="ratings">
 </div>
 
-<script type="text/javascript" src="http://open-app.googlecode.com/files/openapp.js"></script>
+<script type="text/javascript" src="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/open-app/openapp.js"></script>
 
 <script type="text/javascript">
 // load stylesheets (hacky, problem in shindig in css with background:url(image.png))

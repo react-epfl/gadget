@@ -16,7 +16,7 @@
 	  }
 	</style>
 	
-  <!-- // <script src="http://open-app.googlecode.com/files/openapp_postmessage.js"></script> -->
+  <!-- // <script src="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/open-app/openapp_postmessage.js"></script> -->
   <!-- // <script type="text/javascript" src="http://202.120.34.34/gadgets/init.js"></script> -->
 	<button id = "settings" onclick = "showSettings();" style = "display:none">Settings</button>
   <button id = "hide" onclick = "hideSettings();" style = "display:none">Hide</button>
