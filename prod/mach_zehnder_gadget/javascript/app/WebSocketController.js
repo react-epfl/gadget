@@ -175,6 +175,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
       .attr("class", "straight-line")
       .attr("d", line(last));
     var video_image = new Image();
+    video_image.src = 'http://admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
     var refreshIntervalId;
 
     function getScale() {
@@ -417,33 +418,32 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         var myimage =new Image();
 
         function Vwsopen(event) {
-            var sensorRequest = {
-                method: 'getSensorData',
-                sensorId: 'Video',
-                accessRole: 'controller'
-            }
-            var jsonRequest = JSON.stringify(sensorRequest);
-            Vws.send(jsonRequest);
+          var videoRequest = {
+            method: 'getSensorData',
+            sensorId: 'Video',
+            accessRole: 'controller'
+          }
+          var jsonRequest = JSON.stringify(videoRequest);
+          Vws.send(jsonRequest);
         }
 
         function Vwsmessage(event) {
             if (event.data instanceof Blob) {
-                if (enableCamera2)
-                    var destinationCanvas = document.getElementById('mycanvas2');
-                if (enableCamera2) {
-                    destinationCanvas.height = '210';
-                    destinationCanvas.width = '280';
-                    var destinationContext = destinationCanvas.getContext('2d');
-                    var URL = window.URL || window.webkitURL;
-                    if (FF) {
-                        myimage.src = URL.createObjectURL(event.data);
-                        destinationContext.drawImage(myimage, 0, 0);
-                    }
-                    else { 
-                        destinationContext.drawImage(myimage, 0, 0);
-                        myimage.src = URL.createObjectURL(event.data);
-                    }
+              if(camera2Active) {
+                var destinationCanvas = document.getElementById('mycanvas2');
+                destinationCanvas.height = '210';
+                destinationCanvas.width = '280';
+                var destinationContext = destinationCanvas.getContext('2d');
+                var URL = window.URL || window.webkitURL;
+                if (FF) {
+                    myimage.src = URL.createObjectURL(event.data);
+                    destinationContext.drawImage(myimage, 0, 0);
                 }
+                else { 
+                    destinationContext.drawImage(myimage, 0, 0);
+                    myimage.src = URL.createObjectURL(event.data);
+                }
+              }
             }
         }
 
@@ -761,13 +761,10 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
 
     $scope.camera2Clicked = function() {
         if (!camera2Active) {
-          setTimeout( function (){
             enableCamera2 = 1;
-          }, 2400);
             camera2Active = 1;
             $('#camera2Span').hide();
             $("#camera2Image").glow({radius: "7", color: "green"});
-            sendActuatorData('filter', [filterIsActivated, 0]);
         } else {
             enableCamera2 = 0;
             camera2Active = 0;
