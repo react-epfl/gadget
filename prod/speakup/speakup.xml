@@ -15,6 +15,7 @@
         <style>
           body {
             background-color: transparent;
+            -webkit-overflow-scrolling: touch;
           }
           #speakup {
             display: block;
@@ -39,7 +40,8 @@
         </style>
       </head>
       <body>
-        <iframe id="speakup" seamless></iframe>
+        <!-- iframe style is a hack to allow scrolling of element with dynamic content on iOS -->
+        <iframe id="speakup" seamless style="height: calc(100% + 1px); margin-bottom: -1px;"></iframe>
         <div id="error" class="hidden"></div>
         <script src="//shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
         <script>
