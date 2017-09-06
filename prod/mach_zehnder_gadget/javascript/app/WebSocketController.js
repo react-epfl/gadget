@@ -175,8 +175,54 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
       .attr("class", "straight-line")
       .attr("d", line(last));
     var video_image = new Image();
-    video_image.src = 'http://admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
+    // video_image.src = 'http://admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
+    video_image.src = 'http://128.178.112.239/image.jpg?cidx=910738439';
     var refreshIntervalId;
+    var Vws;
+    var lrs;
+    var statement =
+      {
+        "actor": {
+            "mbox": "mailto:info@tincanapi.com"
+        },
+        "verb": {
+            "id": "http://adlnet.gov/expapi/verbs/experienced"
+        },
+        "object": {
+            "id": "http://rusticisoftware.github.com/TinCanJS"
+        }
+      };
+
+      var statement = new TinCan.Statement(statement);
+    $scope.inputValue = {};
+
+    $scope.auth_lrs = function (value) {
+      // var reqUrl = "http://localhost:8080/data/xAPI/";
+      // username: "82f5f9040460ab64775db27924dc593c61932063",
+      // password: "22315110f50bd873d1c321559457c88aff0bbe0a",
+      var reqUrl = value.endpoint;
+        try {
+        lrs = new TinCan.LRS({
+          endpoint: reqUrl,
+          username: value.username,
+          password: value.password,
+          allowFail: false
+          });
+        } catch (exc) {
+      console.log('Failed to communicate with LRS: ' + exc);
+        }
+  
+      lrs.saveStatement(statement, {
+      callback: function (err) {
+        if (err !== null) 
+          console.log('Error while sending xAPI statement to the LRS: ' + err);
+          else {
+            console.log("Successfully saved statement");
+            // query_lrs();
+          }
+      }
+    });
+  }//end auth_lrs
 
     function getScale() {
         w = parseInt(d3.select("body").style("width"));
@@ -407,7 +453,6 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             $('#statusLED').css({'background-color':'red'});
         }
     }
-
     var initializeVideoSocket = function() {
         Vws = new WebSocket('ws://' + host + ':' + port + '/WS_Video');
         Vwsopen.Vws = Vws;
@@ -418,32 +463,33 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         var myimage =new Image();
 
         function Vwsopen(event) {
-          var videoRequest = {
-            method: 'getSensorData',
-            sensorId: 'Video',
-            accessRole: 'controller'
-          }
-          var jsonRequest = JSON.stringify(videoRequest);
-          Vws.send(jsonRequest);
+            var sensorRequest = {
+                method: 'getSensorData',
+                sensorId: 'Video',
+                accessRole: 'controller'
+            }
+            var jsonRequest = JSON.stringify(sensorRequest);
+            Vws.send(jsonRequest);
         }
 
         function Vwsmessage(event) {
             if (event.data instanceof Blob) {
-              if(camera2Active) {
-                var destinationCanvas = document.getElementById('mycanvas2');
-                destinationCanvas.height = '210';
-                destinationCanvas.width = '280';
-                var destinationContext = destinationCanvas.getContext('2d');
-                var URL = window.URL || window.webkitURL;
-                if (FF) {
-                    myimage.src = URL.createObjectURL(event.data);
-                    destinationContext.drawImage(myimage, 0, 0);
+                if (enableCamera2)
+                    var destinationCanvas = document.getElementById('mycanvas2');
+                if (enableCamera2) {
+                    destinationCanvas.height = '210';
+                    destinationCanvas.width = '280';
+                    var destinationContext = destinationCanvas.getContext('2d');
+                    var URL = window.URL || window.webkitURL;
+                    if (FF) {
+                        myimage.src = URL.createObjectURL(event.data);
+                        destinationContext.drawImage(myimage, 0, 0);
+                    }
+                    else { 
+                        destinationContext.drawImage(myimage, 0, 0);
+                        myimage.src = URL.createObjectURL(event.data);
+                    }
                 }
-                else { 
-                    destinationContext.drawImage(myimage, 0, 0);
-                    myimage.src = URL.createObjectURL(event.data);
-                }
-              }
             }
         }
 
@@ -497,6 +543,10 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
        "experimentTime": moment()
     };
 
+    $scope.done = function() {
+      console.log("here");
+    }
+
     $scope.laserClick = function() {
         if ($scope.laserIsOn) 
             $scope.turnLaserOff();
@@ -530,6 +580,31 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
          }
          if (actionLoggerReady)
             actionLogger.logStart(logObject);
+        if(lrs){
+          var laser_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#laser"
+            }
+          }
+          laser_statement = new TinCan.Statement(laser_statement);
+          lrs.saveStatement(laser_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement LASER CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
     }
 
     $scope.turnLaserOff = function() {
@@ -557,6 +632,32 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         };
         if (actionLoggerReady)
             actionLogger.logCancel(logObject);
+
+        if(lrs){
+          var laser_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#laser"
+            }
+          }
+          laser_statement = new TinCan.Statement(laser_statement);
+          lrs.saveStatement(laser_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement LASER CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
     }
 
     $scope.bs1Clicked = function() {
@@ -591,6 +692,32 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             if (actionLoggerReady)
                 actionLogger.logStart(logObject);
         }
+
+        if(lrs){
+          var bs1_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#bs1"
+            }
+          }
+          bs1_statement = new TinCan.Statement(bs1_statement);
+          lrs.saveStatement(bs1_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement BS1 CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
     }
 
     $scope.bs2Clicked = function() {
@@ -625,6 +752,33 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             if (actionLoggerReady)
                 actionLogger.logStart(logObject);
         }
+
+        if(lrs){
+          var bs2_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#bs2"
+            }
+          }
+          bs2_statement = new TinCan.Statement(bs2_statement);
+          lrs.saveStatement(bs2_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement BS2 CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
+
     }
 
     $scope.filterClicked = function() {
@@ -637,6 +791,31 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             };
             if (actionLoggerReady)
                 actionLogger.logCancel(logObject);
+            if(lrs){
+              var filter_statement = {
+                "actor": {
+                  "name": "student",
+                  "mbox": "mailto:student@nomail.com"
+                },
+                "verb": {
+                    "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+                },
+                "object": {
+                    "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#filter"
+                }
+              }
+              filter_statement = new TinCan.Statement(filter_statement);
+              lrs.saveStatement(filter_statement, {
+                callback: function (err) {
+                if (err !== null) 
+                  console.log('Error while sending xAPI statement to the LRS: ' + err);
+                else {
+                  console.log("Successfully saved statement filter CLICKED");
+                  // query_lrs();
+                }
+                }
+              });
+            }//end if(lrs)
         } else {
             activateFilter();
             //Log Activity
@@ -646,6 +825,31 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             };
             if (actionLoggerReady)
                 actionLogger.logStart(logObject);
+            if(lrs){
+              var filter_statement = {
+                "actor": {
+                  "name": "student",
+                  "mbox": "mailto:student@nomail.com"
+                },
+                "verb": {
+                    "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+                },
+                "object": {
+                    "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#filter"
+                }
+              }
+              filter_statement = new TinCan.Statement(filter_statement);
+              lrs.saveStatement(filter_statement, {
+                callback: function (err) {
+                if (err !== null) 
+                  console.log('Error while sending xAPI statement to the LRS: ' + err);
+                else {
+                  console.log("Successfully saved statement filter CLICKED");
+                  // query_lrs();
+                }
+                }
+              });
+            }//end if(lrs)
         }
         setTimeout (function() {
             resize();
@@ -710,6 +914,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             return value.replace('V', '');
           }
         }
+
     });
 
     piezoVoltageSlider.noUiSlider.on('update', function(value){
@@ -727,6 +932,33 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         if(actionLoggerReady) 
             actionLogger.logChange(logObject);
         sendActuatorData('piezo', [slideValue, 0, 0]);
+
+        if(lrs){
+          var piezo_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#peizo"
+            }
+          }
+          piezo_statement = new TinCan.Statement(piezo_statement);
+          lrs.saveStatement(piezo_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement PIEZO CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
+
     });
 
     $scope.camera1Clicked = function() {
@@ -740,7 +972,8 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
           destinationCanvas.width = '280';
           var destinationContext = destinationCanvas.getContext('2d');
           //first image
-          video_image.src = 'http://admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
+          //video_image.src = 'http://admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
+          video_image.src = 'http://128.178.112.239/image.jpg?cidx=910738439';
           video_image.src = video_image.src.split("?")[0] + "?" + new Date().getTime();
           destinationContext.drawImage(video_image, 0, 0);
           setTimeout(function() {
@@ -757,6 +990,32 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
           $('#camera1Span').show();
           $("#camera1Image").glow({disable: true});
         }
+
+        if(lrs){
+          var camera1_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#camera1"
+            }
+          }
+          camera1_statement = new TinCan.Statement(camera1_statement);
+          lrs.saveStatement(camera1_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement CAMERA1 CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
     }
 
     $scope.camera2Clicked = function() {
@@ -773,6 +1032,32 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             $('#camera2Span').show();
             $("#camera2Image").glow({disable: true});
         }
+        
+        if(lrs){
+          var camera2_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#camera2"
+            }
+          }
+          camera2_statement = new TinCan.Statement(camera2_statement);
+          lrs.saveStatement(camera2_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement CAMERA2 CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
     }
 
     var displayBlackScreen = function(screenName) {
@@ -834,6 +1119,32 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
              }
              if (actionLoggerReady)
                 actionLogger.logAccess(logObject);
+        
+        if(lrs){
+          var quantitative_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#laser"
+            }
+          }
+          quantitative_statement = new TinCan.Statement(quantitative_statement);
+          lrs.saveStatement(quantitative_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement QUANTITATIVE CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
         } else {
             quantitative = 0;
             $('.gadget4 #arrowImage').hide();
@@ -847,7 +1158,33 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
                 "displayName":"qualitativeButton",
             }
             if (actionLoggerReady)
-                actionLogger.logAccess(logObject);   
+                actionLogger.logAccess(logObject);
+
+        if(lrs){
+          var quanlitative_statement = {
+            "actor": {
+              "name": "student",
+              "mbox": "mailto:student@nomail.com"
+            },
+            "verb": {
+                "id": "http://shindig2.epfl.ch/xapiextension.html/clicked"
+            },
+            "object": {
+                "id": "http://shindig2/gadget/prod/mach_zehnder_gadget/gadget.xml#laser"
+            }
+          }
+          quanlitative_statement = new TinCan.Statement(quanlitative_statement);
+          lrs.saveStatement(quanlitative_statement, {
+            callback: function (err) {
+            if (err !== null) 
+              console.log('Error while sending xAPI statement to the LRS: ' + err);
+            else {
+              console.log("Successfully saved statement QUANLITATIVE CLICKED");
+              // query_lrs();
+            }
+            }
+          });
+        }//end if(lrs)
         }
         $scope.$apply();
     });
@@ -1000,5 +1337,8 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         $scope.turnLaserOn();
         $scope.bs1Clicked();
         $scope.bs2Clicked();
+        // auth_lrs();
+        //authenticate_camera();
+        // query_lrs;
       });
 }]);
