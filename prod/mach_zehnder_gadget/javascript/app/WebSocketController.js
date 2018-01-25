@@ -197,6 +197,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
     $scope.inputValue = {};
 
     $scope.auth_lrs = function (value) {
+      debugger
       // var reqUrl = "http://localhost:8080/data/xAPI/";
       // username: "82f5f9040460ab64775db27924dc593c61932063",
       // password: "22315110f50bd873d1c321559457c88aff0bbe0a",
