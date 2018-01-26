@@ -176,7 +176,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
       .attr("d", line(last));
     //images for Camera1
     var video_image = new Image();
-    video_image.src = 'http://admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
+    video_image.src = 'http://128.178.112.239/image.jpg?cidx=910738439';
     var refreshIntervalId;
     var Vws;
 
@@ -742,7 +742,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
           destinationCanvas.width = '280';
           var destinationContext = destinationCanvas.getContext('2d');
           //first image
-          video_image.src = 'http://:admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
+          video_image.src = 'http://128.178.112.239/image.jpg?cidx=910738439';
           video_image.src = video_image.src.split("?")[0] + "?" + new Date().getTime();
           destinationContext.drawImage(video_image, 0, 0);
           setTimeout(function() {
