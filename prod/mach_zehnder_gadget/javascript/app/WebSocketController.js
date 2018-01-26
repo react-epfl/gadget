@@ -174,9 +174,11 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
       .attr("opacity", 0)
       .attr("class", "straight-line")
       .attr("d", line(last));
+    //images for Camera1
     var video_image = new Image();
     video_image.src = 'http://admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
     var refreshIntervalId;
+    var Vws;
 
     function getScale() {
         w = parseInt(d3.select("body").style("width"));
@@ -407,7 +409,6 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             $('#statusLED').css({'background-color':'red'});
         }
     }
-
     var initializeVideoSocket = function() {
         Vws = new WebSocket('ws://' + host + ':' + port + '/WS_Video');
         Vwsopen.Vws = Vws;
@@ -418,32 +419,33 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
         var myimage =new Image();
 
         function Vwsopen(event) {
-          var videoRequest = {
-            method: 'getSensorData',
-            sensorId: 'Video',
-            accessRole: 'controller'
-          }
-          var jsonRequest = JSON.stringify(videoRequest);
-          Vws.send(jsonRequest);
+            var sensorRequest = {
+                method: 'getSensorData',
+                sensorId: 'Video',
+                accessRole: 'controller'
+            }
+            var jsonRequest = JSON.stringify(sensorRequest);
+            Vws.send(jsonRequest);
         }
 
         function Vwsmessage(event) {
             if (event.data instanceof Blob) {
-              if(camera2Active) {
-                var destinationCanvas = document.getElementById('mycanvas2');
-                destinationCanvas.height = '210';
-                destinationCanvas.width = '280';
-                var destinationContext = destinationCanvas.getContext('2d');
-                var URL = window.URL || window.webkitURL;
-                if (FF) {
-                    myimage.src = URL.createObjectURL(event.data);
-                    destinationContext.drawImage(myimage, 0, 0);
+                if (enableCamera2)
+                    var destinationCanvas = document.getElementById('mycanvas2');
+                if (enableCamera2) {
+                    destinationCanvas.height = '210';
+                    destinationCanvas.width = '280';
+                    var destinationContext = destinationCanvas.getContext('2d');
+                    var URL = window.URL || window.webkitURL;
+                    if (FF) {
+                        myimage.src = URL.createObjectURL(event.data);
+                        destinationContext.drawImage(myimage, 0, 0);
+                    }
+                    else { 
+                        destinationContext.drawImage(myimage, 0, 0);
+                        myimage.src = URL.createObjectURL(event.data);
+                    }
                 }
-                else { 
-                    destinationContext.drawImage(myimage, 0, 0);
-                    myimage.src = URL.createObjectURL(event.data);
-                }
-              }
             }
         }
 
@@ -740,7 +742,7 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
           destinationCanvas.width = '280';
           var destinationContext = destinationCanvas.getContext('2d');
           //first image
-          video_image.src = 'http://admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
+          video_image.src = 'http://:admin:abcd1234@128.178.112.239/image.jpg?cidx=910738439';
           video_image.src = video_image.src.split("?")[0] + "?" + new Date().getTime();
           destinationContext.drawImage(video_image, 0, 0);
           setTimeout(function() {
@@ -764,14 +766,14 @@ myApp.controller('WebSocketController', ['$scope', function($scope) {
             enableCamera2 = 1;
             camera2Active = 1;
             $('#camera2Span').hide();
-            $("#camera2Image").glow({radius: "7", color: "green"});
+            //$("#camera2Image").glow({radius: "7", color: "green"});
         } else {
             enableCamera2 = 0;
             camera2Active = 0;
             if (!FF)
                 displayBlackScreen('mycanvas2');
             $('#camera2Span').show();
-            $("#camera2Image").glow({disable: true});
+            // $("#camera2Image").glow({disable: true});
         }
     }
 
