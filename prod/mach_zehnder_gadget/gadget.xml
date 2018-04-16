@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/prod/mach_zehnder_gadget/css/style.css"/>
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="./javascript/lib/d3.v3.min.js"></script>
     <!-- <script type="text/javascript" src="./javascript/lib/FileSaver.js"></script>-->
     <!--<script type="text/javascript" src="https://rawgit.com/eligrey/FileSaver.js/master/src/FileSaver.js"></script> -->
