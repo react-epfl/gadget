@@ -19,7 +19,7 @@
 		//load frame
 		function loadFrame()
 		{
-			$('container').innerHTML = '<embed id="RandomGenEffects" type="application/x-java-applet;version=1.6" width="844" height="429" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="drift.txt">';
+			$('container').innerHTML = '<embed id="RandomGenEffects" type="application/x-java-applet;version=1.6" width="844" height="429" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="https://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="drift.txt">';
 		}
 		
 		gadgets.util.registerOnLoadHandler(loadFrame);

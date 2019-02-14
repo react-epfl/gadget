@@ -19,7 +19,7 @@
 		//load frame
 		function loadFrame()
 		{
-			$('container').innerHTML = '<embed id="PopGenFishbowl" type="application/x-java-applet;version=1.6" width="1017" height="592" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="PopGen_Fishbowl.txt">';
+			$('container').innerHTML = '<embed id="PopGenFishbowl" type="application/x-java-applet;version=1.6" width="1017" height="592" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="https://java.com/download/" codebase="http://virtualbiologylab.org/Models/" classloader_cache="false" DefaultModel="PopGen_Fishbowl.txt">';
 		}
 		
 		gadgets.util.registerOnLoadHandler(loadFrame);

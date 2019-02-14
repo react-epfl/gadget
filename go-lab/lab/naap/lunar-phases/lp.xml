@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Lunar Phases Lab"
-	 	title_url="http://astro.unl.edu/naap/lps/lps.html"
+	 	title_url="https://astro.unl.edu/naap/lps/lps.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Lunar Phases Lab demonstrates how the earth-sun-moon geometry gives rise to the phases of the moon as seen from earth. A distant view of an observer looking down on earth as well as a perspective of an observer looking into the sky are used in the the simulator."
 	 	height="680"
 	 	screenshot="lp-screenshot.png"
-	 	thumbnail="http://astro.unl.edu/naap/lps/animations/lps_300.jpg">
+	 	thumbnail="https://astro.unl.edu/naap/lps/animations/lps_300.jpg">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/lps/animations/lps.swf";
+		    var url = "https://astro.unl.edu/naap/lps/animations/lps.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

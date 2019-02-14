@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Parabola Calculator"
-	 	title_url="http://demonstrations.wolfram.com/ElectromagneticFieldEnergiesInCapacitorsAndInductors/"
+	 	title_url="https://demonstrations.wolfram.com/ElectromagneticFieldEnergiesInCapacitorsAndInductors/"
 	 	author="María Jesús Rodríguez-Triana"
 	 	author_email="maria.rodrigueztriana@epfl.ch"
 	 	description="This lab analyses and plots a parabola by entering its equation."

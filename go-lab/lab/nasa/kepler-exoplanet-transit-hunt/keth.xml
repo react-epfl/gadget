@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="Kepler Exoplanet Transit Hunt"
-	 	title_url="http://kepler.nasa.gov/multimedia/Interactives/#"
+	 	title_url="https://kepler.nasa.gov/multimedia/Interactives/#"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The basic idea is to discover a planet by staring at a star and looking for a tiny drop in brightness when a planet passes in front it. When a planet goes in front of a star, that’s called a transit. And this planet finding method is called the transit method. We can’t even see the planet, but what can we find out, just from the light of its host star?"
 	 	height="600"
 	 	screenshot="keth-screenshot-1.png"
-	 	thumbnail="http://kepler.nasa.gov/images/mws/interPic.jpg">
+	 	thumbnail="https://kepler.nasa.gov/images/mws/interPic.jpg">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://kepler.nasa.gov/multimedia/Interactives/keplerFlashAdvDiscovery/exoplanets.swf";
+		    var url = "https://kepler.nasa.gov/multimedia/Interactives/keplerFlashAdvDiscovery/exoplanets.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Skymap Online"
-	 	title_url="http://www.skymaponline.net/"
+	 	title_url="https://www.skymaponline.net/"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="This website hosts an online planetarium program. It draws a draggable, interactive sky map using the specified location and time."
@@ -19,7 +19,7 @@
 		//load frame
 		function loadFrame()
 		{
-			var srcString = "http://www.skymaponline.net/";
+			var srcString = "https://www.skymaponline.net/";
 			var width = "1110";
 			var height = "745";
 			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';

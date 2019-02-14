@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="3M Wind Energy Virtual Lab"
-	 	title_url="http://scienceofeverydaylife.discoveryeducation.com/innovation/labs/wind-energy/"
+	 	title_url="https://scienceofeverydaylife.discoveryeducation.com/innovation/labs/wind-energy/"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts+lhcgame@gmail.com"
 	 	description="Welcome to the 3M Wind Energy Virtual Lab. You will be able to design, build and test a wind turbine. Your challenge is to create a turbine that will supply 400 homes with electricity for a year at the highest efficiency."
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://scienceofeverydaylife.discoveryeducation.com/innovation/labs/wind-energy/wind.swf";
+		    var url = "https://scienceofeverydaylife.discoveryeducation.com/innovation/labs/wind-energy/wind.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", 9, {

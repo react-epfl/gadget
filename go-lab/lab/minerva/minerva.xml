@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Minerva"
-	 	title_url="http://atlas-minerva.web.cern.ch/atlas-minerva/index.php?lang=en"
+	 	title_url="https://atlas-minerva.web.cern.ch/atlas-minerva/index.php?lang=en"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="MINERVA is a tool developed to help students learn more about the ATLAS experiment and particle physics at CERN. It is based on Atlantis, the event display used at ATLAS to visualise what happens in the detector. The aim of MINERVA is to give students a better understanding of how particle detectors work and the physics that they study. Currently, in MINERVA, students are able to study W and Z boson events by observing their decay products and apply this knowledge to search for the Higgs boson. Students can also search for the decay of neutral hadrons by searching for oppositely charged pairs of tracks originating from a vertex displaced from the main interaction. MINERVA has been used around the world in Particle Physics Masterclasses since 2008, using Simulated data. In Spring 2011, real LHC collision data will be used for the first time in a series of International Masterclasses. The MINERVA project is a joint venture between the Rutherford Appleton Laboratory (RAL) and the University of Birmingham."

@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Ptolemaic System Simulator"
-	 	title_url="http://astro.unl.edu/naap/ssm/animations/ptolemaic.html"
+	 	title_url="https://astro.unl.edu/naap/ssm/animations/ptolemaic.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Solar System Models Lab introduces the universe as envisioned by early thinkers culminating in a detailed look at the Copernican model."
 	 	height="710"
 	 	screenshot="pss-screenshot.png"
-	 	thumbnail="http://astro.unl.edu/naap/ssm/animations/ptolemaic_300.jpg">
+	 	thumbnail="https://astro.unl.edu/naap/ssm/animations/ptolemaic_300.jpg">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/ssm/animations/ptolemaic.swf";
+		    var url = "https://astro.unl.edu/naap/ssm/animations/ptolemaic.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="Planet Distance from its Star"
-	 	title_url="http://kepler.nasa.gov/multimedia/Interactives/activationlab/"
+	 	title_url="https://kepler.nasa.gov/multimedia/Interactives/activationlab/"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@epfl.ch"
 	 	description="A simulation from the Research Group at the Lawrence Hall of Science, The Science Learning Activation Lab, and Tufts University. copyright 2012 by The Regents of the University of California"
 	 	height="549"
 	 	screenshot="pds-screenshot.png"
-	 	thumbnail="http://kepler.nasa.gov/images/mws/iconStarTemp.jpg">
+	 	thumbnail="https://kepler.nasa.gov/images/mws/iconStarTemp.jpg">
 	 </ModulePrefs>
 	 <Content type="html">
 	 <![CDATA[
@@ -19,7 +19,7 @@
 		//load frame
 		function loadFrame()
 		{
-			$('container').innerHTML = '<embed id="PlanetDistance" type="application/x-java-applet;version=1.6" width="789" height="549" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://www.lawrencehallofscience.org/static/hou/kepler/activationlab/" classloader_cache="false" DefaultModel="planet_heating5.v1.nlogo">';
+			$('container').innerHTML = '<embed id="PlanetDistance" type="application/x-java-applet;version=1.6" width="789" height="549" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="https://java.com/download/" codebase="https://www.lawrencehallofscience.org/static/hou/kepler/activationlab/" classloader_cache="false" DefaultModel="planet_heating5.v1.nlogo">';
 		}
 		
 		gadgets.util.registerOnLoadHandler(loadFrame);

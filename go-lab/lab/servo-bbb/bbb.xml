@@ -11,7 +11,7 @@
     </ModulePrefs>
  <Content type="html" view="default,canvas,home,profile">
  <![CDATA[
- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 
   <iframe id="bbb" src="http://128.178.5.173:8000/index.html" height="500" width="1000" ></iframe>
 

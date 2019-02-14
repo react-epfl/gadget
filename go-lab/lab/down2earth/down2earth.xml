@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="down2EARTH"
-	 	title_url="http://education.down2earth.eu/"
+	 	title_url="https://education.down2earth.eu/"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts+down2earth@gmail.com"
 	 	description="Our Earth gathers about 100 tonnes of extra terrestrial material every day. Most of this material enters the atmosphere as tiny dust particles and burns up as meteors.
@@ -48,7 +48,7 @@ Down2Earth uses a mix of resources, some new and some adapted from various other
 				language = "Polish";
 			}
 
-			var srcString = "http://simulator.down2earth.eu/input.html?lang=" + language;
+			var srcString = "https://simulator.down2earth.eu/input.html?lang=" + language;
 			var width = "912";
 			var height = "620";
 			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';

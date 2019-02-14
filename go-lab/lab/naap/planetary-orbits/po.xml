@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Planetary Orbits"
-	 	title_url="http://astro.unl.edu/naap/pos/pos.html"
+	 	title_url="https://astro.unl.edu/naap/pos/pos.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Planetary Orbits Lab is designed to facilitate understanding of Kepler's Three Laws of Motion as well as how velocity and force relate to the orbits. The user can manipulate the orbital properties of a fictional planet and read off various orbital parameters. Our solar system's planets can also be observed as a background for comparison."
 	 	height="710"
 	 	screenshot="po-screenshot.png"
-	 	thumbnail="http://astro.unl.edu/naap/pos/animations/kepler_300.jpg">
+	 	thumbnail="https://astro.unl.edu/naap/pos/animations/kepler_300.jpg">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/pos/animations/kepler.swf";
+		    var url = "https://astro.unl.edu/naap/pos/animations/kepler.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

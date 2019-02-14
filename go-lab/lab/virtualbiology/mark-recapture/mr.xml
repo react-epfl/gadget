@@ -19,7 +19,7 @@
 		//load frame
 		function loadFrame()
 		{
-			$('container').innerHTML = '<embed id="MarkRecapture" type="application/x-java-applet;version=1.6" width="930" height="567" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="http://java.com/download/" codebase="http://virtualbiologylab.org/NewModels/" classloader_cache="false" DefaultModel="Mark_Recapture.txt">';
+			$('container').innerHTML = '<embed id="MarkRecapture" type="application/x-java-applet;version=1.6" width="930" height="567" archive="NetLogoLite.jar" code="org.nlogo.lite.Applet" pluginspage="https://java.com/download/" codebase="http://virtualbiologylab.org/NewModels/" classloader_cache="false" DefaultModel="Mark_Recapture.txt">';
 		}
 		
 		gadgets.util.registerOnLoadHandler(loadFrame);

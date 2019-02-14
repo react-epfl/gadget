@@ -5,7 +5,7 @@
 	 	author_email="sten.govaerts+cernland@gmail.com"
 	 	description="CERNland is designed to teach children about CERN's research in an interactive way. It contains information about CERN, several videos and nine different games."
 	 	height="777"
-	 	screenshot="http://eatoneducationalinsights.edublogs.org/files/2010/12/cernland-1fw66oj.jpg"
+	 	screenshot="https://eatoneducationalinsights.edublogs.org/files/2010/12/cernland-1fw66oj.jpg"
 	 	thumbnail="">
 	 	<Require feature="opensocial-0.9" />
 	 </ModulePrefs>
