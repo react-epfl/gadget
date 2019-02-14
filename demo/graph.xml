@@ -10,9 +10,9 @@
   </ModulePrefs>
   <Content type="html"><![CDATA[
 <script type="text/javascript" src="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/open-app/openapp.js"></script>
- <script type="text/javascript" src="http://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js"></script>
+ <script type="text/javascript" src="https://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js"></script>
 	<style>
-	@import "http://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css";
+	@import "https://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css";
 		#container {
 			position: relative;
 			height: 100%;
@@ -51,7 +51,7 @@
 		<input type="button" title="__MSG_clear_desc__" value="__MSG_clear_label__" onClick="clearAll()"> 
 		<input type="button" title="__MSG_tangent_desc__" value="__MSG_tangent_label__" onClick="addTangent()">
 		<input type="button" title="__MSG_derivative_desc__" value="__MSG_derivative_label__" onClick="addDerivative()">	
-		<a href="http://jsxgraph.uni-bayreuth.de/wiki/index.php/Mathematical_functions" target="_blank" class="doc_link">__MSG_how_to__</a>
+		<a href="https://jsxgraph.uni-bayreuth.de/wiki/index.php/Mathematical_functions" target="_blank" class="doc_link">__MSG_how_to__</a>
 	</div>
 	<div id="plot">
 		<div id="jxgbox" style="width:100%; height:100%;"></div>
@@ -60,11 +60,11 @@
 	<script>
 	var board, f, curve; // global objects
 	var ns = {};
-	ns.ical = "http://www.w3.org/2002/12/cal/ical#";
+	ns.ical = "https://www.w3.org/2002/12/cal/ical#";
 	ns.role = "http://purl.org/role/terms/";
 	ns.dcterms = "http://purl.org/dc/terms/";
-	ns.rdfs = "http://www.w3.org/2000/01/rdf-schema#";
-	ns.rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	ns.rdfs = "https://www.w3.org/2000/01/rdf-schema#";
+	ns.rdf = "https://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
  
 	function plotter() {
@@ -83,7 +83,7 @@
 	                }
 	              ],{name:txtraw, withLabel:true});
 		var message = {};
-		message[ns.rdf+"type"] = "http://www.w3.org/1998/Math/MathML#math"; 
+		message[ns.rdf+"type"] = "https://www.w3.org/1998/Math/MathML#math"; 
 		message[ns.dcterms+"title"]=txtraw;
 		message[ns.rdf+"value"]=txtraw;
 		gadgets.openapp.publish({}, message);
@@ -140,7 +140,7 @@
 			if (envelope.source === window) {
 				return;
 			}
-			if (message[ns.rdf+"type"] === "http://www.w3.org/1998/Math/MathML#math") {
+			if (message[ns.rdf+"type"] === "https://www.w3.org/1998/Math/MathML#math") {
 				var el = document.getElementById("input");
 				el.value=message[ns.rdf+"value"];
 				yellow = 0;

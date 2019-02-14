@@ -4,15 +4,15 @@
                 author_email="evgeny.bogdanov@epfl.ch" 
                 author="Christophe Salzmann" 
                 description="Remote lab bundle. It containes few widgets used together for remote lab experimentation at EPFL."
-                thumbnail="http://shindig2.epfl.ch/gadget/demo/remote_lab_ext/thumbnail.png"
-                screenshot="http://shindig2.epfl.ch/gadget/demo/remote_lab_ext/screenshot.png">
+                thumbnail="https://shindig2.epfl.ch/gadget/demo/remote_lab_ext/thumbnail.png"
+                screenshot="https://shindig2.epfl.ch/gadget/demo/remote_lab_ext/screenshot.png">
     <!-- <Require feature="opensocial-0.9" />
     <Require feature="osapi" /> -->
     <Require feature="dynamic-height" />
     <!-- <Require feature="shindig-container" /> -->
     <!-- <Require feature="gadgetcontainer" /> -->
   </ModulePrefs>
-  <Content view="preview" type="url" href="http://shindig2.epfl.ch/gadget/previews/remote_lab.png"/>
+  <Content view="preview" type="url" href="https://shindig2.epfl.ch/gadget/previews/remote_lab.png"/>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
 <style type="text/css">
@@ -23,8 +23,8 @@
   <div id="left" style="width: 50%; position: relative; float: left; top: 0px;"></div>
   <div id="right" style="width: 50%; position: relative; float: left; top: 0px;"></div>
 
-<script type="text/javascript" src="http://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
-<script type="text/javascript" src="http://shindig.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&nocache=1"></script>
+<script type="text/javascript" src="https://d2hv4ldeur9lfv.cloudfront.net/opensocial-jquery-1.3.2.5.min.js"></script>
+<script type="text/javascript" src="https://shindig2.epfl.ch/gadgets/js/shindig-container:rpc.js?c=1&nocache=1"></script>
 
 <script type="text/javascript">
 var isOwner = false;
@@ -48,7 +48,7 @@ var my = {};
 
   shindig.container.layoutManager = new my.LayoutManager();
 
-  var gadgets = [{"appUrl":"http://shindig2.epfl.ch/gadget/remote_experimentation/wi3.xml","parentType":"@space","id":"539","parentId":"336","profileUrl":"http://shindig2.epfl.ch/#item=widget_539","updated":"2011-03-29T09:08:16.000Z","description":"\u003cp\u003etest video streaming from LabVIEW serveur\u003c/p\u003e","objectId":539,"name":"LV video streaming m1","thumbnailUrl":"http://shindig2.epfl.ch/widget/picture/539/thumb/a.mjpg.jpeg","displayName":"LV video streaming m1","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"http://shindig2.epfl.ch/gadget/remote_experimentation/s.xml","parentType":"@space","id":"672","parentId":"336","profileUrl":"http://shindig2.epfl.ch/#item=widget_672","updated":"2011-03-30T19:24:08.000Z","objectId":672,"name":"Slides","thumbnailUrl":"http://shindig2.epfl.ch/widget/picture/672/thumb/Screen_shot_2011-03-30_at_9.23.28_PM.png","displayName":"Slides","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"http://shindig2.epfl.ch/gadget/remote_experimentation/wi.xml","parentType":"@space","id":"673","parentId":"336","profileUrl":"http://shindig2.epfl.ch/#item=widget_673","updated":"2011-04-05T07:15:17.000Z","objectId":673,"name":"Data","thumbnailUrl":"http://shindig2.epfl.ch/widget/picture/673/thumb/Screen_shot_2011-04-05_at_9.14.36_AM.png","displayName":"Data","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"http://shindig2.epfl.ch/gadget/remote_experimentation/b.xml","parentType":"@space","id":"674","parentId":"336","profileUrl":"http://shindig2.epfl.ch/#item=widget_674","updated":"2011-04-05T07:16:07.000Z","objectId":674,"name":"Save RSS","thumbnailUrl":"http://shindig2.epfl.ch/widget/picture/674/thumb/Screen_shot_2011-04-05_at_9.15.39_AM.png","displayName":"Save RSS","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"http://shindig2.epfl.ch/gadget/prod/rss/gadget.xml","parentType":"@space","id":"691","parentId":"336","profileUrl":"http://shindig2.epfl.ch/#item=widget_691","updated":"2011-04-10T19:34:04.000Z","objectId":691,"name":"RSS feed reader","thumbnailUrl":"http://shindig2.epfl.ch/widget/picture/691/thumb/rss.jpg","displayName":"RSS feed reader","appType":"WidgetGadget","filterCapability":{}}]
+  var gadgets = [{"appUrl":"https://shindig2.epfl.ch/gadget/remote_experimentation/wi3.xml","parentType":"@space","id":"539","parentId":"336","profileUrl":"https://shindig2.epfl.ch/#item=widget_539","updated":"2011-03-29T09:08:16.000Z","description":"\u003cp\u003etest video streaming from LabVIEW serveur\u003c/p\u003e","objectId":539,"name":"LV video streaming m1","thumbnailUrl":"https://shindig2.epfl.ch/widget/picture/539/thumb/a.mjpg.jpeg","displayName":"LV video streaming m1","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"https://shindig2.epfl.ch/gadget/remote_experimentation/s.xml","parentType":"@space","id":"672","parentId":"336","profileUrl":"https://shindig2.epfl.ch/#item=widget_672","updated":"2011-03-30T19:24:08.000Z","objectId":672,"name":"Slides","thumbnailUrl":"https://shindig2.epfl.ch/widget/picture/672/thumb/Screen_shot_2011-03-30_at_9.23.28_PM.png","displayName":"Slides","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"https://shindig2.epfl.ch/gadget/remote_experimentation/wi.xml","parentType":"@space","id":"673","parentId":"336","profileUrl":"https://shindig2.epfl.ch/#item=widget_673","updated":"2011-04-05T07:15:17.000Z","objectId":673,"name":"Data","thumbnailUrl":"https://shindig2.epfl.ch/widget/picture/673/thumb/Screen_shot_2011-04-05_at_9.14.36_AM.png","displayName":"Data","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"https://shindig2.epfl.ch/gadget/remote_experimentation/b.xml","parentType":"@space","id":"674","parentId":"336","profileUrl":"https://shindig2.epfl.ch/#item=widget_674","updated":"2011-04-05T07:16:07.000Z","objectId":674,"name":"Save RSS","thumbnailUrl":"https://shindig2.epfl.ch/widget/picture/674/thumb/Screen_shot_2011-04-05_at_9.15.39_AM.png","displayName":"Save RSS","appType":"WidgetGadget","filterCapability":{}},{"appUrl":"https://shindig2.epfl.ch/gadget/prod/rss/gadget.xml","parentType":"@space","id":"691","parentId":"336","profileUrl":"https://shindig2.epfl.ch/#item=widget_691","updated":"2011-04-10T19:34:04.000Z","objectId":691,"name":"RSS feed reader","thumbnailUrl":"https://shindig2.epfl.ch/widget/picture/691/thumb/rss.jpg","displayName":"RSS feed reader","appType":"WidgetGadget","filterCapability":{}}]
 
   build(gadgets);
 
@@ -71,7 +71,7 @@ var build = function(my_gadgets){
     var gadget = shindig.container.createGadget(
         {specUrl: gadget_data.appUrl, height: '400px'});
         
-    gadget.setServerBase("http://shindig.epfl.ch/gadgets/");
+    gadget.setServerBase("https://shindig2.epfl.ch/gadgets/");
 
     shindig.container.addGadget(gadget);
     

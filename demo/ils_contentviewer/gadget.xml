@@ -10,10 +10,10 @@
     </ModulePrefs>
     <Content type="html" view="default,canvas,home,profile">
         <![CDATA[
-            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
-            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/jquery.cookie.js"></script>
-            <script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
-            <script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+            <script type="text/javascript" src="https://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js"></script>
+            <script type="text/javascript" src="https://shindig2.epfl.ch/gadget/libs/jquery.cookie.js"></script>
+            <script type="text/javascript" src="https://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
+            <script type="text/javascript" src="https://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
             
             <script type="text/javascript">
                 var brutContentLength=0;
