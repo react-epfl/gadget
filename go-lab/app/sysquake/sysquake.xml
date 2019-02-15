@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Sysquake"
-	 	title_url="http://www.calerga.com/app/app.sysquake.com/"
+	 	title_url="https://www.calerga.com/app/app.sysquake.com/"
 	 	author="Calerga"
 	 	author_email=""
 	 	description="Matlab in a Google Gadget!"
@@ -19,7 +19,7 @@
 		//load frame
 		function loadFrame()
 		{
-			var srcString = "http://www.calerga.com/app/app.sysquake.com/";
+			var srcString = "https://www.calerga.com/app/app.sysquake.com/";
 			var width = "900";
 			var height = "1100";
 			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
