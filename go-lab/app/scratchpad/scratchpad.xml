@@ -6,10 +6,10 @@
 	author="Uday Kumar Pyda - Sunnyvale, CA"
 	author_email="udaysasi+feedback@gmail.com"
 	author_affiliation="UdaySasi"
-	author_link="http://www.udaysasi.com"
+	author_link="https://udaysasi.blogspot.com/"
 	directory_title="Uday's Scratch Pad"
-	screenshot="http://www.freewebs.com/udaysasi/scratchpadScreenshot.png"
-	thumbnail="http://www.freewebs.com/udaysasi/scratchpadThumbnail.png"	
+	screenshot="https://www.freewebs.com/udaysasi/scratchpadScreenshot.png"
+	thumbnail="https://www.freewebs.com/udaysasi/scratchpadThumbnail.png"	
 >
 	<Require feature="dynamic-height"/>	
 	<!--<Require feature="analytics"/>-->
@@ -119,6 +119,6 @@ _IG_RegisterOnloadHandler(paintScratchpad__MODULE_ID__);
 <p>
 <font size="-1"><div id="scratchpaderrordiv" style="font-family: Arial;"></div></font>
 <hr align="center" size="1" width="100%" noshade>
-<font size="-1" color="#999999"><span id="savetimediv" style="font-family: Arial;">Loading..</span></font>&nbsp;&nbsp;<font size="-1" style="font-family: arial,sans-serif"><a href="http://www.freewebs.com/udaysasi/udaysModules.html" target="gadgetspage">My gadgets</a></font>
+<font size="-1" color="#999999"><span id="savetimediv" style="font-family: Arial;">Loading..</span></font>&nbsp;&nbsp;<font size="-1" style="font-family: arial,sans-serif"><a href="https://www.freewebs.com/udaysasi/udaysModules.html" target="gadgetspage">My gadgets</a></font>
 ]]></Content>
 </Module>
