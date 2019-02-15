@@ -261,11 +261,11 @@ regEl('Lr','Lawrencium','synth', '103','(260)','2,8,18,32,32,9,2','5f14','N/A','
 
 
 var ns = {};
-	ns.role = "http://purl.org/role/terms/";
-	ns.dcterms = "http://purl.org/dc/terms/";
-	ns.rdfs = "http://www.w3.org/2000/01/rdf-schema#";
-	ns.rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-	ns.pt = "http://www.daml.org/2003/01/periodictable/PeriodicTable#";
+	ns.role = "http://purl.org/role/terms/"; // Not available in https
+	ns.dcterms = "http://purl.org/dc/terms/"; // Not available in https
+	ns.rdfs = "https://www.w3.org/2000/01/rdf-schema#";
+	ns.rdf = "https://www.w3.org/1999/02/22-rdf-syntax-ns#";
+	ns.pt = "http://www.daml.org/2003/01/periodictable/PeriodicTable#"; // Not available in https
 
 
 function fillitin(num)  {
@@ -273,7 +273,7 @@ function fillitin(num)  {
   Box = document.pertab
   var info_elem = document.getElementById("info_element");
   info_elem.innerHTML = el.num + " " + el.elem; 
-  info_elem.href = "http://en.wikipedia.org/wiki/"+el.elem; 
+  info_elem.href = "https://en.wikipedia.org/wiki/"+el.elem; 
   document.getElementById("info_who").innerHTML = el.who;
   document.getElementById("info_weight").innerHTML = el.wgt;
   document.getElementById("info_elec").innerHTML = el.elec;
@@ -304,7 +304,7 @@ var sendEvent = function(num) {
   }
   var md = {};
   md[ns.rdf+"type"] = ns.pt+"Element";
-  md[ns.rdfs+"seeAlso"] = "http://en.wikipedia.org/wiki/"+el.elem;
+  md[ns.rdfs+"seeAlso"] = "https://en.wikipedia.org/wiki/"+el.elem;
   md[ns.dcterms+"title"]= el.num + " " + el.elem;
   md[ns.pt+"name"] = el.elem;
   md[ns.pt+"symbol"] = el.label;
@@ -386,121 +386,121 @@ var sendEvent = function(num) {
 </TR>
 
 <TR>
-  <TD title="Hydrogen" title="Hydrogen" class='element gas' id='1'><a href="http://en.wikipedia.org/wiki/Hydrogen"><span class="elementNr">1</span>H</a></TD>
+  <TD title="Hydrogen" title="Hydrogen" class='element gas' id='1'><a href="https://en.wikipedia.org/wiki/Hydrogen"><span class="elementNr">1</span>H</a></TD>
   <TD COLSPAN="16" class="info">
     <label>&nbsp;<tt title="Atomic Weight">A.Weight:</tt><span class="info_value" id="info_weight"></span></label>
     <label><tt>&nbsp;Melt|Boil(C):</TT><span class="info_value" id="info_deg"></span></label>
   </TD>
-  <TD title="Helium" title="Helium" class='element gas' id='2'><a href="http://en.wikipedia.org/wiki/Helium"><span class="elementNr">2</span>He</a></TD>
+  <TD title="Helium" title="Helium" class='element gas' id='2'><a href="https://en.wikipedia.org/wiki/Helium"><span class="elementNr">2</span>He</a></TD>
 </TR>
 
 <TR>
-    <TD title="Lithium" class='element solid' id='3'><a href="http://en.wikipedia.org/wiki/Lithium"><span class="elementNr">3</span>Li</a></TD>
-    <TD title="Beryllium" class='element solid' id='4'><a href="http://en.wikipedia.org/wiki/Beryllium"><span class="elementNr">4</span>Be</a></TD>
+    <TD title="Lithium" class='element solid' id='3'><a href="https://en.wikipedia.org/wiki/Lithium"><span class="elementNr">3</span>Li</a></TD>
+    <TD title="Beryllium" class='element solid' id='4'><a href="https://en.wikipedia.org/wiki/Beryllium"><span class="elementNr">4</span>Be</a></TD>
 <TD COLSPAN="10" class="info">
   <label><TT>&nbsp;Shell:</tt><span class="info_value" id="info_elec"></span></label>
   <label><tt>&nbsp;Isotopes:</tt><span class="info_value" id="info_iso"></label>
 </TD>
-    <TD title="Boron" class='element solid' id='5'><a href="http://en.wikipedia.org/wiki/Boron"><span class="elementNr">5</span>B</a></TD>
-    <TD title="Carbon" class='element solid' id='6'><a href="http://en.wikipedia.org/wiki/Carbon"><span class="elementNr">6</span>C</a></TD>
-    <TD title="Nitrogen" class='element gas' id='7'><a href="http://en.wikipedia.org/wiki/Nitrogen"><span class="elementNr">7</span>N</a></TD>
-    <TD title="Oxygen" class='element gas' id='8'><a href="http://en.wikipedia.org/wiki/Oxygen"><span class="elementNr">8</span>O</a></TD>
-    <TD title="Flourine" class='element gas' id='9'><a href="http://en.wikipedia.org/wiki/Flourine"><span class="elementNr">9</span>F</a></TD>
-    <TD title="Neon" class='element gas' id='10'><a href="http://en.wikipedia.org/wiki/Neon"><span class="elementNr">10</span>Ne</a></TD>
+    <TD title="Boron" class='element solid' id='5'><a href="https://en.wikipedia.org/wiki/Boron"><span class="elementNr">5</span>B</a></TD>
+    <TD title="Carbon" class='element solid' id='6'><a href="https://en.wikipedia.org/wiki/Carbon"><span class="elementNr">6</span>C</a></TD>
+    <TD title="Nitrogen" class='element gas' id='7'><a href="https://en.wikipedia.org/wiki/Nitrogen"><span class="elementNr">7</span>N</a></TD>
+    <TD title="Oxygen" class='element gas' id='8'><a href="https://en.wikipedia.org/wiki/Oxygen"><span class="elementNr">8</span>O</a></TD>
+    <TD title="Flourine" class='element gas' id='9'><a href="https://en.wikipedia.org/wiki/Flourine"><span class="elementNr">9</span>F</a></TD>
+    <TD title="Neon" class='element gas' id='10'><a href="https://en.wikipedia.org/wiki/Neon"><span class="elementNr">10</span>Ne</a></TD>
 </TR>
 
 <TR>
-    <TD title="Sodium" class='element solid' id='11'><a href="http://en.wikipedia.org/wiki/Sodium"><span class="elementNr">11</span>Na</a></TD>
-    <TD title="Magnesium" class='element solid' id='12'><a href="http://en.wikipedia.org/wiki/Magnesium"><span class="elementNr">12</span>Mg</a></TD>	
+    <TD title="Sodium" class='element solid' id='11'><a href="https://en.wikipedia.org/wiki/Sodium"><span class="elementNr">11</span>Na</a></TD>
+    <TD title="Magnesium" class='element solid' id='12'><a href="https://en.wikipedia.org/wiki/Magnesium"><span class="elementNr">12</span>Mg</a></TD>	
     <TD COLSPAN="10" class="info">
       <label>&nbsp;<tt>Orbital:</tt><span class="info_value" id="info_orb"></span></label>
       <label><tt title="Specific Gravity">&nbsp;S.Gravity:</tt><span class="info_value" id="info_grav"></span></label>
     </TD>
-    <TD title="Aluminum" class='element solid' id='13'><a href="http://en.wikipedia.org/wiki/Aluminum"><span class="elementNr">13</span>Al</a></TD>
-    <TD title="Silicon" class='element solid' id='14'><a href="http://en.wikipedia.org/wiki/Silicon"><span class="elementNr">14</span>Si</a></TD>
-    <TD title="Phosphorous" class='element solid' id='15'><a href="http://en.wikipedia.org/wiki/Phosphorous"><span class="elementNr">15</span>P</a></TD>
-    <TD title="Sulfur" class='element solid' id='16'><a href="http://en.wikipedia.org/wiki/Sulfur"><span class="elementNr">16</span>S</a></TD>
-    <TD title="Chlorine" class='element gas' id='17'><a href="http://en.wikipedia.org/wiki/Chlorine"><span class="elementNr">17</span>Cl</a></TD>
-    <TD title="Argon" class='element gas' id='18'><a href="http://en.wikipedia.org/wiki/Argon"><span class="elementNr">18</span>Ar</a></TD>
+    <TD title="Aluminum" class='element solid' id='13'><a href="https://en.wikipedia.org/wiki/Aluminum"><span class="elementNr">13</span>Al</a></TD>
+    <TD title="Silicon" class='element solid' id='14'><a href="https://en.wikipedia.org/wiki/Silicon"><span class="elementNr">14</span>Si</a></TD>
+    <TD title="Phosphorous" class='element solid' id='15'><a href="https://en.wikipedia.org/wiki/Phosphorous"><span class="elementNr">15</span>P</a></TD>
+    <TD title="Sulfur" class='element solid' id='16'><a href="https://en.wikipedia.org/wiki/Sulfur"><span class="elementNr">16</span>S</a></TD>
+    <TD title="Chlorine" class='element gas' id='17'><a href="https://en.wikipedia.org/wiki/Chlorine"><span class="elementNr">17</span>Cl</a></TD>
+    <TD title="Argon" class='element gas' id='18'><a href="https://en.wikipedia.org/wiki/Argon"><span class="elementNr">18</span>Ar</a></TD>
 </TR>
 
 <TR>     	
-    <TD title="Potassium" class='element solid' id='19'><a href="http://en.wikipedia.org/wiki/Potassium"><span class="elementNr">19</span>K</a></TD>
-    <TD title="Calcium" class='element solid' id='20'><a href="http://en.wikipedia.org/wiki/Calcium"><span class="elementNr">20</span>Ca</a></TD>
-    <TD title="Scandium" class='element solid' id='21'><a href="http://en.wikipedia.org/wiki/Scandium"><span class="elementNr">21</span>Sc</a></TD>
-    <TD title="Titanium" class='element solid' id='22'><a href="http://en.wikipedia.org/wiki/Titanium"><span class="elementNr">22</span>Ti</a></TD>
-    <TD title="Vanadium" class='element solid' id='23'><a href="http://en.wikipedia.org/wiki/Vanadium"><span class="elementNr">23</span>V</a></TD>
-    <TD title="Chromium" class='element solid' id='24'><a href="http://en.wikipedia.org/wiki/Chromium"><span class="elementNr">24</span>Cr</a></TD>
-    <TD title="Manganese" class='element solid' id='25'><a href="http://en.wikipedia.org/wiki/Manganese"><span class="elementNr">25</span>Mn</a></TD>
-    <TD title="Iron" class='element solid' id='26'><a href="http://en.wikipedia.org/wiki/Iron"><span class="elementNr">26</span>Fe</a></TD>
-    <TD title="Cobalt" class='element solid' id='27'><a href="http://en.wikipedia.org/wiki/Cobalt"><span class="elementNr">27</span>Co</a></TD>
-    <TD title="Nickel" class='element solid' id='28'><a href="http://en.wikipedia.org/wiki/Nickel"><span class="elementNr">28</span>Ni</a></TD>
-    <TD title="Copper" class='element solid' id='29'><a href="http://en.wikipedia.org/wiki/Copper"><span class="elementNr">29</span>Cu</a></TD>
-    <TD title="Zinc" class='element solid' id='30'><a href="http://en.wikipedia.org/wiki/Zinc"><span class="elementNr">30</span>Zn</a></TD>
-    <TD title="Gallium" class='element solid' id='31'><a href="http://en.wikipedia.org/wiki/Gallium"><span class="elementNr">31</span>Ga</a></TD>
-    <TD title="Germanium" class='element solid' id='32'><a href="http://en.wikipedia.org/wiki/Germanium"><span class="elementNr">32</span>Ge</a></TD>
-    <TD title="Arsenic" class='element solid' id='33'><a href="http://en.wikipedia.org/wiki/Arsenic"><span class="elementNr">33</span>As</a></TD>
-    <TD title="Selenium" class='element solid' id='34'><a href="http://en.wikipedia.org/wiki/Selenium"><span class="elementNr">34</span>Se</a></TD>
-    <TD title="Bromine" class='element liquid' id='35'><a href="http://en.wikipedia.org/wiki/Bromine"><span class="elementNr">35</span>Br</a></TD>
-    <TD title="Krypton" class='element gas' id='36'><a href="http://en.wikipedia.org/wiki/Krypton"><span class="elementNr">36</span>Kr</a></TD>
+    <TD title="Potassium" class='element solid' id='19'><a href="https://en.wikipedia.org/wiki/Potassium"><span class="elementNr">19</span>K</a></TD>
+    <TD title="Calcium" class='element solid' id='20'><a href="https://en.wikipedia.org/wiki/Calcium"><span class="elementNr">20</span>Ca</a></TD>
+    <TD title="Scandium" class='element solid' id='21'><a href="https://en.wikipedia.org/wiki/Scandium"><span class="elementNr">21</span>Sc</a></TD>
+    <TD title="Titanium" class='element solid' id='22'><a href="https://en.wikipedia.org/wiki/Titanium"><span class="elementNr">22</span>Ti</a></TD>
+    <TD title="Vanadium" class='element solid' id='23'><a href="https://en.wikipedia.org/wiki/Vanadium"><span class="elementNr">23</span>V</a></TD>
+    <TD title="Chromium" class='element solid' id='24'><a href="https://en.wikipedia.org/wiki/Chromium"><span class="elementNr">24</span>Cr</a></TD>
+    <TD title="Manganese" class='element solid' id='25'><a href="https://en.wikipedia.org/wiki/Manganese"><span class="elementNr">25</span>Mn</a></TD>
+    <TD title="Iron" class='element solid' id='26'><a href="https://en.wikipedia.org/wiki/Iron"><span class="elementNr">26</span>Fe</a></TD>
+    <TD title="Cobalt" class='element solid' id='27'><a href="https://en.wikipedia.org/wiki/Cobalt"><span class="elementNr">27</span>Co</a></TD>
+    <TD title="Nickel" class='element solid' id='28'><a href="https://en.wikipedia.org/wiki/Nickel"><span class="elementNr">28</span>Ni</a></TD>
+    <TD title="Copper" class='element solid' id='29'><a href="https://en.wikipedia.org/wiki/Copper"><span class="elementNr">29</span>Cu</a></TD>
+    <TD title="Zinc" class='element solid' id='30'><a href="https://en.wikipedia.org/wiki/Zinc"><span class="elementNr">30</span>Zn</a></TD>
+    <TD title="Gallium" class='element solid' id='31'><a href="https://en.wikipedia.org/wiki/Gallium"><span class="elementNr">31</span>Ga</a></TD>
+    <TD title="Germanium" class='element solid' id='32'><a href="https://en.wikipedia.org/wiki/Germanium"><span class="elementNr">32</span>Ge</a></TD>
+    <TD title="Arsenic" class='element solid' id='33'><a href="https://en.wikipedia.org/wiki/Arsenic"><span class="elementNr">33</span>As</a></TD>
+    <TD title="Selenium" class='element solid' id='34'><a href="https://en.wikipedia.org/wiki/Selenium"><span class="elementNr">34</span>Se</a></TD>
+    <TD title="Bromine" class='element liquid' id='35'><a href="https://en.wikipedia.org/wiki/Bromine"><span class="elementNr">35</span>Br</a></TD>
+    <TD title="Krypton" class='element gas' id='36'><a href="https://en.wikipedia.org/wiki/Krypton"><span class="elementNr">36</span>Kr</a></TD>
 </TR>
 
 <TR>
-    <TD title="Rubidium" class='element solid' id='37'><a href="http://en.wikipedia.org/wiki/Rubidium"><span class="elementNr">37</span>Rb</a></TD>
-    <TD title="Strontium" class='element solid' id='38'><a href="http://en.wikipedia.org/wiki/Strontium"><span class="elementNr">38</span>Sr</a></TD>
-    <TD title="Yttrium" class='element solid' id='39'><a href="http://en.wikipedia.org/wiki/Yttrium"><span class="elementNr">39</span>Y</a></TD>
-    <TD title="Zirconium" class='element solid' id='40'><a href="http://en.wikipedia.org/wiki/Zirconium"><span class="elementNr">40</span>Zr</a></TD>
-    <TD title="Niobium" class='element solid' id='41'><a href="http://en.wikipedia.org/wiki/Niobium"><span class="elementNr">41</span>Nb</a></TD>
-    <TD title="Molybdenum" class='element solid' id='42'><a href="http://en.wikipedia.org/wiki/Molybdenum"><span class="elementNr">42</span>Mo</a></TD>
-    <TD title="Technetium" class='element synth' id='43'><a href="http://en.wikipedia.org/wiki/Technetium"><span class="elementNr">43</span>Tc</a></TD>
-    <TD title="Ruthenium" class='element solid' id='44'><a href="http://en.wikipedia.org/wiki/Ruthenium"><span class="elementNr">44</span>Ru</a></TD>
-    <TD title="Rhodium" class='element solid' id='45'><a href="http://en.wikipedia.org/wiki/Rhodium"><span class="elementNr">45</span>Rh</a></TD>
-    <TD title="Palladium" class='element solid' id='46'><a href="http://en.wikipedia.org/wiki/Palladium"><span class="elementNr">46</span>Pd</a></TD>
-    <TD title="Silver" class='element solid' id='47'><a href="http://en.wikipedia.org/wiki/Silver"><span class="elementNr">47</span>Ag</a></TD>
-    <TD title="Cadmium" class='element solid' id='48'><a href="http://en.wikipedia.org/wiki/Cadmium"><span class="elementNr">48</span>Cd</a></TD>
-    <TD title="Indium" class='element solid' id='49'><a href="http://en.wikipedia.org/wiki/Indium"><span class="elementNr">49</span>In</a></TD>
-    <TD title="Tin" class='element solid' id='50'><a href="http://en.wikipedia.org/wiki/Tin"><span class="elementNr">50</span>Sn</a></TD>
-    <TD title="Antimony" class='element solid' id='51'><a href="http://en.wikipedia.org/wiki/Antimony"><span class="elementNr">51</span>Sb</a></TD>
-    <TD title="Tellurium" class='element solid' id='52'><a href="http://en.wikipedia.org/wiki/Tellurium"><span class="elementNr">52</span>Te</a></TD>
-    <TD title="Iodine" class='element solid' id='53'><a href="http://en.wikipedia.org/wiki/Iodine"><span class="elementNr">53</span>I</a></TD>
-    <TD title="Xenon" class='element gas' id='54'><a href="http://en.wikipedia.org/wiki/Xenon"><span class="elementNr">54</span>Xe</a></TD>
+    <TD title="Rubidium" class='element solid' id='37'><a href="https://en.wikipedia.org/wiki/Rubidium"><span class="elementNr">37</span>Rb</a></TD>
+    <TD title="Strontium" class='element solid' id='38'><a href="https://en.wikipedia.org/wiki/Strontium"><span class="elementNr">38</span>Sr</a></TD>
+    <TD title="Yttrium" class='element solid' id='39'><a href="https://en.wikipedia.org/wiki/Yttrium"><span class="elementNr">39</span>Y</a></TD>
+    <TD title="Zirconium" class='element solid' id='40'><a href="https://en.wikipedia.org/wiki/Zirconium"><span class="elementNr">40</span>Zr</a></TD>
+    <TD title="Niobium" class='element solid' id='41'><a href="https://en.wikipedia.org/wiki/Niobium"><span class="elementNr">41</span>Nb</a></TD>
+    <TD title="Molybdenum" class='element solid' id='42'><a href="https://en.wikipedia.org/wiki/Molybdenum"><span class="elementNr">42</span>Mo</a></TD>
+    <TD title="Technetium" class='element synth' id='43'><a href="https://en.wikipedia.org/wiki/Technetium"><span class="elementNr">43</span>Tc</a></TD>
+    <TD title="Ruthenium" class='element solid' id='44'><a href="https://en.wikipedia.org/wiki/Ruthenium"><span class="elementNr">44</span>Ru</a></TD>
+    <TD title="Rhodium" class='element solid' id='45'><a href="https://en.wikipedia.org/wiki/Rhodium"><span class="elementNr">45</span>Rh</a></TD>
+    <TD title="Palladium" class='element solid' id='46'><a href="https://en.wikipedia.org/wiki/Palladium"><span class="elementNr">46</span>Pd</a></TD>
+    <TD title="Silver" class='element solid' id='47'><a href="https://en.wikipedia.org/wiki/Silver"><span class="elementNr">47</span>Ag</a></TD>
+    <TD title="Cadmium" class='element solid' id='48'><a href="https://en.wikipedia.org/wiki/Cadmium"><span class="elementNr">48</span>Cd</a></TD>
+    <TD title="Indium" class='element solid' id='49'><a href="https://en.wikipedia.org/wiki/Indium"><span class="elementNr">49</span>In</a></TD>
+    <TD title="Tin" class='element solid' id='50'><a href="https://en.wikipedia.org/wiki/Tin"><span class="elementNr">50</span>Sn</a></TD>
+    <TD title="Antimony" class='element solid' id='51'><a href="https://en.wikipedia.org/wiki/Antimony"><span class="elementNr">51</span>Sb</a></TD>
+    <TD title="Tellurium" class='element solid' id='52'><a href="https://en.wikipedia.org/wiki/Tellurium"><span class="elementNr">52</span>Te</a></TD>
+    <TD title="Iodine" class='element solid' id='53'><a href="https://en.wikipedia.org/wiki/Iodine"><span class="elementNr">53</span>I</a></TD>
+    <TD title="Xenon" class='element gas' id='54'><a href="https://en.wikipedia.org/wiki/Xenon"><span class="elementNr">54</span>Xe</a></TD>
 </TR>
 
 <TR>
-    <TD title="Cesium" class='element solid' id='55'><a href="http://en.wikipedia.org/wiki/Cesium"><span class="elementNr">55</span>Cs</a></TD>
-    <TD title="Barium" class='element solid' id='56'><a href="http://en.wikipedia.org/wiki/Barium"><span class="elementNr">56</span>Ba</a></TD>
-    <TD title="Lanthanum" class='element solid' id='57'><a href="http://en.wikipedia.org/wiki/Lanthanum"><span class="elementNr">57</span>La</a></TD>
-    <TD title="Hafnium" class='element solid' id='72'><a href="http://en.wikipedia.org/wiki/Hafnium"><span class="elementNr">72</span>Hf</a></TD>
-    <TD title="Tantalum" class='element solid' id='73'><a href="http://en.wikipedia.org/wiki/Tantalum"><span class="elementNr">73</span>Ta</a></TD>
-    <TD title="Tungsten" class='element solid' id='74'><a href="http://en.wikipedia.org/wiki/Tungsten"><span class="elementNr">74</span>W</a></TD>
-    <TD title="Rhenium" class='element solid' id='75'><a href="http://en.wikipedia.org/wiki/Rhenium"><span class="elementNr">75</span>Re</a></TD>
-    <TD title="Osmium" class='element solid' id='76'><a href="http://en.wikipedia.org/wiki/Osmium"><span class="elementNr">76</span>Os</a></TD>
-    <TD title="Iridium" class='element solid' id='77'><a href="http://en.wikipedia.org/wiki/Iridium"><span class="elementNr">77</span>Ir</a></TD>
-    <TD title="Platinum" class='element solid' id='78'><a href="http://en.wikipedia.org/wiki/Platinum"><span class="elementNr">78</span>Pt</a></TD>
-    <TD title="Gold" class='element solid' id='79'><a href="http://en.wikipedia.org/wiki/Gold"><span class="elementNr">79</span>Au</a></TD>
-    <TD title="Mercury" class='element liquid' id='80'><a href="http://en.wikipedia.org/wiki/Mercury"><span class="elementNr">80</span>Hg</a></TD>
-    <TD title="Thallium" class='element solid' id='81'><a href="http://en.wikipedia.org/wiki/Thallium"><span class="elementNr">81</span>Tl</a></TD>
-    <TD title="Lead" class='element solid' id='82'><a href="http://en.wikipedia.org/wiki/Lead"><span class="elementNr">82</span>Pb</a></TD>
-    <TD title="Bismuth" class='element solid' id='83'><a href="http://en.wikipedia.org/wiki/Bismuth"><span class="elementNr">83</span>Bi</a></TD>
-    <TD title="Polonium" class='element solid' id='84'><a href="http://en.wikipedia.org/wiki/Polonium"><span class="elementNr">84</span>Po</a></TD>
-    <TD title="Astatine" class='element solid' id='85'><a href="http://en.wikipedia.org/wiki/Astatine"><span class="elementNr">85</span>At</a></TD>
-    <TD title="Radon" class='element gas' id='86'><a href="http://en.wikipedia.org/wiki/Radon"><span class="elementNr">86</span>Rn</a></TD>        
+    <TD title="Cesium" class='element solid' id='55'><a href="https://en.wikipedia.org/wiki/Cesium"><span class="elementNr">55</span>Cs</a></TD>
+    <TD title="Barium" class='element solid' id='56'><a href="https://en.wikipedia.org/wiki/Barium"><span class="elementNr">56</span>Ba</a></TD>
+    <TD title="Lanthanum" class='element solid' id='57'><a href="https://en.wikipedia.org/wiki/Lanthanum"><span class="elementNr">57</span>La</a></TD>
+    <TD title="Hafnium" class='element solid' id='72'><a href="https://en.wikipedia.org/wiki/Hafnium"><span class="elementNr">72</span>Hf</a></TD>
+    <TD title="Tantalum" class='element solid' id='73'><a href="https://en.wikipedia.org/wiki/Tantalum"><span class="elementNr">73</span>Ta</a></TD>
+    <TD title="Tungsten" class='element solid' id='74'><a href="https://en.wikipedia.org/wiki/Tungsten"><span class="elementNr">74</span>W</a></TD>
+    <TD title="Rhenium" class='element solid' id='75'><a href="https://en.wikipedia.org/wiki/Rhenium"><span class="elementNr">75</span>Re</a></TD>
+    <TD title="Osmium" class='element solid' id='76'><a href="https://en.wikipedia.org/wiki/Osmium"><span class="elementNr">76</span>Os</a></TD>
+    <TD title="Iridium" class='element solid' id='77'><a href="https://en.wikipedia.org/wiki/Iridium"><span class="elementNr">77</span>Ir</a></TD>
+    <TD title="Platinum" class='element solid' id='78'><a href="https://en.wikipedia.org/wiki/Platinum"><span class="elementNr">78</span>Pt</a></TD>
+    <TD title="Gold" class='element solid' id='79'><a href="https://en.wikipedia.org/wiki/Gold"><span class="elementNr">79</span>Au</a></TD>
+    <TD title="Mercury" class='element liquid' id='80'><a href="https://en.wikipedia.org/wiki/Mercury"><span class="elementNr">80</span>Hg</a></TD>
+    <TD title="Thallium" class='element solid' id='81'><a href="https://en.wikipedia.org/wiki/Thallium"><span class="elementNr">81</span>Tl</a></TD>
+    <TD title="Lead" class='element solid' id='82'><a href="https://en.wikipedia.org/wiki/Lead"><span class="elementNr">82</span>Pb</a></TD>
+    <TD title="Bismuth" class='element solid' id='83'><a href="https://en.wikipedia.org/wiki/Bismuth"><span class="elementNr">83</span>Bi</a></TD>
+    <TD title="Polonium" class='element solid' id='84'><a href="https://en.wikipedia.org/wiki/Polonium"><span class="elementNr">84</span>Po</a></TD>
+    <TD title="Astatine" class='element solid' id='85'><a href="https://en.wikipedia.org/wiki/Astatine"><span class="elementNr">85</span>At</a></TD>
+    <TD title="Radon" class='element gas' id='86'><a href="https://en.wikipedia.org/wiki/Radon"><span class="elementNr">86</span>Rn</a></TD>        
 </TR>
 <TR>
-    <TD title="Francium" class='element solid' id='87'><a href="http://en.wikipedia.org/wiki/Francium"><span class="elementNr">87</span>Fr</a></TD>
-    <TD title="Radium" class='element solid' id='88'><a href="http://en.wikipedia.org/wiki/Radium"><span class="elementNr">88</span>Ra</a></TD>
-    <TD title="Actinium" class='element solid' id='89'><a href="http://en.wikipedia.org/wiki/Actinium"><span class="elementNr">89</span>Ac</a></TD>
-    <TD title="Rutherfordium" class='element synth' id='104'><a href="http://en.wikipedia.org/wiki/Rutherfordium"><span class="elementNr">104</span>Rh</a></TD>
-    <TD title="Dubnium" class='element synth' id='105'><a href="http://en.wikipedia.org/wiki/Dubnium"><span class="elementNr">105</span>Db</a></TD>
-    <TD title="Seaborgium" class='element synth' id='106'><a href="http://en.wikipedia.org/wiki/Seaborgium"><span class="elementNr">106</span>Sg</a></TD>
-    <TD title="Bohrium" class='element synth' id='107'><a href="http://en.wikipedia.org/wiki/Bohrium"><span class="elementNr">107</span>Bh</a></TD>
-    <TD title="Hassium" class='element synth' id='108'><a href="http://en.wikipedia.org/wiki/Hassium"><span class="elementNr">108</span>Hs</A></TD>
-    <TD title="Meitnerium" class='element synth' id='109'><a href="http://en.wikipedia.org/wiki/Meitnerium"><span class="elementNr">109</span>Mt</A></TD>
-    <TD title="Ununnilium" class='element synth' id='110'><a href="http://en.wikipedia.org/wiki/Ununnilium"><span class="elementNr">110</span>Uun</A></TD>
-    <TD title="Unununium" class='element synth' id='111'><a href="http://en.wikipedia.org/wiki/Unununium"><span class="elementNr">111</span>Uuu</A></TD>
-    <TD title="Ununbium" class='element synth' id='112'><a href="http://en.wikipedia.org/wiki/Ununbium"><span class="elementNr">112</span>Uub</A></TD>
-    <TD title="Ununtrium" class='element synth' id='113'><a href="http://en.wikipedia.org/wiki/Ununtrium"><span class="elementNr">113</span>Uut</A></TD>
-    <TD title="Ununquadium" class='element synth' id='114'><a href="http://en.wikipedia.org/wiki/Ununquadium"><span class="elementNr">114</span>Uuq</A></TD>
+    <TD title="Francium" class='element solid' id='87'><a href="https://en.wikipedia.org/wiki/Francium"><span class="elementNr">87</span>Fr</a></TD>
+    <TD title="Radium" class='element solid' id='88'><a href="https://en.wikipedia.org/wiki/Radium"><span class="elementNr">88</span>Ra</a></TD>
+    <TD title="Actinium" class='element solid' id='89'><a href="https://en.wikipedia.org/wiki/Actinium"><span class="elementNr">89</span>Ac</a></TD>
+    <TD title="Rutherfordium" class='element synth' id='104'><a href="https://en.wikipedia.org/wiki/Rutherfordium"><span class="elementNr">104</span>Rh</a></TD>
+    <TD title="Dubnium" class='element synth' id='105'><a href="https://en.wikipedia.org/wiki/Dubnium"><span class="elementNr">105</span>Db</a></TD>
+    <TD title="Seaborgium" class='element synth' id='106'><a href="https://en.wikipedia.org/wiki/Seaborgium"><span class="elementNr">106</span>Sg</a></TD>
+    <TD title="Bohrium" class='element synth' id='107'><a href="https://en.wikipedia.org/wiki/Bohrium"><span class="elementNr">107</span>Bh</a></TD>
+    <TD title="Hassium" class='element synth' id='108'><a href="https://en.wikipedia.org/wiki/Hassium"><span class="elementNr">108</span>Hs</A></TD>
+    <TD title="Meitnerium" class='element synth' id='109'><a href="https://en.wikipedia.org/wiki/Meitnerium"><span class="elementNr">109</span>Mt</A></TD>
+    <TD title="Ununnilium" class='element synth' id='110'><a href="https://en.wikipedia.org/wiki/Ununnilium"><span class="elementNr">110</span>Uun</A></TD>
+    <TD title="Unununium" class='element synth' id='111'><a href="https://en.wikipedia.org/wiki/Unununium"><span class="elementNr">111</span>Uuu</A></TD>
+    <TD title="Ununbium" class='element synth' id='112'><a href="https://en.wikipedia.org/wiki/Ununbium"><span class="elementNr">112</span>Uub</A></TD>
+    <TD title="Ununtrium" class='element synth' id='113'><a href="https://en.wikipedia.org/wiki/Ununtrium"><span class="elementNr">113</span>Uut</A></TD>
+    <TD title="Ununquadium" class='element synth' id='114'><a href="https://en.wikipedia.org/wiki/Ununquadium"><span class="elementNr">114</span>Uuq</A></TD>
     <TD COLSPAN="4"></TD>
 </TR>
 
@@ -508,38 +508,38 @@ var sendEvent = function(num) {
 
 <TR>
 <TD COLSPAN="3" class="row">lanthanons</TD>
-    <TD title="Cerium" class='element solid' id='58'><a href="http://en.wikipedia.org/wiki/Cerium"><span class='elementNr'>58</span>Ce</a></TD>
-    <TD title="Praseodymium" class='element solid' id='59'><a href="http://en.wikipedia.org/wiki/Praseodymium"><span class='elementNr'>59</span>Pr</a></TD>
-    <TD title="Neodymium" class='element solid' id='60'><a href="http://en.wikipedia.org/wiki/Neodymium"><span class='elementNr'>60</span>Nd</a></TD>
-    <TD title="Promethium" class='element solid' id='61'><a href="http://en.wikipedia.org/wiki/Promethium"><span class='elementNr'>61</span>Pm</a></TD>
-    <TD title="Samarium" class='element solid' id='62'><a href="http://en.wikipedia.org/wiki/Samarium"><span class='elementNr'>62</span>Sm</a></TD>
-    <TD title="Europium" class='element solid' id='63'><a href="http://en.wikipedia.org/wiki/Europium"><span class='elementNr'>53</span>Eu</a></TD>
-    <TD title="Gadolinium" class='element solid' id='64'><a href="http://en.wikipedia.org/wiki/Gadolinium"><span class='elementNr'>64</span>Gd</a></TD>
-    <TD title="Terbium" class='element solid' id='65'><a href="http://en.wikipedia.org/wiki/Terbium"><span class='elementNr'>65</span>Tb</a></TD>
-    <TD title="Dysprosium" class='element solid' id='66'><a href="http://en.wikipedia.org/wiki/Dysprosium"><span class='elementNr'>66</span>Dy</a></TD>
-    <TD title="Holmium" class='element solid' id='67'><a href="http://en.wikipedia.org/wiki/Holmium"><span class='elementNr'>67</span>Ho</a></TD>
-    <TD title="Erbium" class='element solid' id='68'><a href="http://en.wikipedia.org/wiki/Erbium"><span class='elementNr'>68</span>Er</a></TD>
-    <TD title="Thulium" class='element solid' id='69'><a href="http://en.wikipedia.org/wiki/Thulium"><span class='elementNr'>69</span>Tm</a></TD>
-    <TD title="Ytterbium" class='element solid' id='70'><a href="http://en.wikipedia.org/wiki/Ytterbium"><span class='elementNr'>70</span>Yb</a></TD>
-    <TD title="Lutetium" class='element solid' id='71'><a href="http://en.wikipedia.org/wiki/Lutetium"><span class='elementNr'>71</span>Lu</a></TD>	
+    <TD title="Cerium" class='element solid' id='58'><a href="https://en.wikipedia.org/wiki/Cerium"><span class='elementNr'>58</span>Ce</a></TD>
+    <TD title="Praseodymium" class='element solid' id='59'><a href="https://en.wikipedia.org/wiki/Praseodymium"><span class='elementNr'>59</span>Pr</a></TD>
+    <TD title="Neodymium" class='element solid' id='60'><a href="https://en.wikipedia.org/wiki/Neodymium"><span class='elementNr'>60</span>Nd</a></TD>
+    <TD title="Promethium" class='element solid' id='61'><a href="https://en.wikipedia.org/wiki/Promethium"><span class='elementNr'>61</span>Pm</a></TD>
+    <TD title="Samarium" class='element solid' id='62'><a href="https://en.wikipedia.org/wiki/Samarium"><span class='elementNr'>62</span>Sm</a></TD>
+    <TD title="Europium" class='element solid' id='63'><a href="https://en.wikipedia.org/wiki/Europium"><span class='elementNr'>53</span>Eu</a></TD>
+    <TD title="Gadolinium" class='element solid' id='64'><a href="https://en.wikipedia.org/wiki/Gadolinium"><span class='elementNr'>64</span>Gd</a></TD>
+    <TD title="Terbium" class='element solid' id='65'><a href="https://en.wikipedia.org/wiki/Terbium"><span class='elementNr'>65</span>Tb</a></TD>
+    <TD title="Dysprosium" class='element solid' id='66'><a href="https://en.wikipedia.org/wiki/Dysprosium"><span class='elementNr'>66</span>Dy</a></TD>
+    <TD title="Holmium" class='element solid' id='67'><a href="https://en.wikipedia.org/wiki/Holmium"><span class='elementNr'>67</span>Ho</a></TD>
+    <TD title="Erbium" class='element solid' id='68'><a href="https://en.wikipedia.org/wiki/Erbium"><span class='elementNr'>68</span>Er</a></TD>
+    <TD title="Thulium" class='element solid' id='69'><a href="https://en.wikipedia.org/wiki/Thulium"><span class='elementNr'>69</span>Tm</a></TD>
+    <TD title="Ytterbium" class='element solid' id='70'><a href="https://en.wikipedia.org/wiki/Ytterbium"><span class='elementNr'>70</span>Yb</a></TD>
+    <TD title="Lutetium" class='element solid' id='71'><a href="https://en.wikipedia.org/wiki/Lutetium"><span class='elementNr'>71</span>Lu</a></TD>	
 	<TD class='element'>&nbsp;</TD>        
 </TR>        
 <TR>
 <TD COLSPAN="3" class="row">actinons</TD>
-    <TD title="Thorium" class='element solid' id='90'><a href="http://en.wikipedia.org/wiki/Thorium"><span class='elementNr'>90</span>Th</a></TD>
-    <TD title="Proactinium" class='element solid' id='91'><a href="http://en.wikipedia.org/wiki/Proactinium"><span class='elementNr'>91</span>Pa</a></TD>
-    <TD title="Uranium" class='element solid' id='92'><a href="http://en.wikipedia.org/wiki/Uranium"><span class='elementNr'>92</span>U</a></TD>
-    <TD title="Neptunium" class='element synth' id='93'><a href="http://en.wikipedia.org/wiki/Neptunium"><span class='elementNr'>93</span>Np</a></TD>
-    <TD title="Plutonium" class='element synth' id='94'><a href="http://en.wikipedia.org/wiki/Plutonium"><span class='elementNr'>94</span>Pu</a></TD>
-    <TD title="Americium" class='element synth' id='95'><a href="http://en.wikipedia.org/wiki/Americium"><span class='elementNr'>95</span>Am</a></TD>
-    <TD title="Curium" class='element synth' id='96'><a href="http://en.wikipedia.org/wiki/Curium"><span class='elementNr'>96</span>Cm</a></TD>
-    <TD title="Berkelium" class='element synth' id='97'><a href="http://en.wikipedia.org/wiki/Berkelium"><span class='elementNr'>97</span>Bk</a></TD>
-    <TD title="Californium" class='element synth' id='98'><a href="http://en.wikipedia.org/wiki/Californium"><span class='elementNr'>98</span>Cf</a></TD>
-    <TD title="Einsteinium" class='element synth' id='99'><a href="http://en.wikipedia.org/wiki/Einsteinium"><span class='elementNr'>99</span>Es</a></TD>
-    <TD title="Fermium" class='element synth' id='100'><a href="http://en.wikipedia.org/wiki/Fermium"><span class='elementNr'>100</span>Fm</a></TD>
-    <TD title="Mendelevium" class='element synth' id='101'><a href="http://en.wikipedia.org/wiki/Mendelevium"><span class='elementNr'>101</span>Md</a></TD>
-    <TD title="Nobelium" class='element synth' id='102'><a href="http://en.wikipedia.org/wiki/Nobelium"><span class='elementNr'>102</span>No</a></TD>
-    <TD title="Lawrencium" class='element synth' id='103'><a href="http://en.wikipedia.org/wiki/Lawrencium"><span class='elementNr'>103</span>Lr</a></TD>
+    <TD title="Thorium" class='element solid' id='90'><a href="https://en.wikipedia.org/wiki/Thorium"><span class='elementNr'>90</span>Th</a></TD>
+    <TD title="Proactinium" class='element solid' id='91'><a href="https://en.wikipedia.org/wiki/Proactinium"><span class='elementNr'>91</span>Pa</a></TD>
+    <TD title="Uranium" class='element solid' id='92'><a href="https://en.wikipedia.org/wiki/Uranium"><span class='elementNr'>92</span>U</a></TD>
+    <TD title="Neptunium" class='element synth' id='93'><a href="https://en.wikipedia.org/wiki/Neptunium"><span class='elementNr'>93</span>Np</a></TD>
+    <TD title="Plutonium" class='element synth' id='94'><a href="https://en.wikipedia.org/wiki/Plutonium"><span class='elementNr'>94</span>Pu</a></TD>
+    <TD title="Americium" class='element synth' id='95'><a href="https://en.wikipedia.org/wiki/Americium"><span class='elementNr'>95</span>Am</a></TD>
+    <TD title="Curium" class='element synth' id='96'><a href="https://en.wikipedia.org/wiki/Curium"><span class='elementNr'>96</span>Cm</a></TD>
+    <TD title="Berkelium" class='element synth' id='97'><a href="https://en.wikipedia.org/wiki/Berkelium"><span class='elementNr'>97</span>Bk</a></TD>
+    <TD title="Californium" class='element synth' id='98'><a href="https://en.wikipedia.org/wiki/Californium"><span class='elementNr'>98</span>Cf</a></TD>
+    <TD title="Einsteinium" class='element synth' id='99'><a href="https://en.wikipedia.org/wiki/Einsteinium"><span class='elementNr'>99</span>Es</a></TD>
+    <TD title="Fermium" class='element synth' id='100'><a href="https://en.wikipedia.org/wiki/Fermium"><span class='elementNr'>100</span>Fm</a></TD>
+    <TD title="Mendelevium" class='element synth' id='101'><a href="https://en.wikipedia.org/wiki/Mendelevium"><span class='elementNr'>101</span>Md</a></TD>
+    <TD title="Nobelium" class='element synth' id='102'><a href="https://en.wikipedia.org/wiki/Nobelium"><span class='elementNr'>102</span>No</a></TD>
+    <TD title="Lawrencium" class='element synth' id='103'><a href="https://en.wikipedia.org/wiki/Lawrencium"><span class='elementNr'>103</span>Lr</a></TD>
 	<TD class='element'>&nbsp;</TD>        
 </TR>
 </TABLE>
