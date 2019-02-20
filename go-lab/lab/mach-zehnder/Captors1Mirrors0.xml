@@ -10,10 +10,10 @@
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="http://www.jasondavies.com/animated-bezier/media/js/jquery.min.js"></script>
-    <script src="http://www.jasondavies.com/animated-bezier/media/js/d3.v2.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://www.jasondavies.com/animated-bezier/media/js/jquery.min.js"></script>
+    <script src="https://www.jasondavies.com/animated-bezier/media/js/d3.v2.min.js"></script>
 <div id="vis">
   <div id="compteur1" class="unselectable"></div>
   <div id="compteur" class="unselectable"></div>

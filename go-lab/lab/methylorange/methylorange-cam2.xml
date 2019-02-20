@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="Methyl Orange - Web cam Reactor"
-	 	title_url="http://www.chem.vu.nl/en/voor-het-vwo/scheikunde-experiment/"
+	 	title_url="https://www.chem.vu.nl/en/voor-het-vwo/scheikunde-experiment/"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="Welcome to the online chemistry experiment. In this experiment you will synthesize methyl orange. Methyl orange is used as a dye in the textile industry. It is also used as an indicator for acid-base reactions. Methyl orange is an azoic color. The problem is that there are indications that these colors are carcinogenic and therefore controversial in the industry. The question is, how can we produce methyl orange in small scale and also produce a high yield and thereby reducing the possible risks? In this experiment you will try to produce high yields of methyl orange by flow chemistry."
 	 	height="530"
-	 	screenshot="http://www.chem.vu.nl/en/Images/online%20sk%20exp_tcm66-262313.jpg"
-	 	thumbnail="http://www.chem.vu.nl/en/Images/online%20sk%20exp_tcm66-262313.jpg">
+	 	screenshot="https://www.chem.vu.nl/en/Images/online%20sk%20exp_tcm66-262313.jpg"
+	 	thumbnail="https://www.chem.vu.nl/en/Images/online%20sk%20exp_tcm66-262313.jpg">
 	 </ModulePrefs>
 	 <Content type="html">
 	 <![CDATA[
