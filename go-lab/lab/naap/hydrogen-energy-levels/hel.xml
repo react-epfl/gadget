@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Hydro Energy Levels Lab"
-	 	title_url="http://astro.unl.edu/naap/hydrogen/hydrogen.html"
+	 	title_url="https://astro.unl.edu/naap/hydrogen/hydrogen.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Hydrogen Energy Levels Lab introduces the concept of how quantum mechanics and light relate with respect to the Hydrogen atom. The Energy Levels simulator allows dynamic interaction with a Bohr model version of a single Hydrogen atom. The Thermal Distribution histogram gives a temperature dependent plot of occupied states for many, many atoms."
 	 	height="640"
 	 	screenshot="hel-screenshot.png"
-	 	thumbnail="http://astro.unl.edu/naap/hydrogen/graphics/hydrogen_screen1.png">
+	 	thumbnail="https://astro.unl.edu/naap/hydrogen/graphics/hydrogen_screen1.png">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/hydrogen/animations/hydrogen_atom.swf";
+		    var url = "https://astro.unl.edu/naap/hydrogen/animations/hydrogen_atom.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

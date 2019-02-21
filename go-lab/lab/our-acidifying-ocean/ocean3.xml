@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Our Acidifying Ocean - Part 3"
-	 	title_url="http://i2i.stanford.edu/AcidOcean/AcidOcean.htm"
+	 	title_url="https://i2sea.stanford.edu/AcidOcean/AcidOcean.htm"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts+lhcgame@gmail.com"
 	 	description="Explore the chemistry of ocean acidification and its impacts on sea urchin larvae through interactive models, a virtual lab bench, and a microscope measurement tool."
@@ -33,15 +33,15 @@
 				swf = "Graphing_Es.swf";
 			}
 
-		    var url = "http://i2i.stanford.edu/AcidOcean/"+swf;
+		    var url = "https://i2sea.stanford.edu/AcidOcean/"+swf;
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", 9, {
-		      	'codebase': 'http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0',
+		      	'codebase': 'https://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0',
 				'width': '100%',
 				'height': '100%',
 				'quality': 'high',
-				'pluginspage': 'http://www.macromedia.com/go/getflashplayer',
+				'pluginspage': 'https://get.adobe.com/flashplayer/',
 				'align': 'TL',
 				'play': 'true',
 				'loop': 'true',

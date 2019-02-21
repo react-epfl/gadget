@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Cosmic Distance Ladder Lab - Supernova Light Curve Fitting Explorer"
-	 	title_url="http://astro.unl.edu/naap/distance/distance.html"
+	 	title_url="https://astro.unl.edu/naap/distance/distance.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Cosmic Distance Ladder lab introduces a few of the primary methods used by astronomers to determine astronomical distances. Parallax is introduced first, specroscopic parallax, main sequence fitting, variable stars, and supernova are all discussed."
 	 	height="620"
 	 	screenshot="cdl-screenshot-4.png"
-	 	thumbnail="http://astro.unl.edu/naap/distance/graphics/distance_screen1.png">
+	 	thumbnail="https://astro.unl.edu/naap/distance/graphics/distance_screen1.png">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/distance/animations/snCurveExplorer.swf";
+		    var url = "https://astro.unl.edu/naap/distance/animations/snCurveExplorer.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

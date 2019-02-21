@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Basic Coordinates and Seasons Lab"
-	 	title_url="http://astro.unl.edu/naap/motion1/motion1.html"
+	 	title_url="https://astro.unl.edu/naap/motion1/motion1.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Basic Coordinates and Seasons Lab covers three different, but related areas. Terrestrial coordinates and the celestial equatorial coordinate system are covered and are used to explore the motion of the sun and how it relates to seasons."
 	 	height="710"
 	 	screenshot="bcas-screenshot.png"
-	 	thumbnail="http://astro.unl.edu/naap/motion1/animations/seasons_ecliptic_300.jpg">
+	 	thumbnail="https://astro.unl.edu/naap/motion1/animations/seasons_ecliptic_300.jpg">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/motion1/animations/seasons_ecliptic.swf";
+		    var url = "https://astro.unl.edu/naap/motion1/animations/seasons_ecliptic.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

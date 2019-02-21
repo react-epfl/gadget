@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Eclipsing Binary Stars Lab"
-	 	title_url="http://astro.unl.edu/naap/ebs/ebs.html"
+	 	title_url="https://astro.unl.edu/naap/ebs/ebs.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Eclipsing Binary Stars Lab demonstrates how information about stars which can not be directly observed can be inferred from a special class of binary stars – eclipsing binaries."
 	 	height="710"
 	 	screenshot="pss-screenshot.png"
-	 	thumbnail="http://astro.unl.edu/naap/ebs/graphics/ebs_screen1.png">
+	 	thumbnail="https://astro.unl.edu/naap/ebs/graphics/ebs_screen1.png">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/ebs/animations/ebs.swf";
+		    var url = "https://astro.unl.edu/naap/ebs/animations/ebs.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

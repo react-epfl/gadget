@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Star in a Box"
-	 	title_url="http://lcogt.net/education/starinabox"
+	 	title_url="https://lco.global/education/starinabox/"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts+starinabox@gmail.com"
 	 	description="Star in a Box is an interactive webapp which animates stars with different starting masses as they change during their lives. Some stars live fast-paced, dramatic lives, others change very little for billions of years. The webapp visualises the changes in mass, size, brightness and temperature for all these different stages."
@@ -36,7 +36,7 @@
 		 	}
 		</style>
 		<div> 
-			<a href="http://lcogt.net/siab/" target="_blank" class="button">__MSG_open_lab__</a>
+			<a href="https://starinabox.lco.global/" target="_blank" class="button">__MSG_open_lab__</a>
 		</div>
 	 ]]>
 	 </Content>

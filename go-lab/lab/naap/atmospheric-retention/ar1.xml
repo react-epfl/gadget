@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Atmospheric Retention Lab - Gas Retention Simulator"
-	 	title_url="http://astro.unl.edu/naap/atmosphere/atmosphere.html"
+	 	title_url="https://astro.unl.edu/naap/atmosphere/atmosphere.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Atmospheric Retention Lab explores some of the elements that go into the retention or loss of an atmosphere by a planet. The Maxwell-Boltzmann velocity distribution and escape velocity are introduced."
 	 	height="650"
 	 	screenshot="ar-screenshot-1.png"
-	 	thumbnail="http://astro.unl.edu/naap/atmosphere/graphics/atmosphere_screen1.png">
+	 	thumbnail="https://astro.unl.edu/naap/atmosphere/graphics/atmosphere_screen1.png">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/atmosphere/animations/gasRetentionSimulator.swf";
+		    var url = "https://astro.unl.edu/naap/atmosphere/animations/gasRetentionSimulator.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {
