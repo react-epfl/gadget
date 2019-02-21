@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="Light Grapher"
-	 	title_url="http://kepler.nasa.gov/multimedia/Interactives/#"
+	 	title_url="https://kepler.nasa.gov/multimedia/Interactives/#"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="LightGrapher is a Flash applet that turns your webcam or built-in computer camera into a makeshift light sensor to display graphically the brightness of a model star (a lightbulb or even light-colored ball). When a [darker-colored] planet passes in front of the star, the brightness drops and a dip in the graph occurs. The software receives real-time data from the external webcam or internal computer camera. It may be run either directly from this page or downloaded and run locally in your browser. "
 	 	height="550"
 	 	screenshot="lg-screenshot.png"
-	 	thumbnail="http://kepler.nasa.gov/images/mws/lightgrapher.jpg">
+	 	thumbnail="https://kepler.nasa.gov/images/mws/lightgrapher.jpg">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://kepler.nasa.gov/multimedia/Interactives/lightgrapher/lightgrapher.swf";
+		    var url = "https://kepler.nasa.gov/multimedia/Interactives/lightgrapher/lightgrapher.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

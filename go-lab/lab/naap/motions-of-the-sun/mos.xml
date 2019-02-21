@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Motions of the Sun"
-	 	title_url="http://astro.unl.edu/naap/motion3/motion3.html"
+	 	title_url="https://astro.unl.edu/naap/motion3/motion3.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Motions of the Sun Lab reviews some of the material from the Basic Coordinates and Seasons Lab and The Rotating Sky Lab and adds information to put all the pieces together for a more complete description of the motions of the sun. Computation of meridional altitude and stellar visibility are also introduced."
 	 	height="680"
 	 	screenshot="mos-screenshot.png"
-	 	thumbnail="http://astro.unl.edu/naap/motion3/animations/sunmotions_300.jpg">
+	 	thumbnail="https://astro.unl.edu/naap/motion3/animations/sunmotions_300.jpg">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/motion3/animations/sunmotions.swf";
+		    var url = "https://astro.unl.edu/naap/motion3/animations/sunmotions.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

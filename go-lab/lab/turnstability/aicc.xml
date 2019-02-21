@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Turn Stability"
-	 	title_url="http://sim01.cti.ac.at/html/longjump/long_jump_simulation1.files/users/pester/longjump.html"
+	 	title_url="https://sim01.cti.ac.at/html/longjump/long_jump_simulation1.files/users/pester/longjump.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="If a moving object is not exposed to any force, it moves with a constant speed and along a straight line. To move an object -for example a car- along a curve a centripetal force is needed to pull it out of the straight path. This force is brought up by the frictional force of the tires on the streets surface. As physical forces always come up in pairs, the counter part of centripetal force is the centrifugal force. It is as strong as the centripedal force. It is used to describe why, a passenger feels like being pulled to the outer side of a car going around a curve. In fact the frictional force of the tires is limited. If you're going too fast through a tight turn, the tires may lose grip, because the limit has been exceeded. At the moment the tires lose grip and start gliding over the street, the frictional force decreases dramatically and you slip out of the road. In addition, the centrifugal force could cause the car to tip over, if it is loaded incorrectly."
@@ -19,7 +19,7 @@
 		//load frame
 		function loadFrame()
 		{
-			var srcString = "http://sim01.cti.ac.at/wsdemos/easyjava/Simulations/_apps/AICC/AICC.app/AICC.html";
+			var srcString = "https://sim01.cti.ac.at/wsdemos/easyjava/Simulations/_apps/AICC/AICC.app/AICC.html";
 			var width = "1400";
 			var height = "900";
 			$('container').innerHTML = '<iframe frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';

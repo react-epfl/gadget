@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Variable Star Photometry"
-	 	title_url="http://astro.unl.edu/naap/vsp/vsp.html"
+	 	title_url="https://astro.unl.edu/naap/vsp/vsp.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP Variable Star Photometry Lab introduces variable stars – Eclipsing Binaries, Cepheids, and RR Lyrae. Topics include how images of stars are processed, variable stars identified, and the properties of the variable stars determined."
 	 	height="475"
 	 	screenshot="vsp-screenshot-1.png"
-	 	thumbnail="http://astro.unl.edu/naap/vsp/graphics/vsp_screen1.png">
+	 	thumbnail="https://astro.unl.edu/naap/vsp/graphics/vsp_screen1.png">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/vsp/animations/registrationSimulator.swf";
+		    var url = "https://astro.unl.edu/naap/vsp/animations/registrationSimulator.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

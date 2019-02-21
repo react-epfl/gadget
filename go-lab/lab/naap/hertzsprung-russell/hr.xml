@@ -1,12 +1,12 @@
 <Module>
 	 <ModulePrefs title="NAAP lab - Hertzsprung-Russel Diagram Lab"
-	 	title_url="http://astro.unl.edu/naap/hr/hr.html"
+	 	title_url="https://astro.unl.edu/naap/hr/hr.html"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts@gmail.com"
 	 	description="The NAAP HR Diagram Lab explores the Hertzsprung-Russell diagram and those areas necessary to understand the diagram such as (but not limited to) the different kinds of spectrum, spectral classification, and luminosity class. In short, this module provides a fairly in-depth tutorial in reading HR diagrams."
 	 	height="665"
 	 	screenshot="hr-screenshot.png"
-	 	thumbnail="http://astro.unl.edu/naap/hr/graphics/hr_screen1.png">
+	 	thumbnail="https://astro.unl.edu/naap/hr/graphics/hr_screen1.png">
 	 	<Require feature="opensocial-0.9" />
 	 	<Require feature="flash" />
 	 </ModulePrefs>
@@ -15,7 +15,7 @@
 	 <script type="text/javascript">
 		  // Play .swf file
 		  function displayFlash(){
-		    var url = "http://astro.unl.edu/naap/hr/animations/hrExplorer.swf";
+		    var url = "https://astro.unl.edu/naap/hr/animations/hrExplorer.swf";
 
 		    // Play .swf file.
 		    gadgets.flash.embedFlash(url, "flashcontainer", {

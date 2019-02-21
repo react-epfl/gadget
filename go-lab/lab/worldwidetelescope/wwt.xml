@@ -1,6 +1,6 @@
 <Module>
 	 <ModulePrefs title="Worldwide Telescope"
-	 	title_url="http://www.worldwidetelescope.org/webclient/default.aspx"
+	 	title_url="https://www.worldwidetelescope.org/webclient/default.aspx"
 	 	author="Sten Govaerts"
 	 	author_email="sten.govaerts+worldwidetelescope@gmail.com"
 	 	description=""
@@ -20,7 +20,7 @@
 		//load frame
 		function loadFrame()
 		{
-			var srcString = "http://www.worldwidetelescope.org/webclient/default.aspx";
+			var srcString = "https://www.worldwidetelescope.org/webclient/default.aspx";
 			var width = "100%";
 			var height = "800";
 			$('container').innerHTML = '<iframe  frameborder="0" width="'+width+'" height="'+height+'" src="'+srcString+'"></iframe>';
