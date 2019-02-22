@@ -35,12 +35,12 @@
 
   <h2>IWC as drag and drop</h2>
   <div class="block">
-    <img id="dragme" src="http://shindig2.epfl.ch/gadget/iwc/dragme.png" draggable="true" class="dragme">
+    <img id="dragme" src="https://shindig2.epfl.ch/gadget/iwc/dragme.png" draggable="true" class="dragme">
   </div>
 </div>
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/iwc.min.js"></script>
+<script type="text/javascript" src="https://shindig2.epfl.ch/gadget/libs/iwc.min.js"></script>
 
 <script type="text/javascript">
 

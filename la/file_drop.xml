@@ -12,8 +12,8 @@
     <Require feature="dynamic-height" />
   </ModulePrefs>
   <Content type="html" view="default,canvas,home,profile"><![CDATA[
-<link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
-<link rel="stylesheet" href="http://shindig2.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
+<link rel="stylesheet" href="https://shindig2.epfl.ch/gadget/libs/dropzone/css/dropzone.css" type="text/css">
+<link rel="stylesheet" href="https://shindig2.epfl.ch/gadget/libs/bootstrap/css/bootstrap.min.css" type="text/css">
 
 <!-- Style  configuration -->
 <style type="text/css">
@@ -68,11 +68,11 @@
   <table class="table table-hover doc_list"><tbody id="list"></tbody></table>
   <div id = "msg" class="msg"></div>
 </div>
-<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
+<script type="text/javascript" src="https://shindig2.epfl.ch/gadget/libs/underscore-min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
 <script type="text/javascript" src="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/open-app/openapp.js"></script>
-<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
-<script type="text/javascript" src="http://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
+<script type="text/javascript" src="https://shindig2.epfl.ch/gadget/libs/dropzone/dropzone.min.js"></script>
+<script type="text/javascript" src="https://shindig2.epfl.ch/ils/main/ils_graaspeu.js"></script>
 
 <script type="text/javascript">
 var app = {};
