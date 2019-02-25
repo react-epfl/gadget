@@ -7,8 +7,8 @@
             author_email="alexandros.trichos@gmail.com"
             directory_title="NotePad"
             height="73"
-            screenshot="http://ask4research.info/golab/notepad/inputbox/img/notepad_ss.png"
-            thumbnail="http://ask4research.info/golab/notepad/inputbox/img/notepad_tn.png"
+            screenshot="https://www.ds.unipi.gr/ask4research"
+            thumbnail="https://www.ds.unipi.gr/ask4research"
             >
         <Require feature="dynamic-height"/>
         <Require feature="setprefs" />
@@ -20,7 +20,7 @@
 
     <Content type="html"><![CDATA[
 
-<script type="text/javascript" src="http://shindig2.epfl.ch/gadget/libs/head.js/head.min.js"></script>
+<script type="text/javascript" src="https://shindig2.epfl.ch/gadget/libs/head.js/head.min.js"></script>
 
 <script type="text/javascript">
 
@@ -34,14 +34,14 @@ var urlPrefix = "";
           }
 
 head.js ([
- "http://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js",
- "http://shindig2.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js",
- "http://shindig2.epfl.ch/gadget/libs/jquery.cookie.js",
- "http://shindig2.epfl.ch/gadget/libs/underscore-min.js",
- "http://shindig2.epfl.ch/ils/main/ils_graaspeu.js",
- "http://shindig2.epfl.ch/ils/metadata/MetadataHandler.js",
- "http://shindig2.epfl.ch/ils/storage/StorageHandler.js",
- "http://shindig2.epfl.ch/ils/applog/ActionLogger.js",
+ "https://shindig2.epfl.ch/gadget/libs/jquery-1.8.0.min.js",
+ "https://shindig2.epfl.ch/gadget/libs/jquery-ui/jquery-ui.js",
+ "https://shindig2.epfl.ch/gadget/libs/jquery.cookie.js",
+ "https://shindig2.epfl.ch/gadget/libs/underscore-min.js",
+ "https://shindig2.epfl.ch/ils/main/ils_graaspeu.js",
+ "https://shindig2.epfl.ch/ils/metadata/MetadataHandler.js",
+ "https://shindig2.epfl.ch/ils/storage/StorageHandler.js",
+ "https://shindig2.epfl.ch/ils/applog/ActionLogger.js",
  urlPrefix+"inputbox.js",
  urlPrefix+"inputbox.css",
  urlPrefix+"jquery.dataTables.min.css",

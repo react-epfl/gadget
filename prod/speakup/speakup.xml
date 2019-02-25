@@ -1,7 +1,7 @@
 <Module>
   <ModulePrefs
       title="SpeakUp"
-      title_url="http://speakup.info/"
+      title_url="https://web.speakup.info/"
       author="Alex Wild"
       author_email="alex.wild@epfl.ch"
       height="500"

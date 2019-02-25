@@ -7,8 +7,8 @@
       description="The textarea can be edited by all users of a certain space or a profile owner. History of changes is saved."
       min-width="350"
       height="500"
-      thumbnail="http://shindig2.epfl.ch/gadget/prod/wiki/thumbnail.png"
-      screenshot="http://shindig2.epfl.ch/gadget/prod/wiki/screenshot.png">
+      thumbnail="https://shindig2.epfl.ch/gadget/prod/wiki/thumbnail.png"
+      screenshot="https://shindig2.epfl.ch/gadget/prod/wiki/screenshot.png">
     <Locale messages="./ALL_ALL.xml"/>
     <Require feature="osapi" />
   </ModulePrefs>
