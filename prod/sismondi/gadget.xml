@@ -6,8 +6,8 @@
                 description="Gadget that sketches satellites' trajectories using positions' coordinates. Data is retrieved from the NASA website."
                 width="500"
                 height="500"
-                thumbnail="http://shindig2.epfl.ch/gadget/prod/sismondi/satellite.png"
-                screenshot="http://shindig2.epfl.ch/gadget/prod/sismondi/satellite.png">
+                thumbnail="https://shindig2.epfl.ch/gadget/prod/sismondi/satellite.png"
+                screenshot="https://shindig2.epfl.ch/gadget/prod/sismondi/satellite.png">
     <Require feature="osapi" />
     <Require feature="dynamic-height" />
   </ModulePrefs>
@@ -23,9 +23,9 @@
 <button id="button_comet" class="autocompare">Show Comet</button>
 <button id="button_moon" class="autocompare">Show Moon</button>
 
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://shindig2.epfl.ch/gadget/libs/exporting.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://shindig2.epfl.ch/gadget/libs/exporting.js"></script>
 
 <script type="text/javascript">
 
@@ -36,7 +36,7 @@
   function getCoordinates(){
   //GET coordinates for viking
   osapi.http.get({
-    href: "http://shindig2.epfl.ch/gadget/prod/sismondi/plot_satellite.txt",
+    href: "https://shindig2.epfl.ch/gadget/prod/sismondi/plot_satellite.txt",
     'format': "text"
     }).execute(function(result) {
           if (!result.error) {
@@ -55,7 +55,7 @@
 
    //GET coordinates for comet
    osapi.http.get({
-    href: "http://shindig2.epfl.ch/gadget/prod/sismondi/plot_comet.txt",
+    href: "https://shindig2.epfl.ch/gadget/prod/sismondi/plot_comet.txt",
     'format': "text"
     }).execute(function(result) {
           if (!result.error) {
@@ -74,7 +74,7 @@
 
   //GET coordinates for moon
   osapi.http.get({
-    href: "http://shindig2.epfl.ch/gadget/prod/sismondi/plot_moon.txt",
+    href: "https://shindig2.epfl.ch/gadget/prod/sismondi/plot_moon.txt",
     'format': "text"
     }).execute(function(result) {
           if (!result.error) {
